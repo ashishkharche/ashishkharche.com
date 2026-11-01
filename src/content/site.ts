@@ -9,6 +9,7 @@ export const site = {
   email: 'thekharche@gmail.com',
   linkedin: 'https://www.linkedin.com/in/ashish-kharche',
   github: 'https://github.com/ashishkharche',
+  x: 'https://x.com/ashreui',
 } as const
 
 export const links = {

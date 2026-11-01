@@ -65,10 +65,14 @@ function About() {
               . I'm also on{' '}
               <a href={site.linkedin} {...stylex.props(ui.link)}>
                 LinkedIn
-              </a>{' '}
-              and{' '}
+              </a>
+              ,{' '}
               <a href={site.github} {...stylex.props(ui.link)}>
                 GitHub
+              </a>{' '}
+              and{' '}
+              <a href={site.x} rel="me noopener" {...stylex.props(ui.link)}>
+                X
               </a>
               .
             </P>

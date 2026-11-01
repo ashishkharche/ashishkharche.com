@@ -27,6 +27,11 @@ export function SiteFooter() {
               GitHub
             </a>
           </li>
+          <li>
+            <a href={site.x} rel="me noopener" {...stylex.props(ui.link, ui.quietLink)}>
+              X
+            </a>
+          </li>
         </ul>
       </div>
       {/*

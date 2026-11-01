@@ -38,7 +38,7 @@ export const person = {
     'Maestro',
     'Payments',
   ],
-  sameAs: [site.linkedin, site.github],
+  sameAs: [site.linkedin, site.github, site.x],
 } as const
 
 const author = { '@type': 'Person', '@id': personId, name: site.name, url: `${site.url}/` } as const
