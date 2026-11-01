@@ -18,7 +18,7 @@ export const screenWidths: Record<Device, readonly [number, number]> = {
 }
 
 export interface Screen {
-  /** File stem of the App Store PNG, such as `01-rep-counting`. */
+  /** File stem of the App Store PNG, such as `02-voice`. */
   id: string
   /** Short name, shown under the screen in the gallery. */
   label: string
@@ -43,12 +43,6 @@ const footageCredits: Record<FootageSource, string> = {
 }
 
 const allScreens = {
-  '01-rep-counting': {
-    id: '01-rep-counting',
-    label: 'Rep counting',
-    alt: 'Every rep, counted for you. A goblet squat set on camera, with the count at 2 of 10, set 1 of 4, at 16 kg.',
-    footage: 'mixkit',
-  },
   '02-voice': {
     id: '02-voice',
     label: 'Voice',
@@ -109,7 +103,6 @@ export type ScreenId = keyof typeof allScreens
 export const shownScreenIds: ScreenId[] = [
   '02-voice',
   '03-live-coach',
-  '01-rep-counting',
   '04-manual',
   '05-form',
   '06-trainer',
@@ -140,7 +133,7 @@ export function screen(id: ScreenId): Screen {
   return allScreens[id]
 }
 
-/** Path of one web copy, such as /assets/img/wd/iphone/01-rep-counting-800.avif. */
+/** Path of one web copy, such as /assets/img/wd/iphone/02-voice-800.avif. */
 export function screenPath(id: string, device: Device, width: number, format: 'avif' | 'webp'): string {
   return `/assets/img/wd/${device}/${id}-${width}.${format}`
 }
