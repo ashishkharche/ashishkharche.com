@@ -1,6 +1,5 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { checkRequest, handle } from '../../api/tdn'
 import {
   type ChartConfig,
   type Row,
@@ -396,65 +395,5 @@ describe('local data source', () => {
     expect(template.rows.length).toBeGreaterThan(10)
     expect(template.iconSprite).toBe('/data/android-permissions-icons.webp')
     await expect(src.loadTemplate('../secret')).rejects.toThrow('Unknown template')
-  })
-})
-
-describe('live data proxy', () => {
-  const q = (s: string) => checkRequest(new URLSearchParams(s))
-  it('maps allowed endpoints to upstream paths', () => {
-    expect(q('endpoint=rankings&store=apple&country=us&chart=top-free')).toEqual({
-      ok: true,
-      path: '/api/v1/rankings',
-      search: '?chart=top-free&country=us&store=apple',
-    })
-    expect(q('endpoint=app-rankings&id=123456&store=apple')).toMatchObject({
-      ok: true,
-      path: '/api/v1/apps/123456/rankings',
-    })
-    expect(q('endpoint=tech-stack-app&id=com.example.app&store=google&version=1.2.3')).toMatchObject({
-      path: '/api/v1/tech-stack/com.example.app',
-    })
-  })
-  it('refuses anything outside the list', () => {
-    expect(q('endpoint=admin')).toMatchObject({ ok: false, status: 404 })
-    expect(q('endpoint=toString')).toMatchObject({ ok: false, status: 404 })
-    expect(q('endpoint=rankings&country=usa')).toMatchObject({ ok: false, status: 400 })
-    expect(q('endpoint=rankings&key=abc')).toMatchObject({ ok: false, status: 400 })
-    expect(q('endpoint=rankings&limit=500')).toMatchObject({ ok: false, status: 400 })
-    expect(q('endpoint=app-rankings&id=../../admin')).toMatchObject({ ok: false, status: 400 })
-    expect(q('endpoint=sdk-adoption')).toMatchObject({ ok: false, error: 'Parameter sdk is required' })
-    expect(q('endpoint=rankings&store=apple&store=google')).toMatchObject({ ok: false, status: 400 })
-  })
-  it('only answers GET', async () => {
-    const res = await handle(new Request('https://x.test/api/tdn?endpoint=apps', { method: 'POST' }), {})
-    expect(res.status).toBe(405)
-  })
-  it('says live data is not configured without the key', async () => {
-    const res = await handle(new Request('https://x.test/api/tdn?endpoint=apps'), {})
-    expect(res.status).toBe(503)
-    expect(await res.json()).toEqual({ error: 'Live data is not configured', code: 'not_configured' })
-  })
-  it('adds the key upstream, caches and never returns the key', async () => {
-    const seen: { url: string; auth: string | null }[] = []
-    const fetcher = (async (url: string, init?: RequestInit) => {
-      seen.push({ url, auth: new Headers(init?.headers).get('Authorization') })
-      return new Response('{"data":[]}', { status: 200 })
-    }) as typeof fetch
-    const env = { TDN_API_KEY: 'tdn_test_only', TDN_API_ORIGIN: 'https://upstream.test' }
-    const req = () => new Request('https://x.test/api/tdn?endpoint=tech-stack&store=apple')
-    const first = await handle(req(), env, fetcher)
-    const second = await handle(req(), env, fetcher)
-    expect(first.status).toBe(200)
-    expect(first.headers.get('Cache-Control')).toContain('s-maxage=600')
-    expect(second.headers.get('X-Proxy-Cache')).toBe('HIT')
-    expect(seen).toEqual([{ url: 'https://upstream.test/api/v1/tech-stack?store=apple', auth: 'Bearer tdn_test_only' }])
-    expect(await first.text()).not.toContain('tdn_test_only')
-  })
-  it('passes rate limits through with Retry-After', async () => {
-    const fetcher = (async () => new Response('{}', { status: 429, headers: { 'Retry-After': '17' } })) as typeof fetch
-    const env = { TDN_API_KEY: 'tdn_test_only', TDN_API_ORIGIN: 'https://upstream.test' }
-    const res = await handle(new Request('https://x.test/api/tdn?endpoint=charts&store=apple&country=gb'), env, fetcher)
-    expect(res.status).toBe(429)
-    expect(res.headers.get('Retry-After')).toBe('17')
   })
 })

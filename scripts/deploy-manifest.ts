@@ -2,8 +2,8 @@
 // Vercel deployments API expects for a static upload. Writes
 // dist/deploy-manifest.json. See DEPLOY.md.
 //
-// `--with-api` also lists api/tdn.ts, the live data proxy for the chart builder, so Vercel deploys it as a function.
-// It is left out by default.
+// It also lists api/tdn.ts, the live data proxy for the chart builder, so Vercel deploys it as a function next to the
+// static files. `--static-only` leaves it out.
 import { createHash } from 'node:crypto'
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import { join, relative } from 'node:path'
@@ -25,7 +25,7 @@ for (const path of (await walk(root)).sort()) {
   total += data.length
   files.push({ file: relative(root, path), sha: createHash('sha1').update(data).digest('hex'), size: data.length })
 }
-if (process.argv.includes('--with-api')) {
+if (!process.argv.includes('--static-only')) {
   const path = new URL('../api/tdn.ts', import.meta.url).pathname
   const data = await readFile(path)
   total += data.length

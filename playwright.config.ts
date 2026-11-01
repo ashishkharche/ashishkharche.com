@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// PW_PORT picks another port when 4173 is taken by another checkout.
 const port = Number(process.env.PW_PORT ?? 4173)
 
 export default defineConfig({
