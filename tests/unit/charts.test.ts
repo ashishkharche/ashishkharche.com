@@ -4,10 +4,14 @@ import { checkRequest, handle } from '../../api/tdn'
 import {
   type ChartConfig,
   type Row,
+  composeLabel,
   fill,
+  filterRows,
   footnoteLines,
   labelRows,
+  labelValues,
   monthYear,
+  shortName,
   staleRows,
   toNumber,
   validate,
@@ -115,6 +119,99 @@ describe('config helpers', () => {
       config,
     )
     expect(notes.map((n) => n.text)).toEqual(['Old: built Jun 2026'])
+  })
+})
+
+describe('point labels', () => {
+  const fields = {
+    us_rank: { name: 'US rank', format: 'US #{us_rank}' },
+    countries_charted: { name: 'Countries', format: '{countries_charted} countries' },
+  }
+  it('builds the label from the columns it shows', () => {
+    const label = { show: ['us_rank', 'countries_charted'] }
+    expect(composeLabel(label, { label_fields: fields })).toBe(
+      '{short_name}: US #{us_rank}, {countries_charted} countries',
+    )
+    expect(composeLabel({ ...label, stack: true }, { label_fields: fields })).toBe(
+      '{short_name}\nUS #{us_rank}, {countries_charted} countries',
+    )
+    expect(composeLabel({ ...label, hide_name: true }, { label_fields: fields })).toBe(
+      'US #{us_rank}, {countries_charted} countries',
+    )
+    expect(composeLabel({ show: ['nope'] }, { label_fields: fields })).toBe('{short_name}')
+  })
+  it('shortens app names to the part before the store subtitle', () => {
+    expect(shortName('Kimi - Your Personal AI Agent')).toBe('Kimi')
+    expect(shortName('Spotify: Music and Podcasts')).toBe('Spotify')
+    expect(shortName('Muse from Meta')).toBe('Muse from Meta')
+  })
+  it('reads like the data: "ChatGPT: US #3, 169 countries"', () => {
+    const { config, rows } = load('us-rank-countries')
+    const row = rows.find((r) => r.app === 'ChatGPT') as Row
+    const text = composeLabel({ show: ['us_rank', 'countries_charted'] }, config)
+    expect(fill(text, labelValues(row, config))).toBe('ChatGPT: US #3, 169 countries')
+  })
+})
+
+describe('template words', () => {
+  const all = ids.map((id) => ({ id, ...load(id) }))
+  // Every number on a chart has to be in the data files: a cell, the snapshot date, or the
+  // definitions that ship with the data (selection, method and the stale-build age).
+  const known = new Set<string>()
+  const numbers = (text: string) => text.match(/\d+(?:\.\d+)?/g) ?? []
+  for (const { config, rows } of all) {
+    for (const row of rows) for (const cell of Object.values(row)) numbers(cell).forEach((n) => known.add(n))
+    for (const text of [
+      config.selection,
+      config.method,
+      config.template?.date ?? '',
+      String(config.staleness?.max_age_days ?? ''),
+    ])
+      numbers(text).forEach((n) => known.add(n))
+  }
+  known.add('1') // "1 Nov 2026", the snapshot date
+
+  for (const { id, config, rows } of all) {
+    const shown = filterRows(rows, config)
+    const foot = footnoteLines(shown, config, source(config))
+    const labels = (config.labels ?? []).flatMap((l) =>
+      labelRows(shown, l).map((r) => fill(l.text, labelValues(r, config))),
+    )
+    const visible = [
+      config.title,
+      config.subtitle ?? '',
+      ...foot,
+      ...labels,
+      config.template?.name ?? '',
+      config.template?.sample ?? '',
+    ]
+
+    it(`${id} lists the number of points it draws`, () => {
+      expect(Number.parseInt(config.template?.sample ?? '', 10)).toBe(shown.length)
+      expect(config.template?.source_short).toBeTruthy()
+    })
+    it(`${id} has only numbers from the data`, () => {
+      const unknown = visible.flatMap(numbers).filter((n) => !known.has(n))
+      expect(unknown).toEqual([])
+    })
+    it(`${id} states what is measured, with short footnotes`, () => {
+      expect(config.title).not.toMatch(/[?!]/)
+      expect(config.title).toMatch(/ vs /)
+      for (const line of foot) expect(line.length).toBeLessThanOrEqual(110)
+      expect(visible.join(' ')).not.toMatch(/[\u2013\u2014]|\bI built\b/)
+    })
+    it(`${id} labels follow what they show`, () => {
+      for (const label of config.labels ?? []) {
+        if (label.show) expect(label.text).toBe(composeLabel(label, config))
+      }
+    })
+  }
+  it('says how few countries Muse from Meta is on sale in, from the data', () => {
+    const muse = load('us-rank-countries').rows.find((r) => r.app === 'Muse from Meta')
+    expect(muse?.storefronts_available).toBe('5')
+    for (const id of ['us-rank-countries', 'us-rating-countries']) {
+      expect(load(id).config.footnote.join(' ')).toContain('on sale in only 5 countries')
+    }
   })
 })
 
@@ -294,7 +391,7 @@ describe('local data source', () => {
     const src = createLocalSource('/data/', fetcher)
     const list = await src.listTemplates()
     expect(list.map((t) => t.id)).toEqual(ids)
-    expect(list.every((t) => t.date && t.source)).toBe(true)
+    expect(list.every((t) => t.date && t.source && t.sample && t.sourceShort)).toBe(true)
     const template = await src.loadTemplate('android-permissions')
     expect(template.rows.length).toBeGreaterThan(10)
     expect(template.iconSprite).toBe('/data/android-permissions-icons.webp')

@@ -8,7 +8,7 @@ import { setTimeout as sleep } from 'node:timers/promises'
 import { LinkChecker } from 'linkinator'
 import { site } from '../src/content/site.ts'
 
-const port = 4174
+const port = Number(process.env.LINKS_PORT ?? 4174)
 const base = `http://localhost:${port}/`
 const internalOnly = process.argv.includes('--internal')
 

@@ -9,7 +9,17 @@
  * 1800 × 1390 the layout matches; other sizes keep the same layout scaled to fit.
  */
 import type { ChartConfig, LabelConfig, Row } from './config.ts'
-import { fill, filterRows, footnoteLines, labelRows, nameOf, staleRows, toNumber, validate } from './config.ts'
+import {
+  fill,
+  filterRows,
+  footnoteLines,
+  labelRows,
+  labelValues,
+  nameOf,
+  staleRows,
+  toNumber,
+  validate,
+} from './config.ts'
 import { ICON_CELL, ICON_COLUMNS } from './data.ts'
 
 export const BASE_WIDTH = 1800
@@ -439,7 +449,7 @@ export function drawChart(ctx: Ctx, config: ChartConfig, allRows: Row[], options
   for (const label of config.labels ?? []) {
     for (const row of labelRows(rows, label)) {
       if (!order.includes(row)) continue
-      drawLabel(text, label, row, at(row), px)
+      drawLabel(text, label, labelValues(row, config), at(row), px)
     }
   }
   const st = config.staleness

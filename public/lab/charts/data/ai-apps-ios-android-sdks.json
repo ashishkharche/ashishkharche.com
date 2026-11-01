@@ -2,8 +2,8 @@
   "size": [1800, 1390],
   "dpi": 100,
   "theme": "dark",
-  "title": "Same AI app, iOS vs Android: how many SDKs are detected?",
-  "subtitle": "Third-party SDKs detected in each app's latest analyzed build",
+  "title": "Third-party SDKs detected in AI apps: iOS vs Android",
+  "subtitle": "10 AI apps with both builds analyzed, latest build per platform",
   "selection": "AI assistant / AI creation apps that have an analyzed tech stack on both iOS and Android: ChatGPT, Gemini, Grok, Grok Bot, Kimi, Le Chat, Manus, Meta AI, Perplexity, Suno. Claude, DeepSeek, Character.AI, Copilot and others are excluded because only one platform is analyzed.",
   "method": "ios_sdks / android_sdks = 'Third-party SDKs' count on each app's /tech-stack page for the latest analyzed build. The two builds are analyzed separately and can be different versions and dates.",
   "name_column": "app",
@@ -94,7 +94,9 @@
       "ha": "center",
       "va": "top",
       "offset": [-8, -52],
-      "text": "Kimi\n{ios_sdks} on iOS · {android_sdks} on Android"
+      "text": "{short_name}\n{ios_sdks} on iOS, {android_sdks} on Android",
+      "show": ["ios_sdks", "android_sdks"],
+      "stack": true
     },
     {
       "match": {
@@ -105,7 +107,8 @@
       "offset": [-22, -38],
       "size": 23,
       "weight": "Medium",
-      "text": "Meta AI: {ios_sdks} on iOS (lower bound)"
+      "text": "{short_name}: {ios_sdks} on iOS, {android_sdks} on Android",
+      "show": ["ios_sdks", "android_sdks"]
     }
   ],
   "layout": {
@@ -114,16 +117,37 @@
     "foot_step": 0.0225
   },
   "footnote": [
-    "Source: {source}, 1 Nov 2026. Latest analyzed build per platform; builds analyzed Jun to Oct 2026 (older ones labelled).",
-    "The source marks every iOS count here as a lower bound, and Android as observed for 6 apps, so it is not like-for-like.",
-    "Only AI apps with both platforms analyzed. SDK count says nothing about app size, quality or privacy on its own."
+    "Source: {source}, 1 Nov 2026. Latest build per platform, analyzed Jun to Oct 2026.",
+    "iOS: {n_ios_lower} of {n_rows} counts a lower bound. Android: {n_android_observed} of {n_rows} observed, so not like-for-like.",
+    "Only apps with both platforms analyzed. Builds older than 60 days are labelled."
   ],
   "id": "ai-apps-ios-android-sdks",
   "source_default": "public app build analysis pages",
   "template": {
-    "name": "AI apps: SDKs on iOS and Android",
-    "description": "Third-party SDKs detected in the iOS and Android builds of the same AI apps.",
+    "name": "AI apps: iOS vs Android SDKs",
+    "sample": "10 AI apps",
+    "source_short": "Build analysis",
     "date": "2026-11-01",
     "source": "public app build analysis pages"
+  },
+  "footnote_counts": {
+    "n_ios_lower": {
+      "column": "ios_detection",
+      "equals": "lower bound"
+    },
+    "n_android_observed": {
+      "column": "android_detection",
+      "equals": "observed"
+    }
+  },
+  "label_fields": {
+    "ios_sdks": {
+      "name": "iOS SDKs",
+      "format": "{ios_sdks} on iOS"
+    },
+    "android_sdks": {
+      "name": "Android SDKs",
+      "format": "{android_sdks} on Android"
+    }
   }
 }

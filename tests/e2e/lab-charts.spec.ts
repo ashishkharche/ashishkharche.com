@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises'
+import AxeBuilder from '@axe-core/playwright'
 import { type Download, type Page, expect, test } from '@playwright/test'
 
 const templates = [
@@ -88,8 +89,8 @@ test.describe('chart builder', () => {
     expect(twice.bytes.length).toBeLessThan(5 * 1024 * 1024)
     expect(await differenceFromPreview(page, twice.bytes, 'image/png')).toBeLessThan(0.02)
 
-    await page.getByLabel('16:9').check()
-    await page.getByLabel('1x,').check()
+    await page.getByRole('radio', { name: '16:9' }).click()
+    await page.getByRole('radio', { name: '1x' }).click()
     await expect(page.locator('canvas[data-rendered]')).toHaveAttribute('data-rendered', 'us-rank-countries:1920x1080')
     const wide = await download(page, 'Download PNG')
     expect(pngSize(wide.bytes)).toEqual({ width: 1920, height: 1080 })
@@ -110,7 +111,8 @@ test.describe('chart builder', () => {
   test('blocks downloads while a data rule is broken', async ({ page }) => {
     await page.goto('/lab/charts/')
     await pick(page, 'us-rank-countries')
-    await page.getByLabel('Line 1').fill('Data from somewhere')
+    await page.getByText('Advanced').click()
+    await page.getByLabel('Footnote line 1').fill('Data from somewhere')
     await expect(page.getByRole('alert')).toContainText('must start with "Source:"')
     await expect(page.getByRole('button', { name: 'Download PNG' })).toBeDisabled()
     await expect(page.getByRole('button', { name: 'Download SVG' })).toBeDisabled()
@@ -118,6 +120,65 @@ test.describe('chart builder', () => {
     await expect(page.getByRole('alert')).toHaveCount(0)
     await expect(page.getByRole('button', { name: 'Download PNG' })).toBeEnabled()
   })
+
+  test('picks what a point label shows with chips', async ({ page }) => {
+    await page.goto('/lab/charts/')
+    await pick(page, 'us-rank-countries')
+    const chips = page.getByRole('group', { name: 'What point 2 shows' })
+    await expect(chips.getByRole('button', { name: 'Countries' })).toHaveAttribute('aria-pressed', 'true')
+    await page.getByText('Advanced').click()
+    const text = page.getByLabel('Point 2 text')
+    await expect(text).toHaveValue('{short_name}\nUS #{us_rank}, {countries_charted} countries')
+    await chips.getByRole('button', { name: 'Top 10 in' }).click()
+    await expect(text).toHaveValue(
+      '{short_name}\nUS #{us_rank}, {countries_charted} countries, top 10 in {countries_top10}',
+    )
+    // An empty label breaks a rule, so downloads stop.
+    for (const name of ['Name', 'US rank', 'Countries', 'Top 10 in']) await chips.getByRole('button', { name }).click()
+    await expect(text).toHaveValue('')
+    await expect(page.getByRole('alert')).toContainText('cannot be empty')
+    await expect(page.getByRole('button', { name: 'Download PNG' })).toBeDisabled()
+  })
+
+  test('opens selects below the field, not over it', async ({ page }) => {
+    await page.goto('/lab/charts/')
+    await pick(page, 'us-rank-countries')
+    const trigger = page.getByRole('combobox', { name: 'Point 2' })
+    await trigger.click()
+    const list = page.getByRole('listbox')
+    await expect(list).toBeVisible()
+    const field = (await trigger.boundingBox()) ?? { y: 0, height: 0 }
+    const popup = (await list.boundingBox()) ?? { y: 0, height: 0 }
+    const below = popup.y >= field.y + field.height
+    const above = popup.y + popup.height <= field.y
+    expect(below || above).toBe(true)
+    await page.getByRole('option', { name: 'Claude by Anthropic' }).click()
+    await expect(trigger).toContainText('Claude by Anthropic')
+    await expect(page.getByRole('alert')).toHaveCount(0)
+  })
+
+  for (const theme of ['light', 'dark'] as const) {
+    test(`open controls have no accessibility violations (${theme})`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
+      await page.goto('/lab/charts/')
+      await pick(page, 'us-rank-countries')
+      await page.getByText('Advanced').click()
+      const axe = () =>
+        new AxeBuilder({ page })
+          // The open list's focus guards (Base UI) are hidden spans that pass focus straight on to the list
+          // or the field, so they never keep focus; axe cannot tell and flags them.
+          .exclude('[data-base-ui-focus-guard]')
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
+          .analyze()
+          .then((r) =>
+            r.violations.map((v) => `${v.impact} ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`),
+          )
+      expect(await axe()).toEqual([])
+      await page.getByRole('combobox', { name: 'Vertical' }).click()
+      await expect(page.getByRole('listbox')).toBeVisible()
+      expect(await axe()).toEqual([])
+    })
+  }
 
   test('is linked from the Projects page', async ({ page }) => {
     await page.goto('/projects/')

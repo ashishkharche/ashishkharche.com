@@ -1,8 +1,8 @@
 {
   "id": "us-rating-countries",
   "size": [1800, 1390],
-  "title": "Do the best-rated apps chart in the most countries?",
-  "subtitle": "US App Store rating vs countries where the app is in the Top Free 100",
+  "title": "US App Store rating vs countries in the Top Free 100",
+  "subtitle": "30 tracked iOS apps in the US Top Free 100 on 1 Nov 2026",
   "selection": "The 30 tracked iOS apps in the US App Store Top Free 100 on 1 Nov 2026. Not the full chart.",
   "method": "rating = the app's US App Store rating. countries_charted = App Store countries where the app is in the Top Free 100. No ranks are averaged.",
   "name_column": "app",
@@ -18,7 +18,7 @@
   },
   "y": {
     "field": "countries_charted",
-    "label": "Countries where it's in the Top 100",
+    "label": "Countries in the Top Free 100",
     "min": -10,
     "max": 190,
     "ticks": [0, 50, 100, 150]
@@ -47,7 +47,7 @@
         {
           "text": "An app can only chart where it is sold: Muse from Meta is on sale in a few countries only.",
           "show_on_chart": true,
-          "chart_text": "limited launch"
+          "chart_text": "on sale in only 5"
         },
         {
           "text": "Single snapshot (1 Nov 2026); ranks move daily.",
@@ -65,7 +65,9 @@
       "highlight": true,
       "ha": "left",
       "offset": [46, 0],
-      "text": "{app}\n{rating} stars · {countries_charted} countries"
+      "text": "{short_name}\n{rating:.1f} stars, {countries_charted} countries",
+      "show": ["rating", "countries_charted"],
+      "stack": true
     },
     {
       "match": {
@@ -74,7 +76,9 @@
       "highlight": true,
       "ha": "right",
       "offset": [-48, 4],
-      "text": "{app}\n{rating} stars · {countries_charted} countries (limited launch)"
+      "text": "{short_name}\n{rating:.1f} stars, {countries_charted} countries",
+      "show": ["rating", "countries_charted"],
+      "stack": true
     }
   ],
   "layout": {
@@ -83,16 +87,35 @@
     "foot_step": 0.0225
   },
   "footnote": [
-    "Source: {source}, 1 Nov 2026 (single snapshot). {n_rows} tracked iOS apps in the US Top Free 100, not the full chart.",
-    "Rating = US App Store stars (US ratings only), not how many people use the app. Countries = where it is in the Top Free 100.",
-    "Muse from Meta is sold in only a few App Store countries, so its low count is a limited launch. No ranks are averaged."
+    "Source: {source}, 1 Nov 2026 (single snapshot).",
+    "{n_rows} tracked apps, not the full chart. Countries: where the app is in the Top Free 100.",
+    "Rating: US ratings only, not how many people use the app. Muse from Meta is on sale in only 5 countries."
   ],
-  "source_default": "public App Store ranking pages",
+  "source_default": "public App Store ranking pages and Apple lookup data",
   "template": {
-    "name": "Best-rated apps vs worldwide reach",
-    "description": "US App Store rating against the number of countries where each top app charts.",
+    "name": "US rating vs countries charted",
+    "sample": "30 iOS apps",
+    "source_short": "App Store",
     "date": "2026-11-01",
-    "source": "public App Store ranking pages",
+    "source": "public App Store ranking pages and Apple lookup data",
     "extra": true
+  },
+  "label_fields": {
+    "rating": {
+      "name": "Rating",
+      "format": "{rating:.1f} stars"
+    },
+    "countries_charted": {
+      "name": "Countries",
+      "format": "{countries_charted} countries"
+    },
+    "us_rank": {
+      "name": "US rank",
+      "format": "US #{us_rank}"
+    },
+    "reviews": {
+      "name": "Ratings count",
+      "format": "{reviews} ratings"
+    }
   }
 }

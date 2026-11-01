@@ -46,7 +46,14 @@ export interface LabelConfig {
   skip?: number
   n?: number
   highlight?: boolean
+  /** The label as a template, filled from the row. Written by `composeLabel` when `show` is set. */
   text: string
+  /** The columns the label shows, in order (see `label_fields`), after the app's short name. */
+  show?: string[]
+  /** Leave out the app's name. */
+  hide_name?: boolean
+  /** Put the name on its own line, above the values. */
+  stack?: boolean
   ha?: 'left' | 'center' | 'right'
   va?: 'top' | 'center' | 'bottom'
   /** In points, y up. */
@@ -113,13 +120,34 @@ export interface ChartConfig {
   filter?: Array<{ column: string; not_empty?: boolean; min?: number; max?: number }>
   /** What fills {source} in the footnote. */
   source_default?: string
+  /** Columns a point label can show, each with how it reads on the chart ("US #{us_rank}"). */
+  label_fields?: Record<string, LabelField>
   /** How the template is listed on the page. */
-  template?: { name: string; description: string; date: string; source: string; extra?: boolean }
+  template?: {
+    name: string
+    /** What one point is, with the count: "30 iOS apps". The count is checked against the rows. */
+    sample: string
+    /** The source in a few words, for the list. */
+    source_short: string
+    date: string
+    source: string
+    extra?: boolean
+  }
   brand?: unknown
   watermark?: unknown
 }
 
+export interface LabelField {
+  /** The chip's name on the page. */
+  name: string
+  /** How the value reads on the chart, such as "{countries_charted} countries". */
+  format: string
+}
+
 export const FOOTNOTE_LINES = 3
+/** A column every label can use: the app's name up to " - " or ": " ("Kimi - Your Personal AI Agent" is "Kimi"). */
+export const SHORT_NAME = 'short_name'
+
 const ALLOWED_RANK_AGGREGATES = new Set(['median_unranked_as_worse', 'share_top10', 'points_score'])
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -147,7 +175,7 @@ export function templateFields(template: string): string[] {
 
 /**
  * Fills a template like Python's str.format over a row: {field}, and
- * {date:%b %Y} for dates. Numbers lose a trailing ".0". Unknown fields stay
+ * {date:%b %Y} for dates, {rating:.1f} for a fixed number of decimals. Numbers lose a trailing ".0". Unknown fields stay
  * as they are (the rules report them).
  */
 export function fill(template: string, values: Record<string, string | number>): string {
@@ -156,6 +184,8 @@ export function fill(template: string, values: Record<string, string | number>):
     const value = values[key]
     if (format === '%b %Y') return monthYear(String(value))
     const number = typeof value === 'number' ? value : toNumber(value)
+    const digits = /^\.(\d)f$/.exec(format ?? '')
+    if (digits && Number.isFinite(number)) return number.toFixed(Number(digits[1]))
     return Number.isFinite(number) ? String(number) : String(value)
   })
 }
@@ -172,6 +202,36 @@ export function filterRows(rows: Row[], config: ChartConfig): Row[] {
 
 export function nameOf(row: Row, config: ChartConfig): string {
   return row[config.name_column ?? 'app'] ?? row.name ?? row.app ?? ''
+}
+
+/** An app's name without the store subtitle: "Spotify: Music and Podcasts" is "Spotify". */
+export function shortName(name: string): string {
+  const cut = name.split(/ - |: /)[0]?.trim()
+  return cut || name
+}
+
+/** The values a label is filled from: the row and the app's short name. */
+export function labelValues(row: Row, config: Pick<ChartConfig, 'name_column'>): Row {
+  return { ...row, [SHORT_NAME]: shortName(row[config.name_column ?? 'app'] ?? row.name ?? row.app ?? '') }
+}
+
+/**
+ * The label template for the columns a label shows: "{short_name}: US #{us_rank}, {countries_charted} countries".
+ * Columns without a format are left out.
+ */
+export function composeLabel(
+  label: Pick<LabelConfig, 'show' | 'hide_name' | 'stack'>,
+  config: Pick<ChartConfig, 'label_fields'>,
+): string {
+  const parts = (label.show ?? []).flatMap((field) => {
+    const format = config.label_fields?.[field]?.format
+    return format ? [format] : []
+  })
+  const values = parts.join(', ')
+  if (label.hide_name) return values
+  const name = `{${SHORT_NAME}}`
+  if (!values) return name
+  return label.stack ? `${name}\n${values}` : `${name}: ${values}`
 }
 
 /** Rows a label points at: an exact match, or the top n by a column. */
@@ -242,7 +302,7 @@ const siteMark = /\b(?:https?:\/\/|www\.)|\b[a-z0-9-]+\.(?:com|net|org|io|app|de
 export function validate(config: ChartConfig, allRows: Row[], source: string): string[] {
   const errors: string[] = []
   const rows = filterRows(allRows, config)
-  const columns = new Set(allRows.flatMap((r) => Object.keys(r)))
+  const columns = new Set([...allRows.flatMap((r) => Object.keys(r)), SHORT_NAME])
   if (config.brand !== undefined || config.watermark !== undefined) errors.push('Charts carry no brand or watermark.')
 
   const foot = footnoteLines(rows, config, source)
@@ -259,6 +319,7 @@ export function validate(config: ChartConfig, allRows: Row[], source: string): s
   const chartText = visible.join(' ')
 
   for (const label of labels) {
+    if (!label.text.trim()) errors.push('A point label cannot be empty.')
     for (const field of templateFields(label.text)) {
       if (!columns.has(field)) errors.push(`The label "${label.text}" uses {${field}}, which is not in the data.`)
     }

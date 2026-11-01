@@ -46,9 +46,9 @@ function Projects() {
               </Link>
             </h3>
             <p {...stylex.props(styles.toolText)}>
-              Dark scatter charts of app store and app build data, ready to post on X. Start from one of five templates,
-              edit the title, axes and labels, and download a PNG or SVG. Every chart is checked against data rules
-              first: ranks always come with their coverage, and stale builds are labelled.
+              Scatter charts of public App Store and app build data from five templates, exported as PNG or SVG. Each
+              chart is checked against data rules before download: ranks come with their coverage, and builds older than
+              60 days are labelled.
             </p>
             <p {...stylex.props(styles.toolMeta)}>TypeScript · React · Canvas and SVG, drawn in the browser</p>
           </article>

@@ -14,7 +14,10 @@ export interface ChartDataSource {
 export interface TemplateSummary {
   id: string
   name: string
-  description: string
+  /** What one point is, with the count: "30 iOS apps". */
+  sample: string
+  /** The source in a few words. */
+  sourceShort: string
   /** Snapshot date, YYYY-MM-DD. */
   date: string
   source: string
@@ -44,7 +47,8 @@ export function summaryOf(config: ChartConfig): TemplateSummary {
   return {
     id: config.id,
     name: config.template?.name ?? config.title,
-    description: config.template?.description ?? config.subtitle ?? '',
+    sample: config.template?.sample ?? '',
+    sourceShort: config.template?.source_short ?? config.template?.source ?? config.source_default ?? '',
     date: config.template?.date ?? config.staleness?.as_of ?? '',
     source: config.template?.source ?? config.source_default ?? '',
     extra: config.template?.extra,

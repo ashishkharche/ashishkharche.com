@@ -19,6 +19,7 @@ import sharp from 'sharp'
 import { findBanned } from '../src/content/rules.ts'
 import { parseCsv, toCsv } from '../src/lib/charts/csv.ts'
 import { ICON_CELL, ICON_COLUMNS } from '../src/lib/charts/data.ts'
+import { applyCopy } from './lab-charts-copy.ts'
 
 const [folder, source] = process.argv.slice(2)
 if (!folder || !source) {
@@ -32,28 +33,6 @@ const ids: Record<string, string> = {
   g1_android_permissions: 'android-permissions',
   g2_us_rank_vs_countries: 'us-rank-countries',
   g3_ai_apps_ios_vs_android_sdks: 'ai-apps-ios-android-sdks',
-}
-
-/** How each chart is listed on the page: name, short description, data date and source wording. */
-const templates: Record<string, { name: string; description: string; date: string; source: string }> = {
-  'us-rank-countries': {
-    name: 'A top US rank is not worldwide reach',
-    description: 'US App Store rank against the number of countries where each app is in the Top Free 100.',
-    date: '2026-11-01',
-    source: 'public App Store ranking pages and Apple lookup data',
-  },
-  'android-permissions': {
-    name: 'Android apps that request the most permissions',
-    description: 'Manifest permissions against third-party SDKs for 171 analyzed Android builds.',
-    date: '2026-11-01',
-    source: 'public Android app build analysis pages',
-  },
-  'ai-apps-ios-android-sdks': {
-    name: 'AI apps: SDKs on iOS and Android',
-    description: 'Third-party SDKs detected in the iOS and Android builds of the same AI apps.',
-    date: '2026-11-01',
-    source: 'public app build analysis pages',
-  },
 }
 
 /** Columns that hold links, file paths or provenance, which the page does not need. */
@@ -122,11 +101,11 @@ for (const name of (await readdir(join(folder, 'charts'))).sort()) {
     label.match = { [nameColumn]: hits[0]?.[nameColumn] ?? '' }
   }
 
-  const site: Record<string, unknown> = cleanAll({ ...config, id, name: undefined, output: undefined, data: undefined })
-  const meta = templates[id]
-  if (!meta) throw new Error(`No template details for ${id}`)
-  site.source_default = meta.source
-  site.template = meta
+  // Titles, footnotes, labels and the list entry come from scripts/lab-charts-copy.ts.
+  const site = applyCopy(
+    id,
+    cleanAll({ ...config, id, name: undefined, output: undefined, data: undefined, template: { date: '2026-11-01' } }),
+  )
   const json = `${JSON.stringify(site, null, 2)}\n`
 
   const iconRows = table.rows.map((row) => (row.icon && existsSync(join(folder, row.icon)) ? row.icon : ''))
@@ -220,8 +199,6 @@ const extras: Extra[] = [
     },
     icon: (r) => iconPath(r.url ?? ''),
     config: {
-      title: 'Which Android apps bundle the most native code?',
-      subtitle: 'Native libraries vs third-party SDKs in the 80 SDK-heaviest analyzed Android builds',
       selection:
         'The 80 Android builds with the most third-party SDKs (31 or more) in the analyzed set, latest build each, as listed on 1 Nov 2026.',
       method:
@@ -284,7 +261,6 @@ const extras: Extra[] = [
           ha: 'left',
           // Up a little, clear of the second label (CapCut is 4 below).
           offset: [44, 14],
-          text: '{name} · {native_libs} native libraries',
         },
         {
           top_by: 'native_libs',
@@ -294,15 +270,9 @@ const extras: Extra[] = [
           offset: [32, -16],
           size: 22,
           weight: 'Medium',
-          text: '{name} · {native_libs}',
         },
       ],
       layout: { axes: [0.12, 0.215, 0.82, 0.61], foot_y: 0.025, foot_step: 0.0225 },
-      footnote: [
-        'Source: {source}, 1 Nov 2026. The {n_rows} Android builds with the most third-party SDKs, not all apps.',
-        'Native libraries = .so files in the build, not their size or what they do. SDK counts can be a lower bound.',
-        "{stale_count} of {n_rows} builds were analyzed more than 60 days before 1 Nov 2026 (oldest {oldest}); today's versions may differ.",
-      ],
     },
   },
   {
@@ -317,8 +287,6 @@ const extras: Extra[] = [
     },
     icon: (r) => iconPath(r.app_page ?? '', /$^/),
     config: {
-      title: 'Do the best-rated apps chart in the most countries?',
-      subtitle: 'US App Store rating vs countries where the app is in the Top Free 100',
       selection: 'The 30 tracked iOS apps in the US App Store Top Free 100 on 1 Nov 2026. Not the full chart.',
       method:
         "rating = the app's US App Store rating. countries_charted = App Store countries where the app is in the Top Free 100. No ranks are averaged.",
@@ -329,7 +297,7 @@ const extras: Extra[] = [
       x: { field: 'rating', label: 'US App Store rating', min: 3.9, max: 5.0, ticks: [4.0, 4.2, 4.4, 4.6, 4.8, 5.0] },
       y: {
         field: 'countries_charted',
-        label: "Countries where it's in the Top 100",
+        label: 'Countries in the Top Free 100',
         min: -10,
         max: 190,
         ticks: [0, 50, 100, 150],
@@ -374,22 +342,15 @@ const extras: Extra[] = [
           highlight: true,
           ha: 'left',
           offset: [46, 0],
-          text: '{app}\n{rating} stars · {countries_charted} countries',
         },
         {
           match: { app: 'Muse from Meta' },
           highlight: true,
           ha: 'right',
           offset: [-48, 4],
-          text: '{app}\n{rating} stars · {countries_charted} countries (limited launch)',
         },
       ],
       layout: { axes: [0.12, 0.215, 0.82, 0.61], foot_y: 0.025, foot_step: 0.0225 },
-      footnote: [
-        'Source: {source}, 1 Nov 2026 (single snapshot). {n_rows} tracked iOS apps in the US Top Free 100, not the full chart.',
-        'Rating = US App Store stars (US ratings only), not how many people use the app. Countries = where it is in the Top Free 100.',
-        'Muse from Meta is sold in only a few App Store countries, so its low count is a limited launch. No ranks are averaged.',
-      ],
     },
   },
 ]
@@ -407,29 +368,12 @@ for (const extra of extras) {
     ...Object.fromEntries(Object.entries(extra.columns).map(([k, get]) => [k, clean(get(row))])),
     icon: iconIndex[i] === -1 ? '' : String(iconIndex[i]),
   }))
-  const config = {
+  const config = applyCopy(extra.id, {
     id: extra.id,
     size: [1800, 1390],
     ...extra.config,
-    source_default:
-      extra.id === 'us-rating-countries' ? 'public App Store ranking pages' : 'public Android app build analysis pages',
-    template: {
-      name:
-        extra.id === 'us-rating-countries'
-          ? 'Best-rated apps vs worldwide reach'
-          : 'Android apps with the most native code',
-      description:
-        extra.id === 'us-rating-countries'
-          ? 'US App Store rating against the number of countries where each top app charts.'
-          : 'Native libraries against third-party SDKs for the 80 SDK-heaviest Android builds.',
-      date: '2026-11-01',
-      source:
-        extra.id === 'us-rating-countries'
-          ? 'public App Store ranking pages'
-          : 'public Android app build analysis pages',
-      extra: true,
-    },
-  }
+    template: { date: '2026-11-01', extra: true },
+  })
   const json = `${JSON.stringify(config, null, 2)}\n`
   const csv = toCsv(names, rows)
   for (const [file, text] of [
