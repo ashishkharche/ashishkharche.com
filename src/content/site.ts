@@ -5,7 +5,7 @@ export const site = {
   lang: 'en-GB',
   city: 'London',
   description:
-    'Ashish Kharche, software engineer in London. Android and iOS apps, and the backend and AWS infrastructure behind them.',
+    'Ashish Kharche, software engineer in London. iOS and Android apps, on-device pose tracking and a realtime voice coach, TypeScript backends on AWS, and QA on the Grok apps.',
   email: 'thekharche@gmail.com',
   linkedin: 'https://www.linkedin.com/in/ashish-kharche',
   github: 'https://github.com/ashishkharche',

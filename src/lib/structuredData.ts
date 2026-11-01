@@ -16,9 +16,28 @@ export const person = {
   '@id': personId,
   name: site.name,
   jobTitle: 'Software Engineer',
+  description: site.description,
   url: `${site.url}/`,
   email: `mailto:${site.email}`,
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Kingston University' },
+  /** Only skills shown on the Work page or in the Workout Director case study. */
+  knowsAbout: [
+    'iOS development',
+    'Android development',
+    'Swift',
+    'SwiftUI',
+    'Kotlin',
+    'Jetpack Compose',
+    'TypeScript',
+    'Node.js',
+    'AWS',
+    'AWS CDK',
+    'WebRTC',
+    'MediaPipe',
+    'Mobile test automation',
+    'Maestro',
+    'Payments',
+  ],
   sameAs: [site.linkedin, site.github],
 } as const
 

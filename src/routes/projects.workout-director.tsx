@@ -21,7 +21,7 @@ const pageSeo = () =>
     path: '/projects/workout-director/',
     title: 'Workout Director',
     description:
-      'Case study: an iPhone training app that counts reps on the device and has a voice coach. SwiftUI app and a TypeScript backend on AWS Lambda.',
+      'Case study: Workout Director, an iPhone and iPad training app. On-device pose tracking counts reps, a realtime voice coach changes the workout only through tool calls with Undo, and a trainer chat runs on a TypeScript backend on AWS Lambda.',
     type: 'article',
     image: ogImages.workoutDirector,
   })

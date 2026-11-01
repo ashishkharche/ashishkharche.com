@@ -16,7 +16,7 @@ export const Route = createFileRoute('/work')({
       path: '/work/',
       title: 'Work',
       description:
-        'Work history of Ashish Kharche: Paythru, SpaceX Super Intelligence (formerly xAI), Maestro and Kingston University.',
+        'Work history of Ashish Kharche: senior mobile engineer at Paythru (iOS, Android and AWS), QA on more than 500 Grok builds at SpaceX Super Intelligence (formerly xAI), Maestro and Kingston University.',
     }),
   component: Work,
 })
@@ -71,7 +71,7 @@ function Work() {
           <h2 id="writing-title" {...stylex.props(ui.h2, styles.h2)}>
             Writing for Maestro
           </h2>
-          <p {...stylex.props(ui.muted)}>Articles on mobile UI testing, published on the Maestro blog.</p>
+          <p {...stylex.props(ui.muted)}>Six of my 17 posts on mobile UI testing for the Maestro blog.</p>
           <Rows spaced rows={maestroArticles.map((a) => ({ title: a.title, href: a.href, date: a.date }))} />
         </section>
 

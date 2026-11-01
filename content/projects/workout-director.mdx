@@ -4,7 +4,7 @@ import liveCoach from '../diagrams/04-live-coach-connect.mmd'
 import releaseFlow from '../diagrams/07-release-flow.mmd'
 import forcedUpdate from '../diagrams/08-forced-update.mmd'
 
-I built Workout Director. It is published on the App Store by Shelgaon Ltd. I wrote the SwiftUI app and its TypeScript backend on AWS Lambda, and I ran the TestFlight and App Store releases. It has been on the App Store since October 2026.
+Workout Director is an iPhone and iPad training app, published on the App Store by Shelgaon Ltd. I wrote the SwiftUI app and its TypeScript backend on AWS Lambda, and I ran the TestFlight and App Store releases. It has been on the App Store since October 2026.
 
 ## The problem
 
@@ -21,6 +21,8 @@ Training on your own, you either count reps in your head or stop to tap a phone.
 
 Pose tracking runs on the phone with Google MediaPipe, and a rep counter sits on top of the pose stream. It counts squats, push-ups and more from the camera. Planks and other holds are timed sets instead.
 
+MediaPipe's pose model comes in three sizes, so I measured them before picking one. On 156 single-person photos from the COCO validation set, Lite placed 72% of joints within 5% of the person's size, Full 79% and Heavy 84%. On 14 exercise clips, Full's joints jumped half as much from frame to frame as Lite's. Heavy took about three times as long per frame as Full and added 21 MB to the app, which wasn't worth it for live use, so the app ships Full. If MediaPipe can't start, or runs below 12 frames a second, that workout switches to Apple's Vision body pose without resetting the count.
+
 Most of the work was not counting things that aren't reps: half reps, walking, standing up and getting into position. Around the counter, the app gets the person in frame first with a short countdown and prompts such as Move back or Step into frame, and it always leaves a manual path: minus and plus are one tap away, and you can correct the count by voice.
 
 <Shots
@@ -32,7 +34,7 @@ Most of the work was not counting things that aren't reps: half reps, walking, s
 
 The voice coach is the only feature that needs the network during a set. The phone opens a WebRTC call to a realtime voice model. The model never sees video: it gets short text notes about the workout state over the data channel. The provider key stays inside AWS; the backend checks the user's access and limits and mints a short-lived client secret for each call, and the app falls back to on-device speech recognition and a text reply if the realtime service is unavailable.
 
-The model doesn't change anything itself. When you say "rest for 90 seconds", it replies with a tool call, and the phone runs it against its own workout state and shows a small chip with Undo. Larger edits wait for a Confirm, and ending the workout waits for a spoken yes.
+The model doesn't change anything itself. When you say "rest for 90 seconds", it replies with a tool call, and the phone runs it against its own workout state and shows a small chip with Undo. The tools are the things you would otherwise do by hand: log a set, correct the reps, start, extend or skip a rest, swap or skip an exercise, add or remove a set, pause, and end the workout. Swapping an exercise, dropping the remaining sets or changing the rest applies at once with Undo. Adding load waits for a Confirm, and ending the workout waits for a spoken yes.
 
 <Diagram
   diagram={liveCoach}
@@ -40,6 +42,12 @@ The model doesn't change anything itself. When you say "rest for 90 seconds", it
   title="Sequence diagram of a Live Coach session: the app asks the backend for a session, the backend checks flags and limits, reads the provider key from Secrets Manager and mints a short-lived client secret, then the app talks to the realtime voice model over WebRTC, running tool calls on the phone. If the realtime service is unavailable, the app uses on-device speech recognition and a text request instead."
   caption="How a Live Coach session connects, and the fallback path."
 />
+
+## Trainer chat
+
+The trainer chat answers questions in text. Each message goes through the backend to a text model, with the context it needs: the person's profile, facts it has been asked to remember, the training log from the last seven days and the last 24 messages. Older messages are folded into a running summary, so the prompt stays short as a conversation grows.
+
+The model has to reply in a fixed JSON shape: one to three messages, plus up to six things to remember or forget. Messages are rate limited and count against a per-user budget, and a message the phone sends twice, for example after a dropped connection, gets the stored reply instead of a second model call.
 
 ## The backend
 

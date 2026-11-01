@@ -26,7 +26,8 @@ export function documentTitle({ title, fullTitle }: Pick<PageMeta, 'title' | 'fu
 /** Meta tags for a page: description, Open Graph and Twitter card. */
 export function pageMeta(page: PageMeta): MetaTag[] {
   const url = absoluteUrl(page.path)
-  const ogTitle = page.title ?? site.name
+  // The full title, so a shared link reads "Work · Ashish Kharche" rather than just "Work".
+  const ogTitle = documentTitle(page)
   const preview = page.image ?? defaultOgImage
   const image = absoluteUrl(preview.src)
   const tags: MetaTag[] = [{ title: documentTitle(page) }, { name: 'description', content: page.description }]

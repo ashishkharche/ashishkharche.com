@@ -15,7 +15,8 @@ export const Route = createFileRoute('/projects/')({
     const head = seo({
       path: '/projects/',
       title: 'Projects',
-      description: 'Projects by Ashish Kharche: Workout Director and Kalo.',
+      description:
+        'Projects by Ashish Kharche: Workout Director, an iPhone and iPad training app with on-device pose tracking and a voice coach, and Kalo, a calorie and macro tracker for iPhone.',
       image: ogImages.projects,
     })
     const stage = workoutDirectorCard.stage
@@ -28,7 +29,7 @@ function Projects() {
   return (
     <Main>
       <div {...stylex.props(ui.wrap)}>
-        <PageHead title="Projects" lead="iPhone apps I built and ship on the App Store." />
+        <PageHead title="Projects" lead="Two iPhone apps on the App Store." />
         <div {...stylex.props(styles.grid, ui.section)}>
           <ProjectCard card={workoutDirectorCard} headingLevel="h2" priority />
           <ProjectCard card={kaloCard} headingLevel="h2" />

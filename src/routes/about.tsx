@@ -13,7 +13,12 @@ import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/about')({
   head: () => ({
-    ...seo({ path: '/about/', title: 'About', description: 'About Ashish Kharche, a software engineer in London.' }),
+    ...seo({
+      path: '/about/',
+      title: 'About',
+      description:
+        'About Ashish Kharche, a software engineer in London: iOS and Android apps, TypeScript and AWS, and QA on the Grok apps.',
+    }),
     scripts: [jsonLdScript(aboutJsonLd(dates.pages['/about/']))],
   }),
   component: About,
@@ -41,7 +46,12 @@ function About() {
               page.
             </P>
             <P>
-              I also built and ship two iPhone apps, <Logo name="workoutDirector" size={20} inline />
+              From January to October 2026 I also worked part-time in QA at <Logo name="spacexsi" size={20} inline />
+              SpaceX Super Intelligence (formerly xAI), on regression and release testing of more than 500 builds of the
+              Grok iOS and web apps.
+            </P>
+            <P>
+              Alongside that, I develop and release two iPhone apps, <Logo name="workoutDirector" size={20} inline />
               Workout Director and <Logo name="kalo" size={20} inline />
               Kalo. Both are published on the App Store by Shelgaon Ltd.
             </P>
