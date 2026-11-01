@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
-import { breakpoints, colors, fonts } from '~/styles/tokens.stylex'
+import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
 
 export interface NoteItem {
   title: string
@@ -65,8 +65,8 @@ const styles = stylex.create({
     outlineOffset: '8px',
   },
   title: {
-    fontSize: { default: '1.2rem', [breakpoints.phone]: '1.125rem' },
-    fontWeight: 500,
+    fontSize: type.lead,
+    fontWeight: weights.medium,
     lineHeight: 1.4,
     letterSpacing: '-0.005em',
     textWrap: 'balance',
@@ -100,16 +100,16 @@ const styles = stylex.create({
     transitionDuration: '0.15s',
     whiteSpace: 'pre',
   },
-  muted: { color: colors.muted, fontWeight: 400 },
+  muted: { color: colors.muted, fontWeight: weights.regular },
   meta: {
     color: colors.muted,
-    fontSize: '0.9rem',
+    fontSize: type.meta,
     fontVariantNumeric: 'tabular-nums',
   },
   summary: {
     marginTop: '0.2rem',
     color: colors.muted,
-    fontSize: '1rem',
+    fontSize: type.body,
     lineHeight: 1.55,
     maxWidth: '40em',
     textWrap: 'pretty',

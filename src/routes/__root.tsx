@@ -8,7 +8,7 @@ import { site } from '~/content/site'
 import { feedPath, feedTitle } from '~/lib/feed'
 import { themeScript } from '~/lib/theme'
 import globalCss from '~/styles/global.css?url'
-import { breakpoints, colors, fonts } from '~/styles/tokens.stylex'
+import { colors, fonts, type } from '~/styles/tokens.stylex'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -87,7 +87,7 @@ const styles = stylex.create({
     colorScheme: colors.scheme,
     fontFamily: fonts.sans,
     fontWeight: 400,
-    fontSize: { default: '1.0625rem', [breakpoints.phone]: '1rem' },
+    fontSize: type.body,
     lineHeight: 1.65,
   },
   skip: {

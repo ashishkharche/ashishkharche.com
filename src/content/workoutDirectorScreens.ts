@@ -91,6 +91,31 @@ const allScreens = {
     alt: 'Hands busy? Just say it. A woman lifting a barbell deadlift on the live camera, at the start of a set of 6, with example requests such as "Add a set" and "Give me 30 seconds".',
     footage: 'pexels',
   },
+  // Not in the gallery: shown only at the top of the home page. A raw
+  // simulator capture without the marketing frame: the app counting Mixkit
+  // #50761 "A young black man does push-ups on the balcony" (Mixkit Stock Video
+  // Free Licence, https://mixkit.co/free-stock-video/a-young-black-man-does-push-ups-on-the-balcony-50761/)
+  // played into the camera, a genuine 4 of 12 (appstore-shots-v6 raw
+  // v6-pushup2-24-g). The same clip as 02-voice, so the two are never on one page. iPhone copies only.
+  'pushup-mixkit': {
+    id: 'pushup-mixkit',
+    label: 'Rep counting',
+    alt: 'A man doing push-ups on a balcony on the live camera, counted at 4 of 12, set 1 of 3, with a Finish set button.',
+    footage: 'mixkit',
+  },
+  // Not in the gallery: shown only at the top of the home page, behind
+  // pushup-mixkit. A raw simulator capture without the marketing frame: Pexels
+  // 7674505 "A Woman Lifting A Barbell" by cottonbro studio (Pexels License,
+  // https://www.pexels.com/video/a-woman-lifting-a-barbell-7674505/) played
+  // into the camera, a genuine 0 of 6 at the start of the set (appstore-shots-v6
+  // raw px-deadlift-09-g, graded like the push-up, no retouch). The same clip
+  // as 02-voice-pexels but a different picture (no marketing frame). iPhone copies only.
+  'deadlift-pexels': {
+    id: 'deadlift-pexels',
+    label: 'Deadlift',
+    alt: 'A woman setting up a barbell deadlift in a gym on the live camera, at 0 of 6 at the start of set 1 of 4, with an Add weight button.',
+    footage: 'pexels',
+  },
 } satisfies Record<string, Screen>
 
 export type ScreenId = keyof typeof allScreens
@@ -111,7 +136,7 @@ export const shownScreenIds: ScreenId[] = [
 ]
 
 /** Screens that have web copies but are not in the gallery (iPhone copies only). */
-export const extraScreenIds: ScreenId[] = ['02-voice-pexels']
+export const extraScreenIds: ScreenId[] = ['02-voice-pexels', 'pushup-mixkit', 'deadlift-pexels']
 
 export const screens: Screen[] = shownScreenIds.map((id) => allScreens[id])
 

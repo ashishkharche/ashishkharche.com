@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { site } from '~/content/site'
-import { breakpoints, colors } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export function SiteFooter() {
@@ -55,7 +55,7 @@ const styles = stylex.create({
   footer: {
     marginTop: { default: '8rem', [breakpoints.phone]: '6rem' },
     color: colors.muted,
-    fontSize: '0.95rem',
+    fontSize: type.meta,
     overflow: 'hidden',
   },
   row: {

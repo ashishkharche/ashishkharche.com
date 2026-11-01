@@ -96,6 +96,35 @@ export const fonts = stylex.defineConsts({
   serif: '"Geist Serif", "Geist Serif Fallback", ui-serif, Georgia, serif',
 })
 
+const PHONE = '@media (max-width: 560px)'
+
+/**
+ * The type scale: five sizes on one modular scale (ratio 1.2, the minor third),
+ * from a 17px body on wider screens and a 16px body on phones, rounded to whole
+ * pixels (14, 17, 20, 35, 72 and 13, 16, 19, 33, 48). Every text size
+ * on the home page is one of these, so there are five sizes, two families
+ * (Geist and Geist Serif) and two weights (400 and 500). See
+ * site-shots/home-hero-v3/b3/TYPE-AUDIT.md for the audit and the sources.
+ */
+export const type = stylex.defineVars({
+  // Dates, captions, credits, nav, footer, role lines, tags: about body / 1.2.
+  meta: { default: '0.875rem', [PHONE]: '0.8125rem' },
+  // Running text, links and the role names.
+  body: { default: '1.0625rem', [PHONE]: '1rem' },
+  // The intro lead, note titles and the Workout Director name: about body x 1.2.
+  lead: { default: '1.25rem', [PHONE]: '1.1875rem' },
+  // Section and project titles: about body x 1.2^4.
+  title: { default: '2.1875rem', [PHONE]: '2.0625rem' },
+  // The name only: about body x 1.2^8 on wide screens, x 1.2^6 on phones.
+  display: { default: '4.5rem', [PHONE]: '3rem' },
+})
+
+/** The two weights. Geist Serif has one weight, so serif text always uses regular. */
+export const weights = stylex.defineConsts({
+  regular: '400',
+  medium: '500',
+})
+
 export const layout = stylex.defineConsts({
   wide: '1040px',
   // About 72 characters of body text per line.

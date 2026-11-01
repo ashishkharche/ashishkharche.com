@@ -4,7 +4,7 @@ import { useId } from 'react'
 import { Logo } from './Logo'
 import { DeviceStage } from './Screens'
 import { screenshotSrc, screenshotSrcSet, type ProjectCard as Card } from '~/content/projects'
-import { breakpoints, colors, fonts } from '~/styles/tokens.stylex'
+import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 interface Props {
@@ -149,8 +149,8 @@ const styles = stylex.create({
   head: { display: 'flex', alignItems: 'flex-start', gap: '1rem' },
   title: {
     fontFamily: fonts.serif,
-    fontSize: 'clamp(1.7rem, 3.4vw, 2.2rem)',
-    fontWeight: 400,
+    fontSize: type.title,
+    fontWeight: weights.regular,
     lineHeight: 1.15,
     letterSpacing: '-0.01em',
   },
@@ -166,8 +166,8 @@ const styles = stylex.create({
     },
   },
   // Geist Serif has no diagonal arrow, so the arrows use the body font.
-  arrow: { display: 'inline-block', fontFamily: fonts.sans, fontSize: '0.8em' },
-  meta: { marginTop: '0.4rem', fontSize: '0.95rem', color: colors.muted },
+  arrow: { display: 'inline-block', fontFamily: fonts.sans, fontSize: type.lead },
+  meta: { marginTop: '0.4rem', fontSize: type.meta, color: colors.muted },
   // Sit above the card's full-size link so these open their own pages.
   outLinks: {
     position: 'relative',
@@ -177,11 +177,11 @@ const styles = stylex.create({
     rowGap: '0.4rem',
     columnGap: '1.25rem',
     marginTop: '1rem',
-    fontSize: '1rem',
+    fontSize: type.body,
   },
   outLink: { position: 'relative', zIndex: 1 },
-  outArrow: { fontSize: '0.8em' },
-  // The stack as small outlined tags in the monospace face, one row per group.
+  outArrow: { fontSize: '1em' },
+  // The stack as small outlined tags in the meta size, one row per group.
   stack: { display: 'grid', rowGap: '0.6rem', marginTop: '1.4rem' },
   stackRow: {
     display: 'grid',
@@ -191,16 +191,12 @@ const styles = stylex.create({
     rowGap: '0.35rem',
   },
   stackLabel: {
-    fontFamily: fonts.mono,
-    fontSize: '0.72rem',
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase',
+    fontSize: type.meta,
     color: colors.muted,
   },
   tags: { listStyle: 'none', display: 'flex', flexWrap: 'wrap', gap: '0.4rem' },
   tag: {
-    fontFamily: fonts.mono,
-    fontSize: '0.78rem',
+    fontSize: type.meta,
     lineHeight: 1.4,
     paddingBlock: '0.2rem',
     paddingInline: '0.55rem',
@@ -210,5 +206,5 @@ const styles = stylex.create({
     borderColor: colors.diagramEdge,
     color: colors.text,
   },
-  text: { fontSize: 'clamp(1.05rem, 1.8vw, 1.2rem)', lineHeight: 1.55, color: colors.muted, maxWidth: '34em' },
+  text: { fontSize: type.body, lineHeight: 1.55, color: colors.muted, maxWidth: '34em' },
 })

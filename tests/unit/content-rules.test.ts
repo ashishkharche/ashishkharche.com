@@ -104,6 +104,9 @@ describe('brand rules', () => {
       'Footage: Mixkit, free licence; cottonbro studio on Pexels.',
     )
     expect(footageCredit(['04-manual', '07-progress'])).toBe('')
+    expect(footageCredit(['pushup-mixkit', 'deadlift-pexels'])).toBe(
+      'Footage: Mixkit, free licence; cottonbro studio on Pexels.',
+    )
   })
 
   it('shows no light Kalo screenshots next to the dark Workout Director screens', async () => {

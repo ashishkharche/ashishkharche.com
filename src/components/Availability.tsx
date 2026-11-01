@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { links, site } from '~/content/site'
+import { weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 /** Short contact note with the phone-free role CV downloads. Used on the home, work and about pages. */
@@ -40,5 +41,5 @@ export function Availability({ email = true }: { email?: boolean }) {
 const styles = stylex.create({
   // No border: the note sits on the page background like the text around it.
   box: { marginTop: '1.5rem' },
-  strong: { fontWeight: 600 },
+  strong: { fontWeight: weights.medium },
 })

@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
-import { breakpoints, colors, fonts, layout } from './tokens.stylex'
+import { breakpoints, colors, fonts, layout, type, weights } from './tokens.stylex'
 
 const focusRing = {
   outline: { default: null, ':focus-visible': `2px solid ${colors.accent}` },
@@ -45,7 +45,7 @@ export const ui = stylex.create({
   },
   focusRing,
   muted: { color: colors.muted },
-  small: { fontSize: '1rem' },
+  small: { fontSize: type.meta },
   visuallyHidden: {
     position: 'absolute',
     width: '1px',
@@ -80,8 +80,8 @@ export const ui = stylex.create({
   },
   h2: {
     fontFamily: fonts.serif,
-    fontSize: 'clamp(1.9rem, 3.4vw, 2.4rem)',
-    fontWeight: 400,
+    fontSize: type.title,
+    fontWeight: weights.regular,
     lineHeight: 1.25,
     letterSpacing: '-0.01em',
     textWrap: 'balance',

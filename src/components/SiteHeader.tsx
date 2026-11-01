@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import { Link, useLocation } from '@tanstack/react-router'
 import { nav, site } from '~/content/site'
 import { sectionFor } from '~/lib/urls'
-import { breakpoints, colors } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 import { Brand } from './Brand'
 import { ThemeToggle } from './ThemeToggle'
@@ -83,7 +83,7 @@ const styles = stylex.create({
     textDecorationLine: { default: 'none', ':hover': 'underline' },
     textDecorationThickness: '1px',
     textUnderlineOffset: '6px',
-    fontSize: '0.95rem',
+    fontSize: type.meta,
     color: { default: colors.muted, ':hover': colors.text },
   },
   active: {

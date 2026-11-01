@@ -59,7 +59,7 @@ const styles = stylex.create({
     verticalAlign: '-0.2em',
     marginInlineEnd: '0.3em',
   },
-  img: { display: 'block' },
+  img: { display: 'block', objectFit: 'contain' },
   lightOnly: { display: colors.sunDisplay },
   darkOnly: { display: colors.moonDisplay },
   appIcon: {

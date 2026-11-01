@@ -14,7 +14,7 @@ import {
   type ScreenId,
   type StageSpec,
 } from '~/content/workoutDirectorScreens'
-import { breakpoints, colors } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 interface PictureProps {
@@ -29,9 +29,9 @@ interface PictureProps {
 }
 
 /** The stock footage credit, shown under any group of screens that has a camera view in it. */
-export function FootageCredit({ ids }: { ids: readonly ScreenId[] }) {
+export function FootageCredit({ ids, xstyle }: { ids: readonly ScreenId[]; xstyle?: stylex.StyleXStyles }) {
   if (!hasFootage(ids)) return null
-  return <p {...stylex.props(styles.credit)}>{footageCredit(ids)}</p>
+  return <p {...stylex.props(styles.credit, xstyle)}>{footageCredit(ids)}</p>
 }
 
 /** One App Store screen: AVIF where the browser takes it, WebP otherwise, at the size it is shown. */
@@ -97,6 +97,36 @@ export function DeviceStage({ ipad, phones, size = 'card', priority = false, lab
       </div>
       <FootageCredit ids={[ipad, ...phones]} />
     </>
+  )
+}
+
+interface PairProps {
+  /** The phone in front first, then the one behind it. */
+  phones: readonly [ScreenId, ScreenId]
+  label: string
+  priority?: boolean
+}
+
+/**
+ * Two iPhone screens on the same soft panel as the project cards, one in front
+ * of the other. Used at the top of the home page with screens that the
+ * Selected work card does not show. The footage credit follows only if one of
+ * the screens has a camera view.
+ */
+export function PhonePairStage({ phones, label, priority = false }: PairProps) {
+  const sizes = '(max-width: 760px) 40vw, 230px'
+  return (
+    <div {...stylex.props(styles.pairWrap)}>
+      <div role="group" aria-label={label} {...stylex.props(styles.stage, styles.pairStage)}>
+        <div {...stylex.props(styles.layer, styles.pairBack, styles.driftMid)}>
+          <ScreenPicture id={phones[1]} device="iphone" sizes={sizes} eager={priority} xstyle={styles.lifted} />
+        </div>
+        <div {...stylex.props(styles.layer, styles.pairFront, styles.driftNear)}>
+          <ScreenPicture id={phones[0]} device="iphone" sizes={sizes} priority={priority} xstyle={styles.lifted} />
+        </div>
+      </div>
+      <FootageCredit ids={phones} xstyle={styles.pairCredit} />
+    </div>
   )
 }
 
@@ -339,6 +369,44 @@ const styles = stylex.create({
     top: '8%',
     width: '21%',
   },
+  // The two-phone panel: taller than wide beside the intro, square on phones.
+  // Beside the intro it takes the height of the text column, so their top and bottom edges line up.
+  pairWrap: {
+    minWidth: 0,
+    alignSelf: { default: 'stretch', [breakpoints.tablet]: 'auto' },
+    display: 'grid',
+    position: 'relative',
+  },
+  // Beside the intro the credit hangs just under the panel, so it does not shorten it.
+  pairCredit: {
+    position: { default: 'absolute', [breakpoints.tablet]: 'static' },
+    top: { default: '100%', [breakpoints.tablet]: 'auto' },
+    left: 0,
+  },
+  pairStage: {
+    // No backdrop: the two phones sit straight on the page, with only their own shadow.
+    overflow: 'visible',
+    backgroundColor: 'transparent',
+    backgroundImage: 'none',
+    borderWidth: 0,
+    borderRadius: 0,
+    boxShadow: 'none',
+    aspectRatio: { default: 'auto', [breakpoints.tablet]: '1 / 1' },
+    minHeight: { default: '30rem', [breakpoints.tablet]: 0 },
+  },
+
+  pairBack: {
+    zIndex: 1,
+    left: { default: '47%', [breakpoints.tablet]: '50%' },
+    top: { default: '8%', [breakpoints.tablet]: '6%' },
+    width: { default: '45%', [breakpoints.tablet]: '38%' },
+  },
+  pairFront: {
+    zIndex: 2,
+    left: { default: '8%', [breakpoints.tablet]: '12%' },
+    top: { default: '21%', [breakpoints.tablet]: '14%' },
+    width: { default: '45%', [breakpoints.tablet]: '38%' },
+  },
   driftFar: { ...onScroll, animationName: { default: null, [SCROLL_DRIVEN]: driftFar } },
   driftNear: { ...onScroll, animationName: { default: null, [SCROLL_DRIVEN]: driftNear } },
   driftMid: { ...onScroll, animationName: { default: null, [SCROLL_DRIVEN]: driftMid } },
@@ -359,7 +427,7 @@ const styles = stylex.create({
   credit: {
     marginTop: '0.75rem',
     marginBottom: 0,
-    fontSize: '0.85rem',
+    fontSize: type.meta,
     lineHeight: 1.5,
     color: colors.muted,
   },

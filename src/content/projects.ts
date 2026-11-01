@@ -83,7 +83,9 @@ export const workoutDirectorCard: ProjectCard = {
   logo: 'workoutDirector',
   links: workoutDirectorLinks,
   stack: workoutDirectorCardStack,
-  stage: { ipad: '05-form', phones: ['02-voice', '08-today'] },
+  // Trainer, not a push-up screen: the home hero already shows a push-up count (the 02-voice clip), so no image or
+  // second push-up is repeated on the home page.
+  stage: { ipad: '05-form', phones: ['06-trainer', '08-today'] },
 }
 
 /** The screens at the top of the case study. */
