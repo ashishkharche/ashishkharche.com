@@ -61,7 +61,7 @@ describe('allowlist', () => {
       search: '?days=7&format=json&type=snapshots',
     })
     expect(q('endpoint=compare&apps=chatgpt,claude&days=30')).toMatchObject({ path: '/compare', units: 3 })
-    expect(q('endpoint=charts&store=google&collection=TOP_FREE&country=us')).toMatchObject({ path: '/charts' })
+    expect(q('endpoint=charts&store=apple&type=top-grossing&country=us')).toMatchObject({ path: '/charts' })
     expect(q('endpoint=movers&country=us&limit=10')).toMatchObject({ path: '/movers', cache: CACHE.hourly })
     expect(q('endpoint=tech-stack&limit=20')).toMatchObject({ path: '/tech-stack', cache: CACHE.slow })
     expect(q('endpoint=tech-stack-app&id=ai.x.grok&store=google')).toMatchObject({
@@ -96,6 +96,8 @@ describe('validation', () => {
     expect(q('endpoint=export&id=1&format=csv')).toMatchObject({ ok: false, status: 400 })
     expect(q('endpoint=charts&store=apple&collection=TOP_FREE')).toMatchObject({ ok: false, status: 400 })
     expect(q('endpoint=charts&store=google&type=top-free')).toMatchObject({ ok: false, status: 400 })
+    expect(q('endpoint=charts&store=google&collection=TOP_FREE')).toMatchObject({ ok: false, status: 400 })
+    expect(q('endpoint=charts&store=apple&type=top-new')).toMatchObject({ ok: false, status: 400 })
   })
 
   it('checks integer ranges', () => {

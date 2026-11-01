@@ -73,8 +73,20 @@ Workout Director App Store screens in `public/assets/img/wd`; which screens are 
 
 ## Chart builder (/lab/charts/)
 
-A page for making dark scatter charts to post on X, linked from Projects. It runs in the browser: the chart is drawn
+A page for making dark charts to post on X, linked from Projects. It runs in the browser: the chart is drawn
 on a canvas (PNG at 1x or 2x) or into an SVG, with Inter served from `public/lab/charts/fonts/`.
+
+Kinds: headline number, ranked list, head to head, rank over time and iOS vs Android (live), plus scatter (data files).
+
+- `src/lib/charts/tdn.ts`: the live data client. Every request goes to the same-origin proxy,
+  `GET /api/tdn?endpoint=<name>&<params>`, once per page load. Icons load only from the hosts in `ICON_HOST`, which
+  must match `chartIconHosts` in `src/lib/csp.ts` (img-src on /lab/charts/ only).
+- `src/lib/charts/live.ts`: the live templates (the question, the requests, at most 5 per template, and a pure mapper
+  from the API answers to a chart model) and their rules (`validateLive`): the data time is on the chart, three footnote
+  lines of at most 110 characters, and every number shown is in the answers. If the proxy fails, no chart is shown.
+- `src/lib/charts/kinds.ts`: draws the live kinds with the same header and footnote as the scatter charts.
+- Tests answer the proxy from `tests/fixtures/tdn/responses.json`, shaped like the public API reference. The numbers in
+  it are test values.
 
 - `src/lib/charts/config.ts`: the chart config types and the data rules (`validate`). A chart that breaks a rule is
   not drawn and cannot be downloaded: ranks need their coverage, ranks are never averaged over charted countries only,
@@ -87,7 +99,7 @@ on a canvas (PNG at 1x or 2x) or into an SVG, with Inter served from `public/lab
   `node scripts/lab-charts-data.ts <chart folder> "<source name>"`. The script drops page links and ids, replaces the
   source name with `{source}`, and fails if the output has a banned term.
 
-`api/tdn.ts` is an optional read-only proxy for live data (see DEPLOY.md). It is not deployed unless asked for.
+`api/tdn.ts` is the read-only proxy for the live data (see DEPLOY.md). It is deployed with the static files.
 
 ## Deployment
 

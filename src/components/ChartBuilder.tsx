@@ -24,9 +24,23 @@ import {
   type ChartTemplate,
   type TemplateSummary,
 } from '~/lib/charts/data'
-import { autoAxis, drawChart, FONT_FAMILY } from '~/lib/charts/render'
+import { drawLive, type Icon } from '~/lib/charts/kinds'
+import {
+  kindNames,
+  liveTemplates,
+  NoDataError,
+  validateLive,
+  type AppRef,
+  type ChartText,
+  type Kind,
+  type LiveChart,
+  type LiveTemplate,
+  type Model,
+} from '~/lib/charts/live'
+import { autoAxis, drawChart, FONT_FAMILY, type Ctx } from '~/lib/charts/render'
 import { chartSizes, fileName, X_MAX_BYTES, type ChartSize } from '~/lib/charts/spec'
 import { asCtx, SvgContext, type SvgFont } from '~/lib/charts/svg'
+import { createTdnClient, iconAllowed, TdnError } from '~/lib/charts/tdn'
 import { breakpoints, colors, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
@@ -117,10 +131,78 @@ function rankedBy(label: LabelConfig, fields: ChartConfig['label_fields']) {
 /** Where select lists open: inside the page's main landmark, not at the end of the body. */
 const PopupLayer = createContext<HTMLElement | null>(null)
 
-export function ChartBuilder({ source = localSource }: { source?: ChartDataSource }) {
+type Entry = { id: string; kind: Kind | 'scatter'; name: string; about: string }
+const kindOrder: Array<Kind | 'scatter'> = ['headline', 'leaderboard', 'head-to-head', 'bump', 'dumbbell', 'scatter']
+
+const iconCache = new Map<string, Promise<Icon | null>>()
+const noIcons = new Map<string, Icon>()
+/** An app icon from an allowed host, loaded with CORS so the canvas stays exportable. Null when it cannot load. */
+function loadIcon(url: string): Promise<Icon | null> {
+  let found = iconCache.get(url)
+  if (!found) {
+    found = new Promise((resolve) => {
+      const image = new Image()
+      image.crossOrigin = 'anonymous'
+      image.decoding = 'async'
+      image.onload = () => resolve({ image, width: image.naturalWidth, height: image.naturalHeight })
+      image.onerror = () => resolve(null)
+      image.src = url
+    })
+    iconCache.set(url, found)
+  }
+  return found
+}
+
+function appsIn(model: Model): AppRef[] {
+  switch (model.kind) {
+    case 'headline':
+      return [model.app, ...model.others.map((o) => o.app)]
+    case 'leaderboard':
+      return model.rows.map((r) => r.app)
+    case 'head-to-head':
+      return model.apps
+    case 'bump':
+      return model.series.map((x) => x.app)
+    case 'dumbbell':
+      return model.rows.map((r) => r.app)
+  }
+}
+
+function describeLive(chart: LiveChart, text: ChartText): string {
+  const what: Record<Kind, string> = {
+    headline: 'Headline number',
+    leaderboard: 'Ranked bar list',
+    'head-to-head': 'Head to head comparison',
+    bump: 'Line chart of rank by day',
+    dumbbell: 'Dot plot of iOS and Android ranks',
+  }
+  const m = chart.model
+  const detail =
+    m.kind === 'headline'
+      ? `${m.answer}${m.unit ? ` ${m.unit}` : ''}. ${m.sentence}`
+      : m.kind === 'leaderboard'
+        ? m.rows.map((r, i) => `${i + 1}. ${r.app.name}, ${r.display}`).join('; ')
+        : m.kind === 'head-to-head'
+          ? m.metrics
+              .map((x) => `${x.label}: ${m.apps[0].name} ${x.display[0]}, ${m.apps[1].name} ${x.display[1]}`)
+              .join('; ')
+          : m.kind === 'bump'
+            ? m.series.map((x) => `${x.app.name}, latest #${x.ranks.filter((r) => r !== null).at(-1) ?? ''}`).join('; ')
+            : m.rows.map((r) => `${r.app.name}: iOS #${r.left}, Android #${r.right}`).join('; ')
+  return `${text.title}. ${text.subtitle} ${what[m.kind]}. ${detail}. Data from ${chart.dataTime}.`
+}
+
+export function ChartBuilder({
+  source = localSource,
+  live = liveTemplates,
+}: {
+  source?: ChartDataSource
+  live?: LiveTemplate[]
+}) {
   const id = useId()
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [templates, setTemplates] = useState<TemplateSummary[]>([])
+  const client = useMemo(() => createTdnClient(), [])
+  const [scatterList, setScatterList] = useState<TemplateSummary[]>([])
   const [templateId, setTemplateId] = useState('')
   const [template, setTemplate] = useState<ChartTemplate | null>(null)
   const [config, setConfig] = useState<ChartConfig | null>(null)
@@ -132,22 +214,61 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
   const [fontsReady, setFontsReady] = useState(false)
   const [status, setStatus] = useState('Loading the templates…')
   const [layer, setLayer] = useState<HTMLDivElement | null>(null)
+  // Live templates.
+  const [rowCount, setRowCount] = useState<number | undefined>(undefined)
+  const [pair, setPair] = useState<[string, string] | undefined>(undefined)
+  const [attempt, setAttempt] = useState(0)
+  /** The last finished load, with the request it answers. Only shown while that is still the request. */
+  const [result, setResult] = useState<{
+    key: string
+    chart: LiveChart | null
+    error: string
+    icons: Map<string, Icon>
+  } | null>(null)
+  const [liveText, setLiveText] = useState<ChartText | null>(null)
+
+  const liveTemplate = live.find((t) => t.id === templateId)
+  const loadKey = liveTemplate ? `${templateId}|${rowCount ?? ''}|${pair?.join(',') ?? ''}|${attempt}` : ''
+  const current = result && result.key === loadKey ? result : null
+  const chart = current?.chart ?? null
+  const icons = current?.icons ?? noIcons
+  const liveError = current?.error ?? ''
+  const liveState: 'loading' | 'ready' | 'error' = !current ? 'loading' : chart ? 'ready' : 'error'
+  const entries: Entry[] = useMemo(
+    () => [
+      ...live.map((t) => ({ id: t.id, kind: t.kind, name: t.name, about: t.about })),
+      ...scatterList.map((t) => ({
+        id: t.id,
+        kind: 'scatter' as const,
+        name: t.name,
+        about: [t.sample, t.sourceShort, `data file, ${formatDate(t.date)}`].filter(Boolean).join(' · '),
+      })),
+    ],
+    [live, scatterList],
+  )
 
   useEffect(() => {
     const done = () => setFontsReady(true)
     loadChartFonts().then(done, done)
+    const wanted = new URLSearchParams(window.location.search).get('template')
+    const pickFirst = (ids: string[]) =>
+      setTemplateId((current) => current || ids.find((t) => t === wanted) || ids[0] || '')
     source.listTemplates().then(
       (list) => {
-        setTemplates(list)
-        const wanted = new URLSearchParams(window.location.search).get('template')
-        setTemplateId((current) => current || list.find((t) => t.id === wanted)?.id || list[0]?.id || '')
+        setScatterList(list)
+        setStatus('')
+        pickFirst([...live.map((t) => t.id), ...list.map((t) => t.id)])
       },
-      () => setStatus('The templates could not be loaded. Please try again later.'),
+      () => {
+        setStatus('')
+        pickFirst(live.map((t) => t.id))
+      },
     )
-  }, [source])
+  }, [source, live])
 
+  // Scatter templates come from the data files.
   useEffect(() => {
-    if (!templateId) return
+    if (!templateId || live.some((t) => t.id === templateId)) return
     let cancelled = false
     source
       .loadTemplate(templateId)
@@ -166,32 +287,82 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
     return () => {
       cancelled = true
     }
-  }, [templateId, source])
+  }, [templateId, source, live])
 
-  const problems = useMemo(
-    () => (config && template ? validate(config, template.rows, sourceText) : []),
-    [config, template, sourceText],
-  )
+  // Live templates read the proxy on every page load. Old numbers are cleared first, so a chart is never shown
+  // with data from another template or an earlier failed load.
+  useEffect(() => {
+    if (!liveTemplate) return
+    let cancelled = false
+    liveTemplate
+      .load(client, { rows: rowCount, apps: pair })
+      .then(async (loaded) => {
+        const apps = appsIn(loaded.model)
+        const found = await Promise.all(
+          apps.map(async (app) => [app.appId, iconAllowed(app.iconUrl) ? await loadIcon(app.iconUrl) : null] as const),
+        )
+        if (cancelled) return
+        const iconMap = new Map(found.filter((f): f is readonly [string, Icon] => f[1] !== null))
+        setLiveText(structuredClone(loaded.text))
+        setResult({ key: loadKey, chart: loaded, error: '', icons: iconMap })
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return
+        const message =
+          error instanceof NoDataError
+            ? error.message
+            : error instanceof TdnError
+              ? error.status === 429
+                ? 'The live data limit was reached. Try again in a minute.'
+                : `Live data is not available right now (error ${error.status}).`
+              : 'Live data could not be loaded. Check the connection and try again.'
+        setResult({ key: loadKey, chart: null, error: message, icons: noIcons })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [liveTemplate, client, rowCount, pair, loadKey])
+
+  const problems = useMemo(() => {
+    if (liveTemplate) return chart && liveText ? validateLive(chart, liveText) : []
+    return config && template ? validate(config, template.rows, sourceText) : []
+  }, [liveTemplate, chart, liveText, config, template, sourceText])
+
+  const scatterReady = !liveTemplate && !!config && !!template && template.config.id === templateId
+  const liveReady = !!liveTemplate && liveState === 'ready' && !!chart && !!liveText && chart.templateId === templateId
+  const ready = (scatterReady || liveReady) && problems.length === 0
+
+  const paint = (ctx: Ctx, width: number, height: number, image: CanvasImageSource | null) => {
+    if (liveTemplate && chart && liveText) {
+      drawLive(ctx, chart, liveText, { width, height, icons, pointStyle })
+    } else if (config && template) {
+      drawChart(ctx, config, template.rows, { width, height, source: sourceText, sprite: image, pointStyle })
+    }
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas?.getContext('2d')
-    if (!canvas || !ctx || !config || !template || !fontsReady || problems.length) return
+    if (!canvas || !ctx) return
     canvas.width = size.width
     canvas.height = size.height
-    drawChart(ctx, config, template.rows, {
-      width: size.width,
-      height: size.height,
-      source: sourceText,
-      sprite,
-      pointStyle,
-    })
-    canvas.dataset.rendered = `${config.id}:${size.width}x${size.height}`
-  }, [config, template, sprite, size, fontsReady, problems, sourceText, pointStyle])
+    delete canvas.dataset.rendered
+    if (!fontsReady || !ready) {
+      ctx.fillStyle = '#151515'
+      ctx.fillRect(0, 0, size.width, size.height)
+      return
+    }
+    paint(ctx, size.width, size.height, sprite)
+    canvas.dataset.rendered = `${templateId}:${size.width}x${size.height}`
+    // paint reads the same state as the dependencies below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, config, template, sprite, size, fontsReady, sourceText, pointStyle, chart, liveText, icons, templateId])
 
   const rows = useMemo(() => (template && config ? filterRows(template.rows, config) : []), [template, config])
   const update = (change: Partial<ChartConfig>) =>
     setConfig((current) => (current ? { ...current, ...change } : current))
+  const updateText = (change: Partial<ChartText>) =>
+    setLiveText((current) => (current ? { ...current, ...change } : current))
 
   const setField = (axis: 'x' | 'y', field: string) => {
     if (!config || !template) return
@@ -225,36 +396,60 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
   }
 
   const setFootnote = (index: number, value: string) => {
+    if (liveTemplate) {
+      setLiveText((current) =>
+        current
+          ? {
+              ...current,
+              footnote: current.footnote.map((line, i) => (i === index ? value : line)) as ChartText['footnote'],
+            }
+          : current,
+      )
+      return
+    }
     if (!config) return
     setConfig({ ...config, footnote: config.footnote.map((line, i) => (i === index ? value : line)) })
   }
 
+  const pick = (next: string) => {
+    setStatus('')
+    setDownloadNote('')
+    setRowCount(undefined)
+    setPair(undefined)
+    setTemplateId(next)
+  }
+
   const reset = () => {
+    setPointStyle('icons')
+    if (liveTemplate) {
+      if (chart) setLiveText(structuredClone(chart.text))
+      return
+    }
     if (!template) return
     setConfig(structuredClone(template.config))
     setSourceText(template.config.source_default ?? '')
-    setPointStyle('icons')
   }
 
   const render = (width: number, height: number, factor: number) => {
-    if (!config || !template) return null
     const canvas = document.createElement('canvas')
     canvas.width = width * factor
     canvas.height = height * factor
     const ctx = canvas.getContext('2d')
     if (!ctx) return null
     ctx.scale(factor, factor)
-    drawChart(ctx, config, template.rows, { width, height, source: sourceText, sprite, pointStyle })
+    paint(ctx, width, height, sprite)
     return canvas
   }
 
+  const title = liveTemplate ? (liveText?.title ?? '') : (config?.title ?? '')
   const [downloadNote, setDownloadNote] = useState('')
   const downloadPng = () => {
+    if (!ready) return
     const canvas = render(size.width, size.height, scale)
-    if (!canvas || !config) return
+    if (!canvas) return
     canvas.toBlob((blob) => {
       if (!blob) return
-      save(blob, fileName(config.title, size, scale, 'png'))
+      save(blob, fileName(title, size, scale, 'png'))
       setDownloadNote(
         blob.size > X_MAX_BYTES
           ? 'Over 5 MB, the limit for photos on X. Try 1x.'
@@ -264,30 +459,27 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
   }
 
   const downloadSvg = async () => {
-    if (!config || !template) return
+    if (!ready) return
     const measure = document.createElement('canvas').getContext('2d')
     if (!measure) return
-    const crops = new Map<string, string>()
+    // Each image crop becomes one embedded PNG: keyed by the image and the crop, so different icons never share one.
+    const crops = new Map<CanvasImageSource, Map<string, string>>()
     const svg = new SvgContext(size.width, size.height, measure, (image, sx, sy, sw, sh) => {
-      const key = `${sx},${sy}`
-      let url = crops.get(key)
+      const forImage = crops.get(image) ?? new Map<string, string>()
+      crops.set(image, forImage)
+      const key = `${sx},${sy},${sw},${sh}`
+      let url = forImage.get(key)
       if (!url) {
         const cell = document.createElement('canvas')
         cell.width = ICON_CELL
         cell.height = ICON_CELL
         cell.getContext('2d')?.drawImage(image, sx, sy, sw, sh, 0, 0, ICON_CELL, ICON_CELL)
         url = cell.toDataURL('image/png')
-        crops.set(key, url)
+        forImage.set(key, url)
       }
       return url
     })
-    drawChart(asCtx(svg), config, template.rows, {
-      width: size.width,
-      height: size.height,
-      source: sourceText,
-      sprite,
-      pointStyle,
-    })
+    paint(asCtx(svg), size.width, size.height, sprite)
     const fonts: SvgFont[] = await Promise.all(
       fontFiles.map(async ({ weight, file }) => ({
         family: FONT_FAMILY,
@@ -295,7 +487,7 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
         url: await readAsDataUrl(await (await fetch(fontUrl(file))).blob()),
       })),
     )
-    save(new Blob([svg.toString(fonts)], { type: 'image/svg+xml' }), fileName(config.title, size, 1, 'svg'))
+    save(new Blob([svg.toString(fonts)], { type: 'image/svg+xml' }), fileName(title, size, 1, 'svg'))
     setDownloadNote(`SVG saved, ${size.width} × ${size.height}.`)
   }
 
@@ -306,32 +498,78 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
     [rows, config],
   )
   const nameItems = names.map((name) => ({ value: name, label: name }))
-  const ready = !!config && problems.length === 0
-  const chartLabel = config
-    ? `${config.title}. ${config.subtitle ?? ''} Scatter chart of ${config.y.label.toLowerCase()} against ${config.x.label.toLowerCase()}.`
-    : 'Chart preview'
+  const chartLabel = liveTemplate
+    ? chart && liveText && liveReady
+      ? describeLive(chart, liveText)
+      : 'Chart preview, no data shown yet'
+    : config
+      ? `${config.title}. ${config.subtitle ?? ''} Scatter chart of ${config.y.label.toLowerCase()} against ${config.x.label.toLowerCase()}.`
+      : 'Chart preview'
   const labelFields = Object.entries(config?.label_fields ?? {})
   const sizeNames: Record<ChartSize['id'], string> = { original: 'Default', wide: '16:9', square: '1:1' }
+  const dataLine = liveTemplate
+    ? liveReady && chart
+      ? `Data from ${chart.dataTime}`
+      : ''
+    : scatterReady && config?.template?.date
+      ? `Data file from ${formatDate(config.template.date)}, not live`
+      : ''
+  const statusText = liveTemplate
+    ? liveState === 'loading'
+      ? 'Loading live data…'
+      : downloadNote
+    : template && template.config.id !== templateId && !status
+      ? 'Loading the template…'
+      : status || downloadNote
+  const footnote = liveTemplate ? (liveText?.footnote ?? []) : (config?.footnote ?? [])
+  const choices = (chart?.choices ?? []).map((app) => ({ value: app.appId, label: app.name }))
+  const pairNow: [string, string] | undefined =
+    chart?.model.kind === 'head-to-head' ? [chart.model.apps[0].appId, chart.model.apps[1].appId] : undefined
 
   return (
     <CSPProvider disableStyleElements>
       <PopupLayer.Provider value={layer}>
         <div ref={setLayer} {...stylex.props(styles.layout)}>
           <div {...stylex.props(styles.preview)}>
-            <canvas
-              ref={canvasRef}
-              width={size.width}
-              height={size.height}
-              role="img"
-              aria-label={chartLabel}
-              {...stylex.props(styles.canvas)}
-            />
-            <p role="status" {...stylex.props(styles.status)}>
-              {template && template.config.id !== templateId && !status
-                ? 'Loading the template…'
-                : status || downloadNote}
-            </p>
-            {problems.length ? (
+            <div {...stylex.props(styles.stage)}>
+              <canvas
+                ref={canvasRef}
+                width={size.width}
+                height={size.height}
+                role="img"
+                aria-label={chartLabel}
+                aria-busy={liveTemplate ? liveState === 'loading' : undefined}
+                {...stylex.props(styles.canvas)}
+              />
+              {liveTemplate && liveState === 'loading' ? (
+                <div aria-hidden="true" {...stylex.props(styles.overlay)}>
+                  <span {...stylex.props(styles.spinner)} />
+                </div>
+              ) : null}
+            </div>
+            <div {...stylex.props(styles.meta)}>
+              {dataLine ? (
+                <p {...stylex.props(styles.dataTime)} data-testid="data-time">
+                  {dataLine}
+                </p>
+              ) : null}
+              <p role="status" {...stylex.props(styles.status)}>
+                {statusText}
+              </p>
+            </div>
+            {liveTemplate && liveState === 'error' ? (
+              <div role="alert" {...stylex.props(styles.problems)}>
+                <p {...stylex.props(styles.problemsTitle)}>No chart: {liveError}</p>
+                <p {...stylex.props(styles.problemNote)}>Earlier numbers are not shown in place of live ones.</p>
+                <button
+                  type="button"
+                  onClick={() => setAttempt((n) => n + 1)}
+                  {...stylex.props(styles.button, styles.retry, ui.focusRing)}
+                >
+                  Try again
+                </button>
+              </div>
+            ) : problems.length ? (
               <div role="alert" {...stylex.props(styles.problems)}>
                 <p {...stylex.props(styles.problemsTitle)}>Downloads are off until this is fixed:</p>
                 <ul {...stylex.props(styles.problemList)}>
@@ -361,7 +599,7 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
               <button
                 type="button"
                 onClick={reset}
-                disabled={!template}
+                disabled={liveTemplate ? !chart : !template}
                 {...stylex.props(styles.button, styles.quiet, ui.focusRing)}
               >
                 Reset template
@@ -371,28 +609,41 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
 
           <form {...stylex.props(styles.form)} onSubmit={(event) => event.preventDefault()} aria-label="Chart settings">
             <Section title="Template" id={`${id}-s-template`}>
-              <div role="radiogroup" aria-labelledby={`${id}-s-template`} {...stylex.props(styles.templates)}>
-                {templates.map((t) => (
-                  <label key={t.id} {...stylex.props(styles.template, t.id === templateId && styles.templateOn)}>
-                    <input
-                      type="radio"
-                      name={`${id}-template`}
-                      value={t.id}
-                      checked={t.id === templateId}
-                      onChange={() => {
-                        setStatus('')
-                        setTemplateId(t.id)
-                      }}
-                      {...stylex.props(styles.radio, ui.focusRing)}
-                    />
-                    <span {...stylex.props(styles.templateBody)}>
-                      <span {...stylex.props(styles.templateName)}>{t.name}</span>
-                      <span {...stylex.props(styles.templateData)}>
-                        {[t.sample, t.sourceShort, formatDate(t.date)].filter(Boolean).join(' · ')}
-                      </span>
-                    </span>
-                  </label>
-                ))}
+              <div role="radiogroup" aria-labelledby={`${id}-s-template`} {...stylex.props(styles.groups)}>
+                {kindOrder.map((kind) => {
+                  const list = entries.filter((e) => e.kind === kind)
+                  if (!list.length) return null
+                  const groupId = `${id}-kind-${kind}`
+                  return (
+                    <div key={kind} role="group" aria-labelledby={groupId} {...stylex.props(styles.group)}>
+                      <p id={groupId} {...stylex.props(styles.groupTitle)}>
+                        <KindGlyph kind={kind} />
+                        {kindNames[kind]}
+                      </p>
+                      <div {...stylex.props(styles.templates)}>
+                        {list.map((t) => (
+                          <label
+                            key={t.id}
+                            {...stylex.props(styles.template, t.id === templateId && styles.templateOn)}
+                          >
+                            <input
+                              type="radio"
+                              name={`${id}-template`}
+                              value={t.id}
+                              checked={t.id === templateId}
+                              onChange={() => pick(t.id)}
+                              {...stylex.props(styles.radio, ui.focusRing)}
+                            />
+                            <span {...stylex.props(styles.templateBody)}>
+                              <span {...stylex.props(styles.templateName)}>{t.name}</span>
+                              <span {...stylex.props(styles.templateData)}>{t.about}</span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </Section>
 
@@ -402,8 +653,10 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
                   id={`${id}-title`}
                   type="text"
                   maxLength={90}
-                  value={config?.title ?? ''}
-                  onChange={(e) => update({ title: e.target.value })}
+                  value={title}
+                  onChange={(e) =>
+                    liveTemplate ? updateText({ title: e.target.value }) : update({ title: e.target.value })
+                  }
                   {...stylex.props(styles.control, ui.focusRing)}
                 />
               </Field>
@@ -412,70 +665,104 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
                   id={`${id}-subtitle`}
                   type="text"
                   maxLength={120}
-                  value={config?.subtitle ?? ''}
-                  onChange={(e) => update({ subtitle: e.target.value })}
+                  value={liveTemplate ? (liveText?.subtitle ?? '') : (config?.subtitle ?? '')}
+                  onChange={(e) =>
+                    liveTemplate ? updateText({ subtitle: e.target.value }) : update({ subtitle: e.target.value })
+                  }
                   {...stylex.props(styles.control, ui.focusRing)}
                 />
               </Field>
             </Section>
 
-            <Section title="Axes" id={`${id}-s-axes`}>
-              {(['x', 'y'] as const).map((axis) => (
-                <Picker
-                  key={axis}
-                  label={axis === 'x' ? 'Horizontal' : 'Vertical'}
-                  value={config?.[axis].field ?? ''}
-                  items={fieldItems}
-                  onChange={(value) => setField(axis, value)}
-                />
-              ))}
-            </Section>
-
-            <Section title="Point labels" id={`${id}-s-labels`}>
-              {(config?.labels ?? []).map((label, index) => {
-                const target = config ? labelRows(rows, label).map((r) => nameOf(r, config)) : []
-                const custom = !label.show
-                return (
-                  <div key={index} {...stylex.props(styles.labelBox)}>
-                    {label.match ? (
+            {liveTemplate && (liveTemplate.rowChoices || liveTemplate.pickApps) ? (
+              <Section title="Data" id={`${id}-s-data`}>
+                {liveTemplate.rowChoices ? (
+                  <Segmented
+                    label="Rows"
+                    value={String(rowCount ?? liveTemplate.rowChoices.at(-1))}
+                    options={liveTemplate.rowChoices.map((n) => ({ value: String(n), label: String(n) }))}
+                    onChange={(value) => setRowCount(Number(value))}
+                  />
+                ) : null}
+                {liveTemplate.pickApps && choices.length && pairNow
+                  ? (['First app', 'Second app'] as const).map((label, side) => (
                       <Picker
-                        label={`Point ${index + 1}`}
-                        value={target[0] ?? ''}
-                        items={nameItems}
-                        onChange={(value) =>
-                          config && setLabel(index, { match: { [config.name_column ?? 'app']: value } })
-                        }
+                        key={label}
+                        label={label}
+                        value={(pair ?? pairNow)[side] ?? ''}
+                        items={choices}
+                        onChange={(value) => {
+                          const next: [string, string] = [...(pair ?? pairNow)]
+                          next[side] = value
+                          setPair(next)
+                        }}
                       />
-                    ) : (
-                      <div {...stylex.props(styles.field)}>
-                        <span {...stylex.props(styles.label)}>Point {index + 1}</span>
-                        <span {...stylex.props(styles.fixed)}>
-                          {rankedBy(label, config?.label_fields)}: {target.map(shortName).join(', ')}
-                        </span>
+                    ))
+                  : null}
+              </Section>
+            ) : null}
+
+            {liveTemplate ? null : (
+              <>
+                <Section title="Axes" id={`${id}-s-axes`}>
+                  {(['x', 'y'] as const).map((axis) => (
+                    <Picker
+                      key={axis}
+                      label={axis === 'x' ? 'Horizontal' : 'Vertical'}
+                      value={config?.[axis].field ?? ''}
+                      items={fieldItems}
+                      onChange={(value) => setField(axis, value)}
+                    />
+                  ))}
+                </Section>
+
+                <Section title="Point labels" id={`${id}-s-labels`}>
+                  {(config?.labels ?? []).map((label, index) => {
+                    const target = config ? labelRows(rows, label).map((r) => nameOf(r, config)) : []
+                    const custom = !label.show
+                    return (
+                      <div key={index} {...stylex.props(styles.labelBox)}>
+                        {label.match ? (
+                          <Picker
+                            label={`Point ${index + 1}`}
+                            value={target[0] ?? ''}
+                            items={nameItems}
+                            onChange={(value) =>
+                              config && setLabel(index, { match: { [config.name_column ?? 'app']: value } })
+                            }
+                          />
+                        ) : (
+                          <div {...stylex.props(styles.field)}>
+                            <span {...stylex.props(styles.label)}>Point {index + 1}</span>
+                            <span {...stylex.props(styles.fixed)}>
+                              {rankedBy(label, config?.label_fields)}: {target.map(shortName).join(', ')}
+                            </span>
+                          </div>
+                        )}
+                        <div role="group" aria-label={`What point ${index + 1} shows`} {...stylex.props(styles.chips)}>
+                          <Chip
+                            pressed={!custom && !label.hide_name}
+                            onClick={() => setLabel(index, { hide_name: !label.hide_name, show: label.show ?? [] })}
+                          >
+                            Name
+                          </Chip>
+                          {labelFields.map(([field, meta]) => (
+                            <Chip
+                              key={field}
+                              pressed={!custom && (label.show ?? []).includes(field)}
+                              onClick={() => toggleShown(index, field)}
+                            >
+                              {meta.name}
+                            </Chip>
+                          ))}
+                        </div>
+                        {custom ? <p {...stylex.props(styles.note)}>Custom text, set under Advanced.</p> : null}
                       </div>
-                    )}
-                    <div role="group" aria-label={`What point ${index + 1} shows`} {...stylex.props(styles.chips)}>
-                      <Chip
-                        pressed={!custom && !label.hide_name}
-                        onClick={() => setLabel(index, { hide_name: !label.hide_name, show: label.show ?? [] })}
-                      >
-                        Name
-                      </Chip>
-                      {labelFields.map(([field, meta]) => (
-                        <Chip
-                          key={field}
-                          pressed={!custom && (label.show ?? []).includes(field)}
-                          onClick={() => toggleShown(index, field)}
-                        >
-                          {meta.name}
-                        </Chip>
-                      ))}
-                    </div>
-                    {custom ? <p {...stylex.props(styles.note)}>Custom text, set under Advanced.</p> : null}
-                  </div>
-                )
-              })}
-            </Section>
+                    )
+                  })}
+                </Section>
+              </>
+            )}
 
             <Section title="Export" id={`${id}-s-export`}>
               <Segmented
@@ -504,24 +791,26 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
                 <Chevron />
               </summary>
               <div {...stylex.props(styles.advancedBody)}>
-                {(['x', 'y'] as const).map((axis) => (
-                  <Field
-                    key={axis}
-                    label={axis === 'x' ? 'Horizontal axis title' : 'Vertical axis title'}
-                    htmlFor={`${id}-${axis}-label`}
-                  >
-                    <input
-                      id={`${id}-${axis}-label`}
-                      type="text"
-                      maxLength={70}
-                      value={config?.[axis].label ?? ''}
-                      onChange={(e) => config && update({ [axis]: { ...config[axis], label: e.target.value } })}
-                      {...stylex.props(styles.control, ui.focusRing)}
-                    />
-                  </Field>
-                ))}
+                {liveTemplate
+                  ? null
+                  : (['x', 'y'] as const).map((axis) => (
+                      <Field
+                        key={axis}
+                        label={axis === 'x' ? 'Horizontal axis title' : 'Vertical axis title'}
+                        htmlFor={`${id}-${axis}-label`}
+                      >
+                        <input
+                          id={`${id}-${axis}-label`}
+                          type="text"
+                          maxLength={70}
+                          value={config?.[axis].label ?? ''}
+                          onChange={(e) => config && update({ [axis]: { ...config[axis], label: e.target.value } })}
+                          {...stylex.props(styles.control, ui.focusRing)}
+                        />
+                      </Field>
+                    ))}
                 <Segmented
-                  label="Points"
+                  label={liveTemplate ? 'Apps shown as' : 'Points'}
                   value={pointStyle}
                   options={[
                     { value: 'icons', label: 'Icons' },
@@ -529,29 +818,33 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
                   ]}
                   onChange={(value) => setPointStyle(value as 'icons' | 'initials')}
                 />
-                {(config?.labels ?? []).map((label, index) => (
-                  <Field key={index} label={`Point ${index + 1} text`} htmlFor={`${id}-label-${index}`}>
-                    <textarea
-                      id={`${id}-label-${index}`}
-                      rows={3}
-                      maxLength={160}
-                      value={label.text}
-                      onChange={(e) => setLabel(index, { text: e.target.value })}
-                      {...stylex.props(styles.control, styles.textarea, ui.focusRing)}
-                    />
-                  </Field>
-                ))}
+                {liveTemplate
+                  ? null
+                  : (config?.labels ?? []).map((label, index) => (
+                      <Field key={index} label={`Point ${index + 1} text`} htmlFor={`${id}-label-${index}`}>
+                        <textarea
+                          id={`${id}-label-${index}`}
+                          rows={3}
+                          maxLength={160}
+                          value={label.text}
+                          onChange={(e) => setLabel(index, { text: e.target.value })}
+                          {...stylex.props(styles.control, styles.textarea, ui.focusRing)}
+                        />
+                      </Field>
+                    ))}
                 <Field label="Source" htmlFor={`${id}-source`}>
                   <input
                     id={`${id}-source`}
                     type="text"
                     maxLength={90}
-                    value={sourceText}
-                    onChange={(e) => setSourceText(e.target.value)}
+                    value={liveTemplate ? (liveText?.source ?? '') : sourceText}
+                    onChange={(e) =>
+                      liveTemplate ? updateText({ source: e.target.value }) : setSourceText(e.target.value)
+                    }
                     {...stylex.props(styles.control, ui.focusRing)}
                   />
                 </Field>
-                {(config?.footnote ?? []).map((line, index) => (
+                {footnote.map((line, index) => (
                   <Field key={index} label={`Footnote line ${index + 1}`} htmlFor={`${id}-foot-${index}`}>
                     <textarea
                       id={`${id}-foot-${index}`}
@@ -569,6 +862,46 @@ export function ChartBuilder({ source = localSource }: { source?: ChartDataSourc
         </div>
       </PopupLayer.Provider>
     </CSPProvider>
+  )
+}
+
+/** A small drawing of each chart kind, for the template list. */
+function KindGlyph({ kind }: { kind: Kind | 'scatter' }) {
+  const paths: Record<Kind | 'scatter', ReactNode> = {
+    headline: (
+      <>
+        <path d="M6 5h3v14" />
+        <path d="M14 15h3M14 19h6" />
+      </>
+    ),
+    leaderboard: <path d="M4 6h16M4 12h11M4 18h7" />,
+    'head-to-head': <path d="M12 4v16M11 8H4M11 16H7M13 8h5M13 16h7" />,
+    bump: <path d="M3 17 9 7l6 8 6-10M3 7l6 6 6-4 6 8" />,
+    dumbbell: (
+      <>
+        <path d="M6 8h10M9 16h9" />
+        <circle cx="6" cy="8" r="2" />
+        <circle cx="16" cy="8" r="2" />
+        <circle cx="9" cy="16" r="2" />
+        <circle cx="18" cy="16" r="2" />
+      </>
+    ),
+    scatter: (
+      <>
+        <circle cx="6" cy="16" r="1.5" />
+        <circle cx="10" cy="11" r="1.5" />
+        <circle cx="15" cy="13" r="1.5" />
+        <circle cx="18" cy="6" r="1.5" />
+        <path d="M3 3v18h18" />
+      </>
+    ),
+  }
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" {...stylex.props(styles.glyph)}>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        {paths[kind]}
+      </g>
+    </svg>
   )
 }
 
@@ -714,6 +1047,8 @@ function Check() {
 
 const CONTROL = { default: '40px', [breakpoints.phone]: '48px' }
 
+const spin = stylex.keyframes({ to: { transform: 'rotate(360deg)' } })
+
 const styles = stylex.create({
   layout: {
     display: 'grid',
@@ -722,6 +1057,43 @@ const styles = stylex.create({
     alignItems: 'start',
   },
   preview: { position: { default: 'sticky', [breakpoints.tablet]: 'static' }, top: '24px' },
+  stage: { position: 'relative' },
+  overlay: {
+    position: 'absolute',
+    inset: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  spinner: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '999px',
+    borderWidth: '2px',
+    borderStyle: 'solid',
+    borderColor: 'rgb(242 242 242 / 0.25)',
+    borderTopColor: '#f2f2f2',
+    animationName: spin,
+    animationDuration: { default: '0.9s', '@media (prefers-reduced-motion: reduce)': '2.4s' },
+    animationIterationCount: 'infinite',
+    animationTimingFunction: 'linear',
+  },
+  meta: { display: 'grid', marginTop: '8px' },
+  dataTime: { minHeight: '24px', fontSize: text.meta, lineHeight: '24px', color: colors.text },
+  problemNote: { marginTop: '4px', color: colors.muted },
+  retry: { marginTop: '16px' },
+  groups: { display: 'grid', gap: '16px' },
+  group: { display: 'grid', gap: '8px' },
+  groupTitle: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontSize: text.meta,
+    fontWeight: weights.medium,
+    color: colors.muted,
+    lineHeight: 1.5,
+  },
+  glyph: { display: 'block', flexShrink: 0, color: colors.text },
   canvas: {
     display: 'block',
     width: '100%',
@@ -732,7 +1104,6 @@ const styles = stylex.create({
   },
   status: {
     minHeight: '24px',
-    marginTop: '8px',
     color: colors.muted,
     fontSize: text.meta,
     lineHeight: '24px',

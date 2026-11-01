@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { mockLive } from './live-data'
 import { headings, routes } from './routes'
 
 for (const path of routes) {
@@ -8,6 +9,8 @@ for (const path of routes) {
       if (msg.type() === 'error' || msg.type() === 'warning') problems.push(msg.text())
     })
     page.on('pageerror', (error) => problems.push(error.message))
+    // The test server serves static files only; the chart builder's live data proxy is a function, so answer it here.
+    await mockLive(page)
 
     const response = await page.goto(path)
     expect(response?.status()).toBe(200)

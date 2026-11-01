@@ -11,7 +11,8 @@ import { ui } from '~/styles/ui'
 export const chartBuilderMeta = {
   path: '/lab/charts/',
   title: 'Chart builder',
-  description: 'Scatter charts of public App Store and app build data, exported as PNG or SVG.',
+  description:
+    'Charts of App Store, Google Play and app build data, read live when the page loads. Download as PNG or SVG.',
 } as const
 
 export const Route = createFileRoute('/lab/charts')({
@@ -42,12 +43,17 @@ function LabCharts() {
             </h2>
             <p {...stylex.props(styles.text)}>Downloads are off while a chart breaks one of these.</p>
             <ul {...stylex.props(styles.list)}>
+              <li>Every number on a chart comes from the data loaded for it.</li>
+              <li>Live charts show when the data was recorded. If it cannot be loaded, no chart is shown.</li>
+              <li>Scatter charts use data files and show their date. They are not live.</li>
               <li>A rank is shown with its coverage: the number of countries where the app charts.</li>
               <li>Ranks are not averaged over only the countries where an app charts.</li>
               <li>If unranked countries get a stand-in rank, the footnote says so.</li>
               <li>Builds older than 60 days are labelled or counted in the footnote.</li>
               <li>Counts the source marks as a lower bound say so on the chart.</li>
-              <li>Three footnote lines, the first starting with “Source:”. No logo or site name.</li>
+              <li>
+                Three footnote lines of up to 110 characters, the first starting with “Source:”. No logo or site name.
+              </li>
             </ul>
           </section>
           <section aria-labelledby="sizes">

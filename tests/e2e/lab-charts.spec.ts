@@ -1,6 +1,17 @@
 import { readFile } from 'node:fs/promises'
 import AxeBuilder from '@axe-core/playwright'
 import { type Download, type Page, expect, test } from '@playwright/test'
+import { mockLive } from './live-data'
+
+const live = [
+  { id: 'us-number-one', kind: 'Headline number', requests: 2 },
+  { id: 'chatgpt-countries', kind: 'Headline number', requests: 2 },
+  { id: 'us-climbers', kind: 'Ranked list', requests: 2 },
+  { id: 'most-sdks', kind: 'Ranked list', requests: 3 },
+  { id: 'chatgpt-vs-gemini', kind: 'Head to head', requests: 5 },
+  { id: 'ai-rank-30-days', kind: 'Rank over time', requests: 5 },
+  { id: 'ios-vs-android', kind: 'iOS vs Android', requests: 2 },
+]
 
 const templates = [
   'us-rank-countries',
@@ -60,6 +71,10 @@ async function differenceFromPreview(page: Page, bytes: Buffer, type: string): P
 }
 
 test.describe('chart builder', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockLive(page)
+  })
+
   test('renders every template without console errors', async ({ page }) => {
     const problems: string[] = []
     page.on('console', (m) => {
@@ -67,7 +82,7 @@ test.describe('chart builder', () => {
     })
     page.on('pageerror', (e) => problems.push(e.message))
     await page.goto('/lab/charts/')
-    for (const id of templates) {
+    for (const id of [...live.map((t) => t.id), ...templates]) {
       await pick(page, id)
       await expect(page.getByRole('alert')).toHaveCount(0)
       await expect(page.getByRole('button', { name: 'Download PNG' })).toBeEnabled()
@@ -177,6 +192,101 @@ test.describe('chart builder', () => {
       await page.getByRole('combobox', { name: 'Vertical' }).click()
       await expect(page.getByRole('listbox')).toBeVisible()
       expect(await axe()).toEqual([])
+    })
+  }
+
+  for (const t of live) {
+    test(`live template ${t.id} renders from the proxy and states its data time`, async ({ page }) => {
+      await page.unrouteAll()
+      const requested = await mockLive(page)
+      await page.goto(`/lab/charts/?template=${t.id}`)
+      await expect(page.locator(`canvas[data-rendered^="${t.id}:"]`)).toBeVisible()
+      await expect(page.getByTestId('data-time')).toHaveText(/^Data from \d{1,2} \w{3} 2026, \d{2}:\d{2} UTC$/)
+      await expect(page.getByRole('alert')).toHaveCount(0)
+      await expect(page.getByRole('button', { name: 'Download PNG' })).toBeEnabled()
+      const group = page.getByRole('group', { name: t.kind })
+      await expect(group.locator(`input[value="${t.id}"]`)).toBeChecked()
+      // Only this template's requests, each once, all through the same-origin proxy.
+      expect(new Set(requested).size).toBe(requested.length)
+      expect(requested.length).toBe(t.requests)
+      for (const url of requested) expect(new URL(url).pathname).toBe('/api/tdn')
+      const png = await download(page, 'Download PNG')
+      expect(pngSize(png.bytes)).toEqual({ width: 3600, height: 2780 })
+      expect(await differenceFromPreview(page, png.bytes, 'image/png')).toBeLessThan(0.02)
+    })
+  }
+
+  test('live charts export at 1x, 16:9 and 1:1, and as SVG', async ({ page }) => {
+    await page.goto('/lab/charts/?template=ai-rank-30-days')
+    await expect(page.locator('canvas[data-rendered^="ai-rank-30-days:"]')).toBeVisible()
+    await page.getByRole('radio', { name: '1x' }).click()
+    for (const [name, width, height] of [
+      ['16:9', 1920, 1080],
+      ['1:1', 1200, 1200],
+    ] as const) {
+      await page.getByRole('radio', { name }).click()
+      await expect(page.locator('canvas[data-rendered]')).toHaveAttribute(
+        'data-rendered',
+        `ai-rank-30-days:${width}x${height}`,
+      )
+      const png = await download(page, 'Download PNG')
+      expect(pngSize(png.bytes)).toEqual({ width, height })
+    }
+    const svg = await download(page, 'Download SVG')
+    const text = svg.bytes.toString('utf8')
+    expect(text).toContain('<svg')
+    expect(text).toContain('Data from 1 Nov 2026, 12:18 UTC')
+    expect(await differenceFromPreview(page, svg.bytes, 'image/svg+xml')).toBeLessThan(0.03)
+  })
+
+  test('shows no chart and no old numbers when the proxy fails, and retries', async ({ page }) => {
+    await page.unrouteAll()
+    await mockLive(page, { status: 503, body: { error: 'Not configured', code: 'not_configured' } })
+    await page.goto('/lab/charts/?template=us-climbers')
+    await expect(page.getByRole('alert')).toContainText('No chart: Live data is not available right now (error 503).')
+    await expect(page.locator('canvas[data-rendered]')).toHaveCount(0)
+    await expect(page.getByTestId('data-time')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: 'Download PNG' })).toBeDisabled()
+    await page.unrouteAll()
+    await mockLive(page)
+    await page.getByRole('button', { name: 'Try again' }).click()
+    await expect(page.locator('canvas[data-rendered^="us-climbers:"]')).toBeVisible()
+    await expect(page.getByRole('alert')).toHaveCount(0)
+  })
+
+  test('blocks downloads when a live chart shows a number that is not in the data', async ({ page }) => {
+    await page.goto('/lab/charts/?template=us-number-one')
+    await expect(page.locator('canvas[data-rendered^="us-number-one:"]')).toBeVisible()
+    await page.getByLabel('Title', { exact: true }).fill('Which app is #1 of 4321?')
+    await expect(page.getByRole('alert')).toContainText('These numbers are not in the data: 4321.')
+    await expect(page.getByRole('button', { name: 'Download PNG' })).toBeDisabled()
+    await page.getByRole('button', { name: 'Reset template' }).click()
+    await expect(page.getByRole('alert')).toHaveCount(0)
+  })
+
+  test('picks the apps of a head to head', async ({ page }) => {
+    await page.goto('/lab/charts/?template=chatgpt-vs-gemini')
+    await expect(page.locator('canvas[data-rendered^="chatgpt-vs-gemini:"]')).toBeVisible()
+    await page.getByRole('combobox', { name: 'Second app' }).click()
+    await page.getByRole('option', { name: 'Claude', exact: true }).click()
+    // Claude has no compare fixture, so the proxy answers 404 and no chart is shown.
+    await expect(page.getByRole('alert')).toContainText('No chart')
+    await expect(page.locator('canvas[data-rendered]')).toHaveCount(0)
+  })
+
+  for (const theme of ['light', 'dark'] as const) {
+    test(`live template controls have no accessibility violations (${theme})`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
+      await page.goto('/lab/charts/?template=us-climbers')
+      await expect(page.locator('canvas[data-rendered^="us-climbers:"]')).toBeVisible()
+      await page.getByText('Advanced').click()
+      const result = await new AxeBuilder({ page })
+        .exclude('[data-base-ui-focus-guard]')
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
+        .analyze()
+      expect(
+        result.violations.map((v) => `${v.impact} ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`),
+      ).toEqual([])
     })
   }
 

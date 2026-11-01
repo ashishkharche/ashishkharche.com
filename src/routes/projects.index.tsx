@@ -46,9 +46,9 @@ function Projects() {
               </Link>
             </h3>
             <p {...stylex.props(styles.toolText)}>
-              Scatter charts of public App Store and app build data from five templates, exported as PNG or SVG. Each
-              chart is checked against data rules before download: ranks come with their coverage, and builds older than
-              60 days are labelled.
+              Headline numbers, ranked lists, head to heads, rank over time and scatter charts of App Store, Google Play
+              and app build data, exported as PNG or SVG. Live charts read fresh data on each visit and show when it was
+              recorded. Each chart is checked against data rules before download.
             </p>
             <p {...stylex.props(styles.toolMeta)}>TypeScript · React · Canvas and SVG, drawn in the browser</p>
           </article>

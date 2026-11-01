@@ -35,7 +35,7 @@ const DESCENT = 494 / 2048
  * Matplotlib's hinted glyph advances come out a little wider than the
  * browser's; this much extra space per letter (px at full size) closes the gap.
  */
-const TRACKING = 0.15
+export const TRACKING = 0.15
 
 export const palette = {
   bg: '#151515',
@@ -166,7 +166,7 @@ export function snap(value: number, lineWidth: number): number {
 type HAlign = 'left' | 'center' | 'right'
 type VAlign = 'top' | 'center' | 'bottom' | 'center_baseline'
 
-interface TextStyle {
+export interface TextStyle {
   size: number
   weight: number
   color: string
@@ -232,11 +232,67 @@ export function drawText(ctx: Ctx, text: string, x: number, y: number, style: Te
   return { width, height }
 }
 
-function inkWidth(ctx: Ctx, text: string, size: number, weight: number, tracking: number): number {
+export function inkWidth(ctx: Ctx, text: string, size: number, weight: number, tracking: number): number {
   ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
   ctx.letterSpacing = `${tracking}px`
   const m = ctx.measureText(text)
   return m.actualBoundingBoxLeft + m.actualBoundingBoxRight
+}
+
+/**
+ * The parts every chart shares: the background, the title and subtitle (shrunk to fit the width), the rule under
+ * them and the three footnote lines.
+ */
+export function drawFrame(ctx: Ctx, L: Layout, title: string, subtitle: string, foot: string[]): void {
+  const { s } = L
+  const px = (pt: number) => pt * PT * s
+  const tracking = TRACKING * s
+  const text = (value: string, x: number, y: number, style: TextStyle) =>
+    drawText(ctx, value, x, y, { tracking, ...style })
+  ctx.fontKerning = 'none'
+  ctx.fillStyle = palette.bg
+  ctx.fillRect(0, 0, L.width, L.height)
+
+  const maxWidth = L.width - 2 * L.padX
+  const fit = (value: string, size: number, weight: number) => {
+    const w = inkWidth(ctx, value, size, weight, tracking)
+    return w > maxWidth ? (size * maxWidth) / w : size
+  }
+  text(title, L.padX, L.titleY, {
+    size: fit(title, px(37), 700),
+    weight: 700,
+    color: palette.text,
+    ha: 'left',
+    va: 'center',
+  })
+  if (subtitle) {
+    text(subtitle, L.padX, L.subtitleY, {
+      size: fit(subtitle, px(23), 400),
+      weight: 400,
+      color: palette.muted,
+      ha: 'left',
+      va: 'center',
+    })
+  }
+  const ruleWidth = px(1.5)
+  const ruleY = L.height - snap(L.height - L.ruleY, ruleWidth)
+  ctx.strokeStyle = palette.rule
+  ctx.lineWidth = ruleWidth
+  ctx.lineCap = 'square'
+  ctx.beginPath()
+  ctx.moveTo(L.padX, ruleY)
+  ctx.lineTo(L.width - L.padX, ruleY)
+  ctx.stroke()
+
+  foot.forEach((line, i) => {
+    text(line, L.padX, L.footY[i] ?? L.height, {
+      size: fit(line, px(16.5), 400),
+      weight: 400,
+      color: palette.foot,
+      ha: 'left',
+      va: 'center',
+    })
+  })
 }
 
 export interface DrawOptions {
@@ -290,52 +346,7 @@ export function drawChart(ctx: Ctx, config: ChartConfig, allRows: Row[], options
     drawText(ctx, value, x, y, { tracking, ...style })
 
   ctx.save()
-  ctx.fontKerning = 'none'
-  ctx.fillStyle = palette.bg
-  ctx.fillRect(0, 0, L.width, L.height)
-
-  // Header: title, subtitle and rule. Long lines shrink to fit the width.
-  const maxWidth = L.width - 2 * L.padX
-  const fit = (value: string, size: number, weight: number) => {
-    const w = inkWidth(ctx, value, size, weight, tracking)
-    return w > maxWidth ? (size * maxWidth) / w : size
-  }
-  text(config.title, L.padX, L.titleY, {
-    size: fit(config.title, px(37), 700),
-    weight: 700,
-    color: palette.text,
-    ha: 'left',
-    va: 'center',
-  })
-  if (config.subtitle) {
-    text(config.subtitle, L.padX, L.subtitleY, {
-      size: fit(config.subtitle, px(23), 400),
-      weight: 400,
-      color: palette.muted,
-      ha: 'left',
-      va: 'center',
-    })
-  }
-  const ruleWidth = px(1.5)
-  const ruleY = L.height - snap(L.height - L.ruleY, ruleWidth)
-  ctx.strokeStyle = palette.rule
-  ctx.lineWidth = ruleWidth
-  ctx.lineCap = 'square'
-  ctx.beginPath()
-  ctx.moveTo(L.padX, ruleY)
-  ctx.lineTo(L.width - L.padX, ruleY)
-  ctx.stroke()
-
-  // Footnote: three grey lines.
-  footnoteLines(rows, config, options.source).forEach((line, i) => {
-    text(line, L.padX, L.footY[i] ?? L.height, {
-      size: fit(line, px(16.5), 400),
-      weight: 400,
-      color: palette.foot,
-      ha: 'left',
-      va: 'center',
-    })
-  })
+  drawFrame(ctx, L, config.title, config.subtitle ?? '', footnoteLines(rows, config, options.source))
 
   const order = drawOrder(rows, config)
   const { x: xa, y: ya } = config

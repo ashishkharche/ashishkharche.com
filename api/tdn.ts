@@ -200,24 +200,11 @@ export const ENDPOINTS: Record<string, Endpoint> = {
   },
   charts: {
     path: '/charts',
-    params: {
-      store,
-      country,
-      category,
-      type: chart,
-      collection: oneOf('TOP_FREE', 'TOP_PAID', 'TOP_GROSSING'),
-      limit: int(1, 100),
-    },
+    // Apple only: Google Play charts are not collected upstream (TOP_FREE and TOP_PAID answer 404, anything else
+    // 400), and every 400 or 404 still costs units. For Google ranks use rankings with store=google.
+    params: { store: oneOf('apple'), country, category, type: chart, limit: int(1, 100) },
     cache: 'hourly',
     units: 1,
-    extra: (p) =>
-      p.get('store') === 'google'
-        ? p.has('type')
-          ? 'Use collection, not type, for store=google'
-          : null
-        : p.has('collection')
-          ? 'Use type, not collection, for store=apple'
-          : null,
   },
   movers: { path: '/movers', params: { country, chart, limit: int(1, 50) }, cache: 'hourly', units: 1 },
   'tech-stack': { path: '/tech-stack', params: { limit: int(1, 500), cursor }, cache: 'slow', units: 1 },
