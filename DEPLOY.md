@@ -83,7 +83,8 @@ data: `/api/tdn?endpoint=rankings&store=apple&country=us&limit=5`.
   owner in the Vercel dashboard. Without it, it answers 503 `not_configured`. The key is never logged or sent to the
   browser. For local tests, mock `fetch` (see `tests/unit/tdn.test.ts`); do not call the real API with a local key.
 - GitHub builds (Option B): Vercel deploys `api/` from the repository root on its own.
-- The page's CSP keeps `connect-src 'self'`, which already allows `/api/tdn`.
+- The page's CSP keeps `connect-src 'self'`, which already allows `/api/tdn`. On `/lab/charts/` only, `img-src` also
+  allows the App Store and Google Play icon hosts (`chartIconHosts` in `src/lib/csp.ts`).
 
 ## After deploying
 
