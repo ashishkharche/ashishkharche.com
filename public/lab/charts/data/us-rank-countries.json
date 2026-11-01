@@ -1,0 +1,123 @@
+{
+  "size": [1800, 1390],
+  "dpi": 100,
+  "theme": "dark",
+  "title": "A top US rank doesn't mean an app charts worldwide",
+  "subtitle": "US App Store rank vs number of countries where the app is in the Top Free 100",
+  "selection": "Tracked iOS apps that are in the US App Store Top Free 100 on the snapshot date: 30 of the 41 tracked iOS apps in the page data. Not the full US chart.",
+  "method": "us_rank = position in the US Top Free (overall) chart. countries_charted = number of App Store countries, out of the 175 where the source recorded at least one tracked app, in which the app is in that country's Top Free 100. No rank is averaged; countries where the app does not chart get no rank.",
+  "filter": [
+    {
+      "column": "us_rank",
+      "not_empty": true
+    }
+  ],
+  "name_column": "app",
+  "icon_column": "icon",
+  "icon_px": 60,
+  "highlight_icon_px": 86,
+  "x": {
+    "field": "us_rank",
+    "label": "US App Store rank (Top Free)",
+    "min": -2,
+    "max": 102,
+    "invert": true,
+    "ticks": [1, 25, 50, 75, 100],
+    "tick_format": "#{}"
+  },
+  "y": {
+    "field": "countries_charted",
+    "label": "Countries where it's in the Top 100",
+    "min": -10,
+    "max": 190,
+    "ticks": [0, 50, 100, 150, 175]
+  },
+  "metrics": {
+    "us_rank": {
+      "kind": "rank",
+      "meaning": "Position in the US App Store Top Free chart (all categories) in the source's latest collection.",
+      "biases": [
+        {
+          "text": "Single snapshot (1 Nov 2026); ranks move daily.",
+          "show_on_chart": true,
+          "chart_text": "single snapshot"
+        },
+        {
+          "text": "Rank is a store-ordering signal, not downloads, users or revenue.",
+          "show_on_chart": true,
+          "chart_text": "not downloads or users"
+        },
+        {
+          "text": "Only tracked apps; the rest of the US Top 100 is not shown.",
+          "show_on_chart": true,
+          "chart_text": "not the full chart"
+        }
+      ]
+    },
+    "countries_charted": {
+      "kind": "coverage",
+      "meaning": "Count of App Store countries (of 175 in the source's collected data) where the app is in the Top Free 100.",
+      "biases": [
+        {
+          "text": "An app can only chart where it is sold: Muse from Meta is on the App Store in 5 of the 175 countries (Apple lookup API, 1 Nov 2026), so its count reflects a limited launch, not weak demand.",
+          "show_on_chart": true,
+          "chart_text": "limited launch"
+        },
+        {
+          "text": "Charting at #100 and at #1 both count as 1 country; see countries_top10 in data.csv for depth.",
+          "show_on_chart": false
+        },
+        {
+          "text": "The 175-country universe is every country where any tracked iOS app charted; a country where none did would be missing.",
+          "show_on_chart": true,
+          "chart_text": "of 175"
+        }
+      ]
+    }
+  },
+  "rank_rules": {
+    "unranked_policy": "A country where the app is not in the Top Free 100 is 'not charting'. It is never given rank 100 or 101 in this chart, and ranks are never averaged over only the countries where an app charts.",
+    "coverage_field": "countries_charted",
+    "unranked_value": null
+  },
+  "labels": [
+    {
+      "match": {
+        "app": "Muse from Meta"
+      },
+      "highlight": true,
+      "ha": "right",
+      "offset": [-52, 6],
+      "text": "{app}: #{us_rank} in the US\ncharts in {countries_charted} countries, on sale in {storefronts_available}"
+    },
+    {
+      "match": {
+        "app": "ChatGPT"
+      },
+      "ha": "center",
+      "offset": [-30, -40],
+      "size": 23,
+      "weight": "Medium",
+      "text": "{app}: #{us_rank} in the US\ncharts in {countries_charted} countries",
+      "va": "top"
+    }
+  ],
+  "layout": {
+    "axes": [0.12, 0.215, 0.82, 0.61],
+    "foot_y": 0.025,
+    "foot_step": 0.0225
+  },
+  "footnote": [
+    "Source: {source}, 1 Nov 2026 (single snapshot). 30 tracked iOS apps in the US Top Free 100, not the full chart.",
+    "Countries = App Store countries (of 175 with data) where the app is in the Top Free 100. No ranks are averaged.",
+    "Muse from Meta is sold in only 5 App Store countries (Apple lookup), so its low count is a limited launch. Rank is not downloads or users."
+  ],
+  "id": "us-rank-countries",
+  "source_default": "public App Store ranking pages and Apple lookup data",
+  "template": {
+    "name": "A top US rank is not worldwide reach",
+    "description": "US App Store rank against the number of countries where each app is in the Top Free 100.",
+    "date": "2026-11-01",
+    "source": "public App Store ranking pages and Apple lookup data"
+  }
+}

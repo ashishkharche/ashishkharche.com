@@ -1,0 +1,154 @@
+{
+  "size": [1800, 1390],
+  "dpi": 100,
+  "theme": "dark",
+  "title": "Which Android apps request the most permissions?",
+  "subtitle": "Manifest permissions vs third-party SDKs in every analyzed Android build",
+  "selection": "Every Android app with a the source tech-stack page, latest analyzed build each: 171 builds. v1 used only the 80 SDK-heaviest builds (31+ SDKs) from /tech-stack, which hid the 6 apps that request more permissions than Meta AI.",
+  "method": "permissions = 'Permissions' count on each app's Android tech-stack page (permissions requested in the manifest). sdks = 'Third-party SDKs' count on the same page. One point per app.",
+  "name_column": "name",
+  "icon_column": "icon",
+  "icon_px": 46,
+  "highlight_icon_px": 74,
+  "x": {
+    "field": "sdks",
+    "label": "Third-party SDKs detected in the build",
+    "min": -2,
+    "max": 60,
+    "ticks": [0, 10, 20, 30, 40, 50]
+  },
+  "y": {
+    "field": "permissions",
+    "label": "Permissions requested (manifest)",
+    "min": -8,
+    "max": 215,
+    "ticks": [0, 50, 100, 150, 200]
+  },
+  "metrics": {
+    "permissions": {
+      "kind": "count",
+      "date_field": "analyzed",
+      "meaning": "Number of permissions declared in the analyzed build's AndroidManifest (as listed by the source).",
+      "biases": [
+        {
+          "text": "Declared, not granted: includes install-time 'normal' permissions and ones merged in from libraries; says nothing about what the app actually uses.",
+          "show_on_chart": true,
+          "chart_text": "declared in the manifest"
+        },
+        {
+          "text": "Alipay shows exactly 200 permissions and 200 native libs, and TikTok exactly 200 native libs: 200 may be a the source list cap, so Alipay's real count could be higher.",
+          "show_on_chart": true,
+          "chart_text": "may be a list cap"
+        },
+        {
+          "text": "141 of 171 builds were analyzed in Jun 2026; current versions may differ.",
+          "show_on_chart": true,
+          "shown_by": "staleness"
+        },
+        {
+          "text": "the source's analyzed set (popular/tracked apps), not all of Google Play.",
+          "show_on_chart": true,
+          "chart_text": "not all of Google Play"
+        }
+      ]
+    },
+    "sdks": {
+      "kind": "count",
+      "date_field": "analyzed",
+      "meaning": "Third-party SDKs detected in the same build.",
+      "biases": [
+        {
+          "text": "Detection is 'observed' for 130 builds and 'lower bound' for 41; first-party code (e.g. Meta's own libraries in Facebook) is not a third-party SDK, so Facebook shows 2.",
+          "show_on_chart": true,
+          "chart_text": "lower bound"
+        }
+      ]
+    }
+  },
+  "staleness": {
+    "as_of": "2026-11-01",
+    "max_age_days": 60,
+    "annotate": "footnote",
+    "key": "name",
+    "date_fields": {
+      "analyzed": "{name}: build {date:%b %Y}"
+    }
+  },
+  "labels": [
+    {
+      "top_by": "permissions",
+      "n": 1,
+      "highlight": true,
+      "ha": "left",
+      "offset": [44, 0],
+      "text": "{name} · {permissions} (exactly 200: may be a list cap)"
+    },
+    {
+      "top_by": "permissions",
+      "skip": 1,
+      "n": 1,
+      "ha": "left",
+      "offset": [30, 0],
+      "size": 23,
+      "weight": "Medium",
+      "text": "{name} · {permissions}"
+    },
+    {
+      "top_by": "permissions",
+      "skip": 2,
+      "n": 1,
+      "ha": "left",
+      "offset": [28, 0],
+      "size": 21,
+      "weight": "Medium",
+      "text": "{name} · {permissions}"
+    },
+    {
+      "top_by": "permissions",
+      "skip": 3,
+      "n": 1,
+      "ha": "left",
+      "offset": [28, 0],
+      "size": 21,
+      "weight": "Medium",
+      "text": "{name} · {permissions}"
+    },
+    {
+      "match": {
+        "name": "Meta AI"
+      },
+      "highlight": true,
+      "ha": "left",
+      "offset": [40, 4],
+      "text": "{name} · {permissions}, #{permissions_rank} of {n_builds}"
+    }
+  ],
+  "layout": {
+    "axes": [0.12, 0.215, 0.82, 0.61],
+    "foot_y": 0.025,
+    "foot_step": 0.0225
+  },
+  "footnote": [
+    "Source: {source}, 1 Nov 2026. Latest analyzed build of each of {n_rows} Android apps; the source's set, not all of Google Play.",
+    "Permissions = declared in the manifest, not granted or used. SDKs: {n_observed} builds 'observed', {n_lower} 'lower bound'. Alipay's 200 may be a list cap.",
+    "{stale_count} of {n_rows} builds were analyzed more than 60 days before 1 Nov 2026 (oldest {oldest}); today's versions may differ."
+  ],
+  "footnote_counts": {
+    "n_observed": {
+      "column": "detection",
+      "equals": "observed"
+    },
+    "n_lower": {
+      "column": "detection",
+      "equals": "lower bound"
+    }
+  },
+  "id": "android-permissions",
+  "source_default": "public Android app build analysis pages",
+  "template": {
+    "name": "Android apps that request the most permissions",
+    "description": "Manifest permissions against third-party SDKs for 171 analyzed Android builds.",
+    "date": "2026-11-01",
+    "source": "public Android app build analysis pages"
+  }
+}

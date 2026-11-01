@@ -71,6 +71,24 @@ Other scripts: `pnpm screenshots` (full-page screenshots at three widths in ligh
 Workout Director App Store screens in `public/assets/img/wd`; which screens are shown is set in
 `src/content/workoutDirectorScreens.ts`.
 
+## Chart builder (/lab/charts/)
+
+A page for making dark scatter charts to post on X, linked from Projects. It runs in the browser: the chart is drawn
+on a canvas (PNG at 1x or 2x) or into an SVG, with Inter served from `public/lab/charts/fonts/`.
+
+- `src/lib/charts/config.ts`: the chart config types and the data rules (`validate`). A chart that breaks a rule is
+  not drawn and cannot be downloaded: ranks need their coverage, ranks are never averaged over charted countries only,
+  any stand-in rank for unranked countries is stated, stale rows are marked, on-chart caveats stay visible, there is
+  no brand mark or site name, and the footnote is three lines starting with "Source:".
+- `src/lib/charts/render.ts` and `svg.ts`: the renderer (a port of the matplotlib layout) and an SVG back end.
+- `src/lib/charts/data.ts`: the data adapter. `createLocalSource` reads the templates in `public/lab/charts/data/`.
+- `src/lib/charts/spec.ts`: output sizes and the X pages they come from.
+- Templates are copied from a local chart folder with
+  `node scripts/lab-charts-data.ts <chart folder> "<source name>"`. The script drops page links and ids, replaces the
+  source name with `{source}`, and fails if the output has a banned term.
+
+`api/tdn.ts` is an optional read-only proxy for live data (see DEPLOY.md). It is not deployed unless asked for.
+
 ## Deployment
 
 The site is hosted on Vercel as plain static files from `dist/client`. Vercel can build it from this repository using the

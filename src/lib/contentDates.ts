@@ -22,6 +22,7 @@ export function pageSources(path: string): string[] {
     ],
     '/notes/': ['src/routes/notes.index.tsx', 'src/content/notes.ts', 'content/notes'],
     '/about/': ['src/routes/about.tsx'],
+    '/lab/charts/': ['src/routes/lab.charts.tsx', 'src/components/ChartBuilder.tsx', 'public/lab/charts/data'],
   }
   const files = sources[path]
   if (!files) throw new Error(`No source files are listed for ${path}`)

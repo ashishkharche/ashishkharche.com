@@ -47,4 +47,5 @@ export const sitemapPaths = [
   '/notes/workout-director-1/',
   '/notes/workout-director-2/',
   '/about/',
+  '/lab/charts/',
 ] as const

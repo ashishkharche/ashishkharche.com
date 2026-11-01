@@ -1,0 +1,172 @@
+name,version,sdks,permissions,permissions_rank,n_builds,native_libs,analyzed,detection,icon
+Alipay,12.12.16.7200,8,200,1,171,200,2026-10-24,observed,0
+Google,17.28.32.ve.arm64,27,151,2,171,33,2026-06-19,observed,1
+Phone by Google,224.0.924927661-go,15,94,3,171,3,2026-06-19,observed,2
+Facebook,584.0.0.51.56,2,92,4,171,15,2026-10-24,observed,3
+WhatsApp Messenger,2.26.41.77,24,86,5,171,3,2026-10-23,observed,4
+Snapchat,14.29.0.50,29,79,6,171,21,2026-10-24,observed,5
+Meta AI,295.0.0.37.164,32,78,7,171,141,2026-10-24,observed,6
+Signal Private Messenger,8.32.3,22,74,8,171,12,2026-10-23,observed,7
+Microsoft Teams,1416/1.0.0.2026082702,36,73,9,171,34,2026-06-19,observed,8
+Telegram,12.7.3,22,71,10,171,2,2026-06-19,observed,9
+Amazon Shopping,32.11.0.100,39,70,11,171,79,2026-06-23,observed,10
+rednote,9.51.0,35,70,11,171,166,2026-10-24,observed,11
+Gmail,2026.05.19.925511829.Release,19,67,13,171,8,2026-06-19,observed,12
+Google Meet,362.0.924540007.duo.android_20260601.01_p0,17,62,14,171,11,2026-06-19,observed,13
+KARMA Secure Messenger,0.9.8.0,26,62,14,171,43,2026-06-19,lower bound,14
+"TikTok - Videos, Shop & LIVE",45.5.1,31,62,14,171,200,2026-06-19,observed,15
+Grab - Taxi & Food Delivery,5.430.0,47,61,17,171,24,2026-10-24,observed,16
+Microsoft Edge,148.0.3967.97,33,61,17,171,16,2026-06-19,observed,17
+AliExpress - Shopping App,8.163.1,24,59,19,171,26,2026-06-19,observed,18
+Microsoft Outlook,5.2606.0,36,58,20,171,19,2026-06-19,lower bound,19
+Gopuff - Grocery Delivery,12.12.0,46,55,21,171,30,2026-06-30,lower bound,20
+Audible: Audiobooks & Podcasts,26.23.01,41,54,22,171,29,2026-06-23,observed,21
+Google TV Home,1.0.775915464,15,53,23,171,6,2026-06-19,observed,22
+Spotify: Music and Podcasts,9.1.52.1394,35,53,23,171,12,2026-06-23,observed,23
+X,12.36.1-prod.01,50,52,25,171,23,2026-10-24,observed,24
+Prime Video,3.0.456.747,29,50,26,171,40,2026-06-23,observed,25
+"Trip.com: Book Flights, Hotels",8.59.0,37,50,26,171,37,2026-10-24,observed,26
+YouTube,21.22.165,22,50,26,171,34,2026-06-19,observed,27
+Booking.com: Hotels & Travel,66.6,45,49,29,171,12,2026-06-23,observed,28
+Google Maps,26.22.04.920688788,22,49,29,171,17,2026-06-19,observed,29
+Kohl Wholesale,1.21.33,40,49,29,171,38,2026-06-19,observed,30
+Reddit,2026.22.0,34,49,29,171,6,2026-06-19,observed,31
+"Revolut: send, spend, and save",10.152,39,49,29,171,13,2026-10-24,lower bound,32
+VEVOR,v2.1.2,46,48,34,171,9,2026-06-19,observed,33
+Alibaba.com - B2B marketplace,26.19.0,29,46,35,171,61,2026-06-19,observed,34
+Google Chrome,148.0.7778.217,9,46,35,171,2,2026-06-23,observed,35
+Duolingo: Learn Languages,6.102.4,45,45,37,171,28,2026-10-24,observed,36
+Google Photos,7.79.0.924379438,22,45,37,171,9,2026-06-19,observed,37
+Perplexity - AI Search & Chat,2.101.0,37,45,37,171,15,2026-10-24,observed,38
+Uber - Request a ride,4.634.10003,38,45,37,171,17,2026-06-19,observed,39
+The Home Depot,7.61.2,39,44,41,171,13,2026-06-19,observed,40
+Kraken: Buy Crypto & Stocks,3.67.7,56,43,42,171,56,2026-06-19,lower bound,41
+BURGER KING® App,7.75.0,33,42,43,171,37,2026-06-22,lower bound,42
+Bluesky Social,1.136.0,24,41,44,171,38,2026-10-23,lower bound,43
+Google Drive,2.26.227.0.all.alldpi,19,41,44,171,8,2026-06-19,observed,44
+Lyft,2026.21.3.1780471452,30,41,44,171,10,2026-06-19,observed,45
+Microsoft OneDrive,7.56,28,41,44,171,24,2026-06-19,lower bound,46
+BlueSkyVUE,2.13.0,28,40,48,171,29,2026-06-19,observed,47
+CapCut: Photo & Video Editor,19.8.0,37,40,48,171,162,2026-10-24,observed,48
+ChatGPT,1.2026.286,36,40,48,171,12,2026-10-23,observed,49
+Google Slides,1.26.222.01.90,19,40,48,171,10,2026-06-19,observed,50
+Cash App,5.53.0,41,39,52,171,22,2026-06-19,observed,51
+Kohl's - Shopping & More,8.3.56,37,39,52,171,8,2026-06-19,observed,52
+Le Chat by Mistral AI,2.16.0,34,39,52,171,49,2026-10-24,observed,53
+"iHeart: Music, Radio, Podcasts",10.64.1,41,39,52,171,16,2026-06-19,lower bound,54
+Chime,1.0.810,24,38,56,171,53,2026-06-23,observed,55
+Grok - AI Chat & Video,1.1.78-release.02,37,38,56,171,7,2026-06-23,lower bound,56
+Hotels.com: Travel Booking,2026.25.0,42,38,56,171,4,2026-06-25,observed,57
+"SLING: Live TV, Shows & Movies",9.4.29,27,38,56,171,62,2026-06-19,observed,58
+Subway®,101.4.4,40,38,56,171,32,2026-06-22,observed,59
+McDonald's,26.44.2,43,37,61,171,10,2026-06-19,observed,60
+SHEIN-Shopping Online,15.5.0,28,37,61,171,21,2026-10-24,observed,61
+Bank of America Mobile Banking,25.10.04,26,36,63,171,21,2026-06-19,observed,62
+Bank of America Private Bank,25.10.02,26,36,63,171,21,2026-06-19,observed,63
+Microsoft OneNote: Save Notes,16.0.19127.20320,19,36,63,171,36,2026-06-19,observed,64
+The Clubhouse Gym,7.24.0,26,36,63,171,54,2026-06-23,observed,65
+Canva: AI Photo & Video Editor,2.383.0,39,35,67,171,12,2026-10-24,lower bound,66
+Kimi - Your Personal AI Agent,3.1.5,26,35,67,171,21,2026-10-24,lower bound,67
+Waze Navigation & Live Traffic,5.19.90.900,20,35,67,171,8,2026-06-19,observed,68
+"Affirm: Buy now, pay over time",4.70.2,29,34,70,171,31,2026-06-23,lower bound,69
+Google Docs,1.26.222.01.90,17,34,70,171,10,2026-06-19,observed,70
+Grok Bot,1.5.0,20,34,70,171,34,2026-09-02,lower bound,71
+Tubi: Free Movies & Live TV,10.22.1,42,34,70,171,11,2026-06-19,lower bound,72
+YouTube Music,9.22.53,19,34,70,171,20,2026-06-19,observed,73
+"Discord - Talk, Play, Hang Out",350.8 - Stable,30,33,75,171,44,2026-10-24,lower bound,74
+Google Sheets,1.26.222.02.90,22,33,75,171,7,2026-06-19,observed,75
+MSN,33.3.440518006,25,33,75,171,16,2026-06-19,observed,76
+Microsoft PowerPoint,16.0.19822.20104,28,33,75,171,79,2026-06-19,observed,77
+Capital One Mobile,6.31.10,26,32,79,171,11,2026-06-19,observed,78
+Manus - AI Agent & Automation,26.19.2,32,32,79,171,14,2026-10-24,lower bound,79
+Microsoft Authenticator,6.2605.3042,25,32,79,171,16,2026-06-23,observed,80
+Pinterest,14.21.0,35,32,79,171,17,2026-06-19,observed,81
+Sam's Club: Shopping & Savings,26.6.20,37,32,79,171,18,2026-06-19,observed,82
+Chime® - Fee-Free Banking,5.329.0,55,31,84,171,50,2026-06-19,observed,83
+Dunkin’,11.8.0.358,33,31,84,171,8,2026-06-22,observed,84
+Marriott Bonvoy: Book Hotels,10.68.0,25,31,84,171,8,2026-06-28,observed,85
+Southwest Airlines: Travel App,13.12.0,35,31,84,171,10,2026-06-25,observed,86
+Walgreens,113.1,43,31,84,171,18,2026-06-19,observed,87
+Base: Built to Trade & Earn,29.97.0,42,30,89,171,46,2026-06-19,observed,88
+Clubhouse,26.06.04,35,30,89,171,31,2026-06-19,lower bound,89
+Microsoft Word: Edit Documents,16.0.19822.20104,28,30,89,171,85,2026-06-19,observed,90
+Uber Eats: Food and Grocery,6.326.10001,36,30,89,171,15,2026-06-19,observed,91
+Walgreens Clinical Trials,1.0.30,18,30,89,171,17,2026-06-19,observed,92
+Walmart: Shopping & Savings,26.21.2,34,30,89,171,23,2026-06-19,observed,93
+Wells Fargo Mobile®,26.04.02.13,30,30,89,171,13,2026-06-19,observed,94
+Audiomack: Music Downloader,8.4.0,51,29,96,171,11,2026-06-23,observed,95
+Microsoft Excel: Spreadsheets,16.0.19822.20104,27,29,96,171,78,2026-06-19,observed,96
+MyCostco Employee Portal,19.2.0,32,29,96,171,10,2026-06-19,observed,97
+Photoroom: AI Photo Editor,2026.43.04,37,29,96,171,14,2026-10-24,observed,98
+Target: Shop. Style. Save.,2026.21.0,37,29,96,171,18,2026-06-19,observed,99
+Google Calendar,2026.21.0-924344952-release,16,28,101,171,2,2026-06-19,observed,100
+Grubhub: Food Delivery,2026.23,44,28,101,171,18,2026-06-19,lower bound,101
+Lowe's,25.4.4,38,28,101,171,16,2026-06-19,observed,102
+Mercari: Buy and Sell App,9.36.0,53,28,101,171,40,2026-06-19,observed,103
+Netflix,9.65.0 build 9 64253,29,28,101,171,16,2026-06-19,observed,104
+Panera Bread,6.6.1,33,28,101,171,6,2026-06-25,lower bound,105
+Qobuz: Music & Editorial,9.10.0.1,24,28,101,171,5,2026-06-19,observed,106
+Suno - AI Music & Songs Maker,1.94.0,37,28,101,171,11,2026-10-24,observed,107
+Taco Bell Fast Food & Delivery,8.90.0,44,28,101,171,6,2026-06-19,observed,108
+"Yelp: Food, Delivery & Reviews",26.24.0-28262402,32,28,101,171,10,2026-06-19,observed,109
+eBay online shopping & selling,6.260.0.1,37,28,101,171,10,2026-06-19,observed,110
+Hilton Honors: Book Hotels,2026.6.9,29,26,112,171,7,2026-06-28,lower bound,111
+Pandora - Music & Podcasts,2606.1,34,26,112,171,4,2026-06-19,lower bound,112
+"PayPal - Pay, Send, Save",9.1.0,41,26,112,171,38,2026-06-19,observed,113
+"SoFi: Bank, Investing & Crypto",3.99.0,36,26,112,171,18,2026-06-19,observed,114
+Tripadvisor: Plan & Book Trips,68.5,35,26,112,171,6,2026-06-19,observed,115
+American Airlines,2026.18,32,25,117,171,7,2026-06-25,lower bound,116
+Chase Mobile,4.662,26,25,117,171,21,2026-06-23,lower bound,117
+Deliveroo: Food & Shopping,3.295.0,54,25,117,171,22,2026-10-24,observed,118
+Instacart: Get Food Delivery,9.19.1,48,25,117,171,10,2026-06-19,observed,119
+SoundCloud: The Music You Love,2026.05.29-release,43,25,117,171,7,2026-06-19,observed,120
+CBS Sports: Live Scores & News,10.72.1,50,24,122,171,24,2026-06-19,observed,121
+Domino's Pizza USA,13.6.0,35,24,122,171,3,2026-06-19,observed,122
+"DuckDuckGo, optional Duck.ai",5.299.0,18,24,122,171,10,2026-10-23,observed,123
+ESPN Fantasy Sports,9.8.0,31,24,122,171,6,2026-06-19,observed,124
+Wendy’s,11.53.1,31,24,122,171,8,2026-06-22,observed,125
+ClassDojo,8.59.0,47,23,127,171,33,2026-06-19,lower bound,126
+DeepSeek - AI Assistant,2.7.1,11,23,127,171,16,2026-10-24,observed,127
+Pizza Hut - Delivery & Takeout,6.1.10,45,23,127,171,34,2026-06-19,lower bound,128
+PlutoTV: Stream Free Movies/TV,5.66.0-leanback,33,23,127,171,5,2026-06-19,observed,129
+Starbucks,6.124,28,23,127,171,8,2026-06-19,observed,130
+IKEA Home smart,1.67.0,18,22,132,171,7,2026-06-19,observed,131
+Microsoft SwiftKey Beta,9.12.31.3,19,22,132,171,7,2026-06-19,lower bound,132
+Paramount+,16.12.0,24,22,132,171,4,2026-06-23,observed,133
+Rakuten Travel: Hotel Booking,5.12.10,34,22,132,171,6,2026-06-19,observed,134
+Wayfair - Shop All Things Home,7.21.0,45,22,132,171,14,2026-06-19,observed,135
+Chick-fil-A®,2026.11.1,30,21,137,171,6,2026-06-23,observed,136
+Goat Evolution: Animal Merge,1.3.75,35,21,137,171,18,2026-06-23,observed,137
+KFC India online ordering app,2605.0.0,45,21,137,171,24,2026-06-22,observed,138
+Google Keep - Notes and lists,5.26.222.00.90,10,20,140,171,4,2026-06-19,observed,139
+CVS Specialty,2.82,23,19,141,171,2,2026-06-19,lower bound,140
+Google News - Daily Headlines,5.159.0.914722252,21,19,141,171,1,2026-06-19,observed,141
+Google Translate,10.20.41.923213375.5-release,13,19,141,171,5,2026-06-19,observed,142
+Wayfair Service Pro,1.100.0,26,19,141,171,3,2026-06-19,lower bound,143
+Chase Mobile Checkout,4.3.1,4,18,145,171,3,2026-06-19,lower bound,144
+GOAT - Sneakers & Apparel,2.11.0,34,18,145,171,8,2026-06-19,observed,145
+Google Chat,2026.05.25.920828381.Release,14,18,145,171,4,2026-06-19,observed,146
+Hulu: Stream TV shows & movies,6.29.0+16756762-google,33,18,145,171,6,2026-06-19,observed,147
+Skyscanner Flights Hotels Cars,7.197,34,18,145,171,3,2026-06-25,observed,148
+Lowe's Provider,1.41.3,15,17,150,171,5,2026-06-19,lower bound,149
+Mercari Japan: Anime Shopping,1.49.0,22,17,150,171,6,2026-06-19,lower bound,150
+Paramount+,16.13.0,25,17,150,171,4,2026-06-23,observed,151
+Capital One Intellix® Mobile,1.22.8,17,16,153,171,7,2026-06-23,observed,152
+Crunchyroll Manga,1.1.3,26,16,153,171,3,2026-06-19,lower bound,153
+Wells Fargo Vantage®,26.4.2.7,16,16,153,171,12,2026-06-19,observed,154
+Affirm Quest,1.2.7,13,15,156,171,0,2026-06-19,observed,155
+"Hopper: Hotels, Flights & Cars",5.107.0,36,15,156,171,1,2026-06-25,observed,156
+Microsoft Planner,1.18.38,16,15,156,171,3,2026-06-19,observed,157
+Zelle Track,1.0.1,14,15,156,171,2,2026-06-19,lower bound,158
+Pandora Music for TV,4.3.1,12,14,160,171,0,2026-06-19,observed,159
+Deezer: Music & Podcast Player,1.0.1.1,22,13,161,171,3,2026-06-19,lower bound,160
+Disney+,26.9.0+rc2-2026.06.01,28,13,161,171,6,2026-06-19,lower bound,161
+iHeartRadio for Google TV,4.12.0,17,12,163,171,0,2026-06-19,observed,162
+Temu: Shop Like a Billionaire,4.91.0,21,11,164,171,15,2026-10-24,observed,163
+Deezer for Creators,3.0.1,15,10,165,171,1,2026-06-19,lower bound,164
+Tusky for Mastodon,32.2,7,10,165,171,4,2026-06-19,lower bound,165
+Poshmark Bot: Poshwatch,2.7.1,19,9,167,171,6,2026-06-19,lower bound,166
+Twitch: Live Streaming,13.0.0.2,4,9,167,171,2,2026-06-19,lower bound,167
+Google Lens,1.18.250731009,8,8,169,171,1,2026-06-19,observed,168
+Google Gemini,1.0.995038376,5,3,170,171,1,2026-10-23,observed,169
+Microsoft Bing Webmaster Tools,1.0.3,0,1,171,171,0,2026-06-19,lower bound,170

@@ -1,5 +1,5 @@
 {
-  "include": ["src", "tests", "plugins", "scripts", "*.ts", "content/**/*.d.ts"],
+  "include": ["src", "api", "tests", "plugins", "scripts", "*.ts", "content/**/*.d.ts"],
   "compilerOptions": {
     "strict": true,
     "noUncheckedIndexedAccess": true,

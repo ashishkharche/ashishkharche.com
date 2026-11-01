@@ -58,6 +58,20 @@ browser on any unknown URL.
 
 The project's settings in the dashboard are not changed by this repository; `vercel.json` overrides them per deployment.
 
+## Optional: the chart builder's live data proxy
+
+`api/tdn.ts` is a Vercel function that adds a bearer key to read-only requests for the chart builder
+(`/api/tdn?endpoint=rankings&store=apple&country=us`). It answers GET only, for a fixed list of endpoints and
+parameters, caches answers for 10 minutes (`s-maxage=600`) and keeps under the upstream limit of 60 requests a minute.
+
+- Static upload: `pnpm deploy:manifest --with-api` adds `api/tdn.ts` to the manifest. The deployment settings above
+  stay the same; Vercel builds files under `api/` as functions even with the build step skipped.
+- GitHub builds (Option B): Vercel deploys `api/` from the repository root on its own.
+- It needs two environment variables on the project, set by the owner in the Vercel dashboard: `TDN_API_KEY` (the
+  bearer key) and `TDN_API_ORIGIN` (the API's https origin). Without them it answers 503 `not_configured`. The key is
+  never logged or sent to the browser.
+- The page's CSP keeps `connect-src 'self'`, which already allows `/api/tdn`.
+
 ## After deploying
 
 - Open `/`, `/work/`, `/projects/workout-director/`, `/notes/workout-director-1/` and a made-up URL (should show the 404 page).

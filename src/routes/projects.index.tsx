@@ -1,13 +1,13 @@
 import { ogImages } from '~/content/ogImages'
 import * as stylex from '@stylexjs/stylex'
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { Main } from '~/components/Main'
 import { PageHead } from '~/components/PageHead'
 import { ProjectCard } from '~/components/ProjectCard'
 import { kaloCard, workoutDirectorCard } from '~/content/projects'
 import { stagePreload } from '~/content/workoutDirectorScreens'
 import { seo } from '~/lib/seo'
-import { breakpoints } from '~/styles/tokens.stylex'
+import { breakpoints, colors } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/projects/')({
@@ -35,12 +35,33 @@ function Projects() {
           <ProjectCard card={kaloCard} headingLevel="h2" />
         </div>
         <p {...stylex.props(ui.note)}>Workout Director and Kalo are published on the App Store by Shelgaon Ltd.</p>
+        <section aria-labelledby="tools" {...stylex.props(ui.section)}>
+          <h2 id="tools" {...stylex.props(ui.h2)}>
+            Tools
+          </h2>
+          <article {...stylex.props(styles.tool)}>
+            <h3 {...stylex.props(ui.h3)}>
+              <Link to="/lab/charts/" {...stylex.props(ui.link)}>
+                Chart builder
+              </Link>
+            </h3>
+            <p {...stylex.props(styles.toolText)}>
+              Dark scatter charts of app store and app build data, ready to post on X. Start from one of five templates,
+              edit the title, axes and labels, and download a PNG or SVG. Every chart is checked against data rules
+              first: ranks always come with their coverage, and stale builds are labelled.
+            </p>
+            <p {...stylex.props(styles.toolMeta)}>TypeScript · React · Canvas and SVG, drawn in the browser</p>
+          </article>
+        </section>
       </div>
     </Main>
   )
 }
 
 const styles = stylex.create({
+  tool: { marginTop: '1.5rem', maxWidth: '40rem' },
+  toolText: { marginTop: '0.5rem', color: colors.muted },
+  toolMeta: { marginTop: '0.6rem', color: colors.muted, fontSize: '0.9rem' },
   grid: {
     display: 'grid',
     gridTemplateColumns: '1fr',

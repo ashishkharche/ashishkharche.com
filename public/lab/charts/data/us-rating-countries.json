@@ -1,0 +1,98 @@
+{
+  "id": "us-rating-countries",
+  "size": [1800, 1390],
+  "title": "Do the best-rated apps chart in the most countries?",
+  "subtitle": "US App Store rating vs countries where the app is in the Top Free 100",
+  "selection": "The 30 tracked iOS apps in the US App Store Top Free 100 on 1 Nov 2026. Not the full chart.",
+  "method": "rating = the app's US App Store rating. countries_charted = App Store countries where the app is in the Top Free 100. No ranks are averaged.",
+  "name_column": "app",
+  "icon_column": "icon",
+  "icon_px": 60,
+  "highlight_icon_px": 86,
+  "x": {
+    "field": "rating",
+    "label": "US App Store rating",
+    "min": 3.9,
+    "max": 5,
+    "ticks": [4, 4.2, 4.4, 4.6, 4.8, 5]
+  },
+  "y": {
+    "field": "countries_charted",
+    "label": "Countries where it's in the Top 100",
+    "min": -10,
+    "max": 190,
+    "ticks": [0, 50, 100, 150]
+  },
+  "metrics": {
+    "rating": {
+      "kind": "rating",
+      "meaning": "Average star rating on the US App Store.",
+      "biases": [
+        {
+          "text": "US ratings only; other countries can differ.",
+          "show_on_chart": true,
+          "chart_text": "US ratings only"
+        },
+        {
+          "text": "A rating says nothing about how many people use the app.",
+          "show_on_chart": true,
+          "chart_text": "not how many people"
+        }
+      ]
+    },
+    "countries_charted": {
+      "kind": "coverage",
+      "meaning": "App Store countries where the app is in the Top Free 100.",
+      "biases": [
+        {
+          "text": "An app can only chart where it is sold: Muse from Meta is on sale in a few countries only.",
+          "show_on_chart": true,
+          "chart_text": "limited launch"
+        },
+        {
+          "text": "Single snapshot (1 Nov 2026); ranks move daily.",
+          "show_on_chart": true,
+          "chart_text": "single snapshot"
+        }
+      ]
+    }
+  },
+  "labels": [
+    {
+      "match": {
+        "app": "Telegram Messenger"
+      },
+      "highlight": true,
+      "ha": "left",
+      "offset": [46, 0],
+      "text": "{app}\n{rating} stars · {countries_charted} countries"
+    },
+    {
+      "match": {
+        "app": "Muse from Meta"
+      },
+      "highlight": true,
+      "ha": "right",
+      "offset": [-48, 4],
+      "text": "{app}\n{rating} stars · {countries_charted} countries (limited launch)"
+    }
+  ],
+  "layout": {
+    "axes": [0.12, 0.215, 0.82, 0.61],
+    "foot_y": 0.025,
+    "foot_step": 0.0225
+  },
+  "footnote": [
+    "Source: {source}, 1 Nov 2026 (single snapshot). {n_rows} tracked iOS apps in the US Top Free 100, not the full chart.",
+    "Rating = US App Store stars (US ratings only), not how many people use the app. Countries = where it is in the Top Free 100.",
+    "Muse from Meta is sold in only a few App Store countries, so its low count is a limited launch. No ranks are averaged."
+  ],
+  "source_default": "public App Store ranking pages",
+  "template": {
+    "name": "Best-rated apps vs worldwide reach",
+    "description": "US App Store rating against the number of countries where each top app charts.",
+    "date": "2026-11-01",
+    "source": "public App Store ranking pages",
+    "extra": true
+  }
+}
