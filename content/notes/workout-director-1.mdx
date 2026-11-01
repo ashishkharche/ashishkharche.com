@@ -10,7 +10,7 @@ description: 'Workout Director, part 1: the camera feed never leaves the iPhone.
 import onDevice from '../diagrams/01-on-device-boundary.mmd'
 import systemOverview from '../diagrams/02-system-overview.mmd'
 
-Workout Director is an iPhone and iPad training app that I built. It is published on the App Store by Shelgaon Ltd as "Workout Director - Gym & Home". You prop the phone up and press Start; the camera counts your reps and a voice coach talks you through the session. It uses the front camera by default, and you can switch to the back camera to film someone else. I wrote the SwiftUI app and its TypeScript backend on AWS Lambda, and I ran the TestFlight and App Store releases.
+Workout Director is an iPhone and iPad training app, published on the App Store by Shelgaon Ltd as "Workout Director - Gym & Home". You prop the phone up and press Start; the camera counts your reps and a voice coach talks you through the session. It uses the front camera by default, and you can switch to the back camera to film someone else. I wrote the SwiftUI app and its TypeScript backend on AWS Lambda, and I ran the TestFlight and App Store releases.
 
 This is the first of a few notes on how it is built. I am starting with the decision that shaped most of the others: the camera feed stays on the phone. Video is never recorded, saved or uploaded.
 

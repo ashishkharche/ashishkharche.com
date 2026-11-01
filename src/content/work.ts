@@ -19,8 +19,8 @@ export const roles: Role[] = [
     logo: 'paythru',
     role: 'Senior Mobile Engineer (Mar 2024 to Oct 2026), Mobile Engineer (Oct 2022 to Feb 2024), covering iOS, Android and AWS',
     paragraphs: [
-      'Paythru makes payments software for EV charging. In a team of ten, I developed charging and payment features for six white-label apps with about 100,000 sessions, mostly in Kotlin and Jetpack Compose, with some SwiftUI on iOS. I integrated Adyen for in-app payments and reworked the Bitrise pipeline so builds could go from commit to the stores, which shortened the release cycle. I also developed the Kotlin and Jetpack Compose Terminal app for Adyen payment terminals, tested on a Castles S1U2 device.',
-      "In 2026 I worked on Paythru's new TypeScript payments platform on AWS, designed for 10,000 terminals, including the infrastructure in AWS CDK, with idempotent payment handling, an audit log, monitoring and alarms. My role at Paythru ended in October 2026.",
+      'Paythru makes payments software for EV charging. I worked on white-label EV charging and payment apps in Kotlin and Jetpack Compose on Android, with Swift and SwiftUI on iOS, including the Terminal app for Adyen payment terminals. I integrated Adyen for in-app payments, and rebuilding the Bitrise pipeline cut the release cycle from a few weeks to a few days.',
+      "In 2026 I worked on Paythru's new TypeScript payments platform on AWS, including the infrastructure in AWS CDK and idempotent payment handling. My role at Paythru ended in October 2026.",
     ],
   },
   {
@@ -102,7 +102,7 @@ export const tools: Array<{ area: string; items: string }> = [
     items: 'AWS CDK, ECS Fargate, Lambda, RDS, DynamoDB, SQS, CloudFront, CloudWatch, Cloudflare',
   },
   {
-    area: 'On-device ML and LLMs',
+    area: 'On-device AI',
     items:
       'MediaPipe pose tracking, Apple Vision, a realtime voice model over WebRTC with tool calls, structured model output',
   },

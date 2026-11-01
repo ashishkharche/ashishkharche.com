@@ -5,7 +5,7 @@ export const site = {
   lang: 'en-GB',
   city: 'London',
   description:
-    'Ashish Kharche, software engineer in London. iOS and Android apps, on-device pose tracking and a realtime voice coach, TypeScript backends on AWS, and QA on the Grok apps.',
+    'Ashish Kharche, software engineer in London. iOS and Android apps with on-device AI features, TypeScript backends on AWS, and QA on the Grok apps.',
   email: 'thekharche@gmail.com',
   linkedin: 'https://www.linkedin.com/in/ashish-kharche',
   github: 'https://github.com/ashishkharche',
@@ -18,6 +18,13 @@ export const links = {
   /** Phone-free CVs in public/, copied from the web CV build. */
   cv: '/Ashish-Kharche-CV.pdf',
   cvIos: '/Ashish-Kharche-iOS-CV.pdf',
+  /** Role CVs in public/cv/, from the same web CV build. */
+  roleCvs: [
+    { label: 'Mobile', href: '/cv/Ashish-Kharche-CV-Mobile.pdf' },
+    { label: 'AI product', href: '/cv/Ashish-Kharche-CV-AI-Product.pdf' },
+    { label: 'Full-stack TypeScript and AWS', href: '/cv/Ashish-Kharche-CV-Fullstack-TypeScript-AWS.pdf' },
+    { label: 'QA automation', href: '/cv/Ashish-Kharche-CV-QA.pdf' },
+  ],
 } as const
 
 export const nav = [

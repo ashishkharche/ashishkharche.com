@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import { links, site } from '~/content/site'
 import { ui } from '~/styles/ui'
 
-/** Short contact note with the phone-free CV downloads. Used on the home, work and about pages. */
+/** Short contact note with the phone-free role CV downloads. Used on the home, work and about pages. */
 export function Availability({ email = true }: { email?: boolean }) {
   return (
     <div {...stylex.props(styles.box)}>
@@ -23,14 +23,15 @@ export function Availability({ email = true }: { email?: boolean }) {
         .
       </p>
       <p {...stylex.props(ui.mt06)}>
-        <a href={links.cv} type="application/pdf" {...stylex.props(ui.link)}>
-          Download my CV (PDF)
-        </a>
-        , or the{' '}
-        <a href={links.cvIos} type="application/pdf" {...stylex.props(ui.link)}>
-          iOS version (PDF)
-        </a>
-        .
+        CVs (PDF):{' '}
+        {links.roleCvs.map((cv, index) => (
+          <span key={cv.href}>
+            {index > 0 ? ' · ' : null}
+            <a href={cv.href} type="application/pdf" {...stylex.props(ui.link)}>
+              {cv.label}
+            </a>
+          </span>
+        ))}
       </p>
     </div>
   )
