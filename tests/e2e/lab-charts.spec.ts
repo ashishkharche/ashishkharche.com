@@ -209,7 +209,7 @@ test.describe('chart builder', () => {
       // Only this template's requests, each once, all through the same-origin proxy.
       expect(new Set(requested).size).toBe(requested.length)
       expect(requested.length).toBe(t.requests)
-      for (const url of requested) expect(new URL(url).pathname).toBe('/api/tdn')
+      for (const url of requested) expect(new URL(url).pathname).toBe('/api/tdn/')
       const png = await download(page, 'Download PNG')
       expect(pngSize(png.bytes)).toEqual({ width: 3600, height: 2780 })
       expect(await differenceFromPreview(page, png.bytes, 'image/png')).toBeLessThan(0.02)

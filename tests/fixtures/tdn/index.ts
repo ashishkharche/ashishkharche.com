@@ -4,7 +4,7 @@ import responses from './responses.json' with { type: 'json' }
 
 export const fixtures = responses as Record<string, unknown>
 
-/** "rankings?chart=top-free&country=us&limit=200&store=apple" for /api/tdn?endpoint=rankings&... */
+/** "rankings?chart=top-free&country=us&limit=200&store=apple" for /api/tdn/?endpoint=rankings&... */
 export function fixtureKey(url: string): string {
   const params = new URL(url, 'http://localhost').searchParams
   const endpoint = params.get('endpoint') ?? ''

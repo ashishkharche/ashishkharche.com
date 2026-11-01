@@ -1,7 +1,9 @@
 /**
  * The chart builder's live data client. Every request goes to the same-origin proxy in api/tdn.ts:
  *
- *   GET /api/tdn?endpoint=<name>&<params>
+ *   GET /api/tdn/?endpoint=<name>&<params>
+ *
+ * (with the trailing slash: the site sets trailingSlash, so /api/tdn?... answers 308 to /api/tdn/?... first)
  *
  * which answers with the upstream JSON unchanged ({ data, meta } for the newer endpoints, a flat object for the
  * older ones). Answers are kept for the life of the page, so switching back to a template costs nothing, and the
@@ -21,7 +23,7 @@ export type Endpoint =
 
 export type Params = Record<string, string | number | undefined>
 
-export const PROXY_PATH = '/api/tdn'
+export const PROXY_PATH = '/api/tdn/'
 
 /** The proxy URL for one request. Parameters are sorted so equal requests share a cache entry (here and at the edge). */
 export function tdnUrl(endpoint: Endpoint, params: Params = {}): string {
@@ -130,6 +132,7 @@ export interface MoverRow {
   appId: string
   store?: string
   name: string
+  iconUrl?: string
   currentRank: number
   previousRank: number
   change: number

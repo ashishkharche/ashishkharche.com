@@ -78,6 +78,10 @@ on a canvas (PNG at 1x or 2x) or into an SVG, with Inter served from `public/lab
 
 Kinds: headline number, ranked list, head to head, rank over time and iOS vs Android (live), plus scatter (data files).
 
+Which numbers are live: the 7 live templates (headline, ranked list, head to head, rank over time, iOS vs Android) read
+the proxy on every page load and show the recorded time ("Data from 1 Nov 2026, 12:18 UTC"). The 5 scatter templates
+read the dated data files in `public/lab/charts/data/` (1 Nov 2026) and are labelled "Data file from ..., not live".
+
 - `src/lib/charts/tdn.ts`: the live data client. Every request goes to the same-origin proxy,
   `GET /api/tdn?endpoint=<name>&<params>`, once per page load. Icons load only from the hosts in `ICON_HOST`, which
   must match `chartIconHosts` in `src/lib/csp.ts` (img-src on /lab/charts/ only).
@@ -85,8 +89,10 @@ Kinds: headline number, ranked list, head to head, rank over time and iOS vs And
   from the API answers to a chart model) and their rules (`validateLive`): the data time is on the chart, three footnote
   lines of at most 110 characters, and every number shown is in the answers. If the proxy fails, no chart is shown.
 - `src/lib/charts/kinds.ts`: draws the live kinds with the same header and footnote as the scatter charts.
-- Tests answer the proxy from `tests/fixtures/tdn/responses.json`, shaped like the public API reference. The numbers in
-  it are test values.
+- Tests answer the proxy from `tests/fixtures/tdn/responses.json` (test values, shaped like the API reference) and
+  `tests/fixtures/tdn/live-2026-11-01.json` (answers saved from the deployed proxy, 1 Nov 2026, 12:18 UTC data, with
+  developer names removed), so the mappers are checked against the real shapes: movers mixes both stores, compare
+  carries `currentRating`, `rank` and `versionCount` next to its snapshots, app-rankings is a flat object.
 
 - `src/lib/charts/config.ts`: the chart config types and the data rules (`validate`). A chart that breaks a rule is
   not drawn and cannot be downloaded: ranks need their coverage, ranks are never averaged over charted countries only,

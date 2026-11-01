@@ -7,7 +7,7 @@ const icon = await readFile(new URL('../fixtures/tdn/icon.png', import.meta.url)
 /** Answers the live data proxy from the fixtures (shaped like the API reference) and icons from a local file. */
 export async function mockLive(page: Page, override?: { status: number; body: unknown }) {
   const requested: string[] = []
-  await page.route('**/api/tdn?*', (route) => {
+  await page.route(/\/api\/tdn\/?\?/, (route) => {
     const url = route.request().url()
     requested.push(url)
     if (override) return route.fulfill({ status: override.status, json: override.body })

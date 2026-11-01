@@ -315,13 +315,21 @@ export function mapMovers(moversBody: unknown, rankingsBody: unknown, limit: num
   const rankings = sortedRankings(rankingsBody)
   const time = requireTime(parseDataTime(metaOf(rankingsBody).recordedAt), 'US Top Free')
   const byId = new Map(rankings.map((r) => [r.appId, r]))
+  // Movers covers both stores, and some rows are from other charts than the tracked US Top Free list. Keep App Store
+  // rows whose current rank matches the rankings answer, so the list agrees with the other US Top Free charts.
   const movers = (unwrap<MoverRow[]>(moversBody) ?? [])
+    .filter((m) => (m.store ?? 'apple') === 'apple' && byId.get(m.appId)?.rank === m.currentRank)
     .filter((m) => m.change > 0 && Number.isFinite(m.currentRank) && Number.isFinite(m.previousRank))
     .sort((a, b) => b.change - a.change || a.currentRank - b.currentRank)
     .slice(0, limit)
   if (!movers.length) throw new NoDataError('No tracked app climbed on the US Top Free chart in the latest update.')
   const rows = movers.map((m) => ({
-    app: { appId: m.appId, store: m.store ?? 'apple', name: plainName(m.name), iconUrl: byId.get(m.appId)?.iconUrl },
+    app: {
+      appId: m.appId,
+      store: m.store ?? 'apple',
+      name: plainName(m.name),
+      iconUrl: byId.get(m.appId)?.iconUrl ?? m.iconUrl,
+    },
     value: m.change,
     display: `+${m.change}`,
     detail: `#${m.previousRank} to #${m.currentRank}`,
@@ -537,7 +545,7 @@ export const liveTemplates: LiveTemplate[] = [
     id: 'us-number-one',
     about: 'Live · US App Store, Top Free',
     kind: 'headline',
-    name: 'Which app is #1 on the US Top Free chart right now?',
+    name: 'Which tracked app ranks highest on the US Top Free chart?',
     requests: 2,
     async load(client) {
       const rankings = await getRankings(client)

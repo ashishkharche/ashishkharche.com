@@ -79,9 +79,9 @@ const numbersIn = (text: string) => text.match(/\d+(?:\.\d+)?/g) ?? []
 describe('proxy client', () => {
   it('builds query-style proxy URLs with sorted parameters', () => {
     expect(tdnUrl('rankings', { store: 'apple', country: 'us', limit: 5 })).toBe(
-      '/api/tdn?endpoint=rankings&country=us&limit=5&store=apple',
+      '/api/tdn/?endpoint=rankings&country=us&limit=5&store=apple',
     )
-    expect(tdnUrl('compare', { apps: '1,2', days: undefined })).toBe('/api/tdn?endpoint=compare&apps=1%2C2')
+    expect(tdnUrl('compare', { apps: '1,2', days: undefined })).toBe('/api/tdn/?endpoint=compare&apps=1%2C2')
   })
   it('sends each request once per page load and retries failures', async () => {
     let calls = 0
@@ -239,7 +239,7 @@ describe('live templates', () => {
       it('loads from fixtures with the requests it says it makes', async () => {
         const { chart, client } = await load()
         expect(client.requested).toHaveLength(template.requests)
-        for (const url of client.requested) expect(url.startsWith('/api/tdn?endpoint=')).toBe(true)
+        for (const url of client.requested) expect(url.startsWith('/api/tdn/?endpoint=')).toBe(true)
         expect(client.requested.every((url) => fixtures[fixtureKey(url)] !== undefined)).toBe(true)
         expect(chart.templateId).toBe(template.id)
         expect(chart.model.kind).toBe(template.kind)
