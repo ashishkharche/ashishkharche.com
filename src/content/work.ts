@@ -39,7 +39,7 @@ export const roles: Role[] = [
     logo: 'maestro',
     role: 'Developer, contract, alongside Paythru',
     paragraphs: [
-      'I wrote about 10 iOS and Android test suites for Maestro Cloud and Studio, covering four core features, with CI on GitHub Actions and Bitrise. I also wrote guides for maestro.dev, sample repos and 17 posts for the Maestro blog.',
+      'I wrote about 10 iOS and Android test suites for Maestro Cloud and Studio, covering four core features, with CI on GitHub Actions and Bitrise. I also wrote guides for maestro.dev, sample repos and 14 posts for the Maestro blog.',
     ],
   },
   {

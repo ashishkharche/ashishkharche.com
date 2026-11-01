@@ -71,7 +71,7 @@ function Work() {
           <h2 id="writing-title" {...stylex.props(ui.h2, styles.h2)}>
             Writing for Maestro
           </h2>
-          <p {...stylex.props(ui.muted)}>Six of my 17 posts on mobile UI testing for the Maestro blog.</p>
+          <p {...stylex.props(ui.muted)}>Six of the 14 posts I wrote for the Maestro blog in 2023.</p>
           <Rows spaced rows={maestroArticles.map((a) => ({ title: a.title, href: a.href, date: a.date }))} />
         </section>
 
