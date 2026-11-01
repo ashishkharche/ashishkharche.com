@@ -55,7 +55,6 @@ function About() {
               Workout Director and <Logo name="kalo" size={20} inline />
               Kalo. Both are published on the App Store by Shelgaon Ltd.
             </P>
-            <P>I train regularly and keep a log of my fitness progress.</P>
             <H2>Contact</H2>
             <P>
               Email:{' '}
