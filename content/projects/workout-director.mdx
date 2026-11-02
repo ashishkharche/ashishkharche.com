@@ -4,7 +4,7 @@ import liveCoach from '../diagrams/04-live-coach-connect.mmd'
 import releaseFlow from '../diagrams/07-release-flow.mmd'
 import forcedUpdate from '../diagrams/08-forced-update.mmd'
 
-Workout Director is an iPhone and iPad training app, published on the App Store by Shelgaon Ltd. I wrote the SwiftUI app and its TypeScript backend on AWS Lambda, and I ran the TestFlight and App Store releases. It has been on the App Store since October 2026.
+Workout Director is an iPhone and iPad training app, published on the App Store by Shelgaon Ltd. I work on the SwiftUI app and its TypeScript backend on AWS Lambda, and on its TestFlight and App Store releases. It has been on the App Store since October 2026.
 
 ## The problem
 
@@ -66,7 +66,7 @@ Phones in a gym are often offline, so uploads take an idempotency key, which mea
 
 A wrong count is the first thing a user notices, so counting changes shipped behind switches. Camera counting had its own feature flag, the internal team had a pose debug overlay, and individual behaviours had kill switches served from the backend's config endpoint, so a behaviour could be turned off without waiting for App Review. New counting models ran in shadow mode first, alongside the live counter, without changing the count anyone saw.
 
-Releases followed the same steps every time: a backend diff that stops if it would replace or delete a stateful resource, a health check after each deploy, and an app release that goes through TestFlight, a preflight checklist and a phased rollout. A minimum-version check let the backend ask old builds to update.
+Releases followed the same steps every time: a backend diff that stops if it would replace or delete a stateful resource, a health check after each deploy, and an app release that goes through TestFlight, a preflight checklist and, by default, a phased rollout. A minimum-version check let the backend ask old builds to update.
 
 <Diagram
   diagram={releaseFlow}
