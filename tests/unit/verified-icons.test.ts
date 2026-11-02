@@ -200,6 +200,28 @@ describe('lists keep their length after leaving apps out', () => {
     expect(checked.length).toBe(13)
   })
 
+  it('Most SDKs takes the icon from the tech-stack answer first, then from the rankings answers', async () => {
+    // Saved before the tech-stack answer had iconUrl: Alipay (381 SDKs) had no icon anywhere and was left out.
+    const c = client((key, body) => {
+      const data = (body as { data?: Array<Record<string, unknown>> }).data
+      if (key.startsWith('tech-stack') && Array.isArray(data)) {
+        for (const row of data) {
+          if (String(row.appName).startsWith('Alipay'))
+            row.iconUrl = 'https://is1-ssl.mzstatic.com/image/thumb/alipay/512x512bb.jpg'
+          if (row.appName === 'Whatnot: Shop, Sell, Connect') row.developer = null
+        }
+      }
+      return body
+    })
+    const chart = await load('most-sdks', {}, c)
+    if (chart.model.kind !== 'leaderboard') throw new Error('kind')
+    expect(chart.model.rows[0]).toMatchObject({ value: 381, app: { name: 'Alipay' } })
+    expect(chart.model.rows).toHaveLength(10)
+    const ctx = textCtx()
+    drawLive(ctx, chart, chart.text, { width: 1800, height: 1390 })
+    expect(ctx.texts.filter((t) => /unknown|null/i.test(t))).toEqual([])
+  })
+
   it.each([
     ['us-climbers', 10],
     ['ios-vs-android', 8],

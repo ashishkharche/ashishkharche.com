@@ -434,12 +434,23 @@ export function mapMovers(moversBody: unknown, rankingsBody: unknown, limit: num
   }
 }
 
-/** Analyzed builds, most SDKs first, each with the icon the rankings answers give it (if any). */
-export function sdkCandidates(techBody: unknown, appleBody: unknown, googleBody: unknown) {
+/**
+ * Analyzed builds, most SDKs first, each with its icon: the tech-stack answer's own iconUrl first, then the one the
+ * rankings answers give the same app (older tech-stack answers have no iconUrl).
+ */
+export function sdkCandidates(
+  techBody: unknown,
+  appleBody: unknown,
+  googleBody: unknown,
+  store: 'apple' | 'google' = 'apple',
+) {
   const iconOf = new Map(
     [...sortedRankings(appleBody), ...sortedRankings(googleBody)].map((r) => [`${r.store}:${r.appId}`, r.iconUrl]),
   )
-  const list = (unwrap<TechStackRow[]>(techBody) ?? []).filter((r) => Number.isFinite(r.sdkCount) && r.sdkCount > 0)
+  // SDK counts come from different detection on iOS and Android, so a list compares one platform only.
+  const list = (unwrap<TechStackRow[]>(techBody) ?? []).filter(
+    (r) => r.store === store && Number.isFinite(r.sdkCount) && r.sdkCount > 0,
+  )
   const sorted = [...list]
     .sort((a, b) => b.sdkCount - a.sdkCount || a.appName.localeCompare(b.appName))
     .map((r) => ({
@@ -448,7 +459,7 @@ export function sdkCandidates(techBody: unknown, appleBody: unknown, googleBody:
         appId: r.appId,
         store: r.store,
         name: plainName(r.appName ?? ''),
-        iconUrl: iconOf.get(`${r.store}:${r.appId}`),
+        iconUrl: r.iconUrl || iconOf.get(`${r.store}:${r.appId}`),
       } satisfies AppRef,
     }))
   return { list, sorted }
@@ -460,8 +471,10 @@ export function mapMostSdks(
   googleBody: unknown,
   limit: number,
   icons?: Set<string>,
+  store: 'apple' | 'google' = 'apple',
 ) {
-  const { list, sorted } = sdkCandidates(techBody, appleBody, googleBody)
+  const { list, sorted } = sdkCandidates(techBody, appleBody, googleBody, store)
+  const os = store === 'apple' ? 'iOS' : 'Android'
   if (!sorted.length) throw new NoDataError('No analyzed builds in the answer.')
   const picked = pickUsable(sorted, limit, (r) => r.app, icons)
   const top = picked.kept
@@ -473,18 +486,20 @@ export function mapMostSdks(
     app: r.app,
     value: r.sdkCount,
     display: String(r.sdkCount),
-    detail: r.store === 'google' ? 'Android' : 'iOS',
+    detail: store === 'apple' ? 'iOS, at least' : 'Android',
   }))
   return {
     model: { kind: 'leaderboard', rows } satisfies LeaderboardModel,
     text: {
-      title: 'Most SDKs in one app build',
+      title: `Most SDKs in one ${os} app build`,
       subtitle: picked.skipped
-        ? `Third-party SDKs detected in the latest analyzed build: ${rows.length} of ${list.length} builds, most first.`
-        : `Third-party SDKs detected in the latest analyzed build, top ${rows.length} of ${list.length} builds.`,
+        ? `Third-party SDKs found in the latest analyzed ${os} build: ${rows.length} of ${list.length} ${os} builds, most first.`
+        : `Third-party SDKs found in the latest analyzed ${os} build, top ${rows.length} of ${list.length} ${os} builds.`,
       footnote: [
         'Source: {source}. Data from {time}.',
-        `Builds analyzed ${formatDay(oldest)} to ${formatDay(newest)}. Detected SDKs can be a lower bound.`,
+        store === 'apple'
+          ? `Builds analyzed ${formatDay(oldest)} to ${formatDay(newest)}. iOS counts are a floor: at least this many.`
+          : `Builds analyzed ${formatDay(oldest)} to ${formatDay(newest)}. Some Android counts are a floor.`,
         noted('An SDK count says nothing about app size, quality or privacy.', picked.skipped),
       ] as [string, string, string],
     },
@@ -715,9 +730,9 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'most-sdks',
-    about: 'Live · Analyzed iOS and Android builds',
+    about: 'Live · Analyzed iOS builds',
     kind: 'leaderboard',
-    name: 'Which app builds ship the most SDKs?',
+    name: 'Which iOS app builds ship the most SDKs?',
     requests: 3,
     rowChoices: [5, 10],
     async load(client, { rows = 10, verify }) {

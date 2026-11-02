@@ -147,6 +147,10 @@ export interface TechStackRow {
   version?: string
   capturedAt?: string
   sdkCount: number
+  /** Added upstream on 2 Nov 2026; null when unknown. Older answers leave them out. */
+  iconUrl?: string | null
+  developer?: string | null
+  developerSlug?: string | null
 }
 
 /** The body of an answer: `data` when the endpoint wraps it, otherwise the answer itself. */

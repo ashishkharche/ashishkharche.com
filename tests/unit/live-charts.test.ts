@@ -150,11 +150,14 @@ describe('kind mappers', () => {
     expect(out.model.rows[0]?.app.iconUrl).toMatch(/^https:\/\/is1-ssl\.mzstatic\.com\//)
     expect(mapMovers(f('movers?chart=top-free&country=us&limit=20'), f(APPLE), 5).model.rows).toHaveLength(5)
   })
-  it('ranked list: most SDKs across both stores, with the analysis dates', () => {
-    const out = mapMostSdks(f(TECH), f(APPLE), f(GOOGLE), 10)
-    expect(out.model.rows[0]).toMatchObject({ value: 52, detail: 'Android' })
-    expect(out.model.rows).toHaveLength(10)
-    expect(out.text.footnote[1]).toMatch(/^Builds analyzed \d+ \w+ 2026 to \d+ \w+ 2026\./)
+  it('ranked list: most SDKs on one platform only, with the analysis dates', () => {
+    const ios = mapMostSdks(f(TECH), f(APPLE), f(GOOGLE), 10)
+    expect(ios.model.rows.every((r) => r.app.store === 'apple' && r.detail === 'iOS, at least')).toBe(true)
+    expect(ios.text.title).toBe('Most SDKs in one iOS app build')
+    expect(ios.text.footnote[1]).toMatch(/^Builds analyzed \d+ \w+ 2026 to \d+ \w+ 2026\. iOS counts are a floor/)
+    const android = mapMostSdks(f(TECH), f(APPLE), f(GOOGLE), 10, undefined, 'google')
+    expect(android.model.rows[0]).toMatchObject({ value: 52, detail: 'Android' })
+    expect(android.model.rows.every((r) => r.app.store === 'google')).toBe(true)
   })
   it('head to head: 3 to 5 measures both apps have', () => {
     const rows = sortedRankings(f(APPLE))
