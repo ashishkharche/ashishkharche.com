@@ -21,7 +21,8 @@
  *   movers            data[]: appId, store, name, iconUrl, currentRank, previousRank, change
  *   tech-stack        data[]: appId, store, appName, capturedAt, sdkCount, iconUrl
  *   tech-stack/{id}   data: sdkCount, sdkListIsFloor, version, capturedAt, techStack.sdks[]: category, label, items[]
- *   apps              data[]: appId (or id), store, name (or appName), developer, iconUrl; meta.total
+ *   apps              apps[]: id, store, name, developer, category, iconUrl, active; total (top level, no data or
+ *                     meta wrapper; data[], appId, appName and meta.total are read too)
  *
  * Data times ("2026-11-02 00:18:08") are UTC without a zone. Icons are URLs on Apple's isN-ssl.mzstatic.com or
  * Google's play-lh.googleusercontent.com; an app may have none, and the charts are drawn without it.
@@ -409,5 +410,42 @@ export function readTechStackDetail(body: unknown): TechStackDetail | undefined 
   }
 }
 
-/** The rows of a list answer as plain records (for the /apps answer, read field by field in about.ts). */
-export const readRows = rowsOf
+export interface AppRow {
+  id: string
+  store: 'apple' | 'google'
+  name: string
+  developer?: string
+  category?: string
+  iconUrl: string | null
+  active?: boolean
+}
+
+/**
+ * The /apps answer: { apps: [{ id, store, name, developer, category, iconUrl, active }], count, total, nextCursor },
+ * with no data or meta wrapper. A data[] list and meta.total are read too, and appId and appName stand in for id and
+ * name. Rows without an id, a known store or a name are left out; total is the top-level total when it is a number.
+ */
+export function readApps(body: unknown): { rows: AppRow[]; total?: number } {
+  const top = body && typeof body === 'object' && !Array.isArray(body) ? (body as Raw) : undefined
+  const list = Array.isArray(top?.apps)
+    ? (top.apps as unknown[]).filter((r): r is Raw => !!r && typeof r === 'object')
+    : rowsOf(body)
+  const rows: AppRow[] = []
+  for (const r of list) {
+    const id = str(r.id) ?? str(r.appId) ?? (typeof r.id === 'number' ? String(r.id) : undefined)
+    const store = storeOf(r.store)
+    const name = str(r.name) ?? str(r.appName)
+    if (!id || !store || !name) continue
+    rows.push({
+      id,
+      store,
+      name,
+      developer: str(r.developer),
+      category: str(r.category),
+      iconUrl: iconOf(r.iconUrl),
+      active: typeof r.active === 'boolean' ? r.active : undefined,
+    })
+  }
+  const total = num(top?.total) ?? num(metaOf(body).total)
+  return total === undefined ? { rows } : { rows, total }
+}

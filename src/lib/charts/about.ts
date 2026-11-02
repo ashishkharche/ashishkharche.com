@@ -3,7 +3,7 @@
  * (the tracked-apps list, a rankings answer and one rank history). Pure functions, unit tested with fixtures.
  */
 import { realValue } from './live.ts'
-import { iconAllowed, metaOf, parseDataTime, readRankHistory, readRankings, readRows } from './tdn.ts'
+import { iconAllowed, parseDataTime, readApps, readRankHistory, readRankings } from './tdn.ts'
 
 export interface TrackedApp {
   appId: string
@@ -17,21 +17,20 @@ const text = (v: unknown) => (typeof v === 'string' && realValue(v) ? v.trim() :
 
 /** The tracked apps in an /apps answer, by platform and name. Rows without an id, store or real name are left out. */
 export function trackedApps(body: unknown): { apps: TrackedApp[]; ios: number; android: number; total: number } {
-  const list = readRows(body)
+  const answer = readApps(body)
   const apps: TrackedApp[] = []
   const seen = new Set<string>()
-  for (const r of list) {
-    const appId = text(r.appId) ?? text(r.id)
-    const store = r.store === 'apple' || r.store === 'google' ? r.store : undefined
-    const name = text(r.name) ?? text(r.appName)
-    if (!appId || !store || !name || seen.has(`${store}:${appId}`)) continue
-    seen.add(`${store}:${appId}`)
-    const icon = typeof r.iconUrl === 'string' && iconAllowed(r.iconUrl) ? r.iconUrl : undefined
-    apps.push({ appId, store, name, developer: text(r.developer), iconUrl: icon })
+  for (const r of answer.rows) {
+    const appId = r.id
+    const name = text(r.name)
+    if (!name || seen.has(`${r.store}:${appId}`)) continue
+    seen.add(`${r.store}:${appId}`)
+    const icon = r.iconUrl && iconAllowed(r.iconUrl) ? r.iconUrl : undefined
+    apps.push({ appId, store: r.store, name, developer: text(r.developer), iconUrl: icon })
   }
   apps.sort((a, b) => a.store.localeCompare(b.store) || a.name.localeCompare(b.name))
   const ios = apps.filter((a) => a.store === 'apple').length
-  const total = typeof metaOf(body).total === 'number' ? Number(metaOf(body).total) : apps.length
+  const total = answer.total ?? apps.length
   return { apps, ios, android: apps.length - ios, total: Math.max(total, apps.length) }
 }
 

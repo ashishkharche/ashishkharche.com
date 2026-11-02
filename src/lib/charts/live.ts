@@ -228,20 +228,34 @@ function findApp(rows: RankingRow[], pattern: RegExp): RankingRow | undefined {
   return rows.find((r) => pattern.test(plainName(r.name)))
 }
 
-/** The last rank of each UTC day, for the last `days` days ending on the latest day in the data. */
+/**
+ * The last rank of each UTC day, for the last `days` days ending on the latest day in the data. Only the asked
+ * country's series is read (a series with no country stands in for it): when a collection slot has points for some
+ * countries only, the others simply have no point there, and another country's rank is never shown in its place.
+ * A day keeps its latest point that has a rank, so a missed 12:00 run leaves the 00:00 rank; a day with no ranked
+ * point is a gap (null), drawn across, never filled with a made-up value.
+ */
 export function dailyRanks(
   history: RankHistory | undefined,
   days: number,
   country = 'us',
 ): { days: string[]; ranks: Array<number | null> } {
-  const points = history?.series.find((s) => s.country === country)?.points ?? history?.series[0]?.points ?? []
+  const series = history?.series ?? []
+  const points =
+    series.find((s) => s.country.toLowerCase() === country.toLowerCase())?.points ??
+    series.find((s) => !s.country)?.points ??
+    []
   const byDay = new Map<string, { at: number; rank: number | null }>()
   for (const p of points) {
     const at = parseDataTime(p.at)
     if (!at) continue
     const day = at.toISOString().slice(0, 10)
+    const rank = typeof p.rank === 'number' && p.rank > 0 ? p.rank : null
     const seen = byDay.get(day)
-    if (!seen || seen.at < at.getTime()) byDay.set(day, { at: at.getTime(), rank: p.rank ?? null })
+    const later = !seen || seen.at < at.getTime()
+    if (!seen || (rank !== null && (later || seen.rank === null)) || (later && seen.rank === null)) {
+      byDay.set(day, { at: at.getTime(), rank })
+    }
   }
   const last = [...byDay.keys()].sort().at(-1)
   if (!last) return { days: [], ranks: [] }
