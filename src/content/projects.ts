@@ -51,6 +51,48 @@ export const workoutDirectorCardStack: StackGroup[] = [
   { label: 'Backend', items: ['TypeScript', 'AWS Lambda', 'DynamoDB', 'AWS CDK'] },
 ]
 
+/** One stack item on the case study, with a few words on what it does in the app. */
+export interface StackEntry {
+  name: StackItem
+  note: string
+}
+
+/** The full stack on the case study, in the order of workoutDirectorStack, under four headings. */
+export const workoutDirectorStackGroups: Array<{ label: string; items: StackEntry[] }> = [
+  {
+    label: 'iOS app',
+    items: [
+      { name: 'Swift', note: "The app's language" },
+      { name: 'SwiftUI', note: 'iPhone and iPad screens' },
+      { name: 'SwiftData', note: 'Sets stored on the phone' },
+    ],
+  },
+  {
+    label: 'Camera and voice',
+    items: [
+      { name: 'MediaPipe BlazePose', note: 'Pose model, on the device' },
+      { name: 'Apple Vision', note: 'Fallback body pose' },
+      { name: 'WebRTC', note: 'Live voice coach call' },
+    ],
+  },
+  {
+    label: 'Backend on AWS',
+    items: [
+      { name: 'TypeScript', note: 'Backend language' },
+      { name: 'AWS Lambda', note: 'Functions split by job' },
+      { name: 'DynamoDB', note: 'App data' },
+      { name: 'AWS CDK', note: 'Infrastructure as code' },
+    ],
+  },
+  {
+    label: 'Sign-in',
+    items: [
+      { name: 'Better Auth', note: 'Apple, Google and email codes' },
+      { name: 'Postgres', note: 'Sign-in data, on Neon' },
+    ],
+  },
+]
+
 export const workoutDirectorLinks: ExternalLink[] = [
   { label: 'App Store', href: links.workoutDirectorStore },
   { label: 'workoutdirector.com', href: links.workoutDirectorSite },

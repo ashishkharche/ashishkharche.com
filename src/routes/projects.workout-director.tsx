@@ -9,7 +9,8 @@ import { Main } from '~/components/Main'
 import { PageHead } from '~/components/PageHead'
 import { Muted, Prose, mdxComponents } from '~/components/Prose'
 import { DeviceStage, ScreenRail, Shots } from '~/components/Screens'
-import { workoutDirectorCard, workoutDirectorHero, workoutDirectorStack } from '~/content/projects'
+import { StackList } from '~/components/StackList'
+import { workoutDirectorCard, workoutDirectorHero, workoutDirectorStackGroups } from '~/content/projects'
 import { links } from '~/content/site'
 import { stagePreload } from '~/content/workoutDirectorScreens'
 import { seo } from '~/lib/seo'
@@ -63,12 +64,11 @@ function WorkoutDirector() {
           label="Workout Director App Store screens on iPad and iPhone"
         />
       </div>
-      {/* The details row gets the wider column so each item fits on one or two lines. */}
+      {/* The details row and the stack get the wider column so each item fits on one or two lines. */}
       <div {...stylex.props(ui.columnWide)}>
         <Facts
           items={[
             { term: 'My part', detail: 'SwiftUI app, TypeScript backend, releases' },
-            { term: 'Stack', detail: workoutDirectorStack.join(', ') },
             { term: 'Published by', detail: 'Shelgaon Ltd' },
             {
               term: 'Links',
@@ -86,6 +86,7 @@ function WorkoutDirector() {
             },
           ]}
         />
+        <StackList groups={workoutDirectorStackGroups} />
       </div>
       <div {...stylex.props(ui.column)}>
         <div {...stylex.props(ui.section)}>

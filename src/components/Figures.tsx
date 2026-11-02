@@ -70,7 +70,7 @@ const styles = stylex.create({
   },
   facts: {
     display: 'grid',
-    gridTemplateColumns: { default: '1fr 1.6fr 1fr 1fr', [breakpoints.tablet]: '1fr 1fr', [breakpoints.phone]: '1fr' },
+    gridTemplateColumns: { default: '1.3fr 1fr 1fr', [breakpoints.tablet]: '1fr 1fr', [breakpoints.phone]: '1fr' },
     rowGap: '1.25rem',
     columnGap: '2rem',
     marginTop: '2.25rem',
