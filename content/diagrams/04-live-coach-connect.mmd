@@ -18,7 +18,8 @@ sequenceDiagram
     P->>C: POST /v1/trainer/live-coach/usage
     C-->>P: ok, or stop: true past a limit
   end
-  Note over P,O: Up to 4 quiet retries (0.6 s, 1.5 s, 3 s).<br/>Secret refreshed about a minute before expiry
+  Note over P,O: If the call drops: a new secret and quiet retries<br/>after 1, 2, 4, 8 and 16 s, then 30 s (with jitter),<br/>up to a 150 s budget
+  Note over P,O: Then background retries for the rest of the workout:<br/>10, 20, 40, 80 and 160 s, then every 300 s,<br/>and about 1 s after the network comes back
   alt Realtime unavailable
     P->>X: On-device speech recognition,<br/>then a text request
     X-->>P: Text reply, spoken on the phone
