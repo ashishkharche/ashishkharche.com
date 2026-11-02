@@ -1,6 +1,6 @@
 flowchart TD
   L["App launches or<br/>returns to foreground"] --> CFG["GET /v1/config (public, before sign-in)"]
-  CFG --> FLAG["Minimum version from the min-app-version<br/>feature flag, cached 60 s; env var as fallback"]
+  CFG --> FLAG["Minimum version from the min-app-version<br/>feature flag, cached 45 s; env var as fallback"]
   FLAG --> Q{"App older than<br/>the minimum?"}
   Q -- no --> OK["Carry on"]
   Q -- yes --> S["'Time to update.' screen<br/>with App Store link"]

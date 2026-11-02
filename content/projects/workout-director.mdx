@@ -66,12 +66,12 @@ Phones in a gym are often offline, so uploads take an idempotency key, which mea
 
 A wrong count is the first thing a user notices, so counting changes shipped behind switches. Camera counting had its own feature flag, the internal team had a pose debug overlay, and individual behaviours had kill switches served from the backend's config endpoint, so a behaviour could be turned off without waiting for App Review. New counting models ran in shadow mode first, alongside the live counter, without changing the count anyone saw.
 
-Releases followed the same steps every time: a backend diff that stops if it would replace or delete a stateful resource, a health check after each deploy, and an app release that goes through TestFlight, a preflight checklist and, by default, a phased rollout. A minimum-version check let the backend ask old builds to update.
+Releases followed the same steps every time. Before each deploy, a release check runs cdk diff and fails if it would delete a stateful resource like the database or user pool. Each deploy is followed by a health check, and an app release goes through TestFlight, a preflight checklist and, by default, a phased rollout. A minimum-version check let the backend ask old builds to update.
 
 <Diagram
   diagram={releaseFlow}
   wide
-  title="Flowchart of the release process. Backend: sign in, cdk diff, stop if a stateful resource would be replaced or deleted, otherwise deploy and check health. iOS app: release branch and version bump, archive, upload, wait for App Store Connect, internal TestFlight, a core-feature gate and preflight, then App Review with a phased rollout."
+  title="Flowchart of the release process. Backend: sign in; before each deploy, a release check runs cdk diff and fails if it would delete a stateful resource like the database or user pool; otherwise deploy and check health. iOS app: release branch and version bump, archive, upload, wait for App Store Connect, internal TestFlight, a core-feature gate and preflight, then App Review with a phased rollout."
   caption="The backend and app release steps."
 />
 
