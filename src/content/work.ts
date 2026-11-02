@@ -28,7 +28,7 @@ export const roles: Role[] = [
     org: 'SpaceX Super Intelligence (SpaceXSI)',
     logo: 'spacexsi',
     orgNote: '(formerly xAI)',
-    role: 'Quality Assurance Engineer, part-time',
+    role: 'Quality Assurance Engineer',
     paragraphs: [
       'I did regression and release testing on more than 500 builds of the Grok iOS and web apps, covering chat, Imagine, Build and MCP as well as payments, subscriptions and sign-in. I checked changelogs, gave release sign-off and tracked bugs in Linear with the engineers through to release.',
     ],

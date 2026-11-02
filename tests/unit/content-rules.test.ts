@@ -35,11 +35,15 @@ describe('content rules', () => {
     expect(findBanned(readFileSync(file, 'utf8'))).toEqual([])
   })
 
-  it('shows the SpaceXSI role as part-time, Jan 2026 to Oct 2026', async () => {
+  it('shows the SpaceXSI role as Quality Assurance Engineer, Jan 2026 to Oct 2026, with no employment type', async () => {
     const { roles } = await import('~/content/work')
     const role = roles.find((r) => r.org.includes('SpaceXSI'))
     expect(role?.when).toBe('Jan 2026 to Oct 2026')
-    expect(role?.role).toMatch(/part-time/)
+    expect(role?.role).toBe('Quality Assurance Engineer')
+  })
+
+  it.each(sources)('%s never calls any role part-time', (file) => {
+    expect(readFileSync(file, 'utf8')).not.toMatch(/part[\s-]?time/i)
   })
 
   const localTerms = loadLocalTerms()

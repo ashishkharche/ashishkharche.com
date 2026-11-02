@@ -83,9 +83,7 @@ function Home() {
                     <span {...stylex.props(styles.roleHead)}>
                       <span {...stylex.props(styles.roleName)}>SpaceX Super Intelligence</span>
                     </span>
-                    <span {...stylex.props(styles.roleText)}>
-                      Part-time QA on more than 500 Grok iOS and web builds.
-                    </span>
+                    <span {...stylex.props(styles.roleText)}>QA on more than 500 Grok iOS and web builds.</span>
                   </span>
                 </li>
               </ul>

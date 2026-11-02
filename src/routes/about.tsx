@@ -46,7 +46,7 @@ function About() {
               page.
             </P>
             <P>
-              From January to October 2026 I also worked part-time in QA at <Logo name="spacexsi" size={20} inline />
+              From January to October 2026 I also worked in QA at <Logo name="spacexsi" size={20} inline />
               SpaceX Super Intelligence (formerly xAI), on regression and release testing of more than 500 builds of the
               Grok iOS and web apps.
             </P>
