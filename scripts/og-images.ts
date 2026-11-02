@@ -45,7 +45,7 @@ const cards: Card[] = [
   {
     src: noteOgImages['workout-director-1'].src,
     eyebrow: 'Notes · Workout Director, part 1',
-    title: 'Counting reps without the video leaving the phone',
+    title: 'Understanding on-device rep counting in Workout Director and what it sends over the network',
     footer: 'ashishkharche.com/notes',
     // The note shows the Pexels capture of the Voice screen, so its card does too.
     phones: ['/assets/img/wd/iphone/02-voice-pexels-800.webp'],

@@ -73,11 +73,11 @@ export function getNote(slug: string): Note | undefined {
 
 /** Parts of the Workout Director series that are planned but not written yet. */
 export const comingNotes = [
-  'Choosing a pose model for the phone',
-  "Most of a rep counter is the reps it doesn't count",
-  'Testing counting changes before they ship',
-  'A voice coach that asks before it acts',
-  'A small TypeScript backend on AWS Lambda',
-  'Shipping without breaking old phones',
-  "What I'd do differently",
+  'Comparing pose models for on-device tracking on the iPhone',
+  'How the rep counter rejects movements that are not reps',
+  'How changes to rep counting are tested before release',
+  'How the voice coach requests workout changes through tool calls',
+  'How the TypeScript backend on AWS Lambda is structured',
+  'Releasing updates without breaking older phones',
+  'Design decisions to revisit in Workout Director',
 ]

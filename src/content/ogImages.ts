@@ -28,7 +28,7 @@ export const ogImages = {
 export const noteOgImages = {
   'workout-director-1': {
     src: '/assets/og/notes-workout-director-1.png',
-    alt: 'Counting reps without the video leaving the phone. Workout Director, part 1.',
+    alt: 'Understanding on-device rep counting in Workout Director and what it sends over the network. Workout Director, part 1.',
   },
   'workout-director-2': {
     src: '/assets/og/notes-workout-director-2.png',
