@@ -3,7 +3,17 @@ import { Radio } from '@base-ui/react/radio'
 import { RadioGroup } from '@base-ui/react/radio-group'
 import { Select } from '@base-ui/react/select'
 import * as stylex from '@stylexjs/stylex'
-import { createContext, useContext, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 import {
   composeLabel,
   filterRows,
@@ -29,6 +39,7 @@ import {
   kindNames,
   liveTemplates,
   NoDataError,
+  scatterNotes,
   validateLive,
   type AppRef,
   type ChartText,
@@ -42,6 +53,7 @@ import { CHART_FONT_FILES } from '~/lib/charts/type'
 import { chartSizes, fileName, X_MAX_BYTES, type ChartSize } from '~/lib/charts/spec'
 import { asCtx, SvgContext, type SvgFont } from '~/lib/charts/svg'
 import { createTdnClient, iconAllowed, TdnError } from '~/lib/charts/tdn'
+import { AboutData } from './AboutData'
 import { breakpoints, colors, fonts, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
@@ -127,7 +139,16 @@ function rankedBy(label: LabelConfig, fields: ChartConfig['label_fields']) {
 /** Where select lists open: inside the page's main landmark, not at the end of the body. */
 const PopupLayer = createContext<HTMLElement | null>(null)
 
-type Entry = { id: string; kind: Kind | 'scatter'; name: string; about: string }
+type Entry = {
+  id: string
+  kind: Kind | 'scatter'
+  name: string
+  about: string
+  field: string
+  /** Why a template is held back from the default gallery, until its field is verified. */
+  pending?: string
+}
+type Filter = Kind | 'scatter' | 'all' | 'pending'
 const kindOrder: Array<Kind | 'scatter'> = ['headline', 'leaderboard', 'head-to-head', 'bump', 'dumbbell', 'scatter']
 
 const iconCache = new Map<string, Promise<Icon | null>>()
@@ -242,6 +263,13 @@ export function ChartBuilder({
     icons: Map<string, Icon>
   } | null>(null)
   const [liveText, setLiveText] = useState<ChartText | null>(null)
+  /** Each template's measured coverage, or why it is not shown, as its chart or preview loads. */
+  const [coverage, setCoverage] = useState<Record<string, string>>({})
+  const noteCoverage = useCallback(
+    (templateId: string, note: string) =>
+      setCoverage((c) => (c[templateId] === note ? c : { ...c, [templateId]: note })),
+    [],
+  )
 
   const liveTemplate = live.find((t) => t.id === templateId)
   const loadKey = liveTemplate ? `${templateId}|${rowCount ?? ''}|${pair?.join(',') ?? ''}|${attempt}` : ''
@@ -252,12 +280,14 @@ export function ChartBuilder({
   const liveState: 'loading' | 'ready' | 'error' = !current ? 'loading' : chart ? 'ready' : 'error'
   const entries: Entry[] = useMemo(
     () => [
-      ...live.map((t) => ({ id: t.id, kind: t.kind, name: t.name, about: t.about })),
+      ...live.map((t) => ({ id: t.id, kind: t.kind, name: t.name, about: t.about, field: t.field })),
       ...scatterList.map((t) => ({
         id: t.id,
         kind: 'scatter' as const,
         name: t.name,
         about: [t.sample, t.sourceShort, `data file, ${formatDate(t.date)}`].filter(Boolean).join(' · '),
+        field: scatterNotes[t.id]?.field ?? 'data file',
+        pending: scatterNotes[t.id]?.pending,
       })),
     ],
     [live, scatterList],
@@ -326,6 +356,7 @@ export function ChartBuilder({
         const iconMap = new Map(found.filter((f): f is readonly [string, Icon] => f[1] !== null))
         setLiveText(structuredClone(loaded.text))
         setResult({ key: loadKey, chart: loaded, error: '', icons: iconMap })
+        if (rowCount === undefined && pair === undefined) noteCoverage(loaded.templateId, loaded.coverage)
       })
       .catch((error: unknown) => {
         if (cancelled) return
@@ -342,7 +373,7 @@ export function ChartBuilder({
     return () => {
       cancelled = true
     }
-  }, [liveTemplate, client, rowCount, pair, loadKey])
+  }, [liveTemplate, client, rowCount, pair, loadKey, noteCoverage])
 
   const problems = useMemo(() => {
     if (liveTemplate) return chart && liveText ? validateLive(chart, liveText) : []
@@ -446,10 +477,13 @@ export function ChartBuilder({
 
   /** Brings the chart into view after a template is chosen from the gallery below it. */
   const showChart = () => {
-    const box = previewRef.current
-    if (!box || box.getBoundingClientRect().top >= 0) return
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    box.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' })
+    // After the choice is drawn: scrolling during the click is undone when the page re-lays out under it.
+    requestAnimationFrame(() => {
+      const box = previewRef.current
+      if (!box || box.getBoundingClientRect().top >= 0) return
+      const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      box.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' })
+    })
   }
 
   const reset = () => {
@@ -538,7 +572,12 @@ export function ChartBuilder({
       ? `${config.title}. ${config.subtitle ?? ''} Scatter chart of ${config.y.label.toLowerCase()} against ${config.x.label.toLowerCase()}.`
       : 'Chart preview'
   const labelFields = Object.entries(config?.label_fields ?? {})
-  const sizeNames: Record<ChartSize['id'], string> = { original: 'Default', wide: '16:9', square: '1:1' }
+  const sizeNames: Record<ChartSize['id'], string> = {
+    original: 'Default',
+    wide: '16:9',
+    square: '1:1',
+    portrait: '4:5',
+  }
   const dataLine = liveTemplate
     ? liveReady && chart
       ? `Data from ${chart.dataTime}`
@@ -865,7 +904,9 @@ export function ChartBuilder({
             source={source}
             fontsReady={fontsReady}
             waitFor={!ready && !liveError && !problems.length}
+            onCoverage={noteCoverage}
           />
+          <AboutData id={id} client={client} entries={entries} coverage={coverage} />
         </div>
       </PopupLayer.Provider>
     </CSPProvider>
@@ -891,6 +932,7 @@ function Gallery({
   source,
   fontsReady,
   waitFor,
+  onCoverage,
 }: {
   id: string
   entries: Entry[]
@@ -903,12 +945,17 @@ function Gallery({
   fontsReady: boolean
   /** True while the main chart is still loading: the thumbnails wait, so the chart is drawn first. */
   waitFor: boolean
+  onCoverage: (id: string, note: string) => void
 }) {
-  const [filter, setFilter] = useState<Kind | 'scatter' | 'all'>('all')
+  const ready = entries.filter((e) => !e.pending)
+  const held = entries.filter((e) => e.pending)
+  const [chosen, setFilter] = useState<Filter | null>(null)
+  // A template opened from the address that is pending verification opens its own filter, so its card is shown.
+  const filter: Filter = chosen ?? (held.some((e) => e.id === selected) ? 'pending' : 'all')
   const pointer = useRef(false)
 
-  const kinds = kindOrder.filter((k) => entries.some((e) => e.kind === k))
-  const shown = filter === 'all' ? entries : entries.filter((e) => e.kind === filter)
+  const kinds = kindOrder.filter((k) => ready.some((e) => e.kind === k))
+  const shown = filter === 'pending' ? held : filter === 'all' ? ready : ready.filter((e) => e.kind === filter)
   const headingId = `${id}-gallery`
 
   return (
@@ -918,7 +965,7 @@ function Gallery({
           Templates
         </h2>
         <p {...stylex.props(styles.galleryCount)}>
-          {shown.length} of {entries.length}
+          {filter === 'pending' ? `${shown.length} pending verification` : `${shown.length} of ${ready.length}`}
         </p>
       </div>
       <div role="group" aria-label="Show templates of one kind" {...stylex.props(styles.chips, styles.filters)}>
@@ -930,7 +977,17 @@ function Gallery({
             {kindNames[k]}
           </Chip>
         ))}
+        {held.length ? (
+          <Chip pressed={filter === 'pending'} onClick={() => setFilter('pending')}>
+            Pending verification
+          </Chip>
+        ) : null}
       </div>
+      {filter === 'pending' ? (
+        <p {...stylex.props(styles.galleryNote)}>
+          These use fields not yet checked against the live API, so they are not in the default gallery.
+        </p>
+      ) : null}
       <div role="radiogroup" aria-labelledby={headingId} {...stylex.props(styles.cards)}>
         {shown.map((t) => {
           const on = t.id === selected
@@ -963,7 +1020,14 @@ function Gallery({
                 {...stylex.props(styles.cardInput)}
               />
               <span {...stylex.props(styles.thumbBox, on && styles.thumbOn)}>
-                <Thumb entry={t} live={live} client={client} source={source} enabled={fontsReady && !waitFor} />
+                <Thumb
+                  entry={t}
+                  live={live}
+                  client={client}
+                  source={source}
+                  enabled={fontsReady && !waitFor}
+                  onCoverage={onCoverage}
+                />
                 {on ? (
                   <span {...stylex.props(styles.badge)}>
                     <Check />
@@ -977,7 +1041,7 @@ function Gallery({
               </span>
               <span {...stylex.props(styles.cardName)}>{t.name}</span>
               <span id={`${id}-about-${t.id}`} {...stylex.props(styles.cardAbout)}>
-                {t.about}
+                {t.pending ? `Pending verification · ${t.about}` : t.about}
               </span>
             </label>
           )
@@ -994,12 +1058,14 @@ function Thumb({
   client,
   source,
   enabled,
+  onCoverage,
 }: {
   entry: Entry
   live: LiveTemplate[]
   client: ReturnType<typeof createTdnClient>
   source: ChartDataSource
   enabled: boolean
+  onCoverage: (id: string, note: string) => void
 }) {
   const ref = useRef<HTMLCanvasElement>(null)
   const [state, setState] = useState<'waiting' | 'ready' | 'none'>('waiting')
@@ -1032,11 +1098,14 @@ function Thumb({
           ),
         )
         const icons = new Map(found.filter((f): f is readonly [string, Icon] => f[1] !== null))
+        onCoverage(entry.id, chart.coverage)
         return (ctx: Ctx) => drawLive(ctx, chart, chart.text, { ...THUMB, icons })
       }
       const t = await source.loadTemplate(entry.id)
       const sprite = t.iconSprite ? await loadImage(t.iconSprite).catch(() => null) : null
       if (!sprite) throw new Error('no icons')
+      const plotted = filterRows(t.rows, t.config).length
+      onCoverage(entry.id, `${plotted} of ${t.rows.length} rows in the data file plotted; a data file, not live.`)
       return (ctx: Ctx) => drawChart(ctx, t.config, t.rows, { ...THUMB, source: t.config.source_default ?? '', sprite })
     })()
     drawing.then(
@@ -1050,14 +1119,17 @@ function Thumb({
           setState('none')
         }
       },
-      () => {
-        if (!cancelled) setState('none')
+      (error: unknown) => {
+        if (cancelled) return
+        setState('none')
+        if (live.some((l) => l.id === entry.id))
+          onCoverage(entry.id, error instanceof NoDataError ? `Not shown: ${error.message}` : 'Not shown: no data.')
       },
     )
     return () => {
       cancelled = true
     }
-  }, [enabled, seen, state, entry.id, live, client, source])
+  }, [enabled, seen, state, entry.id, live, client, source, onCoverage])
 
   return (
     <>
@@ -1516,6 +1588,7 @@ const styles = stylex.create({
   galleryHead: { display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px' },
   galleryTitle: { fontFamily: fonts.serif, fontSize: text.lead, fontWeight: weights.regular, lineHeight: 1.3 },
   galleryCount: { fontSize: text.meta, color: colors.muted, lineHeight: 1.5 },
+  galleryNote: { marginTop: '-12px', marginBottom: '24px', fontSize: text.meta, color: colors.muted, lineHeight: 1.5 },
   filters: {
     marginTop: '16px',
     marginBottom: '24px',

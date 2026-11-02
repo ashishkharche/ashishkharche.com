@@ -65,7 +65,8 @@ function LabCharts() {
               <a href={xImageSources.help} {...stylex.props(ui.link)}>
                 X Help Center
               </a>
-              ). All three sizes fit. 1200 × 1200 and 1920 × 1080 are the square and 16:9 sizes in the X{' '}
+              ). All four sizes fit, 4:5 (1080 × 1350) included. 1200 × 1200 and 1920 × 1080 are the square and 16:9
+              sizes in the X{' '}
               <a href={xImageSources.adSpecs} {...stylex.props(ui.link)}>
                 ad specifications
               </a>

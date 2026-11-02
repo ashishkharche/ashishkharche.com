@@ -215,14 +215,8 @@ describe('template words', () => {
 })
 
 describe('templates', () => {
-  it('has the three X charts and two more', () => {
-    expect(ids).toEqual([
-      'us-rank-countries',
-      'android-permissions',
-      'ai-apps-ios-android-sdks',
-      'android-native-libs',
-      'us-rating-countries',
-    ])
+  it('has the data-file charts, without the iOS vs Android SDK comparison', () => {
+    expect(ids).toEqual(['us-rank-countries', 'android-permissions', 'android-native-libs', 'us-rating-countries'])
   })
   for (const id of ids) {
     it(`${id} passes the data rules and states its date and source`, () => {
@@ -314,7 +308,7 @@ describe('data rules', () => {
     expect(validate(config, rows, source(config)).join('\n')).toContain(`must say "${caveat}"`)
   })
   it('marks stale rows and dated fields', () => {
-    const { config, rows } = load('ai-apps-ios-android-sdks')
+    const { config, rows } = load('android-native-libs')
     expect(staleRows(rows, config).length).toBeGreaterThan(0)
     const noMark = structuredClone(config)
     Object.assign(noMark.staleness ?? {}, { annotate: false })

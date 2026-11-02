@@ -1,6 +1,6 @@
 /** Output sizes. Sources for the X guidance are linked on the page (xImageSources). */
 export interface ChartSize {
-  id: 'original' | 'wide' | 'square'
+  id: 'original' | 'wide' | 'square' | 'portrait'
   label: string
   width: number
   height: number
@@ -10,6 +10,7 @@ export const chartSizes: ChartSize[] = [
   { id: 'original', label: 'Same as the X charts, 1800 × 1390', width: 1800, height: 1390 },
   { id: 'wide', label: '16:9, 1920 × 1080', width: 1920, height: 1080 },
   { id: 'square', label: '1:1, 1200 × 1200', width: 1200, height: 1200 },
+  { id: 'portrait', label: '4:5, 1080 × 1350', width: 1080, height: 1350 },
 ]
 
 /** X shows a single image in full between 2:1 and 3:4, and photos can be up to 5 MB. */

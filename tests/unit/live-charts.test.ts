@@ -224,8 +224,8 @@ describe('kind mappers', () => {
 })
 
 describe('live templates', () => {
-  it('has 7 live templates across the 5 kinds, each within 5 requests', () => {
-    expect(liveTemplates).toHaveLength(7)
+  it('has 14 live templates across the 5 kinds, each within 5 requests', () => {
+    expect(liveTemplates).toHaveLength(14)
     expect(new Set(liveTemplates.map((t) => t.kind))).toEqual(
       new Set(['headline', 'leaderboard', 'head-to-head', 'bump', 'dumbbell']),
     )

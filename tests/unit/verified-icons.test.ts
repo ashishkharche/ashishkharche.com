@@ -112,8 +112,13 @@ describe('no letter stand-ins for app icons', () => {
     const chart = await load(id)
     const ctx = textCtx()
     drawLive(ctx, chart, chart.text, { width: 1800, height: 1390, icons: new Map() })
-    const initials = new Set(appNames(chart).map((n) => n.trim()[0]?.toUpperCase()))
-    expect(ctx.texts.filter((t) => t.length === 1 && initials.has(t.toUpperCase()))).toEqual([])
+    const names = appNames(chart).map((n) => n.trim())
+    // An app whose whole name is one letter (X) is its name, not a stand-in.
+    const whole = new Set(names.filter((n) => n.length === 1).map((n) => n.toUpperCase()))
+    const initials = new Set(names.filter((n) => n.length > 1).map((n) => n[0]?.toUpperCase()))
+    expect(
+      ctx.texts.filter((t) => t.length === 1 && initials.has(t.toUpperCase()) && !whole.has(t.toUpperCase())),
+    ).toEqual([])
   })
 
   it('scatter charts draw no initial without the icon sprite', () => {

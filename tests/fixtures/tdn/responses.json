@@ -1815,6 +1815,33 @@
         "currentRank": 61,
         "previousRank": 62,
         "change": 1
+      },
+      {
+        "appId": "com.zhiliaoapp.musically",
+        "store": "google",
+        "name": "TikTok - Videos, Shop & LIVE",
+        "iconUrl": "https://play-lh.googleusercontent.com/2o7iuqPe-0msP3DvNhzoOgNo4eZ6GkL_RtGVeKyBn5UBQAW5cw-GW5V3wDOHB1yTQuqWzrFLFOv2u4_5ea1uhg",
+        "currentRank": 2,
+        "previousRank": 11,
+        "change": 9
+      },
+      {
+        "appId": "com.google.android.apps.bard",
+        "store": "google",
+        "name": "Google Gemini",
+        "iconUrl": "https://play-lh.googleusercontent.com/C64IqPWyFoCZzXVxXVl0Y6mliiNlG_sZJsqul-SBvk9ZL0wJHlU0Eho2wvsBHhho0FT5XQtH55RVGerIwXF_MA",
+        "currentRank": 3,
+        "previousRank": 9,
+        "change": 6
+      },
+      {
+        "appId": "com.whatsapp",
+        "store": "google",
+        "name": "WhatsApp Messenger",
+        "iconUrl": "https://play-lh.googleusercontent.com/Gqxk4T0uZsDwFp07DE-508hkyvcNmgFuRwPiwTEfF7D7OzGv1FdHDzEyMxNsSBZLOJlGpe3ULvVM2RgrRAlBqA",
+        "currentRank": 4,
+        "previousRank": 7,
+        "change": 3
       }
     ],
     "meta": {
@@ -1995,6 +2022,2317 @@
       "country": "us",
       "days": 30,
       "count": 2
+    }
+  },
+  "rankings?chart=top-free&country=gb&limit=200&store=apple": {
+    "data": [
+      {
+        "rank": 1,
+        "appId": "6448311069",
+        "store": "apple",
+        "name": "ChatGPT",
+        "developer": "Chat Labs",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/72/2d/27/722d272a-9d6f-d186-8a92-6a884107df8f/AppIcon-0-0-1x_U007epad-0-0-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 2,
+        "appId": "6477489729",
+        "store": "apple",
+        "name": "Google Gemini",
+        "developer": "Google LLC",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/63/33/1b/63331b32-bc24-fa24-d7e7-935cb16e6c34/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 4,
+        "appId": "6446901002",
+        "store": "apple",
+        "name": "Threads",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/ed/07/8ded072b-5d6f-4053-07fa-d24a00b5b72f/Prod-0-0-1x_U007ephone-0-0-0-1-0-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 5,
+        "appId": "6760173601",
+        "store": "apple",
+        "name": "Muse from Meta",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/5e/50/aa/5e50aa6f-edf9-9ef4-6519-e7515f562369/HatchAppIconPublic-0-0-1x_U007epad-0-1-0-sRGB-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 6,
+        "appId": "1500855883",
+        "store": "apple",
+        "name": "CapCut: Photo & Video Editor",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/31/d8/5b/31d85b5d-7785-5789-df84-1b052afd2e43/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 8,
+        "appId": "835599320",
+        "store": "apple",
+        "name": "TikTok - Videos, Shop & LIVE",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/19/60/31/1960312d-f882-d651-6ea6-53a3179dee9b/TikTok_AppIcon26-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 9,
+        "appId": "368677368",
+        "store": "apple",
+        "name": "Uber - Rides, Eats, Hotels",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/90/21/b7/9021b7b0-dfd3-1009-9ddd-ede0f47c1605/AppIcon-0-0-1x_U007emarketing-0-8-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 11,
+        "appId": "389801252",
+        "store": "apple",
+        "name": "Instagram",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/44/b0/cc/44b0cc3a-e91f-2824-d98f-3e5e095a73f3/Prod-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 13,
+        "appId": "6473753684",
+        "store": "apple",
+        "name": "Claude by Anthropic",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/8e/7d/46/8e7d46b1-57f2-77eb-60e2-cd42c9563e45/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 14,
+        "appId": "310633997",
+        "store": "apple",
+        "name": "WhatsApp Messenger",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/20/fb/af/20fbaf91-8768-faec-4b39-a77c2f77668b/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 17,
+        "appId": "544007664",
+        "store": "apple",
+        "name": "YouTube",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/82/43/be/8243be7f-17c3-33ae-720a-ffcde48bed61/logo_youtube_2024_q4_color-0-0-1x_U007emarketing-0-0-0-7-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 19,
+        "appId": "6670324846",
+        "store": "apple",
+        "name": "Grok - AI Chat & Video",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/26/03/47/260347d0-42b7-53f6-04cb-b14071a57fca/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 22,
+        "appId": "284882215",
+        "store": "apple",
+        "name": "Facebook",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/77/5b/7b/775b7b40-4e22-ba5e-2255-668c2473048c/Icon-Production-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 27,
+        "appId": "686449807",
+        "store": "apple",
+        "name": "Telegram Messenger",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ce/41/d8/ce41d807-350e-69f1-f31e-16be42b6ebfb/Telegram-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 31,
+        "appId": "447188370",
+        "store": "apple",
+        "name": "Snapchat",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/3f/11/6a/3f116ab5-1843-cd84-b8cd-2937ff331be7/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 38,
+        "appId": "324684580",
+        "store": "apple",
+        "name": "Spotify: Music and Podcasts",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8b/f2/6a/8bf26ab9-3ced-cb5c-a2b3-19f65e7f5cc6/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 44,
+        "appId": "333903271",
+        "store": "apple",
+        "name": "X",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fd/d8/16/fdd81617-e34f-f777-e92c-a10de9d23c8d/ProductionAppIcon-0-0-1x_U007emarketing-0-8-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 52,
+        "appId": "429047995",
+        "store": "apple",
+        "name": "Pinterest",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f0/8e/3d/f08e3d30-65df-7233-d2e5-a9cb133c6af1/AppIcon-0-0-1x_U007epad-0-1-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 61,
+        "appId": "985746746",
+        "store": "apple",
+        "name": "Discord - Talk, Play, Hang Out",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/69/3b/7e/693b7e6b-55ba-51ba-2608-6b38dabd6021/AppIcon-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 73,
+        "appId": "1064216828",
+        "store": "apple",
+        "name": "Reddit",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b0/5c/8d/b05c8da2-f405-1284-3467-3feaa31fb2c2/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      }
+    ],
+    "meta": {
+      "store": "apple",
+      "country": "gb",
+      "chart": "top-free",
+      "category": "all",
+      "recordedAt": "2026-11-01 12:18:03",
+      "count": 20,
+      "total": 20,
+      "limit": 200,
+      "nextCursor": null
+    }
+  },
+  "rankings?chart=top-grossing&country=us&limit=200&store=apple": {
+    "data": [
+      {
+        "rank": 1,
+        "appId": "6448311069",
+        "store": "apple",
+        "name": "ChatGPT",
+        "developer": "Chat Labs",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/72/2d/27/722d272a-9d6f-d186-8a92-6a884107df8f/AppIcon-0-0-1x_U007epad-0-0-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 2,
+        "appId": "6477489729",
+        "store": "apple",
+        "name": "Google Gemini",
+        "developer": "Google LLC",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/63/33/1b/63331b32-bc24-fa24-d7e7-935cb16e6c34/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 4,
+        "appId": "6446901002",
+        "store": "apple",
+        "name": "Threads",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/ed/07/8ded072b-5d6f-4053-07fa-d24a00b5b72f/Prod-0-0-1x_U007ephone-0-0-0-1-0-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 5,
+        "appId": "6760173601",
+        "store": "apple",
+        "name": "Muse from Meta",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/5e/50/aa/5e50aa6f-edf9-9ef4-6519-e7515f562369/HatchAppIconPublic-0-0-1x_U007epad-0-1-0-sRGB-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 6,
+        "appId": "1500855883",
+        "store": "apple",
+        "name": "CapCut: Photo & Video Editor",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/31/d8/5b/31d85b5d-7785-5789-df84-1b052afd2e43/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 8,
+        "appId": "835599320",
+        "store": "apple",
+        "name": "TikTok - Videos, Shop & LIVE",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/19/60/31/1960312d-f882-d651-6ea6-53a3179dee9b/TikTok_AppIcon26-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 9,
+        "appId": "368677368",
+        "store": "apple",
+        "name": "Uber - Rides, Eats, Hotels",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/90/21/b7/9021b7b0-dfd3-1009-9ddd-ede0f47c1605/AppIcon-0-0-1x_U007emarketing-0-8-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 11,
+        "appId": "389801252",
+        "store": "apple",
+        "name": "Instagram",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/44/b0/cc/44b0cc3a-e91f-2824-d98f-3e5e095a73f3/Prod-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 13,
+        "appId": "6473753684",
+        "store": "apple",
+        "name": "Claude by Anthropic",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/8e/7d/46/8e7d46b1-57f2-77eb-60e2-cd42c9563e45/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 14,
+        "appId": "310633997",
+        "store": "apple",
+        "name": "WhatsApp Messenger",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/20/fb/af/20fbaf91-8768-faec-4b39-a77c2f77668b/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 17,
+        "appId": "544007664",
+        "store": "apple",
+        "name": "YouTube",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/82/43/be/8243be7f-17c3-33ae-720a-ffcde48bed61/logo_youtube_2024_q4_color-0-0-1x_U007emarketing-0-0-0-7-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 19,
+        "appId": "6670324846",
+        "store": "apple",
+        "name": "Grok - AI Chat & Video",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/26/03/47/260347d0-42b7-53f6-04cb-b14071a57fca/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 22,
+        "appId": "284882215",
+        "store": "apple",
+        "name": "Facebook",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/77/5b/7b/775b7b40-4e22-ba5e-2255-668c2473048c/Icon-Production-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 27,
+        "appId": "686449807",
+        "store": "apple",
+        "name": "Telegram Messenger",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ce/41/d8/ce41d807-350e-69f1-f31e-16be42b6ebfb/Telegram-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 31,
+        "appId": "447188370",
+        "store": "apple",
+        "name": "Snapchat",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/3f/11/6a/3f116ab5-1843-cd84-b8cd-2937ff331be7/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 38,
+        "appId": "324684580",
+        "store": "apple",
+        "name": "Spotify: Music and Podcasts",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8b/f2/6a/8bf26ab9-3ced-cb5c-a2b3-19f65e7f5cc6/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 44,
+        "appId": "333903271",
+        "store": "apple",
+        "name": "X",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fd/d8/16/fdd81617-e34f-f777-e92c-a10de9d23c8d/ProductionAppIcon-0-0-1x_U007emarketing-0-8-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 52,
+        "appId": "429047995",
+        "store": "apple",
+        "name": "Pinterest",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f0/8e/3d/f08e3d30-65df-7233-d2e5-a9cb133c6af1/AppIcon-0-0-1x_U007epad-0-1-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 61,
+        "appId": "985746746",
+        "store": "apple",
+        "name": "Discord - Talk, Play, Hang Out",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/69/3b/7e/693b7e6b-55ba-51ba-2608-6b38dabd6021/AppIcon-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "rank": 73,
+        "appId": "1064216828",
+        "store": "apple",
+        "name": "Reddit",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b0/5c/8d/b05c8da2-f405-1284-3467-3feaa31fb2c2/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      }
+    ],
+    "meta": {
+      "store": "apple",
+      "country": "us",
+      "chart": "top-grossing",
+      "category": "all",
+      "recordedAt": "2026-11-01 12:18:03",
+      "count": 20,
+      "total": 20,
+      "limit": 200,
+      "nextCursor": null
+    }
+  },
+  "rank-history?chart=top-free&countries=gb&days=30&id=6448311069&store=apple": {
+    "data": {
+      "appId": "6448311069",
+      "store": "apple",
+      "chart": "top-free",
+      "category": "all",
+      "series": [
+        {
+          "country": "gb",
+          "points": [
+            {
+              "at": "2026-10-03 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-03 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-04 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-04 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-05 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-05 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-06 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-06 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-07 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-07 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-08 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-08 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-09 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-09 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-10 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-10 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-11 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-11 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-12 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-12 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-13 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-13 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-14 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-14 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-15 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-15 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-16 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-16 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-17 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-17 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-18 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-18 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-19 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-19 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-20 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-20 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-21 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-21 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-22 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-22 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-23 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-23 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-24 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-24 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-25 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-25 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-26 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-26 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-27 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-27 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-28 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-28 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-29 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-29 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-30 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-30 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-31 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-31 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-11-01 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-11-01 12:18:03",
+              "rank": 1
+            }
+          ]
+        }
+      ]
+    },
+    "meta": {
+      "from": "2026-10-03",
+      "to": "2026-11-01",
+      "countries": 1,
+      "points": 60,
+      "truncated": false
+    }
+  },
+  "rank-history?chart=top-grossing&countries=us&days=30&id=6448311069&store=apple": {
+    "data": {
+      "appId": "6448311069",
+      "store": "apple",
+      "chart": "top-grossing",
+      "category": "all",
+      "series": [
+        {
+          "country": "us",
+          "points": [
+            {
+              "at": "2026-10-03 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-03 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-04 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-04 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-05 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-05 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-06 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-06 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-07 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-07 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-08 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-08 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-09 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-09 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-10 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-10 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-11 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-11 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-12 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-12 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-13 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-13 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-14 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-14 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-15 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-15 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-16 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-16 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-17 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-17 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-18 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-18 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-19 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-19 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-20 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-20 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-21 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-21 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-22 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-22 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-23 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-23 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-24 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-24 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-25 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-25 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-26 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-26 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-27 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-27 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-28 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-28 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-29 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-29 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-30 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-30 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-31 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-31 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-11-01 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-11-01 12:18:03",
+              "rank": 1
+            }
+          ]
+        }
+      ]
+    },
+    "meta": {
+      "from": "2026-10-03",
+      "to": "2026-11-01",
+      "countries": 1,
+      "points": 60,
+      "truncated": false
+    }
+  },
+  "rank-history?chart=top-free&countries=us&days=30&id=com.openai.chatgpt&store=google": {
+    "data": {
+      "appId": "com.openai.chatgpt",
+      "store": "google",
+      "chart": "top-free",
+      "category": "all",
+      "series": [
+        {
+          "country": "us",
+          "points": [
+            {
+              "at": "2026-10-03 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-03 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-04 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-04 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-05 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-05 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-06 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-06 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-07 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-07 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-08 00:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-08 12:18:03",
+              "rank": 5
+            },
+            {
+              "at": "2026-10-09 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-09 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-10 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-10 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-11 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-11 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-12 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-12 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-13 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-13 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-14 00:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-14 12:18:03",
+              "rank": 4
+            },
+            {
+              "at": "2026-10-15 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-15 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-16 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-16 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-17 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-17 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-18 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-18 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-19 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-19 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-20 00:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-20 12:18:03",
+              "rank": 3
+            },
+            {
+              "at": "2026-10-21 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-21 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-22 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-22 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-23 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-23 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-24 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-24 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-25 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-25 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-26 00:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-26 12:18:03",
+              "rank": 2
+            },
+            {
+              "at": "2026-10-27 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-27 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-28 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-28 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-29 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-29 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-30 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-30 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-31 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-10-31 12:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-11-01 00:18:03",
+              "rank": 1
+            },
+            {
+              "at": "2026-11-01 12:18:03",
+              "rank": 1
+            }
+          ]
+        }
+      ]
+    },
+    "meta": {
+      "from": "2026-10-03",
+      "to": "2026-11-01",
+      "countries": 1,
+      "points": 60,
+      "truncated": false
+    }
+  },
+  "app-rankings?chart_type=top-free&id=6473753684&store=apple": {
+    "appId": "6473753684",
+    "store": "apple",
+    "chartType": "top-free",
+    "rankings": [
+      {
+        "country": "us",
+        "rank": 9,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "gb",
+        "rank": 66,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "ca",
+        "rank": 48,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "au",
+        "rank": 9,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "de",
+        "rank": 39,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "fr",
+        "rank": 67,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "es",
+        "rank": 14,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "it",
+        "rank": 60,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "nl",
+        "rank": 50,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "se",
+        "rank": 10,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "no",
+        "rank": 62,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "dk",
+        "rank": 51,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "fi",
+        "rank": 10,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "pl",
+        "rank": 67,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "pt",
+        "rank": 33,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "ie",
+        "rank": 12,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "at",
+        "rank": 39,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "ch",
+        "rank": 65,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "be",
+        "rank": 11,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "jp",
+        "rank": 36,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "kr",
+        "rank": 59,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "in",
+        "rank": 14,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "br",
+        "rank": 14,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "mx",
+        "rank": 60,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "ar",
+        "rank": 15,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "cl",
+        "rank": 38,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "co",
+        "rank": 34,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "sg",
+        "rank": 10,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "my",
+        "rank": 55,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "th",
+        "rank": 19,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "id",
+        "rank": 11,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "ph",
+        "rank": 17,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "vn",
+        "rank": 10,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "tr",
+        "rank": 11,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "ae",
+        "rank": 46,
+        "recordedAt": "2026-11-01 12:18:03"
+      },
+      {
+        "country": "sa",
+        "rank": 66,
+        "recordedAt": "2026-11-01 00:18:03"
+      },
+      {
+        "country": "za",
+        "rank": 16,
+        "recordedAt": "2026-10-27 12:18:03"
+      },
+      {
+        "country": "ng",
+        "rank": 60,
+        "recordedAt": "2026-10-27 12:18:03"
+      }
+    ],
+    "count": 38
+  },
+  "tech-stack-app?id=6448311069&store=apple": {
+    "data": {
+      "appId": "6448311069",
+      "store": "apple",
+      "slug": "chatgpt",
+      "bundleId": "com.openai.chat",
+      "appName": "ChatGPT",
+      "version": "1.2026.286",
+      "capturedAt": "2026-10-23T15:27:15.243978+00:00",
+      "sdkCount": 28,
+      "sdkListIsFloor": true,
+      "binaryEncrypted": true,
+      "versions": [
+        {
+          "version": "1.2026.286",
+          "capturedAt": "2026-10-23T15:27:15.243978+00:00"
+        },
+        {
+          "version": "1.2026.146",
+          "capturedAt": "2026-06-19T04:27:53.575864+00:00"
+        },
+        {
+          "version": "1.2026.139",
+          "capturedAt": "2026-06-01T11:08:17.236820+00:00"
+        }
+      ],
+      "techStack": {
+        "slug": "chatgpt",
+        "bundleId": "com.openai.chat",
+        "appName": "ChatGPT",
+        "appStoreId": "6448311069",
+        "languages": ["C/C++", "Metal (shaders)", "Objective-C", "Swift"],
+        "appleFrameworks": [
+          "ActivityKit (Live Activities)",
+          "AdServices (Apple Search Ads attribution)",
+          "AdSupport (IDFA)",
+          "App Intents",
+          "App Tracking Transparency (ATT)",
+          "Authentication Services (Sign in with Apple / passkeys)",
+          "AVFoundation (audio/video)",
+          "AVKit",
+          "Background Tasks",
+          "CallKit (VoIP)",
+          "Combine (reactive)",
+          "Contacts",
+          "Core Data",
+          "Core Image",
+          "Core Location",
+          "Core Motion",
+          "CryptoKit",
+          "DeviceCheck / App Attest",
+          "EventKit (Calendar / Reminders)",
+          "HealthKit",
+          "Local Authentication (Face ID / Touch ID)",
+          "MapKit",
+          "Media Player",
+          "MessageUI (mail / SMS compose)",
+          "MetalKit",
+          "MetricKit (diagnostics)",
+          "Natural Language",
+          "Network.framework",
+          "PassKit (Wallet / Apple Pay)",
+          "PDFKit",
+          "PencilKit",
+          "Photos",
+          "PhotosUI",
+          "PushKit (VoIP push)",
+          "SafariServices",
+          "SceneKit",
+          "SiriKit (Intents)",
+          "Speech (recognition)",
+          "StoreKit (in-app purchase)",
+          "Swift Charts",
+          "SwiftUI",
+          "UIKit",
+          "User Notifications",
+          "Vision",
+          "VisionKit (document/data scanning)",
+          "WidgetKit (widgets)"
+        ],
+        "sdks": [
+          {
+            "category": "analytics",
+            "label": "Analytics",
+            "items": [
+              {
+                "name": "Segment",
+                "version": null,
+                "slug": "segment",
+                "displayName": "Segment",
+                "homepage": "https://segment.com/",
+                "description": "Customer data platform / event pipeline.",
+                "vendor": "Twilio",
+                "source": "https://segment.com/",
+                "icon": "https://cdn.simpleicons.org/segment",
+                "confidence": "present",
+                "matchBasis": "curated"
+              }
+            ]
+          },
+          {
+            "category": "payments",
+            "label": "Payments",
+            "items": [
+              {
+                "name": "LinkKit",
+                "version": "6.5.2",
+                "slug": "linkkit",
+                "confidence": "present"
+              },
+              {
+                "name": "Stripe",
+                "version": null,
+                "slug": "stripe",
+                "displayName": "Stripe",
+                "source": "https://stripe.com/docs/mobile/ios",
+                "homepage": "https://stripe.com/",
+                "repo": "https://github.com/stripe/stripe-ios",
+                "description": "Payments and financial infrastructure SDK.",
+                "license": "MIT",
+                "vendor": "Stripe",
+                "icon": "https://cdn.simpleicons.org/stripe",
+                "confidence": "present",
+                "matchBasis": "curated"
+              }
+            ]
+          },
+          {
+            "category": "networking",
+            "label": "Networking",
+            "items": [
+              {
+                "name": "Reachability",
+                "version": null,
+                "slug": "reachability",
+                "source": "https://github.com/tonymillion/Reachability",
+                "homepage": "https://github.com/tonymillion/Reachability",
+                "repo": "https://github.com/tonymillion/Reachability",
+                "description": "ARC and GCD Compatible Reachability Class for iOS and OS X. Drop in replacement for Apple Reachability.",
+                "license": "BSD",
+                "icon": "https://github.com/tonymillion.png?size=128",
+                "vendor": "tonymillion",
+                "confidence": "present",
+                "matchBasis": "name-guess"
+              }
+            ]
+          },
+          {
+            "category": "rendering",
+            "label": "Rendering",
+            "items": [
+              {
+                "name": "Highlight.js",
+                "version": "11.11.1",
+                "slug": "highlight-js",
+                "confidence": "inferred"
+              },
+              {
+                "name": "Highlightr",
+                "version": null,
+                "slug": "highlightr",
+                "source": "http://github.com/raspu/Highlightr",
+                "homepage": "http://github.com/raspu/Highlightr",
+                "repo": "https://github.com/raspu/Highlightr",
+                "description": "iOS & macOS Syntax Highlighter.",
+                "license": "MIT",
+                "icon": "https://github.com/raspu.png?size=128",
+                "vendor": "raspu",
+                "confidence": "present",
+                "matchBasis": "name-guess"
+              },
+              {
+                "name": "KaTeX",
+                "version": null,
+                "slug": "katex",
+                "confidence": "inferred"
+              },
+              {
+                "name": "Kingfisher",
+                "version": null,
+                "slug": "kingfisher",
+                "displayName": "Kingfisher",
+                "source": "https://github.com/onevcat/Kingfisher",
+                "homepage": "https://github.com/onevcat/Kingfisher",
+                "repo": "https://github.com/onevcat/Kingfisher",
+                "description": "Swift image downloading and caching.",
+                "license": "MIT",
+                "vendor": "Wei Wang",
+                "icon": "https://github.com/onevcat.png?size=128",
+                "confidence": "present",
+                "matchBasis": "curated"
+              },
+              {
+                "name": "Lottie",
+                "version": "4.6.1",
+                "slug": "lottie",
+                "displayName": "Lottie",
+                "homepage": "https://airbnb.io/lottie/",
+                "description": "Renders After Effects vector animations.",
+                "vendor": "Airbnb",
+                "source": "https://airbnb.io/lottie/",
+                "icon": "https://cdn.simpleicons.org/airbnb",
+                "confidence": "present",
+                "matchBasis": "curated"
+              },
+              {
+                "name": "OAIMarkdown",
+                "version": null,
+                "slug": "oaimarkdown",
+                "confidence": "present"
+              }
+            ]
+          },
+          {
+            "category": "voice",
+            "label": "Voice",
+            "items": [
+              {
+                "name": "LiveKit",
+                "version": "1.0",
+                "slug": "livekit",
+                "displayName": "LiveKit",
+                "source": "https://github.com/furysheep",
+                "homepage": "https://livekit.io/",
+                "repo": "https://github.com/furysheep/LFLiveKit",
+                "description": "Real-time audio/video (WebRTC) SDK.",
+                "license": "MIT",
+                "vendor": "LiveKit",
+                "icon": "https://cdn.simpleicons.org/livekit",
+                "confidence": "present",
+                "matchBasis": "curated"
+              }
+            ]
+          },
+          {
+            "category": "telephony",
+            "label": "Telephony",
+            "items": [
+              {
+                "name": "PhoneNumberKit",
+                "version": null,
+                "slug": "phonenumberkit",
+                "source": "https://github.com/marmelroy/PhoneNumberKit",
+                "homepage": "https://github.com/marmelroy/PhoneNumberKit",
+                "repo": "https://github.com/marmelroy/PhoneNumberKit",
+                "description": "Swift framework for working with phone numbers",
+                "license": "MIT",
+                "icon": "https://github.com/marmelroy.png?size=128",
+                "vendor": "marmelroy",
+                "confidence": "present",
+                "matchBasis": "name-guess"
+              }
+            ]
+          },
+          {
+            "category": "debugging",
+            "label": "Debugging",
+            "items": [
+              {
+                "name": "Logger",
+                "version": null,
+                "slug": "logger",
+                "confidence": "present"
+              }
+            ]
+          },
+          {
+            "category": "other",
+            "label": "Other",
+            "items": [
+              {
+                "name": "CalpicoCoreUI",
+                "version": null,
+                "slug": "calpicocoreui",
+                "confidence": "present"
+              },
+              {
+                "name": "CodexRemoteCore",
+                "version": null,
+                "slug": "codexremotecore",
+                "confidence": "present"
+              },
+              {
+                "name": "CodexRemoteThread",
+                "version": null,
+                "slug": "codexremotethread",
+                "confidence": "present"
+              },
+              {
+                "name": "DeviceHaptics",
+                "version": null,
+                "slug": "devicehaptics",
+                "confidence": "present"
+              },
+              {
+                "name": "DotBall",
+                "version": null,
+                "slug": "dotball",
+                "confidence": "present"
+              },
+              {
+                "name": "EmojiKit",
+                "version": null,
+                "slug": "emojikit",
+                "source": "https://github.com/dasmer/EmojiKit",
+                "homepage": "https://github.com/dasmer/EmojiKit",
+                "repo": "https://github.com/dasmer/EmojiKit",
+                "description": "Effortless emoji-querying in Swift",
+                "license": "MIT",
+                "icon": "https://github.com/dasmer.png?size=128",
+                "vendor": "dasmer",
+                "confidence": "present",
+                "matchBasis": "name-guess"
+              },
+              {
+                "name": "Environment",
+                "version": null,
+                "slug": "environment",
+                "source": "https://github.com/czechboy0/Environment",
+                "homepage": "https://github.com/czechboy0/Environment",
+                "repo": "https://github.com/czechboy0/Environment",
+                "description": "Easy access to environment variables from Swift. Linux & OS X ready.",
+                "license": "MIT",
+                "icon": "https://github.com/czechboy0.png?size=128",
+                "vendor": "czechboy0",
+                "confidence": "present",
+                "matchBasis": "name-guess"
+              },
+              {
+                "name": "ExperianIDVerifySDK",
+                "version": "0.1.1",
+                "slug": "experianidverifysdk",
+                "confidence": "present"
+              },
+              {
+                "name": "Network",
+                "version": null,
+                "slug": "network",
+                "confidence": "present"
+              },
+              {
+                "name": "OAIEmojiPicker",
+                "version": null,
+                "slug": "oaiemojipicker",
+                "confidence": "present"
+              },
+              {
+                "name": "OrbitCharacters",
+                "version": null,
+                "slug": "orbitcharacters",
+                "confidence": "present"
+              },
+              {
+                "name": "SwiftCSV",
+                "version": null,
+                "slug": "swiftcsv",
+                "source": "https://github.com/swiftcsv/SwiftCSV",
+                "homepage": "https://github.com/swiftcsv/SwiftCSV",
+                "repo": "https://github.com/swiftcsv/SwiftCSV",
+                "description": "CSV parser for Swift",
+                "license": "MIT",
+                "icon": "https://github.com/swiftcsv.png?size=128",
+                "vendor": "swiftcsv",
+                "confidence": "present",
+                "matchBasis": "name-guess"
+              },
+              {
+                "name": "Threads",
+                "version": null,
+                "slug": "threads",
+                "source": "https://edna.io/products-chat-center/",
+                "homepage": "https://edna.io/products-chat-center/",
+                "description": "Threads iOS SDK",
+                "license": "MIT",
+                "icon": "https://icons.duckduckgo.com/ip3/edna.io.ico",
+                "confidence": "present",
+                "matchBasis": "name-guess"
+              },
+              {
+                "name": "TibroCore",
+                "version": null,
+                "slug": "tibrocore",
+                "confidence": "present"
+              },
+              {
+                "name": "TibroVoiceBackground",
+                "version": null,
+                "slug": "tibrovoicebackground",
+                "confidence": "present"
+              }
+            ]
+          }
+        ],
+        "dependencies": [],
+        "uiGraphics": ["Lottie (animations)", "SwiftUI", "UIKit"],
+        "buildSystem": ["Swift Package Manager (SwiftPM)"],
+        "capabilities": [
+          "App Groups",
+          "Apple Pay",
+          "Associated Domains (Universal Links)",
+          "Background Audio",
+          "Background Push",
+          "CarPlay",
+          "Communication Notifications",
+          "HealthKit",
+          "Keychain Sharing",
+          "Push Notifications (APNs)",
+          "Sign in with Apple",
+          "Time-Sensitive Notifications",
+          "VoIP"
+        ],
+        "privacy": {
+          "declaresTracking": false,
+          "trackingDomains": [],
+          "collectedDataTypes": [
+            "AdvertisingData",
+            "App Name",
+            "App Version",
+            "CoarseLocation",
+            "DeviceID",
+            "EmailAddress",
+            "Name",
+            "OtherDataTypes",
+            "PaymentInfo",
+            "PerformanceData",
+            "PhoneNumber",
+            "PhysicalAddress",
+            "ProductInteraction",
+            "PurchaseHistory",
+            "UserID"
+          ],
+          "requiredReasonApis": ["FileTimestamp", "SystemBootTime", "UserDefaults"],
+          "accessedApis": []
+        },
+        "version": {
+          "installed": "1.2026.286",
+          "latest": "1.2026.286"
+        },
+        "confidence": {
+          "sdkListIsFloor": true,
+          "binaryEncrypted": true,
+          "packed": false,
+          "packers": []
+        },
+        "summary": {
+          "totalSdks": 28,
+          "totalDependencies": 0,
+          "totalFrameworks": 67,
+          "appleFrameworks": 46,
+          "hasMetal": true,
+          "hasUnity": false
+        },
+        "platform": {
+          "minIos": "18.0",
+          "xcode": "27.1",
+          "xcodeBuild": "27A9275",
+          "sdk": "iphoneos27.1",
+          "deviceFamilies": ["iPhone", "iPad"],
+          "languageCount": 64,
+          "languages": [
+            "am",
+            "ar",
+            "bg",
+            "bn",
+            "bs",
+            "ca",
+            "cs",
+            "da",
+            "de",
+            "el",
+            "en",
+            "es",
+            "es-419",
+            "et",
+            "fi",
+            "fr",
+            "fr-CA",
+            "gu",
+            "hi",
+            "hr",
+            "hu",
+            "hy",
+            "id",
+            "is",
+            "it",
+            "ja",
+            "ka",
+            "kk",
+            "kn",
+            "ko",
+            "lt",
+            "lv",
+            "mk",
+            "ml",
+            "mn",
+            "mr",
+            "ms",
+            "my",
+            "nb",
+            "nl",
+            "pa",
+            "pl",
+            "pt",
+            "pt-PT",
+            "ro",
+            "ru",
+            "sk",
+            "sl",
+            "so",
+            "sq",
+            "sr",
+            "sv",
+            "sw",
+            "ta",
+            "te",
+            "th",
+            "tl",
+            "tr",
+            "uk",
+            "ur",
+            "vi",
+            "zh",
+            "zh-Hant",
+            "zh-HK"
+          ],
+          "stringsInPrimaryLocale": 153
+        },
+        "documentTypes": [],
+        "recoveredModuleCount": 1,
+        "appExtensions": [
+          {
+            "name": "VoiceScreenSharing",
+            "kind": "Broadcast Upload"
+          },
+          {
+            "name": "MessagesExtension",
+            "kind": "Messages"
+          },
+          {
+            "name": "NotificationServiceExtension",
+            "kind": "Notification Service"
+          },
+          {
+            "name": "ChatGPTSearchSafariExtension",
+            "kind": "Safari Web Extension"
+          },
+          {
+            "name": "ShareExtension",
+            "kind": "Share"
+          },
+          {
+            "name": "AskChatGPTActionExtension",
+            "kind": "Ui Services"
+          },
+          {
+            "name": "FinanceKitBackgroundDeliveryExtension",
+            "kind": "Unknown"
+          },
+          {
+            "name": "Widgets",
+            "kind": "Widget"
+          }
+        ],
+        "appIntents": {
+          "present": true,
+          "actionCount": 20,
+          "entityCount": 3,
+          "hasAssistantIntents": false,
+          "hasAutoShortcuts": true
+        },
+        "detectedApiUsage": [],
+        "metalShaders": {
+          "files": 6,
+          "functions": 13,
+          "samples": [
+            "dotBall",
+            "fragment_speaking_assistant_1",
+            "fragment_speaking_assistant_prepass",
+            "horizonCompositeFragment",
+            "horizonMaterialFragment",
+            "horizonVertex",
+            "loginAtmosphereComposite",
+            "mediaGenHalftoneDotsRipple",
+            "orbitCreationTorusFragment",
+            "orbitCreationTorusVertex",
+            "orbitVoiceBackgroundFragment",
+            "orbitVoiceBackgroundVertex",
+            "vertex_blit"
+          ]
+        },
+        "mlModels": [],
+        "fonts": ["LatinModernMath-Regular"],
+        "featureFlags": [],
+        "jsLibraries": [
+          {
+            "name": "Highlight.js",
+            "slug": "highlight-js",
+            "source": "https://www.npmjs.com/package/Highlight.js",
+            "confidence": "medium",
+            "matchBasis": "npm"
+          },
+          {
+            "name": "KaTeX",
+            "slug": "katex",
+            "source": "https://www.npmjs.com/package/KaTeX",
+            "confidence": "medium",
+            "matchBasis": "npm"
+          }
+        ],
+        "companionApps": [],
+        "appModules": [
+          "Assets",
+          "ChatGPT",
+          "ChatGPTAudioAttachments",
+          "ChatGPTAudioAttachmentsInterface",
+          "ChatGPTAvatar",
+          "ChatGPTBeacons",
+          "ChatGPTBirthday",
+          "ChatGPTBrowserAuth",
+          "ChatGPTCalendarLocalToolsPlugins",
+          "ChatGPTConnectors",
+          "ChatGPTContactsLocalToolsPlugins",
+          "ChatGPTDisclosures",
+          "ChatGPTFinance",
+          "ChatGPTFinanceExperianImplementation",
+          "ChatGPTHealth",
+          "ChatGPTLockedChats",
+          "ChatGPTLogin",
+          "ChatGPTMedia",
+          "ChatGPTMemory",
+          "ChatGPTMessageRowParts",
+          "ChatGPTNotifications",
+          "ChatGPTRemindersLocalToolsPlugins",
+          "ChatGPTSharing",
+          "ChatGPTSkillsDirectory",
+          "ChatGPTVoiceAudio",
+          "ChatGPTWallet",
+          "ChatGPTWritingBlocks",
+          "CodexRemote",
+          "Device",
+          "DotBall",
+          "EmojiKit",
+          "Localization",
+          "Localization_Localization",
+          "OAIEmojiPicker",
+          "OAIGoogleODMGoogleUtilities",
+          "OpenAIXPlat",
+          "OrbitCharacters",
+          "Threads",
+          "TibroCore"
+        ],
+        "services": {
+          "firebaseProjects": [],
+          "aasaHosts": [
+            "api.openai.org",
+            "chat.com",
+            "chat.openai.com",
+            "chatgpt.com",
+            "click.openai.com",
+            "link.openai.com",
+            "openai.com",
+            "platform.openai.com",
+            "r.openai.com",
+            "s.openai.com",
+            "u.email.openai.com",
+            "www.chatgpt.com"
+          ],
+          "urlSchemes": ["chatgpt", "codex", "com.openai.chat", "openai"],
+          "queriedSchemes": [
+            "chatgpt-enterprise",
+            "comgooglemaps",
+            "facebook-stories",
+            "fb",
+            "fb-messenger",
+            "googlegmail",
+            "instagram",
+            "instagram-stories",
+            "kakaotalk",
+            "line",
+            "maps",
+            "ms-outlook",
+            "onepassword",
+            "sgnl",
+            "snapchat",
+            "snssdk1233",
+            "tg",
+            "tiktok",
+            "twitter",
+            "whatsapp"
+          ],
+          "sdkConfigKeys": [],
+          "atsExceptionDomains": [],
+          "allowsArbitraryLoads": false
+        },
+        "backend": {
+          "hosts": ["chatgpt.com"],
+          "graphqlOperations": [],
+          "pinnedCertificates": []
+        },
+        "onDeviceData": [],
+        "stringMining": {
+          "minedBinaries": 0,
+          "extraHosts": [],
+          "sdkHints": []
+        },
+        "uiArchitecture": {
+          "mainStoryboard": "",
+          "launchStoryboard": "",
+          "mainNib": "",
+          "storyboardCount": 0,
+          "nibCount": 0,
+          "sceneManifest": true
+        },
+        "sqlSchemas": [],
+        "buildDependencyVersions": [],
+        "os": "ios",
+        "android": null,
+        "analysis": null,
+        "syncedAt": "2026-10-23T15:27:15.238594+00:00"
+      }
+    }
+  },
+  "apps?limit=500": {
+    "data": [
+      {
+        "appId": "6448311069",
+        "store": "apple",
+        "name": "ChatGPT",
+        "developer": "Chat Labs",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/72/2d/27/722d272a-9d6f-d186-8a92-6a884107df8f/AppIcon-0-0-1x_U007epad-0-0-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "6477489729",
+        "store": "apple",
+        "name": "Google Gemini",
+        "developer": "Google LLC",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/63/33/1b/63331b32-bc24-fa24-d7e7-935cb16e6c34/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "6446901002",
+        "store": "apple",
+        "name": "Threads",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/ed/07/8ded072b-5d6f-4053-07fa-d24a00b5b72f/Prod-0-0-1x_U007ephone-0-0-0-1-0-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "6760173601",
+        "store": "apple",
+        "name": "Muse from Meta",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/5e/50/aa/5e50aa6f-edf9-9ef4-6519-e7515f562369/HatchAppIconPublic-0-0-1x_U007epad-0-1-0-sRGB-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "1500855883",
+        "store": "apple",
+        "name": "CapCut: Photo & Video Editor",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/31/d8/5b/31d85b5d-7785-5789-df84-1b052afd2e43/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "835599320",
+        "store": "apple",
+        "name": "TikTok - Videos, Shop & LIVE",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/19/60/31/1960312d-f882-d651-6ea6-53a3179dee9b/TikTok_AppIcon26-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "368677368",
+        "store": "apple",
+        "name": "Uber - Rides, Eats, Hotels",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/90/21/b7/9021b7b0-dfd3-1009-9ddd-ede0f47c1605/AppIcon-0-0-1x_U007emarketing-0-8-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "389801252",
+        "store": "apple",
+        "name": "Instagram",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/44/b0/cc/44b0cc3a-e91f-2824-d98f-3e5e095a73f3/Prod-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "6473753684",
+        "store": "apple",
+        "name": "Claude by Anthropic",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/8e/7d/46/8e7d46b1-57f2-77eb-60e2-cd42c9563e45/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "310633997",
+        "store": "apple",
+        "name": "WhatsApp Messenger",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/20/fb/af/20fbaf91-8768-faec-4b39-a77c2f77668b/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "544007664",
+        "store": "apple",
+        "name": "YouTube",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/82/43/be/8243be7f-17c3-33ae-720a-ffcde48bed61/logo_youtube_2024_q4_color-0-0-1x_U007emarketing-0-0-0-7-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "6670324846",
+        "store": "apple",
+        "name": "Grok - AI Chat & Video",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/26/03/47/260347d0-42b7-53f6-04cb-b14071a57fca/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "284882215",
+        "store": "apple",
+        "name": "Facebook",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/77/5b/7b/775b7b40-4e22-ba5e-2255-668c2473048c/Icon-Production-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "686449807",
+        "store": "apple",
+        "name": "Telegram Messenger",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ce/41/d8/ce41d807-350e-69f1-f31e-16be42b6ebfb/Telegram-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "447188370",
+        "store": "apple",
+        "name": "Snapchat",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/3f/11/6a/3f116ab5-1843-cd84-b8cd-2937ff331be7/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "324684580",
+        "store": "apple",
+        "name": "Spotify: Music and Podcasts",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8b/f2/6a/8bf26ab9-3ced-cb5c-a2b3-19f65e7f5cc6/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "333903271",
+        "store": "apple",
+        "name": "X",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fd/d8/16/fdd81617-e34f-f777-e92c-a10de9d23c8d/ProductionAppIcon-0-0-1x_U007emarketing-0-8-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "429047995",
+        "store": "apple",
+        "name": "Pinterest",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f0/8e/3d/f08e3d30-65df-7233-d2e5-a9cb133c6af1/AppIcon-0-0-1x_U007epad-0-1-0-0-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "985746746",
+        "store": "apple",
+        "name": "Discord - Talk, Play, Hang Out",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/69/3b/7e/693b7e6b-55ba-51ba-2608-6b38dabd6021/AppIcon-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "1064216828",
+        "store": "apple",
+        "name": "Reddit",
+        "developer": "Example Developer",
+        "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b0/5c/8d/b05c8da2-f405-1284-3467-3feaa31fb2c2/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+      },
+      {
+        "appId": "com.openai.chatgpt",
+        "store": "google",
+        "name": "ChatGPT",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/T9J8e9oxxPd600j_KPM4KK2GHfNpUpGBdTy8lHPXBXpOUfGusRuZXj0UMgFNrP8we6LVt9V-AibEgcLootE6VK4"
+      },
+      {
+        "appId": "com.zhiliaoapp.musically",
+        "store": "google",
+        "name": "TikTok - Videos, Shop & LIVE",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/2o7iuqPe-0msP3DvNhzoOgNo4eZ6GkL_RtGVeKyBn5UBQAW5cw-GW5V3wDOHB1yTQuqWzrFLFOv2u4_5ea1uhg"
+      },
+      {
+        "appId": "com.google.android.apps.bard",
+        "store": "google",
+        "name": "Google Gemini",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/C64IqPWyFoCZzXVxXVl0Y6mliiNlG_sZJsqul-SBvk9ZL0wJHlU0Eho2wvsBHhho0FT5XQtH55RVGerIwXF_MA"
+      },
+      {
+        "appId": "com.whatsapp",
+        "store": "google",
+        "name": "WhatsApp Messenger",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/Gqxk4T0uZsDwFp07DE-508hkyvcNmgFuRwPiwTEfF7D7OzGv1FdHDzEyMxNsSBZLOJlGpe3ULvVM2RgrRAlBqA"
+      },
+      {
+        "appId": "com.instagram.android",
+        "store": "google",
+        "name": "Instagram",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/yHi59jmO_lVamcyJ1i3rM1_E8bAiAspShnGjjURq05ipQQSUksO3QVEsXTegRSqul038-4YNA7O644XAcx251Q"
+      },
+      {
+        "appId": "com.facebook.katana",
+        "store": "google",
+        "name": "Facebook",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/12KEJDhgk6oyE1VgmfCuFzFrQripZ_endElbvEhU1rZawQgV3RI-v3II8fDslI1sdC_WKBkmtxS3jxuIihk33Q"
+      },
+      {
+        "appId": "com.lemon.lvoverseas",
+        "store": "google",
+        "name": "CapCut: Photo & Video Editor",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/M78HyakHaxKrjoeqYx41E9DXfVYYtx67nvc7Ks4G4zFQeaAJdGCi8gzzGSrHIwlrmnJS6zD9S4fAXqdEwfuHQAQ"
+      },
+      {
+        "appId": "org.telegram.messenger",
+        "store": "google",
+        "name": "Telegram",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/PyZ3akMGXPV0tKKirKNwfO--PSQW3FHR6rD_H9mAaukZ8LiHyYFuBLeU8UZ2ok6r5SP79-3prkfybWKh98AZAD0"
+      },
+      {
+        "appId": "com.instagram.barcelona",
+        "store": "google",
+        "name": "Threads",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/6PzXaP0KaRU4DifAfsXKbWNVA3JPrP9uklvEh5EDhzPRdPfHV4tzszhAavQa4bq0YGdbnphBucz9vEUXiu1Ebg"
+      },
+      {
+        "appId": "com.snapchat.android",
+        "store": "google",
+        "name": "Snapchat",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/nOJWJoDAzuRSHmlFfpzHXAj8UbTJwk_JGYf0uAPTKPtiiIX_2Y7r5ATO1ZtxHRqaFTqfIDZ40PnBK4hukeJh"
+      },
+      {
+        "appId": "com.anthropic.claude",
+        "store": "google",
+        "name": "Claude by Anthropic",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/YeFCFSW5LkBVdsEAL_fjzxDxTbhKz31j1uZUfDbSaCeM0t4Bi3SqyHTWzWsUsZnbwjofXhYajitG_gr2_B2xil8"
+      },
+      {
+        "appId": "com.ubercab",
+        "store": "google",
+        "name": "Uber - Rides, Eats, Hotels",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/OXQnDlRtPa5ha6KCnKPqVmxHYBP7tjrAa7PXGNRqcwDC_J03HVeuEKcKrkcIqnfOqsF5uy3uwWxIXR067QHsNQ"
+      },
+      {
+        "appId": "ai.x.grok",
+        "store": "google",
+        "name": "Grok - AI Chat & Video",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/-VnI9BrQO0PYyZG15YE6wt68KOmZ7AXGAqGti58g25ES1XdXWDBaaWUMIewHaiROwge6ibvn_b3WalmpgWGG"
+      },
+      {
+        "appId": "com.spotify.music",
+        "store": "google",
+        "name": "Spotify: Music and Podcasts",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/IzQgYCcnCFCD08GR-3bdtcT8xzOvrNkC84avGT5CwTX2VIqmTmKKJcP_Cd4JoBOdmCMlTndlOzV6hrthg2fOWA"
+      },
+      {
+        "appId": "ai.perplexity.app.android",
+        "store": "google",
+        "name": "Perplexity - AI Search & Chat",
+        "developer": "Example Developer",
+        "iconUrl": "https://play-lh.googleusercontent.com/vg7sPhgWiPr0L2cK_NLLcCl0mrkEmNNv7C-aUkBdIUEa-9uSnCi5x4z_3Mw0vNYWKoSVWHfgri7THMOsOZKQuA"
+      }
+    ],
+    "meta": {
+      "count": 35,
+      "total": 35,
+      "limit": 500,
+      "nextCursor": null
     }
   }
 }

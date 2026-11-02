@@ -206,6 +206,8 @@ export const ENDPOINTS: Record<string, Endpoint> = {
     cache: 'hourly',
     units: 1,
   },
+  // The tracked (active) apps the source collects ranks and ratings for. Rarely changes, so cached like tech-stack.
+  apps: { path: '/apps', params: { store, limit: int(1, 500), cursor }, cache: 'slow', units: 1 },
   movers: { path: '/movers', params: { country, chart, limit: int(1, 50) }, cache: 'hourly', units: 1 },
   'tech-stack': { path: '/tech-stack', params: { limit: int(1, 500), cursor }, cache: 'slow', units: 1 },
   'tech-stack-app': {

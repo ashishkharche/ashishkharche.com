@@ -411,7 +411,8 @@ for (const extra of extras) {
 const order = [
   'us-rank-countries',
   'android-permissions',
-  'ai-apps-ios-android-sdks',
+  // ai-apps-ios-android-sdks is left out: it compares SDK counts across iOS and Android, which the source's
+  // detection does not support (iOS counts are a floor, Android ones mostly exact).
   'android-native-libs',
   'us-rating-countries',
 ]

@@ -5,23 +5,28 @@ import { mockLive } from './live-data'
 
 const live = [
   { id: 'us-number-one', kind: 'Headline number', requests: 2 },
+  { id: 'google-number-one', kind: 'Headline number', requests: 2 },
+  { id: 'grossing-number-one', kind: 'Headline number', requests: 2 },
+  { id: 'uk-number-one', kind: 'Headline number', requests: 2 },
   { id: 'chatgpt-countries', kind: 'Headline number', requests: 2 },
+  { id: 'claude-countries', kind: 'Headline number', requests: 2 },
+  { id: 'chatgpt-sdk-kinds', kind: 'Headline number', requests: 2 },
   { id: 'us-climbers', kind: 'Ranked list', requests: 2 },
+  { id: 'google-climbers', kind: 'Ranked list', requests: 2 },
   { id: 'most-sdks', kind: 'Ranked list', requests: 3 },
+  { id: 'most-sdks-android', kind: 'Ranked list', requests: 3 },
   { id: 'chatgpt-vs-gemini', kind: 'Head to head', requests: 5 },
   { id: 'ai-rank-30-days', kind: 'Rank over time', requests: 5 },
   { id: 'ios-vs-android', kind: 'iOS vs Android', requests: 2 },
 ]
 
-const templates = [
-  'us-rank-countries',
-  'android-permissions',
-  'ai-apps-ios-android-sdks',
-  'android-native-libs',
-  'us-rating-countries',
-]
+const templates = ['us-rank-countries', 'android-permissions', 'android-native-libs', 'us-rating-countries']
+/** Data-file templates held back from the default gallery until their fields are verified. */
+const pending = ['android-permissions', 'android-native-libs']
 
 async function pick(page: Page, id: string) {
+  const filters = page.getByRole('group', { name: 'Show templates of one kind' })
+  await filters.getByRole('button', { name: pending.includes(id) ? 'Pending verification' : 'All' }).click()
   await page.locator(`input[type=radio][value="${id}"]`).check()
   await expect(page.locator(`canvas[data-rendered^="${id}:"]`)).toBeVisible()
 }
@@ -204,11 +209,13 @@ test.describe('chart builder', () => {
       await expect(page.getByTestId('data-time')).toHaveText(/^Data from \d{1,2} \w{3} 2026, \d{2}:\d{2} UTC$/)
       await expect(page.getByRole('alert')).toHaveCount(0)
       await expect(page.getByRole('button', { name: 'Download PNG' })).toBeEnabled()
-      const group = page.getByRole('group', { name: t.kind })
+      const group = page.getByRole('radiogroup', { name: 'Templates' })
       await expect(group.locator(`input[value="${t.id}"]`)).toBeChecked()
-      // Only this template's requests, each once, all through the same-origin proxy.
+      await expect(page.getByTestId('gallery').getByText(t.kind).first()).toBeVisible()
+      // Each request once, all through the same-origin proxy. (The previews below share them; the unit tests check
+      // each template makes exactly the requests it says it does.)
       expect(new Set(requested).size).toBe(requested.length)
-      expect(requested.length).toBe(t.requests)
+      expect(requested.length).toBeGreaterThanOrEqual(t.requests)
       for (const url of requested) expect(new URL(url).pathname).toBe('/api/tdn/')
       const png = await download(page, 'Download PNG')
       expect(pngSize(png.bytes)).toEqual({ width: 3600, height: 2780 })

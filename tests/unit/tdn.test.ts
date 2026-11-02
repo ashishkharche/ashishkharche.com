@@ -69,10 +69,23 @@ describe('allowlist', () => {
       cache: CACHE.slow,
     })
     expect(q('endpoint=sdk-adoption&sdk=Firebase&limit=20')).toMatchObject({ path: '/sdk-adoption', units: 2 })
+    expect(q('endpoint=apps&limit=500')).toMatchObject({ path: '/apps', cache: CACHE.slow, units: 1 })
+    expect(q('endpoint=apps&limit=501')).toMatchObject({ ok: false, status: 400 })
   })
 
   it('refuses unknown endpoints and paths that are not on the list', () => {
-    for (const name of ['admin', 'toString', '__proto__', 'auth', 'console', 'mcp', 'notes', 'apps', 'search', '']) {
+    for (const name of [
+      'admin',
+      'toString',
+      '__proto__',
+      'auth',
+      'console',
+      'mcp',
+      'notes',
+      'app-list',
+      'search',
+      '',
+    ]) {
       expect(q(`endpoint=${name}`)).toMatchObject({ ok: false, status: 400, error: 'Unknown endpoint' })
     }
     expect(q('')).toMatchObject({ ok: false, status: 400 })

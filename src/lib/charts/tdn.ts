@@ -11,6 +11,7 @@
  */
 
 export type Endpoint =
+  | 'apps'
   | 'rankings'
   | 'app'
   | 'app-rankings'
