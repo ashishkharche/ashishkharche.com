@@ -478,8 +478,8 @@ export function mapBump(rankingsBody: unknown, historyBodies: unknown[], apps: R
   return {
     model: { kind: 'bump', days: dayList, series: out } satisfies BumpModel,
     text: {
-      title: `US Top Free rank over ${days} days: ${list(names)}`,
-      subtitle: `Rank by day, US App Store, Top Free. The ${out.length} highest-ranked AI apps today.`,
+      title: `US Top Free rank over ${days} days`,
+      subtitle: `Rank by day, US App Store, Top Free: ${list(names)}, the ${out.length} highest-ranked AI apps today.`,
       footnote: [
         'Source: {source}. Data from {time}.',
         `${shortDay(dayList[0] ?? '')} to ${shortDay(last)}. Daily rank is the last recorded that day. A gap: no rank.`,
