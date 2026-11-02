@@ -21,7 +21,7 @@ Training on your own, you either count reps in your head or stop to tap a phone.
 
 Pose tracking runs on the phone with Google MediaPipe, and a rep counter sits on top of the pose stream. It counts squats, push-ups and more from the camera. Planks and other holds are timed sets instead.
 
-MediaPipe's pose model comes in three sizes, so I measured them before picking one. On 156 single-person photos from the COCO validation set, Lite placed 72% of joints within 5% of the person's size, Full 79% and Heavy 84%. On 14 exercise clips, Full's joints jumped half as much from frame to frame as Lite's. Heavy took about three times as long per frame as Full and added 21 MB to the app, which wasn't worth it for live use, so the app ships Full. If MediaPipe can't start, or runs below 12 frames a second, that workout switches to Apple's Vision body pose without resetting the count.
+MediaPipe's pose model comes in three sizes, so I measured them before picking one. On 156 single-person photos from the COCO validation set, Lite placed 72% of joints within 5% of the person's size, Full 79% and Heavy 84%. On 14 exercise clips, Full had about half as many large frame-to-frame joint jumps as Lite. Heavy took about three times as long per frame as Full and added 21 MB to the app, which wasn't worth it for live use, so the app ships Full. If MediaPipe can't start, or runs below 12 frames a second, that workout switches to Apple's Vision body pose without resetting the count.
 
 Most of the work was not counting things that aren't reps: half reps, walking, standing up and getting into position. Around the counter, the app gets the person in frame first with a short countdown and prompts such as Move back or Step into frame, and it always leaves a manual path: minus and plus are one tap away, and you can correct the count by voice.
 
@@ -64,7 +64,7 @@ Phones in a gym are often offline, so uploads take an idempotency key, which mea
 
 ## Releasing safely
 
-A wrong count is the first thing a user notices, so counting changes shipped behind switches. Camera counting had its own feature flag, internal builds had a pose debug overlay, and individual behaviours had kill switches served from a public config endpoint, so a behaviour could be turned off without waiting for App Review. New counting models ran in shadow mode first, alongside the live counter, without changing the count anyone saw.
+A wrong count is the first thing a user notices, so counting changes shipped behind switches. Camera counting had its own feature flag, the internal team had a pose debug overlay, and individual behaviours had kill switches served from the backend's config endpoint, so a behaviour could be turned off without waiting for App Review. New counting models ran in shadow mode first, alongside the live counter, without changing the count anyone saw.
 
 Releases followed the same steps every time: a backend diff that stops if it would replace or delete a stateful resource, a health check after each deploy, and an app release that goes through TestFlight, a preflight checklist and a phased rollout. A minimum-version check let the backend ask old builds to update.
 
