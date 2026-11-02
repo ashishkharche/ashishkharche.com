@@ -32,7 +32,7 @@ export const noteOgImages = {
   },
   'workout-director-2': {
     src: '/assets/og/notes-workout-director-2.png',
-    alt: 'Drawing exercise figures from code. Workout Director, part 2, with a start and end pose.',
+    alt: "How Workout Director's exercise figures are rendered in Blender and checked against pose targets. Workout Director, part 2, with a start and end pose.",
   },
 } satisfies Record<string, OgImage>
 

@@ -1,18 +1,22 @@
 ---
-title: Drawing exercise figures from code
+title: How Workout Director's exercise figures are rendered in Blender and checked against pose targets
 date: '2026-10-30'
 series: How Workout Director is built
 part: 2
 listLabel: Workout Director, part 2
-description: 'Workout Director, part 2: every exercise figure in the app is a 3D render of one rigged body, posed from a spec, measured against pose-estimation targets and drawn as line art. How the pipeline works and how each figure is checked before it ships.'
+description: 'Workout Director, part 2: how every exercise figure in the app is rendered from one rigged 3D body in Blender, posed from a spec, measured against MediaPipe pose targets and drawn as line art, and how each figure is checked before it ships.'
 ---
 
 import pipeline from '../diagrams/03-figure-pipeline.mmd'
 import poseToBones from '../diagrams/05-pose-to-bones.mmd'
 
-Each exercise in Workout Director has a small figure: a start pose and an end pose, with the working muscles tinted. I didn't draw them by hand. They are 3D renders of one rigged human body, posed from a written spec and drawn as line art in Blender, and scripts check each one against measurements from reference images before it goes into the app.
+This note describes the pipeline that produces the exercise figures in Workout Director. It covers where the body comes from, how a pose is written and measured, how the line art is made, and the checks that decide whether a figure ships.
 
-This note covers how that works: where the body comes from, how a pose is written and measured, how the line art is made, and the checks that decide whether a figure ships.
+## Background
+
+Each exercise in Workout Director has a small figure: a start pose and an end pose, with the working muscles tinted. The figures are not drawn by hand.
+
+They are 3D renders of one rigged human body, posed from a written spec and drawn as line art in Blender. Scripts check each one against measurements from reference images before it goes into the app.
 
 <ThemedFigures
   images={[
@@ -32,19 +36,22 @@ This note covers how that works: where the body comes from, how a pose is writte
   caption="The goblet squat figure as it ships in the app: start and end, in the app's light and dark versions."
 />
 
-## Why not use existing drawings
+## Why existing drawings were not used
 
-The open exercise drawings I could find didn't fit. The best-known set of line drawings is licensed CC BY-SA, so anything adapted from it would have to carry the same licence. Stock illustration sets don't share one style or one body, and they rarely have a matching start and end pose for the same move.
+The open exercise drawings available did not fit. The best-known set of line drawings is licensed CC BY-SA, so anything adapted from it would have to carry the same licence.
 
-I wanted one consistent figure across every move, light and dark versions, and a licence that was clean all the way down. So the rule became: build the figure from openly licensed parts, and use photos only to measure poses.
+Stock illustration sets do not share one style or one body, and they rarely have a matching start and end pose for the same move.
 
-## The pieces
+The requirements were one consistent figure across every move, light and dark versions, and a licence that is clean all the way down. The rule became: build the figure from openly licensed parts, and use photos only to measure poses.
 
-- **The body.** The base mesh and the shape targets come from MakeHuman's MPFB2 data, and the 163-bone default rig and its weights from MakeHuman itself. All of it is CC0. The script builds the body directly from those files, so no Blender add-on is needed. Targets push it towards an athletic build, and corrective shape keys keep elbows and knees from collapsing when they bend.
+## The source parts
+
+- **The body.** The base mesh and the shape targets come from MakeHuman's MPFB2 data (version 2.0.18). The 163-bone default rig and its weights come from MakeHuman itself, in the files `default.mhskel` and `default_weights.mhw`. All of it is released under CC0 1.0.
+- **Building the body.** The script builds the body directly from those files, so no Blender add-on is needed. Targets push it towards an athletic build, and corrective shape keys keep elbows and knees from collapsing when they bend.
 - **Clothes.** Shorts, a t-shirt and trainers are real cut geometry, so hems and collars draw as clean lines instead of texture.
 - **Equipment.** Dumbbells, barbells and plates, kettlebells, benches and machines are built in code at real-world sizes.
-- **Reference images.** Photos from free-exercise-db (public domain, under the Unlicense) show the start and end of each move. Where a photo was a front view or didn't show good form, I also compared the pose with frames from exercise demo videos, and only the measurements went into the checks.
-- **Rendering.** Blender 4.2 in the background, Cycles on the CPU with flat emission shading, and Freestyle for the lines. Each still takes a few seconds.
+- **Reference images.** Photos from free-exercise-db (public domain, under the Unlicense) show the start and end of each move. Where a photo was a front view or did not show good form, the pose was also compared with frames from exercise demo videos, and only the measurements went into the checks.
+- **Rendering.** Blender 4.2 (4.2.3) runs in the background, with Cycles on the CPU, flat emission shading, and Freestyle for the lines. Each still takes a few seconds.
 
 <Diagram
   diagram={pipeline}
@@ -55,7 +62,9 @@ I wanted one consistent figure across every move, light and dark versions, and a
 
 ## From a reference image to targets
 
-A pose estimator doesn't draw the figure. It measures the reference. For each move I pick start and end reference images, and MediaPipe's Pose Landmarker reads joints from them: 2D keypoints in image pixels, and 3D "world" landmarks in metres, centred on the hips.
+A pose estimator does not draw the figure; it measures the reference. For each move, start and end reference images are picked, and MediaPipe's Pose Landmarker reads joints from them.
+
+The landmarker returns 2D keypoints in normalised image coordinates, converted to pixels below, and 3D "world" landmarks in metres, centred on the hips.
 
 ```python
 from mediapipe.tasks.python import vision, BaseOptions
@@ -81,9 +90,11 @@ def landmarks(path):
     return keypoints, world
 ```
 
-This runs offline on my machine, so it uses Heavy, the largest of the three public pose models. The app runs BlazePose Full on the phone, which is a story for the next note.
+This runs offline, so it uses Heavy, the largest of the three public pose models. The app runs BlazePose Full on the phone, which is covered in the next note.
 
-The world landmarks become targets: joint angles and spacing ratios that don't depend on where the camera was. The angle at a joint is the angle between the two segments that meet there, and spacing is measured against shoulder width, so it doesn't depend on the size of the person in the picture.
+The world landmarks become targets: joint angles and spacing ratios that do not depend on where the camera was. The angle at a joint is the angle between the two segments that meet there.
+
+Spacing is measured against shoulder width, so it does not depend on the size of the person in the picture.
 
 ```python
 import math
@@ -110,11 +121,15 @@ def targets(P):
     return t
 ```
 
-Each move takes the median over several reference images, so one odd frame doesn't set the target. The 2D keypoints are kept too, for the checks further down and for a solver that tries variations of a spec and ranks them against the targets.
+Each move takes the median over several reference images, so one odd frame does not set the target. The 2D keypoints are kept too, for the checks further down and for a solver that tries variations of a spec and ranks them against the targets.
 
 ## From a spec to a pose
 
-The pose itself comes from a spec: a JSON file per move that says where each bone points, where the feet and hands go, the grip, the muscles to tint, the equipment, the outfit and the camera. A rig doesn't want positions, it wants rotations, but writing rotations by hand is error-prone. So the spec uses directions instead: the thigh points this way, the shin that way.
+The pose itself comes from a spec: a JSON file per move that says where each bone points, where the feet and hands go, the grip, the muscles to tint, the equipment, the outfit and the camera.
+
+A rig takes rotations, not positions, but writing rotations by hand is error-prone. The spec uses directions instead: the thigh points this way, the shin that way.
+
+Because the spec sets the pose and the reference images only provide measurements, a figure is never a copy of one image.
 
 <Diagram
   diagram={poseToBones}
@@ -132,9 +147,11 @@ The pose itself comes from a spec: a JSON file per move that says where each bon
 
 The numbers above are made up for the example. A real spec has more keys and a few per-move overrides.
 
-### Aiming bones, and IK where something is fixed
+### Aiming bones
 
-Aiming a bone is a rotation from where it points now to where the spec says it should point. The one subtlety is twist: a direction says nothing about how far the bone is rolled around its own axis, so a bone can also carry a reference vector. That keeps the biceps facing forward instead of at a random roll.
+Aiming a bone is a rotation from where it points now to where the spec says it should point. The one subtlety is twist: a direction says nothing about how far the bone is rolled around its own axis.
+
+A bone can therefore also carry a reference vector. That keeps the biceps facing forward instead of at a random roll.
 
 ```python
 def aim(rig, bone, direction, ref=None, ref_to=None):
@@ -152,7 +169,11 @@ def aim(rig, bone, direction, ref=None, ref_to=None):
     set_rotation(rig, bone, R @ current)
 ```
 
-Where a limb has to end at a known point, such as feet flat on the floor or hands on a bar, directions alone aren't enough, because small errors add up along the chain. Those limbs use analytic two-bone IK. Given the two bone lengths and the target, the law of cosines gives the joint position, and a pole vector says which way the knee or elbow bends:
+### Two-bone IK where an end point is fixed
+
+Where a limb has to end at a known point, such as feet flat on the floor or hands on a bar, directions alone are not enough, because small errors add up along the chain. Those limbs use analytic two-bone IK.
+
+Given the two bone lengths and the target, the law of cosines gives the joint position, and a pole vector says which way the knee or elbow bends:
 
 ```python
 def two_bone_ik(root, joint, end, target, pole):
@@ -169,11 +190,15 @@ def two_bone_ik(root, joint, end, target, pole):
     return new_joint, root + d * reach
 ```
 
+### The grip solver
+
 Grip is its own small solver. It seats the handle in the base of the fingers, curls each finger joint until the skin touches the shaft, curls the thumb the other way round, then backs off until no part of the hand is inside the handle.
 
 ## Tinting the muscles
 
-The muscles are not separate meshes. Each one is a soft region on the skin of the rest-pose body, computed per vertex and then painted as a mask. For a limb muscle, the region is a window along a bone (from some share of its length to another), times an angular sector around it (front of the arm for the biceps, back for the triceps), with a bulge in the middle so it reads like a muscle belly rather than a band.
+The muscles are not separate meshes. Each one is a soft region on the skin of the rest-pose body, computed per vertex and then painted as a mask.
+
+For a limb muscle, the region is a window along a bone (from some share of its length to another), times an angular sector around it (front of the arm for the biceps, back for the triceps). A bulge in the middle makes it read like a muscle belly rather than a band.
 
 ```python
 def smoothstep(x, a, b):
@@ -196,13 +221,17 @@ def limb_region(vertex, bone_head, bone_tail, facing, half_angle, start, end, so
     return 1 - smoothstep(angle, half_angle * belly - soft, half_angle * belly + soft)
 ```
 
-The real regions have more rules than this: torso muscles use boxes filtered by surface normal, large groups are split into their heads with a groove between them, a secondary muscle never paints over a primary one, and a few regions are clipped where a tint was spilling onto the wrong skin. The values in the excerpt are placeholders, not the ones I use.
+The real regions have more rules than this. Torso muscles use boxes filtered by surface normal, large groups are split into their heads with a groove between them, a secondary muscle never paints over a primary one, and a few regions are clipped where a tint was spilling onto the wrong skin.
+
+The values in the excerpt are placeholders, not the ones in use.
 
 A theme turns the weights into colours for the light and dark versions. In the app, the primary muscles are coral, the app's accent colour, and secondary muscles get a softer mix of it.
 
-## Line art
+## Line art with Freestyle
 
-The figures are flat. Shading is a two-tone ramp from a fixed key light, so the tint colours stay clean, and the drawing is done by Freestyle, Blender's line renderer. Freestyle sorts edges into types (outer contour, silhouette, crease, border, marked edges), and each "line set" picks some types and gives them a weight.
+The figures are flat. Shading is a two-tone ramp from a fixed key light, so the tint colours stay clean.
+
+The drawing is done by Freestyle, Blender's line renderer. Freestyle sorts edges into types (outer contour, silhouette, crease, border, marked edges), and each line set picks some types and gives them a weight.
 
 ```python
 def lineset(view_layer, name, thickness, **edge_types):
@@ -224,31 +253,46 @@ form = lineset(layer, 'form', base * FORM, edge_mark=True)           # muscle se
 
 The few anatomical lines that an illustrator would draw, such as the edge of the deltoid, the line down the abs or the split of the calf, are plane cuts on the mesh. That gives clean edge loops to mark for Freestyle, and the cut is pushed in by a couple of millimetres so the silhouette picks it up too.
 
-Two problems took longer than I expected:
+### Lines under clothes
 
-- **Lines under clothes.** Freestyle's visibility test is unreliable when a garment sits a few millimetres off the skin, so body lines showed through the shirt. The fix was to remove body edge marks wherever a garment covers the same rest-pose vertices, found with a KD-tree on a copy of the garment.
-- **Lines that pop between frames.** In an experimental bench press animation, the outline of the near arm briefly disappeared for a frame or two. Rendering one line set at a time showed why: at that pose the edge of the bar lay exactly on the arm's outline, so two strokes merged into one. I tried a render option that draws a background-coloured halo under the equipment outlines, but it is experimental, off by default and only set up for the bench, and its render still failed the flicker check. This one isn't solved yet. The app only uses still start and end figures, so it doesn't show this.
+Freestyle's visibility test is unreliable when a garment sits a few millimetres off the skin, so body lines showed through the shirt.
+
+The fix removes body edge marks wherever a garment covers the same rest-pose vertices. Those vertices are found with a KD-tree (Blender's `mathutils.kdtree.KDTree`) on a copy of the garment.
+
+### Lines that change between frames
+
+In an experimental bench press animation, the outline of the near arm disappeared for a frame or two. Rendering one line set at a time showed why: at that pose the edge of the bar lay exactly on the arm's outline, so two strokes merged into one.
+
+A render option that draws a background-coloured halo under the equipment outlines was tried. It is experimental, off by default and only set up for the bench, and its render still failed the flicker check.
+
+This problem is not solved yet. The app only uses still start and end figures, so it does not appear in the app.
 
 ## Checks before a figure ships
 
-A figure that looks fine at a glance can still be wrong: a knee bent the wrong way, a shoe slightly under the floor, a thumb through the bar, or a pose that matches the reference but not good form. So every figure goes through a set of scripted checks, and it doesn't go into the app until they all pass.
+A figure that looks fine at a glance can still be wrong: a knee bent the wrong way, a shoe slightly under the floor, a thumb through the bar, or a pose that matches the reference but not good form.
+
+Every figure goes through a set of scripted checks, and it does not go into the app until they all pass.
 
 - **Joint angles against the reference.** The rig's exact 3D joints are projected into a "judge view" that best lines them up with the reference image's keypoints, and the 2D joint angles are compared. The 3D targets from the world landmarks are checked as well.
 - **Form over the reference.** Reference images are sometimes not textbook: a model looks down during a lunge, or the hips are already up at the start of a bridge. Where that happens the joint is judged against a textbook range for the move instead, with a note in the code saying why.
 - **Physics and equipment.** Nothing sinks into the floor or the bench, nothing passes through itself or the equipment, the bar is level, plates are symmetric, and equipment is the right size.
 - **Grip.** No fingers through the handle, no gap between palm and handle, thumb wrapped, knuckles along the bar, wrist neutral.
-- **MediaPipe on the render.** The finished figure is run back through the pose model, on several backgrounds and crops, and compared with the reference images using measures that don't depend on the view: ankle angle, which way the foot points, where the hands sit along the body, segment angles to the trunk. If a pose model can't read the drawing as the same pose, a person might not either.
+- **MediaPipe on the render.** The finished figure is run back through the pose model, on several backgrounds and crops, and compared with the reference images using measures that do not depend on the view: ankle angle, which way the foot points, where the hands sit along the body, segment angles to the trunk. If a pose model cannot read the drawing as the same pose, a person might not either.
 - **Animation.** The app ships still start and end figures, not animations. The experimental animated versions get extra checks: no foot sliding, constant bone lengths, no velocity spikes, a seamless loop and no line flicker between frames.
 
-Changes to shared code are checked against figures that have already shipped: the figures are re-rendered and compared, so a fix for one move can't quietly change another.
+Changes to shared code are checked against figures that have already shipped. The figures are re-rendered and compared, so a fix for one move cannot quietly change another.
 
-### Making the checks cheap enough to run every time
+### Check run time
 
-The checks only help if they run on every change, and at first a single move could take minutes. Profiling showed most of the time went into Blender re-evaluating the deformed meshes (armature, subdivision, cloth fixes) after every IK step, and the grip solver made it worse by trying many thumb positions, each with a full update.
+The checks only help if they run on every change, and at first a single move could take minutes.
 
-The fix was to switch the mesh modifiers off while bones are being solved and turn them back on at the first point where something reads the deformed mesh. Joints and animation samples came out identical to the old path. A bent-over row went from about six minutes to under a minute. After that, pose-only checks run before anything is rendered, so a pose that fails never costs a render, and spec variants can be solved in parallel and ranked.
+Profiling showed most of the time went into Blender re-evaluating the deformed meshes (armature, subdivision, cloth fixes) after every IK step. The grip solver made it worse by trying many thumb positions, each with a full update.
 
-## In the app
+The fix switches the mesh modifiers off while bones are being solved and turns them back on at the first point where something reads the deformed mesh. Joints and animation samples came out identical to the old path.
+
+A bent-over row went from about six minutes to under a minute. Pose-only checks now run before anything is rendered, so a pose that fails never costs a render, and spec variants can be solved in parallel and ranked.
+
+## The asset catalog and the Swift lookup
 
 A figure pack is an asset catalog: one image set per pose, each with light and dark appearances at @2x and @3x, on a transparent background. Start and end share one crop, so the two poses line up exactly.
 
@@ -284,17 +328,37 @@ struct ExerciseFigure: Equatable {
 }
 ```
 
-A figure is used only for the exact move it shows. A dumbbell curl figure isn't reused for a barbell curl, and a barbell row isn't reused for an inverted row. A move without a figure shows a plain fallback instead of a near match.
+A figure is used only for the exact move it shows. A dumbbell curl figure is not reused for a barbell curl, and a barbell row is not reused for an inverted row.
 
-## What I would do the same way again
+A move without a figure shows a plain fallback instead of a near match.
 
-- **Keep the licence clean from the start.** A CC0 body, reference images used only for measuring, and my own renders in the app. It made the question "can I ship this?" easy to answer for every image.
-- **Pose with directions, and judge with angles.** Specs written as bone directions are easy to read and to fix one bone at a time. Joint angles measured from references are easy to compare. Keeping the two apart meant a figure was never a copy of one image.
-- **Write the checks before trusting the renders.** Most of the problems they caught were ones I wouldn't have noticed on a phone screen until a user did.
+## Approaches not adopted yet
 
-Two things I looked at and haven't adopted yet: Blender's Line Art modifier, which handles lines near touching surfaces better than Freestyle but needs an OpenGL context that my headless render machine doesn't have, and a parametric body model built on the same MakeHuman topology that can be fitted to an image directly, instead of writing bone directions by hand.
+Blender's Line Art modifier handles lines near touching surfaces better than Freestyle, but it needs an OpenGL context that the headless render machine does not have.
 
-Next in the series is part 3, on choosing a pose model for the phone.
+Anny, a parametric body model built on the same MakeHuman topology, can be fitted to an image directly. It would replace writing bone directions by hand, and it has not been adopted yet.
+
+## Next in the series
+
+Part 3 is on comparing pose models for on-device tracking on the iPhone.
+
+## References
+
+- [MakeHuman licence (CC0 1.0 for the assets)](https://github.com/makehumancommunity/makehuman/blob/master/LICENSE.md)
+- [MakeHuman plugin for Blender (MPFB)](https://static.makehumancommunity.org/mpfb.html)
+- [MPFB2 source](https://github.com/makehumancommunity/mpfb2)
+- [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+- [free-exercise-db](https://github.com/yuhonas/free-exercise-db)
+- [The Unlicense](https://unlicense.org/)
+- [MediaPipe Pose Landmarker guide](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker)
+- [MediaPipe Pose Landmarker guide for Python](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker/python)
+- [Cycles, Blender 4.2 Manual](https://docs.blender.org/manual/en/4.2/render/cycles/index.html)
+- [Freestyle, Blender 4.2 Manual](https://docs.blender.org/manual/en/4.2/render/freestyle/index.html)
+- [Line Set, Blender 4.2 Manual](https://docs.blender.org/manual/en/4.2/render/freestyle/view_layer/line_set.html)
+- [Line Art modifier, Blender 4.2 Manual](https://docs.blender.org/manual/en/4.2/grease_pencil/modifiers/generate/line_art.html)
+- [mathutils.kdtree, Blender 4.2 Python API](https://docs.blender.org/api/4.2/mathutils.kdtree.html)
+- [Managing assets with asset catalogs, Apple Developer Documentation](https://developer.apple.com/documentation/xcode/managing-assets-with-asset-catalogs)
+- [Anny body model](https://github.com/naver/anny)
 
 <Muted>
   Workout Director is published on the App Store by Shelgaon Ltd. [App
