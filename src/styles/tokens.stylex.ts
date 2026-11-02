@@ -8,8 +8,6 @@ const DARK = '@media (prefers-color-scheme: dark)'
  */
 export const colors = stylex.defineVars({
   bg: { default: '#faf8f3', [DARK]: '#0c0d0e' },
-  // A very light paper grain tiled over the background (a static SVG, drawn once).
-  grain: { default: 'url("/assets/img/grain.svg")', [DARK]: 'url("/assets/img/grain-dark.svg")' },
   // The footer drawing is black line art; dark mode turns it light.
   artFilter: { default: 'none', [DARK]: 'invert(1)' },
   artOpacity: { default: '0.42', [DARK]: '0.3' },
@@ -40,7 +38,6 @@ export const colors = stylex.defineVars({
 
 const light = {
   bg: '#faf8f3',
-  grain: 'url("/assets/img/grain.svg")',
   artFilter: 'none',
   artOpacity: '0.42',
   text: '#090a0b',
@@ -64,7 +61,6 @@ const light = {
 
 const dark = {
   bg: '#0c0d0e',
-  grain: 'url("/assets/img/grain-dark.svg")',
   artFilter: 'invert(1)',
   artOpacity: '0.3',
   text: '#f1f6f3',

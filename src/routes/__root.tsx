@@ -81,8 +81,6 @@ function RootDocument({ children }: { children: ReactNode }) {
 const styles = stylex.create({
   body: {
     backgroundColor: colors.bg,
-    backgroundImage: colors.grain,
-    backgroundRepeat: 'repeat',
     color: colors.text,
     colorScheme: colors.scheme,
     fontFamily: fonts.sans,
