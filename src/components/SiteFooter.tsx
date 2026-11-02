@@ -37,6 +37,9 @@ export function SiteFooter() {
       {/*
         Line art across the full width: the AK mark, Workout Director exercise
         figures mid-movement and the WD mark on a phone. Decorative, so it has no alt text.
+        Phones get a narrower drawing (the push-up left out, the phone moved up next to the
+        curl) so the whole of it fits the screen at a readable size. Only the one shown is
+        loaded: a lazy image that is not displayed is never fetched.
       */}
       <img
         src="/assets/img/footer-identity.svg"
@@ -45,7 +48,16 @@ export function SiteFooter() {
         alt=""
         loading="lazy"
         decoding="async"
-        {...stylex.props(styles.art)}
+        {...stylex.props(styles.art, styles.wide)}
+      />
+      <img
+        src="/assets/img/footer-identity-phone.svg"
+        width={1682}
+        height={440}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        {...stylex.props(styles.art, styles.narrow)}
       />
     </footer>
   )
@@ -57,6 +69,8 @@ const styles = stylex.create({
     color: colors.muted,
     fontSize: type.meta,
     overflow: 'hidden',
+    // Keeps the baseline of the drawing clear of the home indicator on phones.
+    paddingBottom: 'env(safe-area-inset-bottom, 0px)',
   },
   row: {
     display: 'flex',
@@ -74,16 +88,20 @@ const styles = stylex.create({
     rowGap: '0.4rem',
     columnGap: '1.25rem',
   },
-  // On phones the drawing is shown larger and cropped at the sides, so the figures stay readable.
   art: {
-    display: 'block',
-    width: { default: '100%', [breakpoints.phone]: '170%' },
-    maxWidth: { default: '1680px', [breakpoints.phone]: 'none' },
+    width: '100%',
+    maxWidth: '1680px',
     height: 'auto',
-    marginInline: { default: 'auto', [breakpoints.phone]: '-35%' },
+    marginInline: 'auto',
     filter: colors.artFilter,
     opacity: colors.artOpacity,
     userSelect: 'none',
     pointerEvents: 'none',
+  },
+  wide: {
+    display: { default: 'block', [breakpoints.phone]: 'none' },
+  },
+  narrow: {
+    display: { default: 'none', [breakpoints.phone]: 'block' },
   },
 })
