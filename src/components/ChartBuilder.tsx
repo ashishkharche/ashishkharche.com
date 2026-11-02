@@ -132,15 +132,34 @@ const kindOrder: Array<Kind | 'scatter'> = ['headline', 'leaderboard', 'head-to-
 
 const iconCache = new Map<string, Promise<Icon | null>>()
 const noIcons = new Map<string, Icon>()
-/** An app icon from an allowed host, loaded with CORS so the canvas stays exportable. Null when it cannot load. */
+/**
+ * An app icon from an allowed host, loaded with CORS so the canvas stays exportable. Null unless it loads, decodes
+ * and can be read back from a canvas (what PNG and SVG downloads need).
+ */
 function loadIcon(url: string): Promise<Icon | null> {
   let found = iconCache.get(url)
   if (!found) {
-    found = new Promise((resolve) => {
+    found = new Promise<Icon | null>((resolve) => {
+      if (!iconAllowed(url)) return resolve(null)
       const image = new Image()
       image.crossOrigin = 'anonymous'
       image.decoding = 'async'
-      image.onload = () => resolve({ image, width: image.naturalWidth, height: image.naturalHeight })
+      image.onload = () => {
+        image
+          .decode()
+          .then(() => {
+            if (!image.naturalWidth || !image.naturalHeight) return resolve(null)
+            const probe = document.createElement('canvas')
+            probe.width = 1
+            probe.height = 1
+            const ctx = probe.getContext('2d')
+            if (!ctx) return resolve(null)
+            ctx.drawImage(image, 0, 0, 1, 1)
+            ctx.getImageData(0, 0, 1, 1)
+            resolve({ image, width: image.naturalWidth, height: image.naturalHeight })
+          })
+          .catch(() => resolve(null))
+      }
       image.onerror = () => resolve(null)
       image.src = url
     })
@@ -148,6 +167,7 @@ function loadIcon(url: string): Promise<Icon | null> {
   }
   return found
 }
+const verifyIcon = (url: string) => loadIcon(url).then((icon) => icon !== null)
 
 function appsIn(model: Model): AppRef[] {
   switch (model.kind) {
@@ -204,7 +224,6 @@ export function ChartBuilder({
   const [config, setConfig] = useState<ChartConfig | null>(null)
   const [sourceText, setSourceText] = useState('')
   const [sprite, setSprite] = useState<HTMLImageElement | null>(null)
-  const [pointStyle, setPointStyle] = useState<'icons' | 'initials'>('icons')
   const [size, setSize] = useState<ChartSize>(chartSizes[0] as ChartSize)
   const [scale, setScale] = useState(2)
   const [fontsReady, setFontsReady] = useState(false)
@@ -271,6 +290,11 @@ export function ChartBuilder({
       .then(async (loaded) => {
         const image = loaded.iconSprite ? await loadImage(loaded.iconSprite).catch(() => null) : null
         if (cancelled) return
+        // Points are app icons only. Without the sprite there is nothing honest to draw.
+        if (!image) {
+          setStatus('The app icons for this template could not be loaded, so the chart is not shown.')
+          return
+        }
         setTemplate(loaded)
         setConfig(structuredClone(loaded.config))
         setSourceText(loaded.config.source_default ?? '')
@@ -291,7 +315,7 @@ export function ChartBuilder({
     if (!liveTemplate) return
     let cancelled = false
     liveTemplate
-      .load(client, { rows: rowCount, apps: pair })
+      .load(client, { rows: rowCount, apps: pair, verify: verifyIcon })
       .then(async (loaded) => {
         const apps = appsIn(loaded.model)
         const found = await Promise.all(
@@ -324,15 +348,15 @@ export function ChartBuilder({
     return config && template ? validate(config, template.rows, sourceText) : []
   }, [liveTemplate, chart, liveText, config, template, sourceText])
 
-  const scatterReady = !liveTemplate && !!config && !!template && template.config.id === templateId
+  const scatterReady = !liveTemplate && !!config && !!template && !!sprite && template.config.id === templateId
   const liveReady = !!liveTemplate && liveState === 'ready' && !!chart && !!liveText && chart.templateId === templateId
   const ready = (scatterReady || liveReady) && problems.length === 0
 
   const paint = (ctx: Ctx, width: number, height: number, image: CanvasImageSource | null) => {
     if (liveTemplate && chart && liveText) {
-      drawLive(ctx, chart, liveText, { width, height, icons, pointStyle })
+      drawLive(ctx, chart, liveText, { width, height, icons })
     } else if (config && template) {
-      drawChart(ctx, config, template.rows, { width, height, source: sourceText, sprite: image, pointStyle })
+      drawChart(ctx, config, template.rows, { width, height, source: sourceText, sprite: image })
     }
   }
 
@@ -352,7 +376,7 @@ export function ChartBuilder({
     canvas.dataset.rendered = `${templateId}:${size.width}x${size.height}`
     // paint reads the same state as the dependencies below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, config, template, sprite, size, fontsReady, sourceText, pointStyle, chart, liveText, icons, templateId])
+  }, [ready, config, template, sprite, size, fontsReady, sourceText, chart, liveText, icons, templateId])
 
   const rows = useMemo(() => (template && config ? filterRows(template.rows, config) : []), [template, config])
   const update = (change: Partial<ChartConfig>) =>
@@ -416,7 +440,6 @@ export function ChartBuilder({
   }
 
   const reset = () => {
-    setPointStyle('icons')
     if (liveTemplate) {
       if (chart) setLiveText(structuredClone(chart.text))
       return
@@ -805,15 +828,6 @@ export function ChartBuilder({
                         />
                       </Field>
                     ))}
-                <Segmented
-                  label={liveTemplate ? 'Apps shown as' : 'Points'}
-                  value={pointStyle}
-                  options={[
-                    { value: 'icons', label: 'Icons' },
-                    { value: 'initials', label: 'Initials' },
-                  ]}
-                  onChange={(value) => setPointStyle(value as 'icons' | 'initials')}
-                />
                 {liveTemplate
                   ? null
                   : (config?.labels ?? []).map((label, index) => (

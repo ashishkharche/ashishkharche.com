@@ -3,18 +3,8 @@
  * canvas or the SVG context, in the same dark style, header and footnote as the scatter charts.
  */
 import { niceTicks, shorten } from './render.ts'
-import {
-  drawFrame,
-  drawText,
-  initialSize,
-  inkWidth,
-  layout,
-  palette,
-  TRACKING,
-  type Ctx,
-  type TextStyle,
-} from './render.ts'
-import { fitRole, fontString, sizeOf, type ChartFamily, type ChartWeight, type TypeRole } from './type.ts'
+import { drawFrame, drawText, inkWidth, layout, palette, TRACKING, type Ctx, type TextStyle } from './render.ts'
+import { fitRole, sizeOf, type ChartFamily, type ChartWeight, type TypeRole } from './type.ts'
 import { liveFootnote, validateLive, type AppRef, type ChartText, type LiveChart, type Model } from './live.ts'
 import { ChartRuleError } from './render.ts'
 
@@ -28,9 +18,8 @@ export interface Icon {
 export interface LiveDrawOptions {
   width: number
   height: number
-  /** Icons by app id. Apps without one get their initial. */
+  /** Icons by app id, each one loaded and decoded. */
   icons?: Map<string, Icon>
-  pointStyle?: 'icons' | 'initials'
 }
 
 /** Colours for up to six lines, picked to stay apart on the dark background. */
@@ -77,7 +66,7 @@ export function drawLive(ctx: Ctx, chart: LiveChart, text: ChartText, options: L
     s,
     text: (value, x, y, style) => drawText(ctx, value, x, y, { tracking, ...style }),
     width: (value, size, weight, family) => inkWidth(ctx, value, size, weight, tracking, family),
-    icon: (app, cx, cy, size) => drawIcon(ctx, app, cx, cy, size, options, s),
+    icon: (app, cx, cy, size) => drawIcon(ctx, app, cx, cy, size, options),
     size: (role) => sizeOf(role, s),
     fit: (value, role, weight, maxWidth, family = 'sans') => {
       const size = fitRole(role, s, maxWidth, (z) => inkWidth(ctx, value, z, weight, tracking, family))
@@ -111,35 +100,17 @@ function drawModel(kit: Kit, model: Model, box: Box) {
   }
 }
 
-/** An app icon in a circle, or its initial on a grey disc. */
-function drawIcon(ctx: Ctx, app: AppRef, cx: number, cy: number, size: number, options: LiveDrawOptions, s: number) {
+/** An app icon in a circle. Apps reach a chart only with a verified icon, so there is no stand-in to draw. */
+function drawIcon(ctx: Ctx, app: AppRef, cx: number, cy: number, size: number, options: LiveDrawOptions) {
+  const icon = options.icons?.get(app.appId)
+  if (!icon) return
   const r = size / 2
-  const icon = (options.pointStyle ?? 'icons') === 'icons' ? options.icons?.get(app.appId) : undefined
   ctx.save()
-  if (icon) {
-    ctx.beginPath()
-    ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.clip()
-    ctx.imageSmoothingQuality = 'high'
-    ctx.drawImage(icon.image, 0, 0, icon.width, icon.height, cx - r, cy - r, size, size)
-  } else {
-    ctx.fillStyle = palette.initials
-    ctx.beginPath()
-    ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.fill()
-    const letter = (app.name.trim()[0] ?? '?').toUpperCase()
-    ctx.font = fontString(initialSize(size, s), 500)
-    ctx.letterSpacing = '0px'
-    const m = ctx.measureText(letter)
-    ctx.fillStyle = '#ffffff'
-    ctx.textAlign = 'left'
-    ctx.textBaseline = 'alphabetic'
-    ctx.fillText(
-      letter,
-      cx - (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2,
-      cy + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2,
-    )
-  }
+  ctx.beginPath()
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
+  ctx.clip()
+  ctx.imageSmoothingQuality = 'high'
+  ctx.drawImage(icon.image, 0, 0, icon.width, icon.height, cx - r, cy - r, size, size)
   ctx.restore()
 }
 

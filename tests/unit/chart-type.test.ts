@@ -78,7 +78,7 @@ async function allFonts(): Promise<Map<string, Font[]>> {
     const fonts: Font[] = []
     for (const [width, height] of SIZES) {
       const ctx = recordingCtx()
-      drawLive(ctx, chart, chart.text, { width, height, pointStyle: 'initials' })
+      drawLive(ctx, chart, chart.text, { width, height })
       fonts.push(...ctx.fonts.map((f) => parse(f, scale(width, height))))
     }
     out.set(template.id, fonts)
@@ -88,11 +88,9 @@ async function allFonts(): Promise<Map<string, Font[]>> {
     const rows = parseCsv(read(`${id}.csv`)).rows
     const fonts: Font[] = []
     for (const [width, height] of SIZES) {
-      for (const pointStyle of ['initials', 'icons'] as const) {
-        const ctx = recordingCtx()
-        drawChart(ctx, config, rows, { width, height, source: config.source_default ?? '', pointStyle })
-        fonts.push(...ctx.fonts.map((f) => parse(f, scale(width, height))))
-      }
+      const ctx = recordingCtx()
+      drawChart(ctx, config, rows, { width, height, source: config.source_default ?? '' })
+      fonts.push(...ctx.fonts.map((f) => parse(f, scale(width, height))))
     }
     out.set(id, fonts)
   }

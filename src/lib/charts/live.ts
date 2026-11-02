@@ -7,6 +7,7 @@ import { shortName } from './config.ts'
 import {
   formatDataTime,
   formatDay,
+  iconAllowed,
   latest,
   metaOf,
   parseDataTime,
@@ -114,7 +115,12 @@ export interface LoadOptions {
   rows?: number
   /** App ids for a head to head. */
   apps?: [string, string]
+  /** Says whether an icon loads. The page loads each image; without one, any icon URL on an allowed host passes. */
+  verify?: IconCheck
 }
+
+/** True when the icon at `url` loads and decodes (and can be drawn into an export). */
+export type IconCheck = (url: string) => Promise<boolean>
 
 export interface LiveTemplate {
   id: string
@@ -227,14 +233,80 @@ function requireTime(date: Date | null, what: string): Date {
   return date
 }
 
+// Icons and names ----------------------------------------------------------------------------------------------
+
+/** Added to the last footnote line of a list that left an app out. */
+export const ICON_NOTE = 'Apps with no verified icon are left out.'
+const STAND_IN = /^(unknown|n\/a|na|none|null|undefined|-+|\?+)$/i
+/** A name or company worth showing: not empty, and not a stand-in such as "Unknown". */
+export const realValue = (value: string | null | undefined): value is string =>
+  typeof value === 'string' && value.trim() !== '' && !STAND_IN.test(value.trim())
+
+type Named = { name: string; iconUrl?: string | null }
+const presentOnly: IconCheck = async () => true
+
+/**
+ * The icon URLs that verified, checking candidates in rank order and only as many as `n` usable ones need: when an
+ * icon fails, the next candidate is checked, so a list keeps its length.
+ */
+export async function verifiedIcons<T>(
+  items: T[],
+  n: number,
+  app: (item: T) => Named,
+  verify: IconCheck = presentOnly,
+): Promise<Set<string>> {
+  const ok = new Set<string>()
+  let kept = 0
+  let i = 0
+  while (kept < n && i < items.length) {
+    const batch = items.slice(i, i + n - kept)
+    i += batch.length
+    const urls = await Promise.all(
+      batch.map(async (item) => {
+        const { name, iconUrl } = app(item)
+        if (!realValue(name) || !iconAllowed(iconUrl)) return null
+        return (await verify(iconUrl).catch(() => false)) ? iconUrl : null
+      }),
+    )
+    for (const url of urls) {
+      if (url) {
+        ok.add(url)
+        kept++
+      }
+    }
+  }
+  return ok
+}
+
+/** An app the chart may show: a real name and an icon that verified (or, with no set, one on an allowed host). */
+export const usable = (app: Named, icons?: Set<string>): boolean =>
+  realValue(app.name) && iconAllowed(app.iconUrl) && (!icons || icons.has(app.iconUrl))
+
+/** The first `n` usable items in order, and how many were passed over to get them. */
+export function pickUsable<T>(items: T[], n: number, app: (item: T) => Named, icons?: Set<string>) {
+  const kept: T[] = []
+  let skipped = 0
+  for (const item of items) {
+    if (kept.length >= n) break
+    if (usable(app(item), icons)) kept.push(item)
+    else skipped++
+  }
+  return { kept, skipped }
+}
+
+const noted = (line: string, skipped: number) => (skipped > 0 ? `${line} ${ICON_NOTE}` : line)
+const noIconError = (name: string, what: string) =>
+  new NoDataError(`${realValue(name) ? name : 'The app'} has no verified icon, so ${what} is not shown.`)
+
 const shortDay = (iso: string) => formatDay(new Date(`${iso}T00:00:00Z`)).replace(/ \d{4}$/, '')
 
 // Mappers ---------------------------------------------------------------------------------------------------------
 
-export function mapNumberOne(rankingsBody: unknown, historyBody: unknown) {
+export function mapNumberOne(rankingsBody: unknown, historyBody: unknown, icons?: Set<string>) {
   const rows = sortedRankings(rankingsBody)
   const top = rows[0]
   if (!top) throw new NoDataError('The US Top Free answer has no apps.')
+  if (!usable(ref(top), icons)) throw noIconError(plainName(top.name), 'this chart')
   const time = requireTime(parseDataTime(metaOf(rankingsBody).recordedAt), 'US Top Free')
   const history = unwrap<RankHistory>(historyBody)
   const days = 30
@@ -243,7 +315,8 @@ export function mapNumberOne(rankingsBody: unknown, historyBody: unknown) {
   const recorded = daily.ranks.filter((r) => r !== null).length
   const name = plainName(top.name)
   const isFirst = top.rank === 1
-  const others = rows.slice(1, 5).map((r) => ({ app: ref(r), note: `#${r.rank}` }))
+  const picked = pickUsable(rows.slice(1), 4, ref, icons)
+  const others = picked.kept.map((r) => ({ app: ref(r), note: `#${r.rank}` }))
   const sentence = isFirst
     ? `${name} is #1 on the US App Store Top Free chart, and was #1 on ${atTop} of the last ${days} days.`
     : `${name} is the highest tracked app on the US Top Free chart, at #${top.rank}.`
@@ -264,7 +337,7 @@ export function mapNumberOne(rankingsBody: unknown, historyBody: unknown) {
       footnote: [
         'Source: {source}. Data from {time}.',
         `Daily rank is the last recorded rank that day. ${recorded} of ${days} days have a rank.`,
-        'Rank is the store chart position, not downloads or users.',
+        noted('Rank is the store chart position, not downloads or users.', picked.skipped),
       ] as [string, string, string],
     },
     dataTime: formatDataTime(time),
@@ -272,7 +345,8 @@ export function mapNumberOne(rankingsBody: unknown, historyBody: unknown) {
   }
 }
 
-export function mapCountries(rankingsBody: unknown, appRankingsBody: unknown, app: RankingRow) {
+export function mapCountries(rankingsBody: unknown, appRankingsBody: unknown, app: RankingRow, icons?: Set<string>) {
+  if (!usable(ref(app), icons)) throw noIconError(plainName(app.name), 'this chart')
   const detail = unwrap<AppRankings>(appRankingsBody)
   const ranks = (detail?.rankings ?? []).filter((r) => typeof r.rank === 'number' && r.rank > 0)
   if (!ranks.length) throw new NoDataError(`${plainName(app.name)} has no country ranks in the latest update.`)
@@ -311,25 +385,35 @@ export function mapCountries(rankingsBody: unknown, appRankingsBody: unknown, ap
   }
 }
 
-export function mapMovers(moversBody: unknown, rankingsBody: unknown, limit: number) {
-  const rankings = sortedRankings(rankingsBody)
-  const time = requireTime(parseDataTime(metaOf(rankingsBody).recordedAt), 'US Top Free')
-  const byId = new Map(rankings.map((r) => [r.appId, r]))
+/** Climbers in order, biggest first, before any are left out. */
+export function moverCandidates(moversBody: unknown, rankingsBody: unknown) {
+  const byId = new Map(sortedRankings(rankingsBody).map((r) => [r.appId, r]))
   // Movers covers both stores, and some rows are from other charts than the tracked US Top Free list. Keep App Store
   // rows whose current rank matches the rankings answer, so the list agrees with the other US Top Free charts.
-  const movers = (unwrap<MoverRow[]>(moversBody) ?? [])
+  return (unwrap<MoverRow[]>(moversBody) ?? [])
     .filter((m) => (m.store ?? 'apple') === 'apple' && byId.get(m.appId)?.rank === m.currentRank)
     .filter((m) => m.change > 0 && Number.isFinite(m.currentRank) && Number.isFinite(m.previousRank))
     .sort((a, b) => b.change - a.change || a.currentRank - b.currentRank)
-    .slice(0, limit)
-  if (!movers.length) throw new NoDataError('No tracked app climbed on the US Top Free chart in the latest update.')
+    .map((m) => ({
+      ...m,
+      app: {
+        appId: m.appId,
+        store: m.store ?? 'apple',
+        name: plainName(m.name),
+        iconUrl: byId.get(m.appId)?.iconUrl ?? m.iconUrl,
+      } satisfies AppRef,
+    }))
+}
+
+export function mapMovers(moversBody: unknown, rankingsBody: unknown, limit: number, icons?: Set<string>) {
+  const time = requireTime(parseDataTime(metaOf(rankingsBody).recordedAt), 'US Top Free')
+  const candidates = moverCandidates(moversBody, rankingsBody)
+  if (!candidates.length) throw new NoDataError('No tracked app climbed on the US Top Free chart in the latest update.')
+  const picked = pickUsable(candidates, limit, (m) => m.app, icons)
+  const movers = picked.kept
+  if (!movers.length) throw new NoDataError('None of the apps that climbed has a verified icon.')
   const rows = movers.map((m) => ({
-    app: {
-      appId: m.appId,
-      store: m.store ?? 'apple',
-      name: plainName(m.name),
-      iconUrl: byId.get(m.appId)?.iconUrl ?? m.iconUrl,
-    },
+    app: m.app,
     value: m.change,
     display: `+${m.change}`,
     detail: `#${m.previousRank} to #${m.currentRank}`,
@@ -342,7 +426,7 @@ export function mapMovers(moversBody: unknown, rankingsBody: unknown, limit: num
       footnote: [
         'Source: {source}. Data from {time}.',
         'Change compares the latest US Top Free update with the one before it.',
-        'Rank is the store chart position, not downloads or users.',
+        noted('Rank is the store chart position, not downloads or users.', picked.skipped),
       ] as [string, string, string],
     },
     dataTime: formatDataTime(time),
@@ -350,18 +434,43 @@ export function mapMovers(moversBody: unknown, rankingsBody: unknown, limit: num
   }
 }
 
-export function mapMostSdks(techBody: unknown, appleBody: unknown, googleBody: unknown, limit: number) {
-  const icons = new Map(
+/** Analyzed builds, most SDKs first, each with the icon the rankings answers give it (if any). */
+export function sdkCandidates(techBody: unknown, appleBody: unknown, googleBody: unknown) {
+  const iconOf = new Map(
     [...sortedRankings(appleBody), ...sortedRankings(googleBody)].map((r) => [`${r.store}:${r.appId}`, r.iconUrl]),
   )
   const list = (unwrap<TechStackRow[]>(techBody) ?? []).filter((r) => Number.isFinite(r.sdkCount) && r.sdkCount > 0)
-  const top = [...list].sort((a, b) => b.sdkCount - a.sdkCount || a.appName.localeCompare(b.appName)).slice(0, limit)
-  if (!top.length) throw new NoDataError('No analyzed builds in the answer.')
+  const sorted = [...list]
+    .sort((a, b) => b.sdkCount - a.sdkCount || a.appName.localeCompare(b.appName))
+    .map((r) => ({
+      ...r,
+      app: {
+        appId: r.appId,
+        store: r.store,
+        name: plainName(r.appName ?? ''),
+        iconUrl: iconOf.get(`${r.store}:${r.appId}`),
+      } satisfies AppRef,
+    }))
+  return { list, sorted }
+}
+
+export function mapMostSdks(
+  techBody: unknown,
+  appleBody: unknown,
+  googleBody: unknown,
+  limit: number,
+  icons?: Set<string>,
+) {
+  const { list, sorted } = sdkCandidates(techBody, appleBody, googleBody)
+  if (!sorted.length) throw new NoDataError('No analyzed builds in the answer.')
+  const picked = pickUsable(sorted, limit, (r) => r.app, icons)
+  const top = picked.kept
+  if (!top.length) throw new NoDataError('None of the analyzed builds has a verified app icon.')
   const times = top.map((r) => parseDataTime(r.capturedAt)).filter((d): d is Date => d !== null)
   const newest = requireTime(times.length ? new Date(Math.max(...times.map(Number))) : null, 'tech stack')
   const oldest = new Date(Math.min(...times.map(Number)))
   const rows = top.map((r) => ({
-    app: { appId: r.appId, store: r.store, name: plainName(r.appName), iconUrl: icons.get(`${r.store}:${r.appId}`) },
+    app: r.app,
     value: r.sdkCount,
     display: String(r.sdkCount),
     detail: r.store === 'google' ? 'Android' : 'iOS',
@@ -370,11 +479,13 @@ export function mapMostSdks(techBody: unknown, appleBody: unknown, googleBody: u
     model: { kind: 'leaderboard', rows } satisfies LeaderboardModel,
     text: {
       title: 'Most SDKs in one app build',
-      subtitle: `Third-party SDKs detected in the latest analyzed build, top ${rows.length} of ${list.length} builds.`,
+      subtitle: picked.skipped
+        ? `Third-party SDKs detected in the latest analyzed build: ${rows.length} of ${list.length} builds, most first.`
+        : `Third-party SDKs detected in the latest analyzed build, top ${rows.length} of ${list.length} builds.`,
       footnote: [
         'Source: {source}. Data from {time}.',
         `Builds analyzed ${formatDay(oldest)} to ${formatDay(newest)}. Detected SDKs can be a lower bound.`,
-        'An SDK count says nothing about app size, quality or privacy.',
+        noted('An SDK count says nothing about app size, quality or privacy.', picked.skipped),
       ] as [string, string, string],
     },
     dataTime: formatDataTime(newest),
@@ -403,7 +514,9 @@ export function mapHeadToHead(
   techBody: unknown,
   countryBodies: [unknown, unknown],
   pair: [RankingRow, RankingRow],
+  icons?: Set<string>,
 ) {
+  for (const app of pair) if (!usable(ref(app), icons)) throw noIconError(plainName(app.name), 'this head to head')
   const time = requireTime(parseDataTime(metaOf(rankingsBody).recordedAt), 'US Top Free')
   const compared = unwrap<CompareRow[]>(compareBody) ?? []
   const tech = unwrap<TechStackRow[]>(techBody) ?? []
@@ -450,7 +563,14 @@ export function mapHeadToHead(
   }
 }
 
-export function mapBump(rankingsBody: unknown, historyBodies: unknown[], apps: RankingRow[], days: number) {
+export function mapBump(
+  rankingsBody: unknown,
+  historyBodies: unknown[],
+  apps: RankingRow[],
+  days: number,
+  skipped = 0,
+) {
+  if (apps.some((app) => !usable(ref(app)))) throw new NoDataError('Every app in the chart needs a verified icon.')
   const series = apps.map((app, i) => ({
     app: ref(app),
     daily: dailyRanks(unwrap<RankHistory>(historyBodies[i]), days),
@@ -483,7 +603,7 @@ export function mapBump(rankingsBody: unknown, historyBodies: unknown[], apps: R
       footnote: [
         'Source: {source}. Data from {time}.',
         `${shortDay(dayList[0] ?? '')} to ${shortDay(last)}. Daily rank is the last recorded that day. A gap: no rank.`,
-        'Rank is the store chart position, not downloads or users.',
+        noted('Rank is the store chart position, not downloads or users.', skipped),
       ] as [string, string, string],
     },
     dataTime: formatDataTime(time),
@@ -494,17 +614,20 @@ export function mapBump(rankingsBody: unknown, historyBodies: unknown[], apps: R
   }
 }
 
-export function mapIosAndroid(appleBody: unknown, googleBody: unknown, limit: number) {
-  const apple = sortedRankings(appleBody)
-  const google = sortedRankings(googleBody)
+/** iOS apps, best US rank first, that are also on the Google Play chart. */
+export function bothStoreCandidates(appleBody: unknown, googleBody: unknown) {
+  const androidRank = new Map<string, number>()
+  for (const r of sortedRankings(googleBody)) if (!androidRank.has(key(r.name))) androidRank.set(key(r.name), r.rank)
+  return sortedRankings(appleBody)
+    .filter((r) => androidRank.has(key(r.name)))
+    .map((r) => ({ row: r, app: ref(r), right: androidRank.get(key(r.name)) ?? 0 }))
+}
+
+export function mapIosAndroid(appleBody: unknown, googleBody: unknown, limit: number, icons?: Set<string>) {
   const appleTime = requireTime(parseDataTime(metaOf(appleBody).recordedAt), 'App Store')
   const googleTime = requireTime(parseDataTime(metaOf(googleBody).recordedAt), 'Google Play')
-  const androidRank = new Map<string, number>()
-  for (const r of google) if (!androidRank.has(key(r.name))) androidRank.set(key(r.name), r.rank)
-  const rows = apple
-    .filter((r) => androidRank.has(key(r.name)))
-    .slice(0, limit)
-    .map((r) => ({ app: ref(r), left: r.rank, right: androidRank.get(key(r.name)) ?? 0 }))
+  const picked = pickUsable(bothStoreCandidates(appleBody, googleBody), limit, (c) => c.app, icons)
+  const rows = picked.kept.map((c) => ({ app: c.app, left: c.row.rank, right: c.right }))
   if (rows.length < 2) throw new NoDataError('Fewer than 2 apps are on both US Top Free charts.')
   const same = formatDataTime(appleTime) === formatDataTime(googleTime)
   return {
@@ -517,7 +640,7 @@ export function mapIosAndroid(appleBody: unknown, googleBody: unknown, limit: nu
         same
           ? 'Apps matched by name across the two stores. Google Play: all apps, Top Free.'
           : `Google Play data from ${formatDataTime(googleTime)}. Apps matched by name across the stores.`,
-        'Rank is the store chart position, not downloads or users.',
+        noted('Rank is the store chart position, not downloads or users.', picked.skipped),
       ] as [string, string, string],
     },
     dataTime: formatDataTime(appleTime),
@@ -547,12 +670,15 @@ export const liveTemplates: LiveTemplate[] = [
     kind: 'headline',
     name: 'Which tracked app ranks highest on the US Top Free chart?',
     requests: 2,
-    async load(client) {
+    async load(client, { verify }) {
       const rankings = await getRankings(client)
-      const top = sortedRankings(rankings)[0]
+      const rows = sortedRankings(rankings)
+      const top = rows[0]
       if (!top) throw new NoDataError('The US Top Free answer has no apps.')
+      const icons = await verifiedIcons(rows, 5, ref, verify)
+      if (!usable(ref(top), icons)) throw noIconError(plainName(top.name), 'this chart')
       const history = await getHistory(client, top.appId, 30)
-      return finish('us-number-one', chartsSource, mapNumberOne(rankings, history))
+      return finish('us-number-one', chartsSource, mapNumberOne(rankings, history, icons))
     },
   },
   {
@@ -561,12 +687,14 @@ export const liveTemplates: LiveTemplate[] = [
     kind: 'headline',
     name: 'In how many countries is ChatGPT on the Top Free chart?',
     requests: 2,
-    async load(client) {
+    async load(client, { verify }) {
       const rankings = await getRankings(client)
       const app = findApp(sortedRankings(rankings), /^chatgpt$/i)
       if (!app) throw new NoDataError('ChatGPT is not in the latest US Top Free data.')
+      const icons = await verifiedIcons([app], 1, ref, verify)
+      if (!usable(ref(app), icons)) throw noIconError('ChatGPT', 'this chart')
       const detail = await client.get('app-rankings', { id: app.appId, store: 'apple', chart_type: 'top-free' })
-      return finish('chatgpt-countries', chartsSource, mapCountries(rankings, detail, app))
+      return finish('chatgpt-countries', chartsSource, mapCountries(rankings, detail, app, icons))
     },
   },
   {
@@ -576,12 +704,13 @@ export const liveTemplates: LiveTemplate[] = [
     name: 'Who climbed most on the US Top Free chart since the last update?',
     requests: 2,
     rowChoices: [5, 10],
-    async load(client, { rows = 10 }) {
+    async load(client, { rows = 10, verify }) {
       const [movers, rankings] = await Promise.all([
         client.get('movers', { country: 'us', chart: 'top-free', limit: 20 }),
         getRankings(client),
       ])
-      return finish('us-climbers', chartsSource, mapMovers(movers, rankings, rows))
+      const icons = await verifiedIcons(moverCandidates(movers, rankings), rows, (m) => m.app, verify)
+      return finish('us-climbers', chartsSource, mapMovers(movers, rankings, rows, icons))
     },
   },
   {
@@ -591,13 +720,15 @@ export const liveTemplates: LiveTemplate[] = [
     name: 'Which app builds ship the most SDKs?',
     requests: 3,
     rowChoices: [5, 10],
-    async load(client, { rows = 10 }) {
+    async load(client, { rows = 10, verify }) {
       const [tech, apple, google] = await Promise.all([
         getTechStack(client),
         getRankings(client),
         getRankings(client, true),
       ])
-      return finish('most-sdks', buildSource, mapMostSdks(tech, apple, google, rows))
+      const { sorted } = sdkCandidates(tech, apple, google)
+      const icons = await verifiedIcons(sorted, rows, (r) => r.app, verify)
+      return finish('most-sdks', buildSource, mapMostSdks(tech, apple, google, rows, icons))
     },
   },
   {
@@ -607,7 +738,7 @@ export const liveTemplates: LiveTemplate[] = [
     name: 'ChatGPT vs Gemini: rank, countries, rating, SDKs',
     requests: 5,
     pickApps: true,
-    async load(client, { apps }) {
+    async load(client, { apps, verify }) {
       const rankings = await getRankings(client)
       const rows = sortedRankings(rankings)
       const pick = (id: string | undefined, pattern: RegExp) =>
@@ -616,6 +747,9 @@ export const liveTemplates: LiveTemplate[] = [
       const b = pick(apps?.[1], /^(google )?gemini$/i)
       if (!a || !b) throw new NoDataError('ChatGPT or Gemini is not in the latest US Top Free data.')
       if (a.appId === b.appId) throw new NoDataError('Pick two different apps.')
+      const icons = await verifiedIcons([a, b], 2, ref, verify)
+      for (const app of [a, b])
+        if (!usable(ref(app), icons)) throw noIconError(plainName(app.name), 'this head to head')
       const [compare, tech, ca, cb] = await Promise.all([
         client.get('compare', { apps: `${a.appId},${b.appId}`, store: 'apple', country: 'us', days: 30 }),
         getTechStack(client),
@@ -625,8 +759,8 @@ export const liveTemplates: LiveTemplate[] = [
       return finish(
         'chatgpt-vs-gemini',
         chartsSource,
-        mapHeadToHead(rankings, compare, tech, [ca, cb], [a, b]),
-        rows.map(ref),
+        mapHeadToHead(rankings, compare, tech, [ca, cb], [a, b], icons),
+        rows.map(ref).filter((app) => usable(app)),
       )
     },
   },
@@ -636,14 +770,15 @@ export const liveTemplates: LiveTemplate[] = [
     kind: 'bump',
     name: 'How have the top AI apps ranked in the US over 30 days?',
     requests: 5,
-    async load(client) {
+    async load(client, { verify }) {
       const rankings = await getRankings(client)
-      const apps = sortedRankings(rankings)
-        .filter((r) => AI_APPS.test(plainName(r.name)))
-        .slice(0, 4)
-      if (apps.length < 2) throw new NoDataError('Fewer than 2 AI apps are in the latest US Top Free data.')
+      const ai = sortedRankings(rankings).filter((r) => AI_APPS.test(plainName(r.name)))
+      const icons = await verifiedIcons(ai, 4, ref, verify)
+      const { kept: apps, skipped } = pickUsable(ai, 4, ref, icons)
+      if (apps.length < 2)
+        throw new NoDataError('Fewer than 2 AI apps with a verified icon are in the US Top Free data.')
       const histories = await Promise.all(apps.map((app) => getHistory(client, app.appId, 30)))
-      return finish('ai-rank-30-days', chartsSource, mapBump(rankings, histories, apps, 30))
+      return finish('ai-rank-30-days', chartsSource, mapBump(rankings, histories, apps, 30, skipped))
     },
   },
   {
@@ -653,9 +788,10 @@ export const liveTemplates: LiveTemplate[] = [
     name: 'Do the top US apps rank the same on iOS and Android?',
     requests: 2,
     rowChoices: [5, 8],
-    async load(client, { rows = 8 }) {
+    async load(client, { rows = 8, verify }) {
       const [apple, google] = await Promise.all([getRankings(client), getRankings(client, true)])
-      return finish('ios-vs-android', bothStores, mapIosAndroid(apple, google, rows))
+      const icons = await verifiedIcons(bothStoreCandidates(apple, google), rows, (c) => c.app, verify)
+      return finish('ios-vs-android', bothStores, mapIosAndroid(apple, google, rows, icons))
     },
   },
 ]

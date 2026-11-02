@@ -275,7 +275,7 @@ describe('live templates', () => {
           [1200, 1200],
         ] as const) {
           const ctx = fakeCtx()
-          drawLive(ctx, chart, chart.text, { width, height, pointStyle: 'initials' })
+          drawLive(ctx, chart, chart.text, { width, height })
           expect(ctx.texts).toContain(chart.text.title)
           expect(ctx.texts.some((t) => t.includes(chart.dataTime))).toBe(true)
         }

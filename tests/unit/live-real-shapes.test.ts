@@ -4,7 +4,7 @@ import { describe, expect, test } from 'vitest'
 import saved from '../fixtures/tdn/live-2026-11-01.json' with { type: 'json' }
 import { fixtureKey } from '../fixtures/tdn/index'
 import { createTdnClient } from '~/lib/charts/tdn'
-import { liveTemplates, validateLive, type LiveChart } from '~/lib/charts/live'
+import { liveFootnote, liveTemplates, validateLive, type LiveChart } from '~/lib/charts/live'
 
 const answers = saved as Record<string, unknown>
 const savedFetch = async (url: string) => {
@@ -42,10 +42,15 @@ describe('live templates with saved real answers', () => {
     expect(chart.model.rows[0]).toMatchObject({ display: '+33', detail: '#91 to #58' })
   })
 
-  test('SDK counts are the tech-stack totals', async () => {
+  test('SDK counts are the tech-stack totals, for apps with an icon in the rankings answers', async () => {
     const chart = await load('most-sdks')
     if (chart.model.kind !== 'leaderboard') throw new Error('kind')
-    expect(chart.model.rows.slice(0, 2).map((r) => r.value)).toEqual([381, 340])
+    // Alipay (381) has no icon in the saved answers, so it is left out and Whatnot (340) leads.
+    expect(chart.model.rows.slice(0, 2).map((r) => r.value)).toEqual([340, 163])
+    expect(chart.model.rows).toHaveLength(10)
+    expect(chart.model.rows.map((r) => r.app.name)).not.toContain('Alipay')
+    expect(chart.model.rows.every((r) => r.app.iconUrl)).toBe(true)
+    expect(liveFootnote(chart)[2]).toContain('Apps with no verified icon are left out.')
   })
 
   test('ChatGPT countries and the head to head use the flat app-rankings and compare answers', async () => {

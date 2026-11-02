@@ -238,7 +238,7 @@ describe('templates', () => {
     it(`${id} draws on a canvas`, () => {
       const { config, rows } = load(id)
       const ctx = fakeCtx()
-      drawChart(ctx, config, rows, { width: 1800, height: 1390, source: source(config), pointStyle: 'initials' })
+      drawChart(ctx, config, rows, { width: 1800, height: 1390, source: source(config) })
       expect(ctx.calls).toContain('fillText')
     })
   }

@@ -51,7 +51,6 @@ export const palette = {
   note: '#a8a8a8',
   diag: '#555555',
   refText: '#8a8a8a',
-  initials: '#3a3a3a',
 } as const
 
 /** Label weights in the data files map onto the two chart weights. */
@@ -333,8 +332,8 @@ export interface DrawOptions {
   height: number
   /** Fills {source} in the footnote. */
   source: string
+  /** The icon sprite. Without it no point is drawn, so the page does not show the chart. */
   sprite?: CanvasImageSource | null
-  pointStyle?: 'icons' | 'initials'
 }
 
 /** Rows targeted by highlight labels; they are drawn larger and on top. */
@@ -485,7 +484,7 @@ export function drawChart(ctx: Ctx, config: ChartConfig, allRows: Row[], options
   const highlightPx = config.highlight_icon_px ?? 84
   for (const row of order) {
     const size = (hl.has(row) ? highlightPx : iconPx) * s
-    drawPoint(ctx, row, config, toX(toNumber(row[xa.field])), toY(toNumber(row[ya.field])), size, options, s)
+    drawPoint(ctx, row, config, toX(toNumber(row[xa.field])), toY(toNumber(row[ya.field])), size, options)
   }
 
   // Labels, then the notes under stale points.
@@ -537,7 +536,7 @@ function drawLabel(
   })
 }
 
-/** An app icon in a circle with a thin ring of the background colour, or the app's initial. */
+/** An app icon in a circle with a thin ring of the background colour. Every row has a sprite cell. */
 function drawPoint(
   ctx: Ctx,
   row: Row,
@@ -546,47 +545,23 @@ function drawPoint(
   cy: number,
   size: number,
   options: DrawOptions,
-  s: number,
 ) {
-  const r = size / 2
   const index = toNumber(row[config.icon_column ?? 'icon'])
+  if (!options.sprite || !Number.isInteger(index)) return
+  const r = size / 2
   ctx.save()
-  if ((options.pointStyle ?? 'icons') === 'icons' && options.sprite && Number.isInteger(index)) {
-    ctx.beginPath()
-    ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.clip()
-    ctx.imageSmoothingQuality = 'high'
-    const sx = (index % ICON_COLUMNS) * ICON_CELL
-    const sy = Math.floor(index / ICON_COLUMNS) * ICON_CELL
-    ctx.drawImage(options.sprite, sx, sy, ICON_CELL, ICON_CELL, cx - r, cy - r, size, size)
-    const ring = (4 / ICON_CELL) * size
-    ctx.strokeStyle = palette.bg
-    ctx.lineWidth = ring
-    ctx.beginPath()
-    ctx.arc(cx, cy, r - ring / 2, 0, Math.PI * 2)
-    ctx.stroke()
-  } else {
-    ctx.fillStyle = palette.initials
-    ctx.beginPath()
-    ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.fill()
-    const letter = (nameOf(row, config).trim()[0] ?? '?').toUpperCase()
-    ctx.font = fontString(initialSize(size, s), 500)
-    ctx.letterSpacing = '0px'
-    const m = ctx.measureText(letter)
-    ctx.fillStyle = '#ffffff'
-    ctx.textAlign = 'left'
-    ctx.textBaseline = 'alphabetic'
-    ctx.fillText(
-      letter,
-      cx - (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2,
-      cy + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2,
-    )
-  }
+  ctx.beginPath()
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
+  ctx.clip()
+  ctx.imageSmoothingQuality = 'high'
+  const sx = (index % ICON_COLUMNS) * ICON_CELL
+  const sy = Math.floor(index / ICON_COLUMNS) * ICON_CELL
+  ctx.drawImage(options.sprite, sx, sy, ICON_CELL, ICON_CELL, cx - r, cy - r, size, size)
+  const ring = (4 / ICON_CELL) * size
+  ctx.strokeStyle = palette.bg
+  ctx.lineWidth = ring
+  ctx.beginPath()
+  ctx.arc(cx, cy, r - ring / 2, 0, Math.PI * 2)
+  ctx.stroke()
   ctx.restore()
-}
-
-/** The letter in an icon placeholder: body in normal icons, meta in small ones. */
-export function initialSize(iconSize: number, s: number): number {
-  return iconSize >= sizeOf('body', s) * 2 ? sizeOf('body', s) : sizeOf('meta', s)
 }

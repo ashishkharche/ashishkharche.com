@@ -190,8 +190,17 @@ export function fill(template: string, values: Record<string, string | number>):
   })
 }
 
+const STAND_IN = /^(unknown|n\/a|na|none|null|undefined|-+|\?+)$/i
+
+/** Rows a chart may show: a real app name (not empty, not "Unknown") and a cell in the icon sprite. */
+export function hasIconAndName(row: Row, config: Pick<ChartConfig, 'name_column' | 'icon_column'>): boolean {
+  const name = (row[config.name_column ?? 'app'] ?? row.name ?? row.app ?? '').trim()
+  const icon = (row[config.icon_column ?? 'icon'] ?? '').trim()
+  return name !== '' && !STAND_IN.test(name) && /^\d+$/.test(icon)
+}
+
 export function filterRows(rows: Row[], config: ChartConfig): Row[] {
-  let out = rows
+  let out = rows.filter((r) => hasIconAndName(r, config))
   for (const f of config.filter ?? []) {
     if (f.not_empty) out = out.filter((r) => (r[f.column] ?? '') !== '')
     if (f.max !== undefined) out = out.filter((r) => toNumber(r[f.column]) <= (f.max as number))
