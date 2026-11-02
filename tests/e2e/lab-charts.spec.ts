@@ -246,19 +246,40 @@ test.describe('chart builder', () => {
     expect(await differenceFromPreview(page, svg.bytes, 'image/svg+xml')).toBeLessThan(0.03)
   })
 
-  test('shows no chart and no old numbers when the proxy fails, and retries', async ({ page }) => {
+  test('waits and asks again when the proxy fails, with no error and no old numbers', async ({ page }) => {
     await page.unrouteAll()
-    await mockLive(page, { status: 503, body: { error: 'Not configured', code: 'not_configured' } })
+    await mockLive(page, {
+      status: 502,
+      body: { error: 'The data service did not answer', code: 'upstream_unavailable' },
+    })
     await page.goto('/lab/charts/?template=us-climbers')
-    await expect(page.getByRole('alert')).toContainText('No chart: Live data is not available right now (error 503).')
+    await expect(page.getByRole('status').first()).toHaveText('Waiting for live data. Asking again…')
+    await expect(page.getByRole('alert')).toHaveCount(0)
+    await expect(page.getByText('No chart')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: 'Try again' })).toHaveCount(0)
     await expect(page.locator('canvas[data-rendered]')).toHaveCount(0)
     await expect(page.getByTestId('data-time')).toHaveCount(0)
     await expect(page.getByRole('button', { name: 'Download PNG' })).toBeDisabled()
+    // The source answers again: the chart is drawn on the next try, with nothing clicked.
     await page.unrouteAll()
     await mockLive(page)
-    await page.getByRole('button', { name: 'Try again' }).click()
-    await expect(page.locator('canvas[data-rendered^="us-climbers:"]')).toBeVisible()
+    await expect(page.locator('canvas[data-rendered^="us-climbers:"]')).toBeVisible({ timeout: 15_000 })
     await expect(page.getByRole('alert')).toHaveCount(0)
+  })
+
+  test('draws every live chart when no app icon loads', async ({ page }) => {
+    await page.unrouteAll()
+    await mockLive(page)
+    // Every icon answers 404, as an icon that failed to load on a phone would.
+    await page.route(/^https:\/\/(is[1-9]-ssl\.mzstatic\.com|play-lh\.googleusercontent\.com)\//, (route) =>
+      route.fulfill({ status: 404, body: '' }),
+    )
+    await page.goto('/lab/charts/')
+    for (const t of live) {
+      await pick(page, t.id)
+      await expect(page.getByRole('alert')).toHaveCount(0)
+      await expect(page.getByRole('button', { name: 'Download PNG' })).toBeEnabled()
+    }
   })
 
   test('blocks downloads when a live chart shows a number that is not in the data', async ({ page }) => {
@@ -276,9 +297,9 @@ test.describe('chart builder', () => {
     await expect(page.locator('canvas[data-rendered^="chatgpt-vs-gemini:"]')).toBeVisible()
     await page.getByRole('combobox', { name: 'Second app' }).click()
     await page.getByRole('option', { name: 'Claude', exact: true }).click()
-    // Claude has no compare fixture, so the proxy answers 404 and no chart is shown.
-    await expect(page.getByRole('alert')).toContainText('No chart')
-    await expect(page.locator('canvas[data-rendered]')).toHaveCount(0)
+    // Claude has no compare fixture, so the proxy answers 404: the chart is drawn from the measures that came.
+    await expect(page.locator('canvas[data-rendered^="chatgpt-vs-gemini:"]')).toBeVisible()
+    await expect(page.getByRole('alert')).toHaveCount(0)
   })
 
   for (const theme of ['light', 'dark'] as const) {

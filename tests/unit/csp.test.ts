@@ -27,7 +27,14 @@ describe('csp', () => {
     expect(pagePolicy(html)).toContain("img-src 'self' data:;")
     expect(pagePolicy(html, chartIconHosts)).toContain(`img-src 'self' data: ${chartIconHosts.join(' ')};`)
     for (const host of chartIconHosts) expect(ICON_HOST.test(`${host}/icon.png`)).toBe(true)
-    expect(ICON_HOST.test('https://is6-ssl.mzstatic.com/icon.png')).toBe(false)
+    // Every Apple isN-ssl host the icon check accepts is in the policy, and the other way round.
+    for (let n = 0; n < 100; n++) {
+      const host = `https://is${n}-ssl.mzstatic.com`
+      expect(ICON_HOST.test(`${host}/icon.png`)).toBe((chartIconHosts as readonly string[]).includes(host))
+    }
+    expect(ICON_HOST.test('https://is6-ssl.mzstatic.com/image/thumb/a/512x512bb.jpg')).toBe(true)
+    expect(ICON_HOST.test('https://is1-ssl.mzstatic.com.example.com/icon.png')).toBe(false)
+    expect(ICON_HOST.test('http://is1-ssl.mzstatic.com/icon.png')).toBe(false)
     expect(ICON_HOST.test('https://example.com/icon.png')).toBe(false)
   })
 })

@@ -204,7 +204,11 @@ describe('handler', () => {
         method: 'GET',
       },
     ])
-    expect(res.headers.get('Cache-Control')).toBe('public, s-maxage=3600, stale-while-revalidate=86400')
+    expect(res.headers.get('Cache-Control')).toBe(
+      'public, s-maxage=3600, stale-while-revalidate=86400, stale-if-error=604800',
+    )
+    expect(Date.parse(res.headers.get('X-TDN-Fetched-At') ?? '')).toBeGreaterThan(Date.now() - 60_000)
+    expect(res.headers.get('X-TDN-Stale')).toBeNull()
     const names = [...res.headers.keys()]
     expect(names.filter((n) => n.startsWith('ratelimit'))).toEqual([])
     expect(res.headers.get('Set-Cookie')).toBeNull()
@@ -222,7 +226,9 @@ describe('handler', () => {
       'endpoint=sdk-adoption&sdk=Firebase',
     ]) {
       const res = await handle(get(search), env, fetcher)
-      expect(res.headers.get('Cache-Control')).toBe('public, s-maxage=21600, stale-while-revalidate=86400')
+      expect(res.headers.get('Cache-Control')).toBe(
+        'public, s-maxage=21600, stale-while-revalidate=86400, stale-if-error=604800',
+      )
     }
   })
 
@@ -283,8 +289,70 @@ describe('handler', () => {
   it('stops itself before the upstream per-minute limit', async () => {
     const { calls, fetcher } = mock(() => new Response('{"data":[]}'))
     const statuses: number[] = []
-    for (let i = 0; i < 55; i++) statuses.push((await handle(get('endpoint=movers'), env, fetcher)).status)
+    for (let i = 0; i < 55; i++) statuses.push((await handle(get(`endpoint=app&id=${i + 1}`), env, fetcher)).status)
     expect(calls.length).toBe(50)
     expect(statuses.at(-1)).toBe(429)
+  })
+
+  it('over the limit, sends the kept copy of a request it has answered before', async () => {
+    const { calls, fetcher } = mock(() => new Response('{"data":[1]}'))
+    const answers: Response[] = []
+    for (let i = 0; i < 55; i++) answers.push(await handle(get('endpoint=movers'), env, fetcher))
+    expect(calls.length).toBe(50)
+    const last = answers.at(-1) as Response
+    expect(last.status).toBe(200)
+    expect(last.headers.get('X-TDN-Stale')).toBe('1')
+    expect(await last.json()).toEqual({ data: [1] })
+  })
+})
+
+describe('kept copies when the source fails', () => {
+  beforeEach(() => resetLimits())
+  const good = JSON.stringify(rankingsBody)
+  const failures: Array<[string, () => Response | Promise<Response>]> = [
+    ['a 5xx', () => new Response('<html>Bad gateway</html>', { status: 503 })],
+    ['a 500 with JSON', () => new Response('{"error":"boom"}', { status: 500 })],
+    ['a timeout', () => Promise.reject(new DOMException('The operation timed out', 'TimeoutError'))],
+    ['a network error', () => Promise.reject(new TypeError('fetch failed'))],
+    ['a 429', () => new Response('{"error":"slow down"}', { status: 429, headers: { 'Retry-After': '5' } })],
+    ['a 401', () => new Response('{"error":"bad key"}', { status: 401 })],
+    ['an answer that is not JSON', () => new Response('<html></html>', { status: 200 })],
+  ]
+  for (const [what, fail] of failures) {
+    it(`answers ${what} with the last good answer, labelled with its fetch time`, async () => {
+      let n = 0
+      const { fetcher } = mock(() => (n++ === 0 ? new Response(good) : fail()))
+      const search = 'endpoint=rankings&store=apple&country=us&limit=200&chart=top-free'
+      const first = await handle(get(search), env, fetcher)
+      const fetchedAt = first.headers.get('X-TDN-Fetched-At')
+      expect(first.status).toBe(200)
+      const second = await handle(get(search), env, fetcher)
+      expect(second.status).toBe(200)
+      expect(second.headers.get('X-TDN-Stale')).toBe('1')
+      expect(second.headers.get('X-TDN-Fetched-At')).toBe(fetchedAt)
+      // Cached briefly at the CDN, so a fresh answer replaces it soon.
+      expect(second.headers.get('Cache-Control')).toBe('public, s-maxage=300')
+      // The data time inside the answer is the source's, unchanged.
+      expect(JSON.parse(await second.text()).meta.recordedAt).toBe('2026-11-01 00:18:03')
+    })
+  }
+
+  it('still answers with an error when it has never had a good answer to that request', async () => {
+    const { fetcher } = mock(() => new Response('<html>Bad gateway</html>', { status: 503 }))
+    const res = await handle(get('endpoint=rankings&store=google'), env, fetcher)
+    expect(res.status).toBe(502)
+    expect(res.headers.get('Cache-Control')).toBe('no-store')
+  })
+
+  it('never keeps a copy for a different request, and passes 404 and 400 through', async () => {
+    let n = 0
+    const { fetcher } = mock(() =>
+      n++ === 0 ? new Response(good) : new Response('{"error":"Not found","code":"not_found"}', { status: 404 }),
+    )
+    await handle(get('endpoint=app&id=1'), env, fetcher)
+    const other = await handle(get('endpoint=app&id=2'), env, fetcher)
+    expect(other.status).toBe(404)
+    const same = await handle(get('endpoint=app&id=1'), env, fetcher)
+    expect(same.status).toBe(404)
   })
 })

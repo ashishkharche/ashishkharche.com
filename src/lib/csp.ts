@@ -19,16 +19,12 @@ export function sha256Source(script: string): string {
 
 /**
  * App icon hosts for the chart builder only (/lab/charts/). The live data gives each app's icon as a URL on Apple's
- * or Google's image CDN; both send Access-Control-Allow-Origin: *, so the icons can be drawn on the chart canvas.
- * Listed host by host (Apple serves icons from is1 to is5), and only on that page. Must match ICON_HOST in
- * src/lib/charts/tdn.ts.
+ * image CDN (isN-ssl.mzstatic.com, N from 1 to 9) or Google's (play-lh.googleusercontent.com); both send
+ * Access-Control-Allow-Origin: *, so the icons can be drawn on the chart canvas. Listed host by host, and only on
+ * that page. Must match ICON_HOST in src/lib/charts/tdn.ts (a unit test checks both ways).
  */
 export const chartIconHosts = [
-  'https://is1-ssl.mzstatic.com',
-  'https://is2-ssl.mzstatic.com',
-  'https://is3-ssl.mzstatic.com',
-  'https://is4-ssl.mzstatic.com',
-  'https://is5-ssl.mzstatic.com',
+  ...Array.from({ length: 9 }, (_, i) => `https://is${i + 1}-ssl.mzstatic.com`),
   'https://play-lh.googleusercontent.com',
 ] as const
 

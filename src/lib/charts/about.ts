@@ -3,7 +3,7 @@
  * (the tracked-apps list, a rankings answer and one rank history). Pure functions, unit tested with fixtures.
  */
 import { realValue } from './live.ts'
-import { iconAllowed, metaOf, parseDataTime, unwrap, type RankHistory, type RankingRow } from './tdn.ts'
+import { iconAllowed, metaOf, parseDataTime, readRankHistory, readRankings, readRows } from './tdn.ts'
 
 export interface TrackedApp {
   appId: string
@@ -17,8 +17,7 @@ const text = (v: unknown) => (typeof v === 'string' && realValue(v) ? v.trim() :
 
 /** The tracked apps in an /apps answer, by platform and name. Rows without an id, store or real name are left out. */
 export function trackedApps(body: unknown): { apps: TrackedApp[]; ios: number; android: number; total: number } {
-  const rows = unwrap<unknown>(body)
-  const list = Array.isArray(rows) ? (rows as Array<Record<string, unknown>>) : []
+  const list = readRows(body)
   const apps: TrackedApp[] = []
   const seen = new Set<string>()
   for (const r of list) {
@@ -48,7 +47,7 @@ export function collectionRuns(historyBody: unknown): {
   first: Date | null
   last: Date | null
 } {
-  const history = unwrap<RankHistory>(historyBody)
+  const history = readRankHistory(historyBody)
   const points = (history?.series ?? []).flatMap((s) => s.points).filter((p) => typeof p.rank === 'number')
   const dates = points.map((p) => parseDataTime(p.at)).filter((d): d is Date => d !== null)
   // Runs start a few minutes apart from day to day, so they are grouped by hour, each shown at its usual minute.
@@ -78,7 +77,6 @@ export function collectionRuns(historyBody: unknown): {
 
 /** The deepest rank in a rankings answer: the source keeps the top 100 only, so this is at most 100. */
 export function deepestRank(body: unknown): number | null {
-  const rows = unwrap<RankingRow[]>(body)
-  const ranks = Array.isArray(rows) ? rows.map((r) => r.rank).filter((r) => Number.isFinite(r)) : []
+  const ranks = readRankings(body).map((r) => r.rank)
   return ranks.length ? Math.max(...ranks) : null
 }

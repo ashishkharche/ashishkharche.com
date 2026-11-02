@@ -44,7 +44,11 @@ function LabCharts() {
             <p {...stylex.props(styles.text)}>Downloads are off while a chart breaks one of these.</p>
             <ul {...stylex.props(styles.list)}>
               <li>Every number on a chart comes from the data loaded for it.</li>
-              <li>Live charts show when the data was recorded. If it cannot be loaded, no chart is shown.</li>
+              <li>
+                Live charts show when the data was recorded. If the source does not answer, the last answer kept is
+                drawn, with when it was fetched.
+              </li>
+              <li>An app icon is drawn when it loads. Without one the app is shown by name, never with a letter.</li>
               <li>Scatter charts use data files and show their date. They are not live.</li>
               <li>A rank is shown with its coverage: the number of countries where the app charts.</li>
               <li>Ranks are not averaged over only the countries where an app charts.</li>

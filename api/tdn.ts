@@ -11,6 +11,11 @@
 // - Our own Cache-Control (the upstream sends private, max-age=60). Only a fixed set of headers is sent back, so the
 //   upstream RateLimit-* and Set-Cookie headers never reach the browser. No CORS headers: same origin only.
 // - The upstream body is passed through unchanged, so meta.recordedAt / capturedAt stay in it.
+// - Stale on error, at two levels, so the chart builder always gets an answer when there has ever been one:
+//   the CDN keeps each answer an hour and may serve it for a week after that if this function fails
+//   (stale-if-error), and each warm instance keeps the last good answer per request and sends it when the source
+//   fails, times out or is rate limited. Every answer says when it was fetched (X-TDN-Fetched-At, ISO UTC); a kept
+//   copy also says X-TDN-Stale: 1. The data time inside the answer (meta.recordedAt) is never changed.
 
 const UPSTREAM = 'https://techdevnotes.com/api/v1'
 const TIMEOUT_MS = 8000
@@ -126,9 +131,12 @@ const day: Check = (v) => (isoDay(v) === null ? 'must be a date YYYY-MM-DD' : nu
 
 /** How long the CDN may keep an answer. Rankings move twice a day; tech stacks every few hours at most. */
 export const CACHE = {
-  hourly: 'public, s-maxage=3600, stale-while-revalidate=86400',
-  slow: 'public, s-maxage=21600, stale-while-revalidate=86400',
+  hourly: 'public, s-maxage=3600, stale-while-revalidate=86400, stale-if-error=604800',
+  slow: 'public, s-maxage=21600, stale-while-revalidate=86400, stale-if-error=604800',
 } as const
+
+/** A kept copy is cached briefly, so the CDN asks again soon and a fresh answer replaces it. */
+const KEPT_CACHE = 'public, s-maxage=300'
 
 interface Endpoint {
   /** Upstream path under /api/v1. `{id}` is filled from the `id` parameter. */
@@ -295,6 +303,35 @@ export function resetLimits(): void {
   refilled = Date.now()
   unitsDay = ''
   unitsUsed = 0
+  kept.clear()
+}
+
+// The last good answer per upstream request, in this instance. Bounded: the oldest is dropped first.
+const KEPT_MAX = 300
+const kept = new Map<string, { body: string; fetchedAt: number }>()
+
+function keep(key: string, body: string, fetchedAt: number): void {
+  kept.delete(key)
+  kept.set(key, { body, fetchedAt })
+  if (kept.size > KEPT_MAX) {
+    const oldest = kept.keys().next()
+    if (!oldest.done) kept.delete(oldest.value)
+  }
+}
+
+/** The last good answer to this request, labelled with when it was fetched, or null when there is none. */
+function keptCopy(key: string): Response | null {
+  const copy = kept.get(key)
+  if (!copy) return null
+  return new Response(copy.body, {
+    status: 200,
+    headers: {
+      ...BASE_HEADERS,
+      'Cache-Control': KEPT_CACHE,
+      'X-TDN-Fetched-At': new Date(copy.fetchedAt).toISOString(),
+      'X-TDN-Stale': '1',
+    },
+  })
 }
 
 function allow(now: number, units: number): boolean {
@@ -334,7 +371,12 @@ async function answer(request: Request, env: Env, fetcher: typeof fetch): Promis
   const key = env.TDN_API_KEY
   if (!key) return json(503, { error: 'Live data is not configured', code: 'not_configured' })
   const now = Date.now()
+  const cacheKey = `${checked.path}${checked.search}`
+  /** The kept copy when there is one, otherwise the error. */
+  const orKept = (error: Response): Response => keptCopy(cacheKey) ?? error
   if (!allow(now, checked.units)) {
+    const copy = keptCopy(cacheKey)
+    if (copy) return copy
     const retry = tokens < 1 ? 60 : secondsToMidnightUtc(now)
     return json(
       429,
@@ -354,16 +396,20 @@ async function answer(request: Request, env: Env, fetcher: typeof fetch): Promis
     body = await upstream.text()
   } catch (error) {
     const timedOut = error instanceof DOMException && (error.name === 'TimeoutError' || error.name === 'AbortError')
-    return timedOut
-      ? json(504, { error: 'The data service took too long to answer', code: 'upstream_timeout' })
-      : json(502, { error: 'The data service did not answer', code: 'upstream_unavailable' })
+    return orKept(
+      timedOut
+        ? json(504, { error: 'The data service took too long to answer', code: 'upstream_timeout' })
+        : json(502, { error: 'The data service did not answer', code: 'upstream_unavailable' }),
+    )
   }
   if (upstream.status === 429) {
     const retry = upstream.headers.get('Retry-After') ?? ''
-    return json(
-      429,
-      { error: 'The data service is busy, try again later', code: 'rate_limited' },
-      { 'Retry-After': /^[0-9]{1,6}$/.test(retry) ? retry : '60' },
+    return orKept(
+      json(
+        429,
+        { error: 'The data service is busy, try again later', code: 'rate_limited' },
+        { 'Retry-After': /^[0-9]{1,6}$/.test(retry) ? retry : '60' },
+      ),
     )
   }
   if (upstream.status === 404) {
@@ -374,17 +420,22 @@ async function answer(request: Request, env: Env, fetcher: typeof fetch): Promis
     return json(400, { error: 'The data service did not accept these parameters', code: 'bad_request' })
   }
   if (upstream.status === 401 || upstream.status === 403) {
-    return json(502, { error: 'Live data is not available right now', code: 'upstream_auth' })
+    return orKept(json(502, { error: 'Live data is not available right now', code: 'upstream_auth' }))
   }
   if (!upstream.ok) {
-    return json(502, { error: 'The data service returned an error', code: 'upstream_error' })
+    return orKept(json(502, { error: 'The data service returned an error', code: 'upstream_error' }))
   }
   try {
     JSON.parse(body)
   } catch {
-    return json(502, { error: 'The data service returned something that is not JSON', code: 'upstream_error' })
+    return orKept(json(502, { error: 'The data service returned something that is not JSON', code: 'upstream_error' }))
   }
-  return new Response(body, { status: 200, headers: { ...BASE_HEADERS, 'Cache-Control': checked.cache } })
+  const fetchedAt = Date.now()
+  keep(cacheKey, body, fetchedAt)
+  return new Response(body, {
+    status: 200,
+    headers: { ...BASE_HEADERS, 'Cache-Control': checked.cache, 'X-TDN-Fetched-At': new Date(fetchedAt).toISOString() },
+  })
 }
 
 const env = (): Env => ({ TDN_API_KEY: process.env.TDN_API_KEY })

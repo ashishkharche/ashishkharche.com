@@ -155,11 +155,11 @@ describe('kind mappers', () => {
     expect(ios.model.rows.every((r) => r.app.store === 'apple' && r.detail === 'iOS, at least')).toBe(true)
     expect(ios.text.title).toBe('Most SDKs in one iOS app build')
     expect(ios.text.footnote[1]).toMatch(/^Builds analyzed \d+ \w+ 2026 to \d+ \w+ 2026\. iOS counts are a floor/)
-    const android = mapMostSdks(f(TECH), f(APPLE), f(GOOGLE), 10, undefined, 'google')
+    const android = mapMostSdks(f(TECH), f(APPLE), f(GOOGLE), 10, 'google')
     expect(android.model.rows[0]).toMatchObject({ value: 52, detail: 'Android' })
     expect(android.model.rows.every((r) => r.app.store === 'google')).toBe(true)
   })
-  it('head to head: 3 to 5 measures both apps have', () => {
+  it('head to head: up to 5 measures both apps have', () => {
     const rows = sortedRankings(f(APPLE))
     const a = rows.find((r) => r.name === 'ChatGPT')
     const b = rows.find((r) => r.name === 'Google Gemini')
@@ -176,7 +176,13 @@ describe('kind mappers', () => {
     expect(out.model.metrics[0]).toMatchObject({ label: 'US Top Free rank', display: ['#1', '#2'], better: 'lower' })
     expect(out.model.metrics.find((m) => m.label === 'Star rating')?.display).toEqual(['4.8', '4.7'])
     expect(out.text.title).toBe('ChatGPT vs Google Gemini')
-    expect(() => mapHeadToHead(f(APPLE), { data: [] }, { data: [] }, [{}, {}], [a, b])).toThrow(NoDataError)
+    // Without the other answers the rank is still there: a chart with one measure, and a footnote that says so.
+    const rankOnly = mapHeadToHead(f(APPLE), null, null, [null, null], [a, b])
+    expect(rankOnly.model.metrics.map((m) => m.label)).toEqual(['US Top Free rank'])
+    expect(rankOnly.text.footnote[2]).toContain('Measures without values for both apps are left out.')
+    expect(validateLive({ templateId: 'x', ...rankOnly, text: { ...rankOnly.text, source: 'public data' } })).toEqual(
+      [],
+    )
   })
   it('rank over time: one rank per day, gaps where no rank was recorded', () => {
     const rows = sortedRankings(f(APPLE)).filter((r) => /ChatGPT|Gemini|Claude|Grok/.test(r.name))
@@ -329,13 +335,20 @@ describe('live data rules', () => {
     expect(() => drawLive(ctx, c, { ...c.text, source: '' }, { width: 1800, height: 1390 })).toThrow(ChartRuleError)
     expect(ctx.calls).toEqual([])
   })
-  it('throws NoDataError when the data cannot answer the question', async () => {
+  it('with an empty rankings answer, each template draws a chart or says NoDataError, never anything else', async () => {
     const empty = createTdnClient(
       fixtureFetch({ rankings: { status: 200, body: { data: [], meta: { recordedAt: '2026-11-01 12:18:03' } } } }),
     )
-    for (const t of liveTemplates.filter((x) => !['most-sdks', 'us-climbers'].includes(x.id))) {
-      await expect(t.load(empty, {})).rejects.toBeInstanceOf(NoDataError)
+    for (const t of liveTemplates) {
+      const chart = await t.load(empty, {}).catch((error: unknown) => {
+        expect(error).toBeInstanceOf(NoDataError)
+        return null
+      })
+      if (chart) expect(validateLive(chart)).toEqual([])
     }
+    // The number-one templates have nothing to show without apps.
+    const one = liveTemplates.find((t) => t.id === 'us-number-one')
+    await expect(one?.load(empty, {})).rejects.toBeInstanceOf(NoDataError)
   })
   it('never shows numbers without a data time', async () => {
     const body = f(APPLE) as { meta: Record<string, unknown> }

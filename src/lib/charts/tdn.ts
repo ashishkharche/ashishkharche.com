@@ -1,5 +1,6 @@
 /**
- * The chart builder's live data client. Every request goes to the same-origin proxy in api/tdn.ts:
+ * The chart builder's live data client, and the one adapter between the data source's API (TDN) and the charts.
+ * Every request goes to the same-origin proxy in api/tdn.ts:
  *
  *   GET /api/tdn/?endpoint=<name>&<params>
  *
@@ -8,6 +9,22 @@
  * which answers with the upstream JSON unchanged ({ data, meta } for the newer endpoints, a flat object for the
  * older ones). Answers are kept for the life of the page, so switching back to a template costs nothing, and the
  * same request made by two templates is sent once. Nothing is stored between page loads: every load reads fresh data.
+ *
+ * Everything that knows the shape of a TDN answer is in this file: the read* functions below turn an answer into
+ * checked rows, and the chart code (live.ts, about.ts) reads answers only through them. When the API changes, this
+ * file is the place to update. What the charts depend on (/api/v1, see /api/v1/openapi.json upstream):
+ *
+ *   rankings          data[]: rank, appId, store, name, developer, iconUrl; meta.recordedAt, meta.total
+ *   apps/{id}/rank-history   data.series[]: country, points[]: at, rank
+ *   apps/{id}/rankings       data.rankings[]: country, rank, recordedAt (flat answers are read too)
+ *   compare           data[]: appId, currentRating, rank, versionCount
+ *   movers            data[]: appId, store, name, iconUrl, currentRank, previousRank, change
+ *   tech-stack        data[]: appId, store, appName, capturedAt, sdkCount, iconUrl
+ *   tech-stack/{id}   data: sdkCount, sdkListIsFloor, version, capturedAt, techStack.sdks[]: category, label, items[]
+ *   apps              data[]: appId (or id), store, name (or appName), developer, iconUrl; meta.total
+ *
+ * Data times ("2026-11-02 00:18:08") are UTC without a zone. Icons are URLs on Apple's isN-ssl.mzstatic.com or
+ * Google's play-lh.googleusercontent.com; an app may have none, and the charts are drawn without it.
  */
 
 export type Endpoint =
@@ -45,19 +62,40 @@ export class TdnError extends Error {
   }
 }
 
-type Fetcher = (url: string) => Promise<{ ok: boolean; status: number; json(): Promise<unknown> }>
+type Fetcher = (url: string) => Promise<{
+  ok: boolean
+  status: number
+  json(): Promise<unknown>
+  headers?: { get(name: string): string | null }
+}>
+
+/** When the proxy fetched an answer from the source, and whether it is an older copy kept for when the source fails. */
+export interface Fetched {
+  fetchedAt: Date | null
+  /** Older than STALE_AFTER_MS, or a kept copy. */
+  stale: boolean
+  /** The proxy sent its kept copy because the source did not answer. */
+  kept: boolean
+}
 
 export interface TdnClient {
   get<T>(endpoint: Endpoint, params?: Params): Promise<T>
   /** Every URL requested so far, in order, once each. */
   readonly requested: string[]
+  /** How old each answer is, by URL, for the answers that said (the proxy sends X-TDN-Fetched-At). */
+  readonly fetched: Map<string, Fetched>
 }
+
+/** An answer the proxy fetched longer ago than this is labelled with its fetch time: it is a kept copy. */
+export const STALE_AFTER_MS = 2 * 3_600_000
 
 export function createTdnClient(fetcher: Fetcher = (url) => fetch(url, { headers: { accept: 'application/json' } })) {
   const cache = new Map<string, Promise<unknown>>()
   const requested: string[] = []
+  const fetched = new Map<string, Fetched>()
   const client: TdnClient = {
     requested,
+    fetched,
     get<T>(endpoint: Endpoint, params: Params = {}): Promise<T> {
       const url = tdnUrl(endpoint, params)
       let found = cache.get(url)
@@ -67,6 +105,15 @@ export function createTdnClient(fetcher: Fetcher = (url) => fetch(url, { headers
           const body = (await response.json().catch(() => null)) as { error?: string; code?: string } | null
           if (!response.ok) {
             throw new TdnError(response.status, body?.code ?? 'error', body?.error ?? `HTTP ${response.status}`)
+          }
+          const at = parseDataTime(response.headers?.get('x-tdn-fetched-at'))
+          const kept = response.headers?.get('x-tdn-stale') === '1'
+          if (at || kept) {
+            fetched.set(url, {
+              fetchedAt: at,
+              stale: kept || (!!at && Date.now() - at.getTime() > STALE_AFTER_MS),
+              kept,
+            })
           }
           return body
         })
@@ -198,8 +245,169 @@ export function latest(values: Array<string | null | undefined>): Date | null {
  * Icon hosts the page may load. They must match img-src in the chart builder's CSP (src/lib/csp.ts) and send
  * Access-Control-Allow-Origin, so icons can be drawn on the canvas and the PNG can still be saved.
  */
-export const ICON_HOST = /^https:\/\/(?:is[1-5]-ssl\.mzstatic\.com|play-lh\.googleusercontent\.com)\//
+export const ICON_HOST = /^https:\/\/(?:is[1-9]-ssl\.mzstatic\.com|play-lh\.googleusercontent\.com)\//
 
 export function iconAllowed(url: string | null | undefined): url is string {
   return !!url && ICON_HOST.test(url)
 }
+
+// Readers --------------------------------------------------------------------------------------------------------
+// Each one takes an answer as it came (or null when a request failed) and returns only rows with the fields the
+// charts need, of the right types. A missing or malformed field never throws here: the row is left out, or the
+// optional field is left empty.
+
+type Raw = Record<string, unknown>
+const rowsOf = (body: unknown): Raw[] => {
+  const data = unwrap<unknown>(body)
+  return Array.isArray(data) ? data.filter((r): r is Raw => !!r && typeof r === 'object') : []
+}
+const objectOf = (body: unknown): Raw | undefined => {
+  const data = unwrap<unknown>(body)
+  return data && typeof data === 'object' && !Array.isArray(data) ? (data as Raw) : undefined
+}
+const str = (v: unknown): string | undefined => (typeof v === 'string' && v.trim() ? v.trim() : undefined)
+const num = (v: unknown): number | undefined => (typeof v === 'number' && Number.isFinite(v) ? v : undefined)
+const storeOf = (v: unknown): 'apple' | 'google' | undefined => (v === 'apple' || v === 'google' ? v : undefined)
+const iconOf = (v: unknown): string | null => str(v) ?? null
+
+/** The data time of an answer (meta.recordedAt, or meta.capturedAt), or null. */
+export function recordedAt(body: unknown): Date | null {
+  const meta = metaOf(body)
+  return parseDataTime(str(meta.recordedAt) ?? str(meta.capturedAt))
+}
+
+/** A rankings answer: rows with a rank, an id and a name, best rank first. */
+export function readRankings(body: unknown, store?: 'apple' | 'google'): RankingRow[] {
+  const out: RankingRow[] = []
+  for (const r of rowsOf(body)) {
+    const rank = num(r.rank)
+    const appId = str(r.appId)
+    const name = str(r.name)
+    const s = storeOf(r.store) ?? store
+    if (rank === undefined || rank < 1 || !appId || !name || !s) continue
+    out.push({ rank, appId, store: s, name, developer: str(r.developer), iconUrl: iconOf(r.iconUrl) })
+  }
+  return out.sort((a, b) => a.rank - b.rank)
+}
+
+/** A rank history: series with their points; points without a time are left out, a missing rank is null. */
+export function readRankHistory(body: unknown): RankHistory | undefined {
+  const h = objectOf(body)
+  if (!h || !Array.isArray(h.series)) return undefined
+  const series = (h.series as unknown[])
+    .filter((s): s is Raw => !!s && typeof s === 'object')
+    .map((s) => ({
+      country: str(s.country) ?? '',
+      points: (Array.isArray(s.points) ? (s.points as unknown[]) : [])
+        .filter((p): p is Raw => !!p && typeof p === 'object')
+        .map((p) => ({ at: str(p.at) ?? '', rank: num(p.rank) ?? null }))
+        .filter((p) => parseDataTime(p.at) !== null),
+    }))
+  return {
+    appId: str(h.appId) ?? '',
+    store: str(h.store) ?? '',
+    chart: str(h.chart) ?? '',
+    category: str(h.category),
+    series,
+  }
+}
+
+/** One app's ranks by country: rows with a country, a rank above 0 and a data time. */
+export function readAppRankings(body: unknown): AppRankings['rankings'] {
+  const list = objectOf(body)?.rankings
+  return (Array.isArray(list) ? (list as unknown[]) : [])
+    .filter((r): r is Raw => !!r && typeof r === 'object')
+    .map((r) => ({ country: str(r.country) ?? '', rank: num(r.rank) ?? null, recordedAt: str(r.recordedAt) ?? '' }))
+    .filter((r) => r.country && typeof r.rank === 'number' && r.rank > 0)
+}
+
+export function readCompare(body: unknown): CompareRow[] {
+  return rowsOf(body)
+    .map((r) => ({
+      appId: str(r.appId) ?? '',
+      name: str(r.name) ?? '',
+      currentRating: num(r.currentRating) ?? null,
+      rank: num(r.rank) ?? null,
+      versionCount: num(r.versionCount) ?? null,
+    }))
+    .filter((r) => r.appId)
+}
+
+export function readMovers(body: unknown): MoverRow[] {
+  const out: MoverRow[] = []
+  for (const r of rowsOf(body)) {
+    const appId = str(r.appId)
+    const [currentRank, previousRank, change] = [num(r.currentRank), num(r.previousRank), num(r.change)]
+    if (!appId || currentRank === undefined || previousRank === undefined || change === undefined) continue
+    out.push({
+      appId,
+      store: str(r.store),
+      name: str(r.name) ?? '',
+      iconUrl: str(r.iconUrl),
+      currentRank,
+      previousRank,
+      change,
+    })
+  }
+  return out
+}
+
+export function readTechStack(body: unknown): TechStackRow[] {
+  const out: TechStackRow[] = []
+  for (const r of rowsOf(body)) {
+    const appId = str(r.appId)
+    const s = storeOf(r.store)
+    const sdkCount = num(r.sdkCount)
+    if (!appId || !s || sdkCount === undefined) continue
+    out.push({
+      appId,
+      store: s,
+      appName: str(r.appName) ?? '',
+      version: str(r.version),
+      capturedAt: str(r.capturedAt),
+      sdkCount,
+      iconUrl: iconOf(r.iconUrl),
+      developer: str(r.developer) ?? null,
+    })
+  }
+  return out
+}
+
+/** The tech-stack detail of one build: SDKs grouped by the source's own kinds. */
+export interface TechStackDetail {
+  appId: string
+  store: string
+  appName?: string
+  version?: string
+  capturedAt?: string
+  sdkCount?: number
+  sdkListIsFloor?: boolean
+  techStack?: { sdks?: Array<{ category: string; label: string; items: unknown[] }> }
+}
+
+export function readTechStackDetail(body: unknown): TechStackDetail | undefined {
+  const d = objectOf(body)
+  if (!d) return undefined
+  const sdks = (d.techStack as Raw | undefined)?.sdks
+  return {
+    appId: str(d.appId) ?? '',
+    store: str(d.store) ?? '',
+    appName: str(d.appName),
+    version: str(d.version),
+    capturedAt: str(d.capturedAt),
+    sdkCount: num(d.sdkCount),
+    sdkListIsFloor: typeof d.sdkListIsFloor === 'boolean' ? d.sdkListIsFloor : undefined,
+    techStack: {
+      sdks: (Array.isArray(sdks) ? (sdks as unknown[]) : [])
+        .filter((g): g is Raw => !!g && typeof g === 'object')
+        .map((g) => ({
+          category: str(g.category) ?? '',
+          label: str(g.label) ?? '',
+          items: Array.isArray(g.items) ? (g.items as unknown[]) : [],
+        })),
+    },
+  }
+}
+
+/** The rows of a list answer as plain records (for the /apps answer, read field by field in about.ts). */
+export const readRows = rowsOf

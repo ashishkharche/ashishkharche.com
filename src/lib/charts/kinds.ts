@@ -41,6 +41,8 @@ interface Kit {
   text: (value: string, x: number, y: number, style: TextStyle) => { width: number; height: number }
   width: (value: string, size: number, weight: ChartWeight, family?: ChartFamily) => number
   icon: (app: AppRef, cx: number, cy: number, size: number) => void
+  /** True when the app's icon loaded. Without one the layout leaves the icon out, with no stand-in in its place. */
+  has: (app: AppRef) => boolean
   /** A size from the chart type scale (type.ts). */
   size: (role: TypeRole) => number
   /** The largest size from `role` down that fits, and the text shortened if even meta is too wide. */
@@ -67,6 +69,7 @@ export function drawLive(ctx: Ctx, chart: LiveChart, text: ChartText, options: L
     text: (value, x, y, style) => drawText(ctx, value, x, y, { tracking, ...style }),
     width: (value, size, weight, family) => inkWidth(ctx, value, size, weight, tracking, family),
     icon: (app, cx, cy, size) => drawIcon(ctx, app, cx, cy, size, options),
+    has: (app) => !!options.icons?.has(app.appId),
     size: (role) => sizeOf(role, s),
     fit: (value, role, weight, maxWidth, family = 'sans') => {
       const size = fitRole(role, s, maxWidth, (z) => inkWidth(ctx, value, z, weight, tracking, family))
@@ -100,7 +103,9 @@ function drawModel(kit: Kit, model: Model, box: Box) {
   }
 }
 
-/** An app icon in a circle. Apps reach a chart only with a verified icon, so there is no stand-in to draw. */
+/**
+ * An app icon in a circle, when it loaded. An app without one gets nothing here: no letter, no tile, no stand-in.
+ */
 function drawIcon(ctx: Ctx, app: AppRef, cx: number, cy: number, size: number, options: LiveDrawOptions) {
   const icon = options.icons?.get(app.appId)
   if (!icon) return
@@ -164,6 +169,31 @@ function dot(ctx: Ctx, x: number, y: number, r: number, color: string) {
   ctx.fill()
 }
 
+/**
+ * A line through the days that have a value. Days next to each other are joined with a solid line; a gap (days
+ * with no value: a failed run, or a rank below the top 100) is drawn across with a thin dashed line, so the line
+ * never stops and the gap still shows.
+ */
+export function trace(
+  ctx: Ctx,
+  values: Array<number | null>,
+  toX: (i: number) => number,
+  toY: (v: number) => number,
+  color: string,
+  width: number,
+) {
+  let prev = -1
+  values.forEach((v, i) => {
+    if (v === null) return
+    const p = prev >= 0 ? values[prev] : null
+    if (typeof p === 'number') {
+      const gap = i - prev > 1
+      line(ctx, toX(prev), toY(p), toX(i), toY(v), color, gap ? width * 0.4 : width, gap ? [width, width * 1.6] : [])
+    }
+    prev = i
+  })
+}
+
 /** A bar with round ends, drawn as a thick line. */
 function bar(ctx: Ctx, x0: number, x1: number, y: number, height: number, color: string) {
   if (x1 - x0 < height) {
@@ -180,9 +210,10 @@ function headline(kit: Kit, m: Extract<Model, { kind: 'headline' }>, box: Box) {
   const width = box.right - box.left
   const height = box.bottom - box.top
   const iconSize = Math.min(150 * s, height * 0.2)
-  kit.icon(m.app, box.left + iconSize / 2, box.top + iconSize / 2, iconSize)
-  // The answer, as large as fits beside the icon.
-  const answerX = box.left + iconSize + 36 * s
+  const withIcon = kit.has(m.app)
+  if (withIcon) kit.icon(m.app, box.left + iconSize / 2, box.top + iconSize / 2, iconSize)
+  // The answer, as large as fits beside the icon (or from the left edge when there is none).
+  const answerX = withIcon ? box.left + iconSize + 36 * s : box.left
   const unitSize = kit.size('title')
   const unitWidth = m.unit ? kit.width(m.unit, unitSize, 400) + 24 * s : 0
   const fitted = kit.fit(m.answer, 'display', 400, box.right - answerX - unitWidth, 'serif')
@@ -217,15 +248,16 @@ function headline(kit: Kit, m: Extract<Model, { kind: 'headline' }>, box: Box) {
     const size = 56 * s
     let x = box.left
     for (const o of m.others) {
-      kit.icon(o.app, x + size / 2, y + size / 2, size)
-      const t = kit.text(`${o.note} ${o.app.name}`, x + size + 14 * s, y + size / 2, {
+      const iconW = kit.has(o.app) ? size + 14 * s : 0
+      if (iconW) kit.icon(o.app, x + size / 2, y + size / 2, size)
+      const t = kit.text(`${o.note} ${o.app.name}`, x + iconW, y + size / 2, {
         size: kit.size('meta'),
         weight: 500,
         color: palette.muted,
         ha: 'left',
         va: 'center',
       })
-      x += size + 14 * s + t.width + 40 * s
+      x += iconW + t.width + 40 * s
       if (x > box.right - 200 * s) break
     }
     y += size
@@ -271,23 +303,7 @@ function spark(kit: Kit, sp: Extract<Extract<Model, { kind: 'headline' }>['suppo
       va: 'center',
     })
   }
-  ctx.save()
-  ctx.strokeStyle = SERIES[0]
-  ctx.lineWidth = 4 * s
-  ctx.lineCap = 'round'
-  ctx.beginPath()
-  let pen = false
-  sp.values.forEach((v, i) => {
-    if (v === null) {
-      pen = false
-      return
-    }
-    if (pen) ctx.lineTo(toX(i), toY(v))
-    else ctx.moveTo(toX(i), toY(v))
-    pen = true
-  })
-  ctx.stroke()
-  ctx.restore()
+  trace(ctx, sp.values, toX, toY, SERIES[0], 4 * s)
   const lastIndex = sp.values.findLastIndex((v) => v !== null)
   const last = sp.values[lastIndex]
   if (typeof last === 'number') dot(ctx, toX(lastIndex), toY(last), 7 * s, SERIES[0])
@@ -352,7 +368,8 @@ function leaderboard(kit: Kit, m: Extract<Model, { kind: 'leaderboard' }>, box: 
   const rowH = Math.min((box.bottom - box.top) / Math.max(n, 5), 110 * s)
   const max = Math.max(...m.rows.map((r) => r.value), 1)
   const nameSize = kit.size('body')
-  const iconSize = rowH * 0.66
+  // The icon column is there when any row has an icon; a row without one leaves its place empty, so names line up.
+  const iconSize = m.rows.some((r) => kit.has(r.app)) ? rowH * 0.66 : 0
   const rankW = 56 * s
   const nameW = (box.right - box.left) * 0.4
   const valueW = 120 * s
@@ -367,7 +384,7 @@ function leaderboard(kit: Kit, m: Extract<Model, { kind: 'leaderboard' }>, box: 
       ha: 'right',
       va: 'center_baseline',
     })
-    kit.icon(r.app, box.left + rankW + iconSize / 2, cy, iconSize)
+    if (iconSize && kit.has(r.app)) kit.icon(r.app, box.left + rankW + iconSize / 2, cy, iconSize)
     const nameX = box.left + rankW + iconSize + 20 * s
     const name = kit.fit(r.app.name, 'body', 500, nameW - 24 * s)
     kit.text(name.value, nameX, r.detail ? cy - nameSize * 0.55 : cy, {
@@ -410,7 +427,8 @@ function headToHead(kit: Kit, m: Extract<Model, { kind: 'head-to-head' }>, box: 
     const side = i === 0 ? -1 : 1
     const cx = mid + side * half * 0.5
     const name = kit.fit(app.name, 'title', 400, half * 0.7, 'serif')
-    kit.icon(app, cx - kit.width(name.value, name.size, 400, 'serif') / 2 - iconSize / 2 - 12 * s, headY, iconSize)
+    if (kit.has(app))
+      kit.icon(app, cx - kit.width(name.value, name.size, 400, 'serif') / 2 - iconSize / 2 - 12 * s, headY, iconSize)
     kit.text(name.value, cx, headY, {
       size: name.size,
       weight: 400,
@@ -507,27 +525,13 @@ function bump(kit: Kit, m: Extract<Model, { kind: 'bump' }>, box: Box) {
     const series = m.series[index]
     if (!series) continue
     const color = SERIES[index % SERIES.length] ?? SERIES[0]
-    ctx.save()
-    ctx.strokeStyle = color
-    ctx.lineWidth = 5 * s
-    ctx.lineCap = 'round'
-    ctx.beginPath()
-    let pen = false
-    series.ranks.forEach((r, i) => {
-      if (r === null) {
-        pen = false
-        return
-      }
-      if (pen) ctx.lineTo(toX(i), toY(r))
-      else ctx.moveTo(toX(i), toY(r))
-      pen = true
-    })
-    ctx.stroke()
-    ctx.restore()
-    series.ranks.forEach((r, i) => {
-      const alone = r !== null && series.ranks[i - 1] == null && series.ranks[i + 1] == null
-      if (alone) dot(ctx, toX(i), toY(r), 5 * s, color)
-    })
+    trace(ctx, series.ranks, toX, toY, color, 5 * s)
+    // A day with a rank and none either side, and nothing to join it to, is a dot.
+    if (series.ranks.filter((r) => r !== null).length === 1) {
+      const i = series.ranks.findIndex((r) => r !== null)
+      const r = series.ranks[i]
+      if (typeof r === 'number') dot(ctx, toX(i), toY(r), 5 * s, color)
+    }
   }
   // End labels: icon, name and the last rank, pushed apart so they do not overlap.
   const gap = 52 * s
@@ -548,9 +552,10 @@ function bump(kit: Kit, m: Extract<Model, { kind: 'bump' }>, box: Box) {
     dot(ctx, toX(e.i), toY(e.r), 8 * s, color)
     const size = 40 * s
     const x = plot.right + 36 * s
-    kit.icon(e.x.app, x + size / 2, e.y, size)
-    const label = kit.fit(`${e.x.app.name} #${e.r}`, 'body', 500, box.right - (x + size + 12 * s))
-    kit.text(label.value, x + size + 12 * s, e.y, {
+    const iconW = kit.has(e.x.app) ? size + 12 * s : 0
+    if (iconW) kit.icon(e.x.app, x + size / 2, e.y, size)
+    const label = kit.fit(`${e.x.app.name} #${e.r}`, 'body', 500, box.right - (x + iconW))
+    kit.text(label.value, x + iconW, e.y, {
       size: label.size,
       weight: 500,
       color,
@@ -604,13 +609,14 @@ function dumbbell(kit: Kit, m: Extract<Model, { kind: 'dumbbell' }>, box: Box) {
     })
   }
   const rowH = (plot.bottom - plot.top) / m.rows.length
-  const iconSize = Math.min(52 * s, rowH * 0.6)
+  const iconSize = m.rows.some((r) => kit.has(r.app)) ? Math.min(52 * s, rowH * 0.6) : 0
+  const iconW = iconSize ? iconSize + 16 * s : 0
   const labelSize = kit.size('meta')
   m.rows.forEach((r, i) => {
     const cy = plot.top + rowH * (i + 0.5)
-    kit.icon(r.app, box.left + iconSize / 2, cy, iconSize)
-    const name = kit.fit(r.app.name, 'body', 500, nameW - iconSize - 40 * s)
-    kit.text(name.value, box.left + iconSize + 16 * s, cy, {
+    if (kit.has(r.app)) kit.icon(r.app, box.left + iconSize / 2, cy, iconSize)
+    const name = kit.fit(r.app.name, 'body', 500, nameW - iconW - 24 * s)
+    kit.text(name.value, box.left + iconW, cy, {
       size: name.size,
       weight: 500,
       color: palette.text,

@@ -38,7 +38,8 @@ import { drawLive, type Icon } from '~/lib/charts/kinds'
 import {
   kindNames,
   liveTemplates,
-  NoDataError,
+  loadWithFallback,
+  retryDelay,
   scatterNotes,
   validateLive,
   type AppRef,
@@ -52,7 +53,7 @@ import { autoAxis, drawChart, type Ctx } from '~/lib/charts/render'
 import { CHART_FONT_FILES } from '~/lib/charts/type'
 import { chartSizes, fileName, X_MAX_BYTES, type ChartSize } from '~/lib/charts/spec'
 import { asCtx, SvgContext, type SvgFont } from '~/lib/charts/svg'
-import { createTdnClient, iconAllowed, TdnError } from '~/lib/charts/tdn'
+import { createTdnClient, formatDataTime, iconAllowed, type TdnClient } from '~/lib/charts/tdn'
 import { AboutData } from './AboutData'
 import { breakpoints, colors, fonts, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
@@ -153,9 +154,12 @@ const kindOrder: Array<Kind | 'scatter'> = ['headline', 'leaderboard', 'head-to-
 
 const iconCache = new Map<string, Promise<Icon | null>>()
 const noIcons = new Map<string, Icon>()
+/** An icon that has not loaded by then is drawn without, so a slow image never holds the chart back. */
+const ICON_TIMEOUT_MS = 8000
 /**
- * An app icon from an allowed host, loaded with CORS so the canvas stays exportable. Null unless it loads, decodes
- * and can be read back from a canvas (what PNG and SVG downloads need).
+ * An app icon from an allowed host, loaded with CORS so the canvas stays exportable (a CORS failure is a load
+ * error, so a loaded icon can always be drawn into a PNG). Null when it does not load in time; the chart is then
+ * drawn without that icon. Failures are not kept, so the next load asks for the icon again.
  */
 function loadIcon(url: string): Promise<Icon | null> {
   let found = iconCache.get(url)
@@ -163,32 +167,55 @@ function loadIcon(url: string): Promise<Icon | null> {
     found = new Promise<Icon | null>((resolve) => {
       if (!iconAllowed(url)) return resolve(null)
       const image = new Image()
+      const timer = setTimeout(() => done(false), ICON_TIMEOUT_MS)
+      function done(ok: boolean) {
+        clearTimeout(timer)
+        image.onload = image.onerror = null
+        resolve(ok && image.naturalWidth > 0 ? { image, width: image.naturalWidth, height: image.naturalHeight } : null)
+      }
       image.crossOrigin = 'anonymous'
       image.decoding = 'async'
+      // decode() can reject in some browsers for an image that has loaded fine (WebKit), so loaded is enough.
       image.onload = () => {
-        image
-          .decode()
-          .then(() => {
-            if (!image.naturalWidth || !image.naturalHeight) return resolve(null)
-            const probe = document.createElement('canvas')
-            probe.width = 1
-            probe.height = 1
-            const ctx = probe.getContext('2d')
-            if (!ctx) return resolve(null)
-            ctx.drawImage(image, 0, 0, 1, 1)
-            ctx.getImageData(0, 0, 1, 1)
-            resolve({ image, width: image.naturalWidth, height: image.naturalHeight })
-          })
-          .catch(() => resolve(null))
+        image.decode().then(
+          () => done(true),
+          () => done(true),
+        )
       }
-      image.onerror = () => resolve(null)
+      image.onerror = () => done(false)
       image.src = url
     })
     iconCache.set(url, found)
+    void found.then((icon) => {
+      if (!icon) iconCache.delete(url)
+    })
   }
   return found
 }
-const verifyIcon = (url: string) => loadIcon(url).then((icon) => icon !== null)
+
+/** The icons of the apps in a chart that loaded, by app id. */
+async function iconsFor(model: Model): Promise<Map<string, Icon>> {
+  const found = await Promise.all(
+    appsIn(model).map(
+      async (app) => [app.appId, iconAllowed(app.iconUrl) ? await loadIcon(app.iconUrl) : null] as const,
+    ),
+  )
+  return new Map(found.filter((f): f is readonly [string, Icon] => f[1] !== null))
+}
+
+/**
+ * A line for answers that are not fresh: the proxy's kept copy when the source did not answer (X-TDN-Stale), or an
+ * answer fetched more than two hours ago (a CDN copy), each with when it was fetched. Empty when all are fresh.
+ */
+function keptCopyNote(client: TdnClient): string {
+  const old = [...client.fetched.values()].filter((f) => f.stale)
+  if (!old.length) return ''
+  const times = old.map((f) => f.fetchedAt?.getTime() ?? 0).filter((t) => t > 0)
+  const at = times.length ? formatDataTime(new Date(Math.min(...times))) : ''
+  const failed = old.some((f) => f.kept)
+  if (failed) return at ? `The data source did not answer, so the copy fetched ${at} is shown.` : ''
+  return at ? `Live data last fetched ${at}.` : ''
+}
 
 function appsIn(model: Model): AppRef[] {
   switch (model.kind) {
@@ -254,14 +281,15 @@ export function ChartBuilder({
   // Live templates.
   const [rowCount, setRowCount] = useState<number | undefined>(undefined)
   const [pair, setPair] = useState<[string, string] | undefined>(undefined)
-  const [attempt, setAttempt] = useState(0)
   /** The last finished load, with the request it answers. Only shown while that is still the request. */
   const [result, setResult] = useState<{
     key: string
-    chart: LiveChart | null
-    error: string
+    chart: LiveChart
+    note: string
     icons: Map<string, Icon>
   } | null>(null)
+  /** How many loads in a row have failed for the current request; the page keeps asking, and never shows an error. */
+  const [failed, setFailed] = useState<{ key: string; n: number }>({ key: '', n: 0 })
   const [liveText, setLiveText] = useState<ChartText | null>(null)
   /** Each template's measured coverage, or why it is not shown, as its chart or preview loads. */
   const [coverage, setCoverage] = useState<Record<string, string>>({})
@@ -272,12 +300,12 @@ export function ChartBuilder({
   )
 
   const liveTemplate = live.find((t) => t.id === templateId)
-  const loadKey = liveTemplate ? `${templateId}|${rowCount ?? ''}|${pair?.join(',') ?? ''}|${attempt}` : ''
+  const loadKey = liveTemplate ? `${templateId}|${rowCount ?? ''}|${pair?.join(',') ?? ''}` : ''
   const current = result && result.key === loadKey ? result : null
   const chart = current?.chart ?? null
   const icons = current?.icons ?? noIcons
-  const liveError = current?.error ?? ''
-  const liveState: 'loading' | 'ready' | 'error' = !current ? 'loading' : chart ? 'ready' : 'error'
+  const liveState: 'loading' | 'ready' = current ? 'ready' : 'loading'
+  const waiting = failed.key === loadKey ? failed.n : 0
   const entries: Entry[] = useMemo(
     () => [
       ...live.map((t) => ({ id: t.id, kind: t.kind, name: t.name, about: t.about, field: t.field })),
@@ -341,39 +369,35 @@ export function ChartBuilder({
   }, [templateId, source, live])
 
   // Live templates read the proxy on every page load. Old numbers are cleared first, so a chart is never shown
-  // with data from another template or an earlier failed load.
+  // with data from another template. A template whose data cannot answer its question draws a fallback template
+  // with a note; a failed request is asked again (soon, then once a minute) while the spinner shows, so the page
+  // shows a chart or a loading state, never an error. The proxy answers with its kept copy when the source is down.
   useEffect(() => {
     if (!liveTemplate) return
     let cancelled = false
-    liveTemplate
-      .load(client, { rows: rowCount, apps: pair, verify: verifyIcon })
-      .then(async (loaded) => {
-        const apps = appsIn(loaded.model)
-        const found = await Promise.all(
-          apps.map(async (app) => [app.appId, iconAllowed(app.iconUrl) ? await loadIcon(app.iconUrl) : null] as const),
-        )
-        if (cancelled) return
-        const iconMap = new Map(found.filter((f): f is readonly [string, Icon] => f[1] !== null))
-        setLiveText(structuredClone(loaded.text))
-        setResult({ key: loadKey, chart: loaded, error: '', icons: iconMap })
-        if (rowCount === undefined && pair === undefined) noteCoverage(loaded.templateId, loaded.coverage)
-      })
-      .catch((error: unknown) => {
-        if (cancelled) return
-        const message =
-          error instanceof NoDataError
-            ? error.message
-            : error instanceof TdnError
-              ? error.status === 429
-                ? 'The live data limit was reached. Try again in a minute.'
-                : `Live data is not available right now (error ${error.status}).`
-              : 'Live data could not be loaded. Check the connection and try again.'
-        setResult({ key: loadKey, chart: null, error: message, icons: noIcons })
-      })
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const run = (failures: number) => {
+      loadWithFallback(liveTemplate, client, { rows: rowCount, apps: pair }, live)
+        .then(async ({ chart: loaded, note }) => {
+          const iconMap = await iconsFor(loaded.model)
+          if (cancelled) return
+          setLiveText(structuredClone(loaded.text))
+          setResult({ key: loadKey, chart: loaded, note, icons: iconMap })
+          if (rowCount === undefined && pair === undefined)
+            noteCoverage(liveTemplate.id, note ? `${note} ${loaded.coverage}` : loaded.coverage)
+        })
+        .catch(() => {
+          if (cancelled) return
+          setFailed({ key: loadKey, n: failures + 1 })
+          timer = setTimeout(() => run(failures + 1), retryDelay(failures) * 1000)
+        })
+    }
+    run(0)
     return () => {
       cancelled = true
+      clearTimeout(timer)
     }
-  }, [liveTemplate, client, rowCount, pair, loadKey, noteCoverage])
+  }, [liveTemplate, client, rowCount, pair, loadKey, noteCoverage, live])
 
   const problems = useMemo(() => {
     if (liveTemplate) return chart && liveText ? validateLive(chart, liveText) : []
@@ -381,7 +405,7 @@ export function ChartBuilder({
   }, [liveTemplate, chart, liveText, config, template, sourceText])
 
   const scatterReady = !liveTemplate && !!config && !!template && !!sprite && template.config.id === templateId
-  const liveReady = !!liveTemplate && liveState === 'ready' && !!chart && !!liveText && chart.templateId === templateId
+  const liveReady = !!liveTemplate && liveState === 'ready' && !!chart && !!liveText
   const ready = (scatterReady || liveReady) && problems.length === 0
 
   const paint = (ctx: Ctx, width: number, height: number, image: CanvasImageSource | null) => {
@@ -400,8 +424,7 @@ export function ChartBuilder({
     canvas.height = size.height
     delete canvas.dataset.rendered
     if (!fontsReady || !ready) {
-      ctx.fillStyle = '#151515'
-      ctx.fillRect(0, 0, size.width, size.height)
+      ctx.clearRect(0, 0, size.width, size.height)
       return
     }
     paint(ctx, size.width, size.height, sprite)
@@ -587,8 +610,10 @@ export function ChartBuilder({
       : ''
   const statusText = liveTemplate
     ? liveState === 'loading'
-      ? 'Loading live data…'
-      : downloadNote
+      ? waiting
+        ? 'Waiting for live data. Asking again…'
+        : 'Loading live data…'
+      : [current?.note, keptCopyNote(client), downloadNote].filter(Boolean).join(' ')
     : template && template.config.id !== templateId && !status
       ? 'Loading the template…'
       : status || downloadNote
@@ -629,19 +654,7 @@ export function ChartBuilder({
                   {statusText}
                 </p>
               </div>
-              {liveTemplate && liveState === 'error' ? (
-                <div role="alert" {...stylex.props(styles.problems)}>
-                  <p {...stylex.props(styles.problemsTitle)}>No chart: {liveError}</p>
-                  <p {...stylex.props(styles.problemNote)}>Earlier numbers are not shown in place of live ones.</p>
-                  <button
-                    type="button"
-                    onClick={() => setAttempt((n) => n + 1)}
-                    {...stylex.props(styles.button, styles.retry, ui.focusRing)}
-                  >
-                    Try again
-                  </button>
-                </div>
-              ) : problems.length ? (
+              {problems.length ? (
                 <div role="alert" {...stylex.props(styles.problems)}>
                   <p {...stylex.props(styles.problemsTitle)}>Downloads are off until this is fixed:</p>
                   <ul {...stylex.props(styles.problemList)}>
@@ -903,7 +916,7 @@ export function ChartBuilder({
             client={client}
             source={source}
             fontsReady={fontsReady}
-            waitFor={!ready && !liveError && !problems.length}
+            waitFor={!ready && !problems.length}
             onCoverage={noteCoverage}
           />
           <AboutData id={id} client={client} entries={entries} coverage={coverage} />
@@ -1068,7 +1081,9 @@ function Thumb({
   onCoverage: (id: string, note: string) => void
 }) {
   const ref = useRef<HTMLCanvasElement>(null)
-  const [state, setState] = useState<'waiting' | 'ready' | 'none'>('waiting')
+  const [state, setState] = useState<'waiting' | 'ready'>('waiting')
+  /** Failed loads so far: a thumbnail asks again like the chart does, and is never left with an error. */
+  const [failures, setFailures] = useState(0)
   const [seen, setSeen] = useState(false)
 
   // Each thumbnail loads when its card comes near the screen, so a card that is never looked at costs nothing.
@@ -1088,17 +1103,13 @@ function Thumb({
   useEffect(() => {
     if (!enabled || !seen || state !== 'waiting') return
     let cancelled = false
+    let retry: ReturnType<typeof setTimeout> | undefined
     const drawing: Promise<(ctx: Ctx) => void> = (async () => {
       const liveTemplate = live.find((l) => l.id === entry.id)
       if (liveTemplate) {
-        const chart = await liveTemplate.load(client, { verify: verifyIcon })
-        const found = await Promise.all(
-          appsIn(chart.model).map(
-            async (app) => [app.appId, iconAllowed(app.iconUrl) ? await loadIcon(app.iconUrl) : null] as const,
-          ),
-        )
-        const icons = new Map(found.filter((f): f is readonly [string, Icon] => f[1] !== null))
-        onCoverage(entry.id, chart.coverage)
+        const { chart, note } = await loadWithFallback(liveTemplate, client, {}, live)
+        const icons = await iconsFor(chart.model)
+        onCoverage(entry.id, note ? `${note} ${chart.coverage}` : chart.coverage)
         return (ctx: Ctx) => drawLive(ctx, chart, chart.text, { ...THUMB, icons })
       }
       const t = await source.loadTemplate(entry.id)
@@ -1116,20 +1127,19 @@ function Thumb({
           paint(ctx)
           setState('ready')
         } catch {
-          setState('none')
+          retry = setTimeout(() => setFailures((n) => n + 1), retryDelay(failures) * 1000)
         }
       },
-      (error: unknown) => {
+      () => {
         if (cancelled) return
-        setState('none')
-        if (live.some((l) => l.id === entry.id))
-          onCoverage(entry.id, error instanceof NoDataError ? `Not shown: ${error.message}` : 'Not shown: no data.')
+        retry = setTimeout(() => setFailures((n) => n + 1), retryDelay(failures) * 1000)
       },
     )
     return () => {
       cancelled = true
+      clearTimeout(retry)
     }
-  }, [enabled, seen, state, entry.id, live, client, source, onCoverage])
+  }, [enabled, seen, state, failures, entry.id, live, client, source, onCoverage])
 
   return (
     <>
@@ -1143,7 +1153,7 @@ function Thumb({
       />
       {state === 'ready' ? null : (
         <span aria-hidden="true" {...stylex.props(styles.thumbEmpty)}>
-          {state === 'none' ? 'No preview' : null}
+          <span {...stylex.props(styles.spinner)} />
         </span>
       )}
     </>
@@ -1366,8 +1376,6 @@ const styles = stylex.create({
   },
   meta: { display: 'grid', marginTop: '8px' },
   dataTime: { minHeight: '24px', fontSize: text.meta, lineHeight: '24px', color: colors.text },
-  problemNote: { marginTop: '4px', color: colors.muted },
-  retry: { marginTop: '16px' },
   glyph: { display: 'block', flexShrink: 0, color: colors.text },
   canvas: {
     display: 'block',

@@ -42,15 +42,15 @@ describe('live templates with saved real answers', () => {
     expect(chart.model.rows[0]).toMatchObject({ display: '+33', detail: '#91 to #58' })
   })
 
-  test('SDK counts are the tech-stack totals, for apps with an icon in the rankings answers', async () => {
+  test('SDK counts are the tech-stack totals, with or without an icon', async () => {
     const chart = await load('most-sdks')
     if (chart.model.kind !== 'leaderboard') throw new Error('kind')
-    // Alipay (381) has no icon in the saved answers, so it is left out and Whatnot (340) leads.
-    expect(chart.model.rows.slice(0, 2).map((r) => r.value)).toEqual([340, 163])
+    // Alipay (381) has no icon in the saved answers; it still leads, drawn with its name only.
+    expect(chart.model.rows.slice(0, 3).map((r) => r.value)).toEqual([381, 340, 214])
+    expect(chart.model.rows[0]?.app).toMatchObject({ name: 'Alipay' })
+    expect(chart.model.rows[0]?.app.iconUrl ?? null).toBeNull()
     expect(chart.model.rows).toHaveLength(10)
-    expect(chart.model.rows.map((r) => r.app.name)).not.toContain('Alipay')
-    expect(chart.model.rows.every((r) => r.app.iconUrl)).toBe(true)
-    expect(liveFootnote(chart)[2]).toContain('Apps with no verified icon are left out.')
+    expect(liveFootnote(chart)[2]).not.toContain('left out')
   })
 
   test('ChatGPT countries and the head to head use the flat app-rankings and compare answers', async () => {

@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import { useEffect, useRef, useState } from 'react'
 import { collectionRuns, deepestRank, trackedApps, type TrackedApp } from '~/lib/charts/about'
 import { getHistory, getRankings, plainName, sortedRankings } from '~/lib/charts/live'
-import { formatDataTime, metaOf, parseDataTime, TdnError, type TdnClient } from '~/lib/charts/tdn'
+import { formatDataTime, recordedAt, TdnError, type TdnClient } from '~/lib/charts/tdn'
 import { breakpoints, colors, fonts, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
@@ -65,7 +65,7 @@ export function AboutData({
       // The collector's runs, read from an app that is always in the top 100, so a missing point is a missed run.
       const steady = rows.find((r) => /^chatgpt$/i.test(plainName(r.name))) ?? rows[0]
       const history = steady ? await getHistory(client, steady.appId, HISTORY_DAYS) : null
-      const recorded = parseDataTime(metaOf(rankings).recordedAt)
+      const recorded = recordedAt(rankings)
       return {
         tracked: trackedApps(apps),
         recordedAt: recorded ? formatDataTime(recorded) : '',

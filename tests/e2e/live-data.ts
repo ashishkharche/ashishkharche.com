@@ -14,7 +14,7 @@ export async function mockLive(page: Page, override?: { status: number; body: un
     const body = fixtures[fixtureKey(url)]
     return route.fulfill(body ? { json: body } : { status: 404, json: { error: 'Not found', code: 'not_found' } })
   })
-  await page.route(/^https:\/\/(is[1-5]-ssl\.mzstatic\.com|play-lh\.googleusercontent\.com)\//, (route) =>
+  await page.route(/^https:\/\/(is[1-9]-ssl\.mzstatic\.com|play-lh\.googleusercontent\.com)\//, (route) =>
     route.fulfill({ body: icon, contentType: 'image/png', headers: { 'access-control-allow-origin': '*' } }),
   )
   return requested
