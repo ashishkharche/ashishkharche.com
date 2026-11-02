@@ -312,6 +312,40 @@ export function drawFrame(ctx: Ctx, L: Layout, title: string, subtitle: string, 
   })
 }
 
+/**
+ * The loading state of a chart: the frame every chart shares (background, rule) with a bar where the title, the
+ * subtitle and each footnote line will be, at the same places drawChart and drawLive put them. No text and no
+ * motion, so nothing moves while the data is on its way and the chart lands where its outline was.
+ */
+export function drawPlaceholder(ctx: Ctx, width: number, height: number): void {
+  const L = layout({ footnote: ['', '', ''] }, width, height)
+  const { s } = L
+  const maxWidth = L.width - 2 * L.padX
+  ctx.fillStyle = palette.bg
+  ctx.fillRect(0, 0, L.width, L.height)
+  const bar = (y: number, h: number, w: number) => {
+    const r = h / 2
+    ctx.beginPath()
+    ctx.arc(L.padX + r, y, r, Math.PI / 2, (3 * Math.PI) / 2)
+    ctx.arc(L.padX + w - r, y, r, -Math.PI / 2, Math.PI / 2)
+    ctx.fill()
+  }
+  ctx.fillStyle = palette.grid
+  // Bars as tall as the letters of each line (cap height, about 0.7 of the size).
+  bar(L.titleY, sizeOf('title', s) * 0.7, maxWidth * 0.62)
+  bar(L.subtitleY, sizeOf('body', s) * 0.7, maxWidth * 0.4)
+  const ruleWidth = PT * 1.5 * s
+  ctx.strokeStyle = palette.rule
+  ctx.lineWidth = ruleWidth
+  ctx.lineCap = 'square'
+  ctx.beginPath()
+  ctx.moveTo(L.padX, L.ruleY)
+  ctx.lineTo(L.width - L.padX, L.ruleY)
+  ctx.stroke()
+  const footWidths = [0.56, 0.48, 0.34]
+  L.footY.forEach((y, i) => bar(y, sizeOf('meta', s) * 0.7, maxWidth * (footWidths[i] ?? 0.4)))
+}
+
 /** Cuts text that is too wide even at meta, ending it with an ellipsis. */
 export function shorten(
   ctx: Ctx,

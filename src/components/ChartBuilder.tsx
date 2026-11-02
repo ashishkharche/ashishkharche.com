@@ -49,7 +49,7 @@ import {
   type LiveTemplate,
   type Model,
 } from '~/lib/charts/live'
-import { autoAxis, drawChart, type Ctx } from '~/lib/charts/render'
+import { autoAxis, drawChart, drawPlaceholder, type Ctx } from '~/lib/charts/render'
 import { CHART_FONT_FILES } from '~/lib/charts/type'
 import { chartSizes, fileName, X_MAX_BYTES, type ChartSize } from '~/lib/charts/spec'
 import { asCtx, SvgContext, type SvgFont } from '~/lib/charts/svg'
@@ -424,7 +424,9 @@ export function ChartBuilder({
     canvas.height = size.height
     delete canvas.dataset.rendered
     if (!fontsReady || !ready) {
-      ctx.clearRect(0, 0, size.width, size.height)
+      // While live data is on its way the frame shows where the title, rule and footnote will be.
+      if (liveTemplate && liveState === 'loading') drawPlaceholder(ctx, size.width, size.height)
+      else ctx.clearRect(0, 0, size.width, size.height)
       return
     }
     paint(ctx, size.width, size.height, sprite)
@@ -1086,6 +1088,12 @@ function Thumb({
   const [failures, setFailures] = useState(0)
   const [seen, setSeen] = useState(false)
 
+  // Until its chart is drawn, a thumbnail shows the chart's outline: still, so a page of cards does not spin.
+  useEffect(() => {
+    const ctx = ref.current?.getContext('2d')
+    if (ctx && state !== 'ready') drawPlaceholder(ctx, THUMB.width, THUMB.height)
+  }, [state])
+
   // Each thumbnail loads when its card comes near the screen, so a card that is never looked at costs nothing.
   useEffect(() => {
     const canvas = ref.current
@@ -1142,21 +1150,14 @@ function Thumb({
   }, [enabled, seen, state, failures, entry.id, live, client, source, onCoverage])
 
   return (
-    <>
-      <canvas
-        ref={ref}
-        width={THUMB.width}
-        height={THUMB.height}
-        aria-hidden="true"
-        data-thumb={state}
-        {...stylex.props(styles.thumb)}
-      />
-      {state === 'ready' ? null : (
-        <span aria-hidden="true" {...stylex.props(styles.thumbEmpty)}>
-          <span {...stylex.props(styles.spinner)} />
-        </span>
-      )}
-    </>
+    <canvas
+      ref={ref}
+      width={THUMB.width}
+      height={THUMB.height}
+      aria-hidden="true"
+      data-thumb={state}
+      {...stylex.props(styles.thumb)}
+    />
   )
 }
 
@@ -1662,15 +1663,6 @@ const styles = stylex.create({
   },
   thumbOn: { boxShadow: { default: `0 0 0 2px ${colors.text}`, ':hover': `0 0 0 2px ${colors.text}` } },
   thumb: { display: 'block', width: '100%', height: '100%' },
-  thumbEmpty: {
-    position: 'absolute',
-    inset: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#a3a3a3',
-    fontSize: text.meta,
-  },
   badge: {
     position: 'absolute',
     right: '8px',
