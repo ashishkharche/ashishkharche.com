@@ -74,7 +74,7 @@ Workout Director App Store screens in `public/assets/img/wd`; which screens are 
 ## Chart builder (/lab/charts/)
 
 A page for making dark charts to post on X, linked from Projects. It runs in the browser: the chart is drawn
-on a canvas (PNG at 1x or 2x) or into an SVG, with Inter served from `public/lab/charts/fonts/`.
+on a canvas (PNG at 1x or 2x) or into an SVG, in Geist and Geist Serif (the site's own `/assets/fonts/` files, weights 400 and 500, four sizes from `src/lib/charts/type.ts`).
 
 Kinds: headline number, ranked list, head to head, rank over time and iOS vs Android (live), plus scatter (data files).
 

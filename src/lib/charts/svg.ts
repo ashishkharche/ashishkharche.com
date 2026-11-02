@@ -37,7 +37,8 @@ function multiply(a: Matrix, b: Matrix): Matrix {
 
 export interface SvgFont {
   family: string
-  weight: number
+  /** A CSS font-weight value: "400", or a range like "400 500" for a variable font. */
+  weight: string
   /** A data: URL of the font file. */
   url: string
 }

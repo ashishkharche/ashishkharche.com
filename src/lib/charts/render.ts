@@ -2,11 +2,11 @@
  * Draws a chart config and its rows onto a 2D canvas (or the SVG context in
  * svg.ts) in the style of the dark X charts.
  *
- * The numbers follow the matplotlib renderer the X charts come from: a
- * 1800 × 1390 figure at 100 dpi, Inter at the same point sizes, the same
- * colours, and the same text alignment rules (text boxes from the font's
- * ascender and descender, ink edges for horizontal alignment). At
- * 1800 × 1390 the layout matches; other sizes keep the same layout scaled to fit.
+ * The layout follows the matplotlib renderer the X charts come from: a
+ * 1800 × 1390 figure at 100 dpi, the same colours and the same text alignment
+ * rules (text boxes from the font's ascender and descender, ink edges for
+ * horizontal alignment). Type comes from type.ts: Geist and Geist Serif, four
+ * sizes, two weights. Other sizes keep the same layout scaled to fit.
  */
 import type { ChartConfig, LabelConfig, Row } from './config.ts'
 import {
@@ -21,21 +21,24 @@ import {
   validate,
 } from './config.ts'
 import { ICON_CELL, ICON_COLUMNS } from './data.ts'
+import {
+  ASCENT,
+  CHART_WEIGHTS,
+  DESCENT,
+  fitRole,
+  fontString,
+  sizeOf,
+  type ChartFamily,
+  type ChartWeight,
+  type TypeRole,
+} from './type.ts'
 
 export const BASE_WIDTH = 1800
 export const BASE_HEIGHT = 1390
 /** Pixels per point at 100 dpi. */
 export const PT = 100 / 72
-export const FONT_FAMILY = 'ChartInter'
-
-/** Inter's typographic ascender and descender, as fractions of the font size. */
-const ASCENT = 1984 / 2048
-const DESCENT = 494 / 2048
-/**
- * Matplotlib's hinted glyph advances come out a little wider than the
- * browser's; this much extra space per letter (px at full size) closes the gap.
- */
-export const TRACKING = 0.15
+/** No extra letter spacing: Geist is set as designed. */
+export const TRACKING = 0
 
 export const palette = {
   bg: '#151515',
@@ -51,7 +54,9 @@ export const palette = {
   initials: '#3a3a3a',
 } as const
 
-const weights = { Regular: 400, Medium: 500, SemiBold: 600, Bold: 700 } as const
+/** Label weights in the data files map onto the two chart weights. */
+const labelWeight = (w: LabelConfig['weight']): ChartWeight =>
+  w === undefined || w === 'Regular' ? CHART_WEIGHTS.regular : CHART_WEIGHTS.medium
 
 /** The part of CanvasRenderingContext2D the renderer uses, so an SVG writer can stand in for it. */
 export type Ctx = Pick<
@@ -167,8 +172,10 @@ type HAlign = 'left' | 'center' | 'right'
 type VAlign = 'top' | 'center' | 'bottom' | 'center_baseline'
 
 export interface TextStyle {
+  /** A size from type.ts (sizeOf / fitRole), in px. */
   size: number
-  weight: number
+  weight: ChartWeight
+  family?: ChartFamily
   color: string
   ha: HAlign
   va: VAlign
@@ -182,7 +189,7 @@ export interface TextStyle {
 
 /** Same box rules as matplotlib's Text._get_layout. Returns the text box size. */
 export function drawText(ctx: Ctx, text: string, x: number, y: number, style: TextStyle) {
-  ctx.font = `${style.weight} ${style.size}px ${FONT_FAMILY}`
+  ctx.font = fontString(style.size, style.weight, style.family)
   ctx.letterSpacing = `${style.tracking ?? 0}px`
   const lines = text.split('\n')
   const A = ASCENT * style.size
@@ -232,8 +239,15 @@ export function drawText(ctx: Ctx, text: string, x: number, y: number, style: Te
   return { width, height }
 }
 
-export function inkWidth(ctx: Ctx, text: string, size: number, weight: number, tracking: number): number {
-  ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
+export function inkWidth(
+  ctx: Ctx,
+  text: string,
+  size: number,
+  weight: ChartWeight,
+  tracking: number,
+  family: ChartFamily = 'sans',
+): number {
+  ctx.font = fontString(size, weight, family)
   ctx.letterSpacing = `${tracking}px`
   const m = ctx.measureText(text)
   return m.actualBoundingBoxLeft + m.actualBoundingBoxRight
@@ -254,20 +268,23 @@ export function drawFrame(ctx: Ctx, L: Layout, title: string, subtitle: string, 
   ctx.fillRect(0, 0, L.width, L.height)
 
   const maxWidth = L.width - 2 * L.padX
-  const fit = (value: string, size: number, weight: number) => {
-    const w = inkWidth(ctx, value, size, weight, tracking)
-    return w > maxWidth ? (size * maxWidth) / w : size
+  const set = (value: string, role: TypeRole, weight: ChartWeight, family: ChartFamily = 'sans') => {
+    const size = fitRole(role, s, maxWidth, (z) => inkWidth(ctx, value, z, weight, tracking, family))
+    return { value: shorten(ctx, value, size, weight, family, maxWidth), size }
   }
-  text(title, L.padX, L.titleY, {
-    size: fit(title, px(37), 700),
-    weight: 700,
+  const t = set(title, 'title', 400, 'serif')
+  text(t.value, L.padX, L.titleY, {
+    size: t.size,
+    weight: 400,
+    family: 'serif',
     color: palette.text,
     ha: 'left',
     va: 'center',
   })
   if (subtitle) {
-    text(subtitle, L.padX, L.subtitleY, {
-      size: fit(subtitle, px(23), 400),
+    const sub = set(subtitle, 'body', 400)
+    text(sub.value, L.padX, L.subtitleY, {
+      size: sub.size,
       weight: 400,
       color: palette.muted,
       ha: 'left',
@@ -285,14 +302,30 @@ export function drawFrame(ctx: Ctx, L: Layout, title: string, subtitle: string, 
   ctx.stroke()
 
   foot.forEach((line, i) => {
-    text(line, L.padX, L.footY[i] ?? L.height, {
-      size: fit(line, px(16.5), 400),
+    const f = set(line, 'meta', 400)
+    text(f.value, L.padX, L.footY[i] ?? L.height, {
+      size: f.size,
       weight: 400,
       color: palette.foot,
       ha: 'left',
       va: 'center',
     })
   })
+}
+
+/** Cuts text that is too wide even at meta, ending it with an ellipsis. */
+export function shorten(
+  ctx: Ctx,
+  value: string,
+  size: number,
+  weight: ChartWeight,
+  family: ChartFamily,
+  maxWidth: number,
+): string {
+  if (inkWidth(ctx, value, size, weight, 0, family) <= maxWidth) return value
+  let cut = value
+  while (cut.length > 1 && inkWidth(ctx, `${cut}…`, size, weight, 0, family) > maxWidth) cut = cut.slice(0, -1)
+  return `${cut.trimEnd()}…`
 }
 
 export interface DrawOptions {
@@ -377,7 +410,7 @@ export function drawChart(ctx: Ctx, config: ChartConfig, allRows: Row[], options
   ctx.stroke()
 
   // Tick labels and axis labels.
-  const tickSize = px(26)
+  const tickSize = sizeOf('meta', s)
   const pad = px(14)
   const tickLabel = (axis: AxisLike, t: number) =>
     axis.tick_format ? axis.tick_format.replace('{}', fill('{v}', { v: t })) : fill('{v}', { v: t })
@@ -401,7 +434,7 @@ export function drawChart(ctx: Ctx, config: ChartConfig, allRows: Row[], options
     })
     widest = Math.max(widest, box.width)
   }
-  const axisSize = px(28)
+  const axisSize = sizeOf('meta', s)
   const labelPad = px(config.layout?.labelpad ?? 22)
   const tickBox = (ASCENT + DESCENT) * tickSize
   text(xa.label, (plot.left + plot.right) / 2, plot.bottom + pad + tickBox + labelPad, {
@@ -437,7 +470,7 @@ export function drawChart(ctx: Ctx, config: ChartConfig, allRows: Row[], options
     ctx.restore()
     if (ref.text && ref.text_at) {
       text(ref.text, toX(ref.text_at[0]), toY(ref.text_at[1]), {
-        size: px(22),
+        size: sizeOf('meta', s),
         weight: 400,
         color: palette.refText,
         ha: ref.ha ?? 'right',
@@ -452,7 +485,7 @@ export function drawChart(ctx: Ctx, config: ChartConfig, allRows: Row[], options
   const highlightPx = config.highlight_icon_px ?? 84
   for (const row of order) {
     const size = (hl.has(row) ? highlightPx : iconPx) * s
-    drawPoint(ctx, row, config, toX(toNumber(row[xa.field])), toY(toNumber(row[ya.field])), size, options)
+    drawPoint(ctx, row, config, toX(toNumber(row[xa.field])), toY(toNumber(row[ya.field])), size, options, s)
   }
 
   // Labels, then the notes under stale points.
@@ -460,7 +493,7 @@ export function drawChart(ctx: Ctx, config: ChartConfig, allRows: Row[], options
   for (const label of config.labels ?? []) {
     for (const row of labelRows(rows, label)) {
       if (!order.includes(row)) continue
-      drawLabel(text, label, labelValues(row, config), at(row), px)
+      drawLabel(text, label, labelValues(row, config), at(row), px, s)
     }
   }
   const st = config.staleness
@@ -470,7 +503,7 @@ export function drawChart(ctx: Ctx, config: ChartConfig, allRows: Row[], options
       const [dx, dy] = st.offsets?.[note.row[st.key ?? 'app'] ?? ''] ?? [0, -42]
       const [cx, cy] = at(note.row)
       text(note.text, cx + px(dx), cy - px(dy), {
-        size: px(20),
+        size: sizeOf('meta', s),
         weight: 500,
         color: palette.note,
         ha: 'center',
@@ -489,11 +522,14 @@ function drawLabel(
   row: Row,
   [cx, cy]: readonly [number, number],
   px: (pt: number) => number,
+  s: number,
 ) {
   const [dx, dy] = label.offset ?? [40, 0]
+  // Data files give label sizes in points: the larger labels are body, the smaller ones meta.
+  const role: TypeRole = (label.size ?? 27) >= 24 ? 'body' : 'meta'
   text(fill(label.text, row), cx + px(dx), cy - px(dy), {
-    size: px(label.size ?? 27),
-    weight: weights[label.weight ?? 'SemiBold'],
+    size: sizeOf(role, s),
+    weight: labelWeight(label.weight ?? 'Medium'),
     color: palette.text,
     ha: label.ha ?? 'left',
     va: label.va ?? 'center',
@@ -510,6 +546,7 @@ function drawPoint(
   cy: number,
   size: number,
   options: DrawOptions,
+  s: number,
 ) {
   const r = size / 2
   const index = toNumber(row[config.icon_column ?? 'icon'])
@@ -534,7 +571,7 @@ function drawPoint(
     ctx.arc(cx, cy, r, 0, Math.PI * 2)
     ctx.fill()
     const letter = (nameOf(row, config).trim()[0] ?? '?').toUpperCase()
-    ctx.font = `700 ${size * 0.42}px ${FONT_FAMILY}`
+    ctx.font = fontString(initialSize(size, s), 500)
     ctx.letterSpacing = '0px'
     const m = ctx.measureText(letter)
     ctx.fillStyle = '#ffffff'
@@ -547,4 +584,9 @@ function drawPoint(
     )
   }
   ctx.restore()
+}
+
+/** The letter in an icon placeholder: body in normal icons, meta in small ones. */
+export function initialSize(iconSize: number, s: number): number {
+  return iconSize >= sizeOf('body', s) * 2 ? sizeOf('body', s) : sizeOf('meta', s)
 }

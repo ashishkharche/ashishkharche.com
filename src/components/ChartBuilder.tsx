@@ -37,27 +37,23 @@ import {
   type LiveTemplate,
   type Model,
 } from '~/lib/charts/live'
-import { autoAxis, drawChart, FONT_FAMILY, type Ctx } from '~/lib/charts/render'
+import { autoAxis, drawChart, type Ctx } from '~/lib/charts/render'
+import { CHART_FONT_FILES } from '~/lib/charts/type'
 import { chartSizes, fileName, X_MAX_BYTES, type ChartSize } from '~/lib/charts/spec'
 import { asCtx, SvgContext, type SvgFont } from '~/lib/charts/svg'
 import { createTdnClient, iconAllowed, TdnError } from '~/lib/charts/tdn'
 import { breakpoints, colors, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
-const fontFiles = [
-  { weight: 400, file: 'Inter-Regular.woff2' },
-  { weight: 500, file: 'Inter-Medium.woff2' },
-  { weight: 600, file: 'Inter-SemiBold.woff2' },
-  { weight: 700, file: 'Inter-Bold.woff2' },
-]
-const fontUrl = (file: string) => `/lab/charts/fonts/${file}`
-
 let fontsLoading: Promise<void> | undefined
-/** Inter for the chart, loaded once. The page's own text stays in Geist. */
+/**
+ * The site's Geist and Geist Serif files, registered under the chart family names. Charts are drawn only after these
+ * load, so the canvas, PNG and SVG never fall back to another font by accident.
+ */
 function loadChartFonts(): Promise<void> {
   fontsLoading ??= Promise.all(
-    fontFiles.map(async ({ weight, file }) => {
-      const face = new FontFace(FONT_FAMILY, `url(${fontUrl(file)})`, { weight: String(weight) })
+    CHART_FONT_FILES.map(async ({ family, weight, url }) => {
+      const face = new FontFace(family, `url(${url})`, { weight })
       document.fonts.add(await face.load())
     }),
   ).then(() => undefined)
@@ -481,10 +477,10 @@ export function ChartBuilder({
     })
     paint(asCtx(svg), size.width, size.height, sprite)
     const fonts: SvgFont[] = await Promise.all(
-      fontFiles.map(async ({ weight, file }) => ({
-        family: FONT_FAMILY,
+      CHART_FONT_FILES.map(async ({ family, weight, url }) => ({
+        family,
         weight,
-        url: await readAsDataUrl(await (await fetch(fontUrl(file))).blob()),
+        url: await readAsDataUrl(await (await fetch(url)).blob()),
       })),
     )
     save(new Blob([svg.toString(fonts)], { type: 'image/svg+xml' }), fileName(title, size, 1, 'svg'))

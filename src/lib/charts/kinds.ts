@@ -2,8 +2,19 @@
  * Draws the live chart kinds (headline number, ranked list, head to head, rank over time, iOS vs Android) on a
  * canvas or the SVG context, in the same dark style, header and footnote as the scatter charts.
  */
-import { niceTicks } from './render.ts'
-import { drawFrame, drawText, inkWidth, layout, palette, PT, TRACKING, type Ctx, type TextStyle } from './render.ts'
+import { niceTicks, shorten } from './render.ts'
+import {
+  drawFrame,
+  drawText,
+  initialSize,
+  inkWidth,
+  layout,
+  palette,
+  TRACKING,
+  type Ctx,
+  type TextStyle,
+} from './render.ts'
+import { fitRole, fontString, sizeOf, type ChartFamily, type ChartWeight, type TypeRole } from './type.ts'
 import { liveFootnote, validateLive, type AppRef, type ChartText, type LiveChart, type Model } from './live.ts'
 import { ChartRuleError } from './render.ts'
 
@@ -38,10 +49,19 @@ interface Box {
 interface Kit {
   ctx: Ctx
   s: number
-  px: (pt: number) => number
   text: (value: string, x: number, y: number, style: TextStyle) => { width: number; height: number }
-  width: (value: string, size: number, weight: number) => number
+  width: (value: string, size: number, weight: ChartWeight, family?: ChartFamily) => number
   icon: (app: AppRef, cx: number, cy: number, size: number) => void
+  /** A size from the chart type scale (type.ts). */
+  size: (role: TypeRole) => number
+  /** The largest size from `role` down that fits, and the text shortened if even meta is too wide. */
+  fit: (
+    value: string,
+    role: TypeRole,
+    weight: ChartWeight,
+    maxWidth: number,
+    family?: ChartFamily,
+  ) => { value: string; size: number }
 }
 
 /** Draws a live chart. Throws ChartRuleError, before drawing anything, if it breaks a data rule. */
@@ -55,10 +75,14 @@ export function drawLive(ctx: Ctx, chart: LiveChart, text: ChartText, options: L
   const kit: Kit = {
     ctx,
     s,
-    px: (pt) => pt * PT * s,
     text: (value, x, y, style) => drawText(ctx, value, x, y, { tracking, ...style }),
-    width: (value, size, weight) => inkWidth(ctx, value, size, weight, tracking),
-    icon: (app, cx, cy, size) => drawIcon(ctx, app, cx, cy, size, options),
+    width: (value, size, weight, family) => inkWidth(ctx, value, size, weight, tracking, family),
+    icon: (app, cx, cy, size) => drawIcon(ctx, app, cx, cy, size, options, s),
+    size: (role) => sizeOf(role, s),
+    fit: (value, role, weight, maxWidth, family = 'sans') => {
+      const size = fitRole(role, s, maxWidth, (z) => inkWidth(ctx, value, z, weight, tracking, family))
+      return { value: shorten(ctx, value, size, weight, family, maxWidth), size }
+    },
   }
   ctx.save()
   drawFrame(ctx, L, text.title, text.subtitle, foot)
@@ -88,7 +112,7 @@ function drawModel(kit: Kit, model: Model, box: Box) {
 }
 
 /** An app icon in a circle, or its initial on a grey disc. */
-function drawIcon(ctx: Ctx, app: AppRef, cx: number, cy: number, size: number, options: LiveDrawOptions) {
+function drawIcon(ctx: Ctx, app: AppRef, cx: number, cy: number, size: number, options: LiveDrawOptions, s: number) {
   const r = size / 2
   const icon = (options.pointStyle ?? 'icons') === 'icons' ? options.icons?.get(app.appId) : undefined
   ctx.save()
@@ -104,7 +128,7 @@ function drawIcon(ctx: Ctx, app: AppRef, cx: number, cy: number, size: number, o
     ctx.arc(cx, cy, r, 0, Math.PI * 2)
     ctx.fill()
     const letter = (app.name.trim()[0] ?? '?').toUpperCase()
-    ctx.font = `700 ${size * 0.42}px ChartInter`
+    ctx.font = fontString(initialSize(size, s), 500)
     ctx.letterSpacing = '0px'
     const m = ctx.measureText(letter)
     ctx.fillStyle = '#ffffff'
@@ -120,7 +144,13 @@ function drawIcon(ctx: Ctx, app: AppRef, cx: number, cy: number, size: number, o
 }
 
 /** Splits text into lines no wider than maxWidth. */
-export function wrap(kit: Pick<Kit, 'width'>, value: string, size: number, weight: number, maxWidth: number): string[] {
+export function wrap(
+  kit: Pick<Kit, 'width'>,
+  value: string,
+  size: number,
+  weight: ChartWeight,
+  maxWidth: number,
+): string[] {
   const lines: string[] = []
   let line = ''
   for (const word of value.split(/\s+/)) {
@@ -132,12 +162,6 @@ export function wrap(kit: Pick<Kit, 'width'>, value: string, size: number, weigh
   }
   if (line) lines.push(line)
   return lines
-}
-
-/** Shrinks a size so the text fits a width. */
-function fit(kit: Kit, value: string, size: number, weight: number, maxWidth: number) {
-  const w = kit.width(value, size, weight)
-  return w > maxWidth ? (size * maxWidth) / w : size
 }
 
 function line(
@@ -181,19 +205,20 @@ function bar(ctx: Ctx, x0: number, x1: number, y: number, height: number, color:
 // Headline number ---------------------------------------------------------------------------------------------------
 
 function headline(kit: Kit, m: Extract<Model, { kind: 'headline' }>, box: Box) {
-  const { px, s } = kit
+  const { s } = kit
   const width = box.right - box.left
   const height = box.bottom - box.top
   const iconSize = Math.min(150 * s, height * 0.2)
   kit.icon(m.app, box.left + iconSize / 2, box.top + iconSize / 2, iconSize)
   // The answer, as large as fits beside the icon.
   const answerX = box.left + iconSize + 36 * s
-  const unitSize = px(40)
-  const unitWidth = m.unit ? kit.width(m.unit, unitSize, 500) + 24 * s : 0
-  const answerSize = fit(kit, m.answer, Math.min(px(120), iconSize * 1.15), 700, box.right - answerX - unitWidth)
-  const answer = kit.text(m.answer, answerX, box.top + iconSize / 2, {
-    size: answerSize,
-    weight: 700,
+  const unitSize = kit.size('title')
+  const unitWidth = m.unit ? kit.width(m.unit, unitSize, 400) + 24 * s : 0
+  const fitted = kit.fit(m.answer, 'display', 400, box.right - answerX - unitWidth, 'serif')
+  const answer = kit.text(fitted.value, answerX, box.top + iconSize / 2, {
+    size: fitted.size,
+    weight: 400,
+    family: 'serif',
     color: palette.text,
     ha: 'left',
     va: 'center_baseline',
@@ -201,14 +226,14 @@ function headline(kit: Kit, m: Extract<Model, { kind: 'headline' }>, box: Box) {
   if (m.unit) {
     kit.text(m.unit, answerX + answer.width + 24 * s, box.top + iconSize / 2, {
       size: unitSize,
-      weight: 500,
+      weight: 400,
       color: palette.muted,
       ha: 'left',
       va: 'center_baseline',
     })
   }
   // The answer in a sentence.
-  const sentenceSize = px(28)
+  const sentenceSize = kit.size('body')
   const lines = wrap(kit, m.sentence, sentenceSize, 400, width).slice(0, 2)
   let y = box.top + iconSize + 40 * s
   for (const l of lines) {
@@ -223,7 +248,7 @@ function headline(kit: Kit, m: Extract<Model, { kind: 'headline' }>, box: Box) {
     for (const o of m.others) {
       kit.icon(o.app, x + size / 2, y + size / 2, size)
       const t = kit.text(`${o.note} ${o.app.name}`, x + size + 14 * s, y + size / 2, {
-        size: px(20),
+        size: kit.size('meta'),
         weight: 500,
         color: palette.muted,
         ha: 'left',
@@ -239,25 +264,25 @@ function headline(kit: Kit, m: Extract<Model, { kind: 'headline' }>, box: Box) {
   const support: Box = { left: box.left, right: box.right, top, bottom: box.bottom }
   if (support.bottom - support.top < 80 * s) return
   kit.text(m.support.label, support.left, support.top, {
-    size: px(20),
+    size: kit.size('meta'),
     weight: 500,
     color: palette.muted,
     ha: 'left',
     va: 'top',
   })
-  const plot: Box = { ...support, top: support.top + px(20) * 1.6 + 16 * s }
+  const plot: Box = { ...support, top: support.top + kit.size('meta') * 1.6 + 16 * s }
   if (m.support.type === 'spark') spark(kit, m.support, plot)
   else bars(kit, m.support.bars, plot)
 }
 
 function spark(kit: Kit, sp: Extract<Extract<Model, { kind: 'headline' }>['support'], { type: 'spark' }>, box: Box) {
-  const { ctx, px, s } = kit
+  const { ctx, s } = kit
   const values = sp.values.filter((v): v is number => v !== null)
   if (values.length === 0) return
   const lo = Math.min(...values)
   const hi = Math.max(...values)
   const labelW = 90 * s
-  const plot = { ...box, left: box.left + labelW, bottom: box.bottom - px(18) * 1.8 }
+  const plot = { ...box, left: box.left + labelW, bottom: box.bottom - kit.size('meta') * 1.8 }
   const toX = (i: number) =>
     plot.left + (sp.values.length <= 1 ? 0 : (i / (sp.values.length - 1)) * (plot.right - plot.left))
   const span = hi - lo || 1
@@ -268,7 +293,7 @@ function spark(kit: Kit, sp: Extract<Extract<Model, { kind: 'headline' }>['suppo
   for (const v of hi === lo ? [lo] : [lo, hi]) {
     line(ctx, plot.left, toY(v), plot.right, toY(v), palette.grid, 1.3 * s)
     kit.text(`#${v}`, plot.left - 16 * s, toY(v), {
-      size: px(18),
+      size: kit.size('meta'),
       weight: 400,
       color: palette.tick,
       ha: 'right',
@@ -301,7 +326,7 @@ function spark(kit: Kit, sp: Extract<Extract<Model, { kind: 'headline' }>['suppo
     new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })
   if (first)
     kit.text(day(first), plot.left, box.bottom, {
-      size: px(18),
+      size: kit.size('meta'),
       weight: 400,
       color: palette.tick,
       ha: 'left',
@@ -309,7 +334,7 @@ function spark(kit: Kit, sp: Extract<Extract<Model, { kind: 'headline' }>['suppo
     })
   if (end)
     kit.text(day(end), plot.right, box.bottom, {
-      size: px(18),
+      size: kit.size('meta'),
       weight: 400,
       color: palette.tick,
       ha: 'right',
@@ -318,12 +343,12 @@ function spark(kit: Kit, sp: Extract<Extract<Model, { kind: 'headline' }>['suppo
 }
 
 function bars(kit: Kit, list: Array<{ label: string; value: number }>, box: Box) {
-  const { ctx, px, s } = kit
+  const { ctx, s } = kit
   const max = Math.max(1, ...list.map((b) => b.value))
   const gap = 32 * s
   const w = (box.right - box.left - gap * (list.length - 1)) / list.length
-  const labelH = px(18) * 1.8
-  const valueH = px(24) * 1.6
+  const labelH = kit.size('meta') * 1.8
+  const valueH = kit.size('body') * 1.6
   const plotTop = box.top + valueH
   const plotBottom = box.bottom - labelH
   list.forEach((b, i) => {
@@ -332,14 +357,14 @@ function bars(kit: Kit, list: Array<{ label: string; value: number }>, box: Box)
     ctx.fillStyle = i === 0 ? BAR : BAR_SOFT
     ctx.fillRect(x, plotBottom - h, w, Math.max(h, 2 * s))
     kit.text(String(b.value), x + w / 2, plotBottom - h - 10 * s, {
-      size: px(24),
-      weight: 600,
+      size: kit.size('body'),
+      weight: 500,
       color: palette.text,
       ha: 'center',
       va: 'bottom',
     })
     kit.text(b.label, x + w / 2, box.bottom, {
-      size: px(18),
+      size: kit.size('meta'),
       weight: 400,
       color: palette.tick,
       ha: 'center',
@@ -351,11 +376,11 @@ function bars(kit: Kit, list: Array<{ label: string; value: number }>, box: Box)
 // Ranked list ---------------------------------------------------------------------------------------------------------
 
 function leaderboard(kit: Kit, m: Extract<Model, { kind: 'leaderboard' }>, box: Box) {
-  const { ctx, px, s } = kit
+  const { ctx, s } = kit
   const n = m.rows.length
   const rowH = Math.min((box.bottom - box.top) / Math.max(n, 5), 110 * s)
   const max = Math.max(...m.rows.map((r) => r.value), 1)
-  const nameSize = Math.min(px(24), rowH * 0.36)
+  const nameSize = kit.size('body')
   const iconSize = rowH * 0.66
   const rankW = 56 * s
   const nameW = (box.right - box.left) * 0.4
@@ -373,17 +398,17 @@ function leaderboard(kit: Kit, m: Extract<Model, { kind: 'leaderboard' }>, box: 
     })
     kit.icon(r.app, box.left + rankW + iconSize / 2, cy, iconSize)
     const nameX = box.left + rankW + iconSize + 20 * s
-    const name = fit(kit, r.app.name, nameSize, 600, nameW - 24 * s)
-    kit.text(r.app.name, nameX, r.detail ? cy - nameSize * 0.55 : cy, {
-      size: name,
-      weight: 600,
+    const name = kit.fit(r.app.name, 'body', 500, nameW - 24 * s)
+    kit.text(name.value, nameX, r.detail ? cy - nameSize * 0.55 : cy, {
+      size: name.size,
+      weight: 500,
       color: palette.text,
       ha: 'left',
       va: 'center',
     })
     if (r.detail) {
       kit.text(r.detail, nameX, cy + nameSize * 0.75, {
-        size: nameSize * 0.8,
+        size: kit.size('meta'),
         weight: 400,
         color: palette.muted,
         ha: 'left',
@@ -393,8 +418,8 @@ function leaderboard(kit: Kit, m: Extract<Model, { kind: 'leaderboard' }>, box: 
     const len = (r.value / max) * (barRight - barLeft - 24 * s)
     bar(ctx, barLeft, barLeft + len, cy, Math.max(10 * s, rowH * 0.28), i === 0 ? BAR : '#8a8a8a')
     kit.text(r.display, box.right, cy, {
-      size: nameSize * 1.1,
-      weight: 700,
+      size: nameSize,
+      weight: 500,
       color: palette.text,
       ha: 'right',
       va: 'center_baseline',
@@ -405,19 +430,20 @@ function leaderboard(kit: Kit, m: Extract<Model, { kind: 'leaderboard' }>, box: 
 // Head to head ----------------------------------------------------------------------------------------------------------
 
 function headToHead(kit: Kit, m: Extract<Model, { kind: 'head-to-head' }>, box: Box) {
-  const { ctx, px, s } = kit
+  const { ctx, s } = kit
   const mid = (box.left + box.right) / 2
   const half = (box.right - box.left) / 2
   const iconSize = Math.min(96 * s, (box.bottom - box.top) * 0.16)
   const headY = box.top + iconSize / 2
-  const nameSize = px(32)
   m.apps.forEach((app, i) => {
     const side = i === 0 ? -1 : 1
     const cx = mid + side * half * 0.5
-    kit.icon(app, cx - kit.width(app.name, nameSize, 700) / 2 - iconSize / 2 - 12 * s, headY, iconSize)
-    kit.text(app.name, cx + iconSize / 2 - iconSize / 2, headY, {
-      size: fit(kit, app.name, nameSize, 700, half * 0.7),
-      weight: 700,
+    const name = kit.fit(app.name, 'title', 400, half * 0.7, 'serif')
+    kit.icon(app, cx - kit.width(name.value, name.size, 400, 'serif') / 2 - iconSize / 2 - 12 * s, headY, iconSize)
+    kit.text(name.value, cx, headY, {
+      size: name.size,
+      weight: 400,
+      family: 'serif',
       color: SERIES[i === 0 ? 0 : 1],
       ha: 'center',
       va: 'center',
@@ -425,8 +451,8 @@ function headToHead(kit: Kit, m: Extract<Model, { kind: 'head-to-head' }>, box: 
   })
   const top = box.top + iconSize + 40 * s
   const rowH = (box.bottom - top) / m.metrics.length
-  const valueSize = Math.min(px(40), rowH * 0.4)
-  const labelSize = Math.min(px(21), rowH * 0.22)
+  const valueSize = rowH >= kit.size('title') * 2.2 ? kit.size('title') : kit.size('body')
+  const labelSize = kit.size('meta')
   m.metrics.forEach((metric, i) => {
     const y = top + rowH * i
     line(ctx, box.left, y, box.right, y, palette.grid, 1.3 * s)
@@ -448,7 +474,7 @@ function headToHead(kit: Kit, m: Extract<Model, { kind: 'head-to-head' }>, box: 
       const x = side === 0 ? mid - 40 * s : mid + 40 * s
       kit.text(value, x, valueY, {
         size: valueSize,
-        weight: 700,
+        weight: 500,
         color: winner === -1 || winner === side ? palette.text : palette.muted,
         ha: side === 0 ? 'right' : 'left',
         va: 'center_baseline',
@@ -468,11 +494,11 @@ function headToHead(kit: Kit, m: Extract<Model, { kind: 'head-to-head' }>, box: 
 // Rank over time --------------------------------------------------------------------------------------------------------
 
 function bump(kit: Kit, m: Extract<Model, { kind: 'bump' }>, box: Box) {
-  const { ctx, px, s } = kit
+  const { ctx, s } = kit
   const all = m.series.flatMap((x) => x.ranks.filter((r): r is number => r !== null))
   const worst = Math.max(...all, 2)
   const ticks = [1, ...niceTicks(0, worst, 5).filter((t) => t > 1 && t <= worst)]
-  const tickSize = px(20)
+  const tickSize = kit.size('meta')
   const plot: Box = {
     left: box.left + 80 * s,
     right: box.right - 340 * s,
@@ -552,9 +578,10 @@ function bump(kit: Kit, m: Extract<Model, { kind: 'bump' }>, box: Box) {
     const size = 40 * s
     const x = plot.right + 36 * s
     kit.icon(e.x.app, x + size / 2, e.y, size)
-    kit.text(`${e.x.app.name} #${e.r}`, x + size + 12 * s, e.y, {
-      size: px(21),
-      weight: 600,
+    const label = kit.fit(`${e.x.app.name} #${e.r}`, 'body', 500, box.right - (x + size + 12 * s))
+    kit.text(label.value, x + size + 12 * s, e.y, {
+      size: label.size,
+      weight: 500,
       color,
       ha: 'left',
       va: 'center',
@@ -565,8 +592,8 @@ function bump(kit: Kit, m: Extract<Model, { kind: 'bump' }>, box: Box) {
 // iOS vs Android ----------------------------------------------------------------------------------------------------------
 
 function dumbbell(kit: Kit, m: Extract<Model, { kind: 'dumbbell' }>, box: Box) {
-  const { ctx, px, s } = kit
-  const legendSize = px(21)
+  const { ctx, s } = kit
+  const legendSize = kit.size('meta')
   // Legend.
   let lx = box.left
   for (const [label, color] of [
@@ -585,7 +612,7 @@ function dumbbell(kit: Kit, m: Extract<Model, { kind: 'dumbbell' }>, box: Box) {
   }
   const worst = Math.max(...m.rows.flatMap((r) => [r.left, r.right]), 2)
   const ticks = [1, ...niceTicks(0, worst, 5).filter((t) => t > 1 && t <= worst * 1.05)]
-  const tickSize = px(20)
+  const tickSize = kit.size('meta')
   const nameW = (box.right - box.left) * 0.3
   const plot: Box = {
     left: box.left + nameW,
@@ -607,14 +634,14 @@ function dumbbell(kit: Kit, m: Extract<Model, { kind: 'dumbbell' }>, box: Box) {
   }
   const rowH = (plot.bottom - plot.top) / m.rows.length
   const iconSize = Math.min(52 * s, rowH * 0.6)
-  const nameSize = Math.min(px(23), rowH * 0.34)
-  const labelSize = Math.min(px(18), rowH * 0.28)
+  const labelSize = kit.size('meta')
   m.rows.forEach((r, i) => {
     const cy = plot.top + rowH * (i + 0.5)
     kit.icon(r.app, box.left + iconSize / 2, cy, iconSize)
-    kit.text(r.app.name, box.left + iconSize + 16 * s, cy, {
-      size: fit(kit, r.app.name, nameSize, 600, nameW - iconSize - 40 * s),
-      weight: 600,
+    const name = kit.fit(r.app.name, 'body', 500, nameW - iconSize - 40 * s)
+    kit.text(name.value, box.left + iconSize + 16 * s, cy, {
+      size: name.size,
+      weight: 500,
       color: palette.text,
       ha: 'left',
       va: 'center',
@@ -628,7 +655,7 @@ function dumbbell(kit: Kit, m: Extract<Model, { kind: 'dumbbell' }>, box: Box) {
     if (r.left === r.right) {
       kit.text(`#${r.left}`, x0 + pad, cy, {
         size: labelSize,
-        weight: 600,
+        weight: 500,
         color: palette.text,
         ha: 'left',
         va: 'center',
@@ -636,14 +663,14 @@ function dumbbell(kit: Kit, m: Extract<Model, { kind: 'dumbbell' }>, box: Box) {
     } else {
       kit.text(`#${r.left}`, leftFirst ? x0 - pad : x0 + pad, cy, {
         size: labelSize,
-        weight: 600,
+        weight: 500,
         color: SERIES[0],
         ha: leftFirst ? 'right' : 'left',
         va: 'center',
       })
       kit.text(`#${r.right}`, leftFirst ? x1 + pad : x1 - pad, cy, {
         size: labelSize,
-        weight: 600,
+        weight: 500,
         color: ANDROID,
         ha: leftFirst ? 'left' : 'right',
         va: 'center',
