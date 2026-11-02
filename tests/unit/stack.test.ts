@@ -24,11 +24,28 @@ describe('the case study stack', () => {
   it('points every mark at a self-hosted file that exists', () => {
     for (const icon of Object.values(stackIcons)) {
       if (icon.kind !== 'mark') continue
-      for (const src of [icon.mono.light, icon.mono.dark, icon.colour.light, icon.colour.dark]) {
+      for (const src of [icon.light, icon.dark]) {
         expect(src.startsWith('/assets/stack/')).toBe(true)
         expect(existsSync(join('public', src))).toBe(true)
       }
     }
+  })
+
+  it('gives every item a real mark except the Vision framework, which has no published icon', () => {
+    const tiles = Object.entries(stackIcons).filter(([, icon]) => icon.kind === 'monogram')
+    expect(tiles.map(([name]) => name)).toEqual(['Vision framework'])
+  })
+
+  it('names the Vision framework so it cannot be read as the headset', () => {
+    expect(workoutDirectorStack).toContain('Vision framework')
+    expect(workoutDirectorStack).not.toContain('Apple Vision' as never)
+  })
+
+  it('keeps no full-colour files: every file is a dark-ink or light-ink pair', () => {
+    const files = readdirSync(dir).filter((name) => /\.(svg|png)$/.test(name))
+    for (const file of files) expect(file).toMatch(/-(dark|light)-ink\.(svg|png)$/)
+    for (const file of files.filter((name) => name.includes('-dark-ink.')))
+      expect(files).toContain(file.replace('-dark-ink.', '-light-ink.'))
   })
 
   it('keeps letter tiles to three characters or fewer', () => {
@@ -38,7 +55,7 @@ describe('the case study stack', () => {
   })
 
   it('records a source and licence for every icon file and every stack item', () => {
-    for (const file of readdirSync(dir).filter((name) => name.endsWith('.svg'))) expect(sources).toContain(file)
+    for (const file of readdirSync(dir).filter((name) => /\.(svg|png)$/.test(name))) expect(sources).toContain(file)
     for (const name of workoutDirectorStack) expect(sources).toContain(`| ${name} `)
   })
 })

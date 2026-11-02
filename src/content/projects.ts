@@ -27,7 +27,7 @@ export const workoutDirectorStack = [
   'SwiftUI',
   'SwiftData',
   'MediaPipe BlazePose',
-  'Apple Vision',
+  'Vision framework',
   'WebRTC',
   'TypeScript',
   'AWS Lambda',
@@ -47,7 +47,7 @@ export interface StackGroup {
 
 /** The stack on the Workout Director card: a short pick from the full list, split into the app and its backend. */
 export const workoutDirectorCardStack: StackGroup[] = [
-  { label: 'App', items: ['SwiftUI', 'SwiftData', 'MediaPipe BlazePose', 'Apple Vision'] },
+  { label: 'App', items: ['SwiftUI', 'SwiftData', 'MediaPipe BlazePose', 'Vision framework'] },
   { label: 'Backend', items: ['TypeScript', 'AWS Lambda', 'DynamoDB', 'AWS CDK'] },
 ]
 
@@ -71,7 +71,7 @@ export const workoutDirectorStackGroups: Array<{ label: string; items: StackEntr
     label: 'Camera and voice',
     items: [
       { name: 'MediaPipe BlazePose', note: 'Pose model, on the device' },
-      { name: 'Apple Vision', note: 'Fallback body pose' },
+      { name: 'Vision framework', note: 'Fallback body pose' },
       { name: 'WebRTC', note: 'Live voice coach call' },
     ],
   },
