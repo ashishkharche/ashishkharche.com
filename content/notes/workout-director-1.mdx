@@ -12,7 +12,7 @@ import systemOverview from '../diagrams/02-system-overview.mmd'
 
 This note describes how Workout Director counts reps from the camera on the iPhone, and which data leaves the device. It walks through the system from the camera and pose model up to the voice coach and the backend on AWS.
 
-Last updated: 2 November 2026. The section on reconnecting now also describes the slower background retries that continue after the first 150 seconds.
+Last updated: 2 November 2026. The section on reconnecting now also describes the slower background retries that continue after the first 150 seconds, and that since version 1.0.66 the app and the coach say nothing about a lost connection.
 
 ## Background
 
@@ -133,7 +133,7 @@ A Lambda function checks the feature flags, the user's access and their limits, 
 
 If the connection drops, the app mints a new secret and reconnects quietly. The waits between tries are 1, 2, 4, 8 and 16 seconds, then 30 seconds, each with some jitter. This first round ends once the total would pass 150 seconds.
 
-After that, the app keeps trying in the background for the rest of the workout. It waits 10, 20, 40, 80 and 160 seconds, then 300 seconds between each later try, and it tries again about a second after the network comes back. The counts keep playing on the phone the whole time.
+After that, the app keeps trying in the background for the rest of the workout. It waits 10, 20, 40, 80 and 160 seconds, then 300 seconds between each later try, and it tries again about a second after the network comes back. Since version 1.0.66 all of this happens quietly. The app shows no reconnecting message and the coach does not announce that it is back. The new call is told not to greet or repeat the last cue, and it is given the last four lines of the conversation. The camera keeps counting reps and the counts keep playing on the phone the whole time.
 
 While the coach is away, the app's own microphone takes over with Apple's speech recognition (`SFSpeechRecognizer`). Recognition runs on the device where the phone supports it, through `requiresOnDeviceRecognition`.
 
@@ -225,6 +225,11 @@ Part 2 is [How Workout Director's exercise figures are rendered and checked agai
 - [Hono documentation](https://hono.dev/docs/)
 - [jose](https://github.com/panva/jose)
 - [Neon documentation](https://neon.com/docs/introduction)
+- `Session/Live/LiveCoachPill.swift`, Workout Director iOS source at a4d704b4 (private repository)
+- `Session/Live/LiveCoachBackoff.swift`, Workout Director iOS source at a4d704b4 (private repository)
+- `Session/Live/LiveCoachSession.swift`, Workout Director iOS source at a4d704b4 (private repository)
+- `Session/Live/LiveCoachRejoin.swift`, Workout Director iOS source at a4d704b4 (private repository)
+- `Session/Live/LiveSessionModel.swift`, Workout Director iOS source at a4d704b4 (private repository)
 
 <Muted>
   Workout Director is published on the App Store by Shelgaon Ltd. [App
