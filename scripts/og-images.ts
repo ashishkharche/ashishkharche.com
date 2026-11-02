@@ -53,7 +53,7 @@ const cards: Card[] = [
   {
     src: noteOgImages['workout-director-2'].src,
     eyebrow: 'Notes · Workout Director, part 2',
-    title: "How Workout Director's exercise figures are rendered in Blender and checked against pose targets",
+    title: "How Workout Director's exercise figures are rendered and checked against pose targets",
     footer: 'ashishkharche.com/notes',
     figures: ['/assets/img/wd-figure-goblet-start-light.webp', '/assets/img/wd-figure-goblet-end-light.webp'],
   },
