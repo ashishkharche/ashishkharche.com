@@ -53,7 +53,7 @@ import { autoAxis, drawChart, drawPlaceholder, type Ctx } from '~/lib/charts/ren
 import { CHART_FONT_FILES } from '~/lib/charts/type'
 import { chartSizes, fileName, X_MAX_BYTES, type ChartSize } from '~/lib/charts/spec'
 import { asCtx, SvgContext, type SvgFont } from '~/lib/charts/svg'
-import { createTdnClient, formatDataTime, iconAllowed, type TdnClient } from '~/lib/charts/tdn'
+import { createTdnClient, formatDataTime, PAGE_CLIENT, iconAllowed, type TdnClient } from '~/lib/charts/tdn'
 import { AboutData } from './AboutData'
 import { breakpoints, colors, fonts, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
@@ -266,7 +266,7 @@ export function ChartBuilder({
   const id = useId()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
-  const client = useMemo(() => createTdnClient(), [])
+  const client = useMemo(() => createTdnClient(undefined, PAGE_CLIENT), [])
   const [scatterList, setScatterList] = useState<TemplateSummary[]>([])
   const [templateId, setTemplateId] = useState('')
   const [template, setTemplate] = useState<ChartTemplate | null>(null)

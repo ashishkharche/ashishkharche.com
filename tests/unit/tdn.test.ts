@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest'
-import { CACHE, checkRequest, handle, resetLimits } from '../../api/tdn'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { BROWSER_CACHE, CACHE, checkRequest, handle, resetLimits } from '../../api/tdn'
 
 const q = (s: string) => checkRequest(new URLSearchParams(s))
 const env = { TDN_API_KEY: 'tdn_test_only' }
@@ -204,9 +204,12 @@ describe('handler', () => {
         method: 'GET',
       },
     ])
-    expect(res.headers.get('Cache-Control')).toBe(
-      'public, s-maxage=3600, stale-while-revalidate=86400, stale-if-error=604800',
+    // Vercel's CDN keeps it an hour (then stale while revalidating, and on errors); the browser a minute.
+    expect(res.headers.get('Vercel-CDN-Cache-Control')).toBe(
+      'public, max-age=3600, stale-while-revalidate=86400, stale-if-error=604800',
     )
+    expect(res.headers.get('Cache-Control')).toBe('public, max-age=60')
+    expect(res.headers.get('Vary')).toBeNull()
     expect(Date.parse(res.headers.get('X-TDN-Fetched-At') ?? '')).toBeGreaterThan(Date.now() - 60_000)
     expect(res.headers.get('X-TDN-Stale')).toBeNull()
     const names = [...res.headers.keys()]
@@ -226,9 +229,10 @@ describe('handler', () => {
       'endpoint=sdk-adoption&sdk=Firebase',
     ]) {
       const res = await handle(get(search), env, fetcher)
-      expect(res.headers.get('Cache-Control')).toBe(
-        'public, s-maxage=21600, stale-while-revalidate=86400, stale-if-error=604800',
+      expect(res.headers.get('Vercel-CDN-Cache-Control')).toBe(
+        'public, max-age=21600, stale-while-revalidate=86400, stale-if-error=604800',
       )
+      expect(res.headers.get('Cache-Control')).toBe(BROWSER_CACHE)
     }
   })
 
@@ -236,7 +240,7 @@ describe('handler', () => {
     const { fetcher } = mock(() => new Response(JSON.stringify(rankingsBody), { headers: upstreamHeaders }))
     const res = await handle(get('endpoint=movers&country=us', { method: 'HEAD' }), env, fetcher)
     expect(res.status).toBe(200)
-    expect(res.headers.get('Cache-Control')).toBe(CACHE.hourly)
+    expect(res.headers.get('Vercel-CDN-Cache-Control')).toBe(CACHE.hourly)
     expect(await res.text()).toBe('')
   })
 
@@ -278,7 +282,7 @@ describe('handler', () => {
     const missing = mock(() => new Response('{"error":"Not found","code":"not_found"}', { status: 404 }))
     const e = await handle(get('endpoint=app&id=123'), env, missing.fetcher)
     expect(e.status).toBe(404)
-    expect(e.headers.get('Cache-Control')).toBe('public, s-maxage=600')
+    expect(e.headers.get('Vercel-CDN-Cache-Control')).toBe('public, max-age=600')
 
     const unauthorized = mock(() => new Response('{"error":"bad key","code":"unauthorized"}', { status: 401 }))
     const f = await handle(get('endpoint=movers'), env, unauthorized.fetcher)
@@ -295,14 +299,24 @@ describe('handler', () => {
   })
 
   it('over the limit, sends the kept copy of a request it has answered before', async () => {
-    const { calls, fetcher } = mock(() => new Response('{"data":[1]}'))
-    const answers: Response[] = []
-    for (let i = 0; i < 55; i++) answers.push(await handle(get('endpoint=movers'), env, fetcher))
-    expect(calls.length).toBe(50)
-    const last = answers.at(-1) as Response
-    expect(last.status).toBe(200)
-    expect(last.headers.get('X-TDN-Stale')).toBe('1')
-    expect(await last.json()).toEqual({ data: [1] })
+    vi.useFakeTimers({ toFake: ['Date'] })
+    try {
+      const { calls, fetcher } = mock(() => new Response('{"data":[1]}'))
+      expect((await handle(get('endpoint=movers'), env, fetcher)).status).toBe(200)
+      // Use up the minute's requests on other apps, then let the movers copy go out of date.
+      for (let i = 0; i < 49; i++) await handle(get(`endpoint=app&id=${i + 1}`), env, fetcher)
+      expect(calls.length).toBe(50)
+      vi.setSystemTime(Date.now() + 3601_000)
+      for (let i = 0; i < 55; i++) await handle(get(`endpoint=app&id=x${i}`), env, fetcher)
+      const before = calls.length
+      const last = await handle(get('endpoint=movers'), env, fetcher)
+      expect(calls.length).toBe(before)
+      expect(last.status).toBe(200)
+      expect(last.headers.get('X-TDN-Stale')).toBe('1')
+      expect(await last.json()).toEqual({ data: [1] })
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })
 
@@ -326,12 +340,16 @@ describe('kept copies when the source fails', () => {
       const first = await handle(get(search), env, fetcher)
       const fetchedAt = first.headers.get('X-TDN-Fetched-At')
       expect(first.status).toBe(200)
-      const second = await handle(get(search), env, fetcher)
+      // An hour later the copy is out of date, so the source is asked again, and fails.
+      vi.useFakeTimers({ toFake: ['Date'] })
+      vi.setSystemTime(Date.now() + 3601_000)
+      const second = await handle(get(search), env, fetcher).finally(() => vi.useRealTimers())
+      expect(n).toBe(2)
       expect(second.status).toBe(200)
       expect(second.headers.get('X-TDN-Stale')).toBe('1')
       expect(second.headers.get('X-TDN-Fetched-At')).toBe(fetchedAt)
       // Cached briefly at the CDN, so a fresh answer replaces it soon.
-      expect(second.headers.get('Cache-Control')).toBe('public, s-maxage=300')
+      expect(second.headers.get('Vercel-CDN-Cache-Control')).toBe('public, max-age=300')
       // The data time inside the answer is the source's, unchanged.
       expect(JSON.parse(await second.text()).meta.recordedAt).toBe('2026-11-01 00:18:03')
     })
@@ -352,7 +370,93 @@ describe('kept copies when the source fails', () => {
     await handle(get('endpoint=app&id=1'), env, fetcher)
     const other = await handle(get('endpoint=app&id=2'), env, fetcher)
     expect(other.status).toBe(404)
-    const same = await handle(get('endpoint=app&id=1'), env, fetcher)
+    // Once its copy is out of date, a 404 from the source is passed on, not hidden by the old copy.
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(Date.now() + 3601_000)
+    const same = await handle(get('endpoint=app&id=1'), env, fetcher).finally(() => vi.useRealTimers())
     expect(same.status).toBe(404)
+  })
+})
+
+describe('fewer upstream requests', () => {
+  beforeEach(() => resetLimits())
+  const good = JSON.stringify(rankingsBody)
+  const search = 'endpoint=rankings&store=apple&country=us&limit=200&chart=top-free'
+
+  it('answers a repeat from memory while the copy is fresh, cached at the CDN for the time it has left', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    try {
+      const { calls, fetcher } = mock(() => new Response(good))
+      const first = await handle(get(search), env, fetcher)
+      vi.setSystemTime(Date.now() + 600_000)
+      const again = await handle(get(search), env, fetcher)
+      expect(calls.length).toBe(1)
+      expect(again.status).toBe(200)
+      expect(again.headers.get('X-TDN-Stale')).toBeNull()
+      expect(again.headers.get('X-TDN-Fetched-At')).toBe(first.headers.get('X-TDN-Fetched-At'))
+      expect(again.headers.get('Vercel-CDN-Cache-Control')).toBe(
+        'public, max-age=3000, stale-while-revalidate=86400, stale-if-error=604800',
+      )
+      expect(again.headers.get('Cache-Control')).toBe(BROWSER_CACHE)
+      // After the hour, the source is asked again.
+      vi.setSystemTime(Date.now() + 3001_000)
+      await handle(get(search), env, fetcher)
+      expect(calls.length).toBe(2)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('sends one upstream request for identical requests that arrive together', async () => {
+    let release: () => void = () => {}
+    const gate = new Promise<void>((resolve) => (release = resolve))
+    const { calls, fetcher } = mock(async () => {
+      await gate
+      return new Response(good)
+    })
+    const answers = Array.from({ length: 10 }, () => handle(get(search), env, fetcher))
+    release()
+    const done = await Promise.all(answers)
+    expect(calls.length).toBe(1)
+    for (const res of done) {
+      expect(res.status).toBe(200)
+      expect(JSON.parse(await res.text()).meta.recordedAt).toBe('2026-11-01 00:18:03')
+    }
+  })
+
+  it('serves the kept copy for an upstream 429 instead of passing the 429 on', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    try {
+      let n = 0
+      const { fetcher } = mock(() =>
+        n++ === 0
+          ? new Response(good)
+          : new Response('{"error":"slow down"}', { status: 429, headers: { 'Retry-After': '30' } }),
+      )
+      await handle(get(search), env, fetcher)
+      vi.setSystemTime(Date.now() + 3601_000)
+      const res = await handle(get(search), env, fetcher)
+      expect(res.status).toBe(200)
+      expect(res.headers.get('X-TDN-Stale')).toBe('1')
+      expect(res.headers.get('Retry-After')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('over its own limit with no copy, says to try again in seconds, not a minute', async () => {
+    const { fetcher } = mock(() => new Response('{"data":[]}'))
+    let last: Response | undefined
+    for (let i = 0; i < 51; i++) last = await handle(get(`endpoint=app&id=${i + 1}`), env, fetcher)
+    expect(last?.status).toBe(429)
+    expect(Number(last?.headers.get('Retry-After'))).toBeLessThanOrEqual(2)
+  })
+
+  it('never sets a cookie or a Vary header, which would keep answers out of the CDN cache', async () => {
+    const { fetcher } = mock(() => new Response(good, { headers: upstreamHeaders }))
+    const res = await handle(get(search), env, fetcher)
+    expect(res.headers.get('Set-Cookie')).toBeNull()
+    expect(res.headers.get('Vary')).toBeNull()
+    expect(res.headers.get('Cache-Control')).not.toMatch(/private|no-store|no-cache/)
   })
 })

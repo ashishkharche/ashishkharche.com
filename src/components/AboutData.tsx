@@ -1,8 +1,8 @@
 import * as stylex from '@stylexjs/stylex'
 import { useEffect, useRef, useState } from 'react'
 import { collectionRuns, deepestRank, trackedApps, type TrackedApp } from '~/lib/charts/about'
-import { getHistory, getRankings, plainName, sortedRankings } from '~/lib/charts/live'
-import { formatDataTime, recordedAt, TdnError, type TdnClient } from '~/lib/charts/tdn'
+import { getHistory, getRankings, plainName, retryDelay, sortedRankings } from '~/lib/charts/live'
+import { formatDataTime, recordedAt, type TdnClient } from '~/lib/charts/tdn'
 import { breakpoints, colors, fonts, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
@@ -28,6 +28,8 @@ const HISTORY_DAYS = 30
  * What the charts are drawn from, all read from the live answers: the tracked apps, when the collector runs and how
  * often it missed, how deep the charts go, and each template's field and measured coverage. It loads when it comes
  * near the screen, and its rankings and history requests are the same ones the templates make, so they are shared.
+ * A failed load is asked again like the chart's (soon, then once a minute) while the panel says it is waiting: it
+ * never shows an error.
  */
 export function AboutData({
   id,
@@ -43,7 +45,8 @@ export function AboutData({
   const ref = useRef<HTMLElement>(null)
   const [seen, setSeen] = useState(false)
   const [facts, setFacts] = useState<Facts | null>(null)
-  const [error, setError] = useState('')
+  /** Failed loads so far; each one is asked again after retryDelay. */
+  const [failures, setFailures] = useState(0)
   const [broken, setBroken] = useState<Set<string>>(() => new Set())
 
   useEffect(() => {
@@ -57,8 +60,9 @@ export function AboutData({
   }, [seen])
 
   useEffect(() => {
-    if (!seen) return
+    if (!seen || facts) return
     let cancelled = false
+    let retry: ReturnType<typeof setTimeout> | undefined
     ;(async () => {
       const [apps, rankings] = await Promise.all([client.get('apps', { limit: 500 }), getRankings(client)])
       const rows = sortedRankings(rankings)
@@ -76,19 +80,16 @@ export function AboutData({
       }
     })().then(
       (f) => !cancelled && setFacts(f),
-      (e: unknown) => {
+      () => {
         if (cancelled) return
-        setError(
-          e instanceof TdnError
-            ? `The data facts could not be loaded (error ${e.status}).`
-            : 'The data facts could not be loaded.',
-        )
+        retry = setTimeout(() => setFailures((n) => n + 1), retryDelay(failures) * 1000)
       },
     )
     return () => {
       cancelled = true
+      clearTimeout(retry)
     }
-  }, [seen, client])
+  }, [seen, client, facts, failures])
 
   const headingId = `${id}-about-data`
   const live = entries.filter((e) => !e.pending)
@@ -100,13 +101,9 @@ export function AboutData({
       <h2 id={headingId} {...stylex.props(styles.title)}>
         About the data
       </h2>
-      {error ? (
-        <p role="status" {...stylex.props(styles.text)}>
-          {error}
-        </p>
-      ) : !facts ? (
-        <p role="status" {...stylex.props(styles.text)}>
-          Loading the data facts…
+      {!facts ? (
+        <p role="status" aria-busy="true" {...stylex.props(styles.text)}>
+          {failures ? 'Waiting for live data. Asking again…' : 'Loading the data facts…'}
         </p>
       ) : (
         <dl {...stylex.props(styles.facts)}>

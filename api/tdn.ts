@@ -8,8 +8,15 @@
 // - GET and HEAD only; everything else is 405.
 // - A fixed list of endpoints and query parameters, each value checked (enums, integer ranges, id format, a country
 //   allowlist) before anything is sent upstream, because upstream 400s and 404s still cost units. Anything else is 400.
-// - Our own Cache-Control (the upstream sends private, max-age=60). Only a fixed set of headers is sent back, so the
-//   upstream RateLimit-* and Set-Cookie headers never reach the browser. No CORS headers: same origin only.
+// - Our own cache headers (the upstream sends private, max-age=60): Vercel-CDN-Cache-Control for Vercel's CDN (an hour,
+//   or six for slow-moving answers, then stale-while-revalidate for a day and stale-if-error for a week), and a short
+//   Cache-Control max-age for the browser. Only a fixed set of headers is sent back, so the upstream RateLimit-* and
+//   Set-Cookie headers never reach the browser, and nothing here sets a cookie or a Vary header, which would stop the
+//   CDN from caching. No CORS headers: same origin only.
+// - The CDN cache is kept per region and per deployment (https://vercel.com/docs/caching/cdn-cache#limits,
+//   https://vercel.com/docs/caching/cdn-cache/purge#cache-keys), so after a deploy, and in each region, the first
+//   request for an answer reaches this function. Each warm instance therefore also answers from memory while its copy
+//   is fresh, and sends one upstream request for any number of identical requests that arrive together.
 // - The upstream body is passed through unchanged, so meta.recordedAt / capturedAt stay in it.
 // - Stale on error, at two levels, so the chart builder always gets an answer when there has ever been one:
 //   the CDN keeps each answer an hour and may serve it for a week after that if this function fails
@@ -129,14 +136,21 @@ const isoDay = (v: string): number | null => {
 }
 const day: Check = (v) => (isoDay(v) === null ? 'must be a date YYYY-MM-DD' : null)
 
-/** How long the CDN may keep an answer. Rankings move twice a day; tech stacks every few hours at most. */
-export const CACHE = {
-  hourly: 'public, s-maxage=3600, stale-while-revalidate=86400, stale-if-error=604800',
-  slow: 'public, s-maxage=21600, stale-while-revalidate=86400, stale-if-error=604800',
-} as const
+/** How long an answer stays fresh, in seconds. Rankings move twice a day; tech stacks every few hours at most. */
+export const FRESH = { hourly: 3600, slow: 21600 } as const
+
+/** Vercel's CDN: fresh for `seconds`, then served stale while it is fetched again, and on errors for a week. */
+export const cdnCache = (seconds: number): string =>
+  `public, max-age=${Math.max(1, Math.round(seconds))}, stale-while-revalidate=86400, stale-if-error=604800`
+
+/** What Vercel's CDN is told, per endpoint group (Vercel-CDN-Cache-Control). */
+export const CACHE = { hourly: cdnCache(FRESH.hourly), slow: cdnCache(FRESH.slow) } as const
+
+/** What the browser is told: a minute, so a reload or a second tab reuses the answer and the CDN keeps the rest. */
+export const BROWSER_CACHE = 'public, max-age=60'
 
 /** A kept copy is cached briefly, so the CDN asks again soon and a fresh answer replaces it. */
-const KEPT_CACHE = 'public, s-maxage=300'
+const KEPT_CDN_CACHE = 'public, max-age=300'
 
 interface Endpoint {
   /** Upstream path under /api/v1. `{id}` is filled from the `id` parameter. */
@@ -240,7 +254,7 @@ export const ENDPOINTS: Record<string, Endpoint> = {
 }
 
 export type Checked =
-  | { ok: true; path: string; search: string; cache: string; units: number }
+  | { ok: true; path: string; search: string; cache: string; fresh: number; units: number }
   | { ok: false; status: number; error: string }
 
 /** Turns the proxy's query string into an upstream path and query, or says what is wrong with it. */
@@ -273,7 +287,14 @@ export function checkRequest(query: URLSearchParams): Checked {
   for (const [key, value] of Object.entries(endpoint.fixed ?? {})) upstream.set(key, value)
   upstream.sort()
   const search = upstream.toString()
-  return { ok: true, path, search: search ? `?${search}` : '', cache: CACHE[endpoint.cache], units: endpoint.units }
+  return {
+    ok: true,
+    path,
+    search: search ? `?${search}` : '',
+    cache: CACHE[endpoint.cache],
+    fresh: FRESH[endpoint.cache],
+    units: endpoint.units,
+  }
 }
 
 const BASE_HEADERS = {
@@ -304,6 +325,7 @@ export function resetLimits(): void {
   unitsDay = ''
   unitsUsed = 0
   kept.clear()
+  inflight.clear()
 }
 
 // The last good answer per upstream request, in this instance. Bounded: the oldest is dropped first.
@@ -327,12 +349,46 @@ function keptCopy(key: string): Response | null {
     status: 200,
     headers: {
       ...BASE_HEADERS,
-      'Cache-Control': KEPT_CACHE,
+      'Cache-Control': BROWSER_CACHE,
+      'Vercel-CDN-Cache-Control': KEPT_CDN_CACHE,
       'X-TDN-Fetched-At': new Date(copy.fetchedAt).toISOString(),
       'X-TDN-Stale': '1',
     },
   })
 }
+
+/** The kept answer while it is still fresh (younger than `fresh` seconds), cached at the CDN for the time it has left. */
+function freshCopy(key: string, fresh: number, now: number): Response | null {
+  const copy = kept.get(key)
+  if (!copy) return null
+  const left = fresh - (now - copy.fetchedAt) / 1000
+  if (left < 1) return null
+  return new Response(copy.body, {
+    status: 200,
+    headers: {
+      ...BASE_HEADERS,
+      'Cache-Control': BROWSER_CACHE,
+      'Vercel-CDN-Cache-Control': cdnCache(left),
+      'X-TDN-Fetched-At': new Date(copy.fetchedAt).toISOString(),
+    },
+  })
+}
+
+/** An answer as plain data, so one upstream answer can be sent to every request that waited for it. */
+interface Snapshot {
+  status: number
+  headers: [string, string][]
+  body: string
+}
+
+/** Upstream requests on their way, by request: identical requests that arrive meanwhile wait for the same answer. */
+const inflight = new Map<string, Promise<Snapshot>>()
+
+async function snapshot(response: Response): Promise<Snapshot> {
+  return { status: response.status, headers: [...response.headers], body: await response.text() }
+}
+
+const fromSnapshot = (s: Snapshot): Response => new Response(s.body, { status: s.status, headers: s.headers })
 
 function allow(now: number, units: number): boolean {
   tokens = Math.min(PER_MINUTE, tokens + ((now - refilled) / 60_000) * PER_MINUTE)
@@ -372,12 +428,33 @@ async function answer(request: Request, env: Env, fetcher: typeof fetch): Promis
   if (!key) return json(503, { error: 'Live data is not configured', code: 'not_configured' })
   const now = Date.now()
   const cacheKey = `${checked.path}${checked.search}`
+  const fresh = freshCopy(cacheKey, checked.fresh, now)
+  if (fresh) return fresh
+  let pending = inflight.get(cacheKey)
+  if (!pending) {
+    pending = fetchFresh(checked, cacheKey, key, now, fetcher).then(snapshot)
+    inflight.set(cacheKey, pending)
+    const done = () => inflight.delete(cacheKey)
+    pending.then(done, done)
+  }
+  return fromSnapshot(await pending)
+}
+
+/** Asks the source (within this instance's limits) and answers with what it said, or the kept copy when it failed. */
+async function fetchFresh(
+  checked: Extract<Checked, { ok: true }>,
+  cacheKey: string,
+  key: string,
+  now: number,
+  fetcher: typeof fetch,
+): Promise<Response> {
   /** The kept copy when there is one, otherwise the error. */
   const orKept = (error: Response): Response => keptCopy(cacheKey) ?? error
   if (!allow(now, checked.units)) {
     const copy = keptCopy(cacheKey)
     if (copy) return copy
-    const retry = tokens < 1 ? 60 : secondsToMidnightUtc(now)
+    // Out of tokens: the next one comes back within a few seconds (one every 60 / PER_MINUTE s).
+    const retry = tokens < 1 ? Math.max(1, Math.ceil(((1 - tokens) * 60) / PER_MINUTE)) : secondsToMidnightUtc(now)
     return json(
       429,
       { error: 'Too many requests, try again later', code: 'rate_limited' },
@@ -414,7 +491,11 @@ async function answer(request: Request, env: Env, fetcher: typeof fetch): Promis
   }
   if (upstream.status === 404) {
     // A missing app or an uncollected chart. Cache briefly so repeats do not spend units.
-    return json(404, { error: 'Not found', code: 'not_found' }, { 'Cache-Control': 'public, s-maxage=600' })
+    return json(
+      404,
+      { error: 'Not found', code: 'not_found' },
+      { 'Cache-Control': 'public, max-age=60', 'Vercel-CDN-Cache-Control': 'public, max-age=600' },
+    )
   }
   if (upstream.status === 400) {
     return json(400, { error: 'The data service did not accept these parameters', code: 'bad_request' })
@@ -434,7 +515,12 @@ async function answer(request: Request, env: Env, fetcher: typeof fetch): Promis
   keep(cacheKey, body, fetchedAt)
   return new Response(body, {
     status: 200,
-    headers: { ...BASE_HEADERS, 'Cache-Control': checked.cache, 'X-TDN-Fetched-At': new Date(fetchedAt).toISOString() },
+    headers: {
+      ...BASE_HEADERS,
+      'Cache-Control': BROWSER_CACHE,
+      'Vercel-CDN-Cache-Control': checked.cache,
+      'X-TDN-Fetched-At': new Date(fetchedAt).toISOString(),
+    },
   })
 }
 

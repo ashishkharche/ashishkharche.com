@@ -71,9 +71,18 @@ data: `/api/tdn?endpoint=rankings&store=apple&country=us&limit=5`.
 - It answers GET and HEAD only (anything else is 405), for a fixed list of endpoints and query parameters. Every value
   is checked (enums, integer ranges, id format, our own country list) and anything else is answered 400 without
   calling upstream, because upstream 400s and 404s still cost units.
-- It sets its own `Cache-Control`: `public, s-maxage=3600, stale-while-revalidate=86400` for rankings, app details,
-  rank history, exports, compare, charts and movers, and `public, s-maxage=21600, stale-while-revalidate=86400` for
-  tech stacks and SDK adoption. Errors are `no-store`, except upstream 404s (`public, s-maxage=600`).
+- It sets its own cache headers. Vercel's CDN reads `Vercel-CDN-Cache-Control`:
+  `public, max-age=3600, stale-while-revalidate=86400, stale-if-error=604800` for rankings, app details, rank history,
+  exports, compare, charts and movers, and `max-age=21600` (same stale times) for tracked apps, tech stacks and SDK
+  adoption. The browser gets `Cache-Control: public, max-age=60`. Errors are `no-store`, except upstream 404s (CDN
+  `max-age=600`). It sends no `Set-Cookie` or `Vary`, either of which would keep answers out of the CDN cache
+  ([CDN cache](https://vercel.com/docs/caching/cdn-cache#cacheable-response-criteria),
+  [Cache-Control headers](https://vercel.com/docs/headers/cache-control-headers#behavior)).
+- The CDN cache is kept per region and per deployment
+  ([limits](https://vercel.com/docs/caching/cdn-cache#limits), [cache keys](https://vercel.com/docs/caching/cdn-cache/purge#cache-keys)):
+  after a deploy, and in each region, the first request for an answer is a `MISS` that reaches the function. Each warm
+  instance answers a repeat from memory while its copy is fresh, and sends one upstream request for identical requests
+  that arrive together; when the source fails or answers 429 it sends its last good copy (`X-TDN-Stale: 1`).
 - Only its own headers go back to the browser: the upstream `RateLimit-*`, `Set-Cookie` and cache headers are dropped.
   Upstream 429s pass through with `Retry-After`; upstream 5xx answers become 502 and timeouts (8 s) 504, as
   `{ error, code }` JSON. There are no CORS headers, so only this site can read it from a browser.
@@ -89,7 +98,7 @@ data: `/api/tdn?endpoint=rankings&store=apple&country=us&limit=5`.
 ## After deploying
 
 - Open `/`, `/work/`, `/projects/workout-director/`, `/notes/workout-director-1/` and a made-up URL (should show the 404 page).
-- Open `/api/tdn?endpoint=rankings&limit=5` (200, `Cache-Control: public, s-maxage=3600, …`, no `RateLimit-*` headers,
+- Open `/api/tdn?endpoint=rankings&limit=5` (200, `Cache-Control: public, max-age=60`, `x-vercel-cache: HIT` on a repeat, no `RateLimit-*` headers,
   `meta.recordedAt` in the body) and `/api/tdn?endpoint=nope` (400).
 - Check the browser console for Content-Security-Policy errors (there should be none).
 - Run Lighthouse against the live URL if anything about images or scripts changed.

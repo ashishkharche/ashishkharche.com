@@ -8,7 +8,13 @@
  *
  * which answers with the upstream JSON unchanged ({ data, meta } for the newer endpoints, a flat object for the
  * older ones). Answers are kept for the life of the page, so switching back to a template costs nothing, and the
- * same request made by two templates is sent once. Nothing is stored between page loads: every load reads fresh data.
+ * same request made by two templates is sent once. The page keeps nothing itself between loads; the proxy lets the
+ * browser reuse an answer for a minute and Vercel's CDN for an hour.
+ *
+ * With `retry` (the page uses it), at most a few requests are on their way at once, so a page of thumbnails asks in
+ * turn rather than all together, and a request the proxy turned away (429) or that never reached it is asked again
+ * after a short wait, the proxy's Retry-After when it sends one, before the caller sees an error. Callers ask again after
+ * that too (retryDelay in live.ts), so the page shows a chart or a loading state, never an error.
  *
  * Everything that knows the shape of a TDN answer is in this file: the read* functions below turn an answer into
  * checked rows, and the chart code (live.ts, about.ts) reads answers only through them. When the API changes, this
@@ -90,7 +96,65 @@ export interface TdnClient {
 /** An answer the proxy fetched longer ago than this is labelled with its fetch time: it is a kept copy. */
 export const STALE_AFTER_MS = 2 * 3_600_000
 
-export function createTdnClient(fetcher: Fetcher = (url) => fetch(url, { headers: { accept: 'application/json' } })) {
+export interface ClientOptions {
+  /** Waits before asking again, in seconds, for each retry of a request that failed for a passing reason. */
+  retry?: readonly number[]
+  /** Most requests on their way at once. */
+  maxInFlight?: number
+  /** For tests: how to wait. */
+  sleep?: (ms: number) => Promise<void>
+}
+
+/**
+ * Failures the client asks again for itself: rate limited (429). A 5xx is passed straight to the caller, which shows
+ * "Waiting for live data. Asking again…" and asks again on its own schedule; a failed network request is asked again
+ * like a 429.
+ */
+export const isPassing = (status: number): boolean => status === 429
+
+/** The page's settings: three on their way at once, and three quick retries. */
+export const PAGE_CLIENT: ClientOptions = { retry: [1, 3, 6], maxInFlight: 3 }
+
+/** Longest wait taken from a Retry-After header, in seconds; longer waits are left to the caller's own retries. */
+const MAX_RETRY_AFTER = 10
+
+export function createTdnClient(
+  fetcher: Fetcher = (url) => fetch(url, { headers: { accept: 'application/json' } }),
+  options: ClientOptions = {},
+) {
+  const retries = options.retry ?? []
+  const sleep = options.sleep ?? ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)))
+  const limit = options.maxInFlight ?? Infinity
+  let active = 0
+  const queue: Array<() => void> = []
+  /** Runs `task` when fewer than `limit` requests are on their way. */
+  const slot = async <T>(task: () => Promise<T>): Promise<T> => {
+    if (active >= limit) await new Promise<void>((resolve) => queue.push(resolve))
+    active++
+    try {
+      return await task()
+    } finally {
+      active--
+      queue.shift()?.()
+    }
+  }
+  /** One request, asked again for passing failures. */
+  const send = async (url: string) => {
+    for (let attempt = 0; ; attempt++) {
+      let response: Awaited<ReturnType<Fetcher>>
+      try {
+        response = await slot(() => fetcher(url))
+      } catch (error) {
+        if (attempt >= retries.length) throw error
+        await sleep((retries[attempt] ?? 1) * 1000)
+        continue
+      }
+      if (response.ok || !isPassing(response.status) || attempt >= retries.length) return response
+      const after = Number(response.headers?.get('retry-after') ?? '')
+      const wait = Number.isFinite(after) && after > 0 ? Math.min(after, MAX_RETRY_AFTER) : (retries[attempt] ?? 1)
+      await sleep(wait * 1000)
+    }
+  }
   const cache = new Map<string, Promise<unknown>>()
   const requested: string[] = []
   const fetched = new Map<string, Fetched>()
@@ -102,7 +166,7 @@ export function createTdnClient(fetcher: Fetcher = (url) => fetch(url, { headers
       let found = cache.get(url)
       if (!found) {
         requested.push(url)
-        found = fetcher(url).then(async (response) => {
+        found = send(url).then(async (response) => {
           const body = (await response.json().catch(() => null)) as { error?: string; code?: string } | null
           if (!response.ok) {
             throw new TdnError(response.status, body?.code ?? 'error', body?.error ?? `HTTP ${response.status}`)

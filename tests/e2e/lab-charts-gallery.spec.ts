@@ -92,6 +92,32 @@ test.describe('chart builder gallery', () => {
     expect(new Set(requested).size).toBe(requested.length)
   })
 
+  test('About the data waits and asks again when the proxy fails or is busy, and never shows an error', async ({
+    page,
+  }) => {
+    // The tracked-apps request fails twice (502), is turned away once (429), then answers.
+    let n = 0
+    await page.route(/\/api\/tdn\/?\?endpoint=apps&/, (route) => {
+      n++
+      if (n <= 2) return route.fulfill({ status: 502, json: { error: 'down', code: 'upstream_unavailable' } })
+      if (n === 3)
+        return route.fulfill({
+          status: 429,
+          headers: { 'Retry-After': '1' },
+          json: { error: 'busy', code: 'rate_limited' },
+        })
+      return route.fallback()
+    })
+    await page.goto('/lab/charts/?template=us-number-one')
+    const about = page.getByTestId('about-data')
+    await about.scrollIntoViewIfNeeded()
+    await expect(about.getByRole('status')).toHaveText('Waiting for live data. Asking again…')
+    await expect(about.getByTestId('tracked-count')).toHaveText('35 apps: 20 iOS, 15 Android.', { timeout: 20_000 })
+    expect(n).toBe(4)
+    await expect(page.getByText(/could not be loaded|error/i)).toHaveCount(0)
+    await expect(page.getByRole('alert')).toHaveCount(0)
+  })
+
   for (const theme of ['light', 'dark'] as const) {
     test(`gallery and About the data have no accessibility violations (${theme})`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
