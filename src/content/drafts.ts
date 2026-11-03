@@ -112,6 +112,9 @@ const crossChecked = new Set([
   'wd-b4-tech1',
 ])
 const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; see revised-2026-11-03/CHANGES.md.'
+/** Every post's text was replaced on 3 Nov 19:57 GMT by its human-voice rewrite. */
+const humanNote =
+  'Text replaced 3 Nov 19:57 GMT with the human-voice rewrite (linkedin-samples/personal/human-2026-11-03/, with the WD Engineering and WD Marketing fixes and the Eng rulings; see its CHANGES.md). Older notes below describe earlier versions.'
 
 /** Posts whose credit lines (video, pose landmarks, Pele, the goblet squat reference) were taken out of the text. */
 const creditsRemoved = new Set([
@@ -187,6 +190,7 @@ function make(
   if (!waiting && !crossChecked.has(base.id))
     throw new Error(`${base.id} is not waiting for media but not cross-checked`)
   const lead = [
+    humanNote,
     ...(crossChecked.has(base.id) ? [checkedNote] : []),
     ...(creditsRemoved.has(base.id) ? [creditsNote] : []),
   ]
@@ -207,7 +211,7 @@ const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
     title: 'D1: a deadlift counted from one hip angle',
     series: 'D1, slot Tue 3 Nov',
     version: 'v13, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
     notes: [
@@ -221,7 +225,7 @@ const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
     title: 'D2: picking a pose model for a phone',
     series: 'D2, slot Thu 5 Nov',
     version: 'v13, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'pose-model', 'rep-counter'],
     media: ['text'],
     notes: [
@@ -234,7 +238,7 @@ const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
     title: 'D3: cutting false reps, part 3 of 3',
     series: 'D3, slot Mon 9 Nov',
     version: 'v13 (trimmed), cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'rep-counter'],
     media: ['text'],
     notes: [
@@ -264,7 +268,7 @@ const sampleA = liSamples.map((s) =>
     title: 'Sample A: two apps on the US Top Free chart',
     series: 'Sample A',
     version: 'v13, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['charts'],
     media: ['diagram'],
     chars: s.chars ?? 0,
@@ -277,7 +281,7 @@ const sampleA = liSamples.map((s) =>
       '/workspace/linkedin-samples/personal/revised-2026-11-03/CHANGES.md (sample-a).',
     ],
     notes: [
-      'Paste the text from /workspace/linkedin-samples/personal/revised-2026-11-03/sample-a.txt.',
+      'Paste the text from /workspace/linkedin-samples/personal/human-2026-11-03/sample-a.txt.',
       'v13: the chart builder sentence names one store only, and the line pointing at the second image is gone.',
       'One image now: the v12c chart. Image 2 (the numbers table) dropped.',
     ],
@@ -289,7 +293,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'When the voice coach may talk',
     series: 'WD batch 2, post 1',
     version: 'batch 2, revised 3 Nov, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'coach'],
     media: ['text'],
     notes: [
@@ -302,7 +306,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'How an old build is asked to update',
     series: 'WD batch 2, post 2',
     version: 'batch 2, Pele diagram v2, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'releases'],
     media: ['diagram'],
     notes: [
@@ -314,7 +318,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'What one trainer chat message carries',
     series: 'WD batch 2, post 3',
     version: 'batch 2',
-    ...nov3('14:03'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'trainer-chat'],
     media: ['text'],
     notes: ['Replaces the rejected designed bento.'],
@@ -323,7 +327,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Exercise figures from one 3D body',
     series: 'WD batch 2, post 4',
     version: 'batch 2, revised 3 Nov, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'figures'],
     media: ['image'],
     notes: [
@@ -336,7 +340,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'The side-on deadlift fix, before and after',
     series: 'WD batch 2, post 5',
     version: 'batch 2, WD Marketing image v4, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'rep-counter', 'pose-model'],
     media: ['image', 'diagram'],
     notes: [
@@ -349,7 +353,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'One deadlift set as the counter sees it',
     series: 'WD batch 2, post 6',
     version: 'batch 2, WD Marketing image, trimmed 3 Nov, cross-checked',
-    ...nov3('17:30'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
     notes: [
@@ -362,7 +366,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'The counting lines for each move',
     series: 'WD batch 3, post 1',
     version: 'batch 3, image v3, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
     notes: [
@@ -373,7 +377,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'When the plate hides the ankle',
     series: 'WD batch 3, post 2',
     version: 'batch 3, image v2, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
     notes: ['Image updated 3 Nov: the v2 caption says the hold is for up to 3 s. Text unchanged.'],
@@ -382,7 +386,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'When the voice coach drops',
     series: 'WD batch 3, post 4',
     version: 'batch 3, image v3, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'coach'],
     media: ['diagram'],
     notes: [
@@ -394,7 +398,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'How often the voice coach speaks up',
     series: 'WD batch 3, post 5',
     version: 'batch 3, image v2, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'coach'],
     media: ['diagram'],
     notes: [
@@ -406,7 +410,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'A first rep waits for a second',
     series: 'WD batch 3, post 6',
     version: 'batch 3, image v3, cross-checked',
-    ...nov3('18:20'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
     notes: [
@@ -417,7 +421,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'What Workout Director is',
     series: 'WD batch 4, product post 1',
     version: 'batch 4, image p1 v2, cross-checked',
-    ...nov3('19:00'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'product', 'rep-counter'],
     media: ['image'],
     notes: [
@@ -430,7 +434,7 @@ const batchExtra: Record<string, Extra> = {
     title: '115 figures for 869 catalogue exercises',
     series: 'WD batch 4, figures post 1',
     version: 'batch 4, cross-checked',
-    ...nov3('19:00'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'figures'],
     media: ['image'],
     notes: [
@@ -443,7 +447,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Pose tracking and counting on the iPhone',
     series: 'WD batch 4, technical post 1',
     version: 'batch 4, Pele diagram v2, cross-checked',
-    ...nov3('19:00'),
+    ...nov3('19:57'),
     topics: ['workout-director', 'pose-model', 'rep-counter'],
     media: ['diagram'],
     notes: [
@@ -470,7 +474,7 @@ function fromBatch(post: WdBatchPost): DraftPost {
 }
 
 const liteVsFull =
-  "Same deadlift reps, same counter, two pose models. On the MyDeadlift clips, BlazePose Full found 115 of 191 barbell deadlift reps (0.602) and Lite found 106 (0.555). Neither added a rep that wasn't there.\n\nRecall is low for both partly because the clips are single reps joined end to end, with a cut between reps.\n\nThis was measured on the counter build after the deadlift fix and hasn't been re-run since."
+  "I wanted to know what the bigger pose model actually buys on real lifts, so I ran the same deadlift reps through the same counter with BlazePose Full and with Lite.\n\nOn the MyDeadlift clips, Full found 115 of 191 barbell deadlift reps and Lite found 106. Neither counted more reps than a clip actually had.\n\nBoth numbers look low, and part of that is the clips themselves: they're single reps joined end to end, with a cut between each one.\n\nI measured this on the counter build after the deadlift fix and haven't re-run it since, so treat it as a snapshot."
 
 /** Batch 3 post 3 has no image (WD Marketing dropped it), so it waits for media. Text from post-03-lite-vs-full.txt. */
 const b3post3 = make({
@@ -478,7 +482,7 @@ const b3post3 = make({
   title: 'Lite against Full on the same deadlift reps',
   series: 'WD batch 3, post 3',
   version: 'batch 3',
-  ...nov3('15:38'),
+  ...nov3('19:57'),
   topics: ['workout-director', 'pose-model', 'rep-counter'],
   media: ['text'],
   chars: [...liteVsFull].length,

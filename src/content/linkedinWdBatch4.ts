@@ -27,8 +27,8 @@ export const wdBatch4: WdBatchPost[] = [
       'Image credit: Pexels 31035743 (Aliaksei Masiukevich, Pexels License), wd-marketing/linkedin-batch-4/SOURCES.md. The v2 frame keeps the shoe brand mostly hidden; final call on the logo is Ashish’s (same SOURCES.md).',
       'Caveat: the image is a 1.0.94 frame; that the 1.0.99 screen looks the same is not checked. The text says only that the image is the app counting a clip.',
     ],
-    text: 'Workout Director is my own iPhone app for training at the gym or at home. Prop up your iPhone, press Start, and it counts your reps with the camera and tells you what comes next.\n\nIt counts squats, lunges, push-ups, bench press, curls, rows, pull-ups and chin-ups, shoulder and overhead press, deadlifts, hip thrusts and glute bridges. Planks and holds are timed.\n\nThe camera reads your movement on the iPhone itself, and video is never recorded, saved or uploaded. Camera workouts work without signing in.\n\nAround the counter are training programs, from Full Body Beginner and Push Pull Legs to Dumbbells at Home and Bodyweight at Home, a trainer that remembers your goals, equipment and schedule, and an optional voice coach. Every session is logged, and Apple Health is optional.\n\nVersion 1.0.99 is out: exercise search now finds common names such as RDL and Skull Crusher, and deadlift reps count better when you film from the side. Free on the App Store, for iOS 18.2 and later.',
-    chars: 983,
+    text: "Workout Director is my own iPhone app for training at the gym or at home. You prop the phone up, press Start, and it counts your reps with the camera and tells you what's next.\n\nIt counts squats, lunges, push-ups, pull-ups, curls and rows, plus lifts like bench press, deadlifts and hip thrusts. Planks and holds are timed.\n\nThe camera reads your movement on the iPhone itself, and the video is never recorded, saved or uploaded. You don't need to sign in for a camera workout.\n\nAround the counter there are training programs, a trainer that remembers your goals, equipment and schedule, and an optional voice coach. Every session is logged, and Apple Health is optional.\n\nVersion 1.0.99 is out. Search now finds names like RDL and Skull Crusher, and deadlifts filmed from the side count better. Free on the App Store.",
+    chars: 818,
   },
   {
     id: 'wd-b4-fig1',
@@ -55,8 +55,8 @@ export const wdBatch4: WdBatchPost[] = [
       'Credit: WD Marketing found no CC BY-SA reference for the bodyweight squat figure and no credit needed (linkedin-batch-4/SOURCES.md); the post has no credit line.',
       'Overlaps with WD batch 2, post 4 (115 figures in light and dark); that post is about how the figures are made, this one about the catalogue split.',
     ],
-    text: "The exercise data bundled with Workout Director has 869 exercises, all from free-exercise-db, an open exercise dataset. The app offers only the moves that have Workout Director's own figures.\n\nThere are 115 of those figures, our own artwork, covering 119 entries, because four figures each serve two. Most have a start and an end pose. Plank, walking, kneeling hip flexor and farmer's walk are a single pose.\n\nThat is 230 image sets in the iOS asset catalogue, each in light and dark at @2x and @3x, 920 PNGs in all. The other 750 entries aren't offered until they have a figure.",
-    chars: 579,
+    text: "Workout Director comes with data for 869 exercises, all from free-exercise-db, an open exercise dataset. But the app offers only the 119 entries that have Workout Director's own figures, and that's a much shorter list.\n\nThere are 115 of those figures, all our own artwork, covering 119 entries because four of them do double duty. Most show a start and an end pose. A few, like plank and farmer's walk, are a single pose.\n\nEach figure has a start and an end image (the single-pose ones repeat it), in light and dark at two sizes, so the app carries 920 PNGs of them. The other 750 entries aren't offered until they have a figure.",
+    chars: 629,
   },
   {
     id: 'wd-b4-tech1',
@@ -84,7 +84,7 @@ export const wdBatch4: WdBatchPost[] = [
       'Not claimed: airplane mode end to end, or that nothing leaves the phone (the optional voice coach, signed-in session sync and error reports use the network; linkedin-batch-4/SOURCES.md).',
       'Overlaps with D2 (Lite, Full and Heavy, the Vision switch); this post adds which model ships, that it is bundled, and the fallback order.',
     ],
-    text: "Workout Director counts reps from the phone camera without sending the video anywhere. Pose tracking and rep counting run on the iPhone, and video is never recorded, saved or uploaded.\n\nThe pose model is part of the app, not a download. It is loaded from a file in the app bundle, and the model that ships is BlazePose Full.\n\nIt runs on the GPU and falls back to the CPU, then to Apple's on-device Vision pose estimator. All three paths run on the phone.",
-    chars: 454,
+    text: "I didn't want a workout app that sends your camera feed off somewhere. So Workout Director counts reps from the phone camera without sending the video anywhere. Pose tracking and counting run on the iPhone, and the video is never recorded, saved or uploaded.\n\nThe pose model ships inside the app instead of being downloaded later. It's BlazePose Full, loaded from a file in the app bundle.\n\nIt runs on the GPU, falls back to the CPU, and after that to Apple's own on-device Vision pose estimator. All three paths run on the phone.",
+    chars: 530,
   },
 ]

@@ -17,9 +17,9 @@ export const liSamples: LiSample[] = [
     id: 'sample-a',
     title: 'Sample A',
     label: 'Sample, not scheduled',
-    chars: 1298,
+    chars: 900,
     textStatus: 'withheld',
-    text: 'Text not shown here: the post names its data source, which is on the site’s blocked terms list, so the build would fail. Paste it from /workspace/linkedin-samples/personal/revised-2026-11-03/sample-a.txt.',
+    text: 'Text not shown here: the post names its data source, which is on the site’s blocked terms list, so the build would fail. Paste it from /workspace/linkedin-samples/personal/human-2026-11-03/sample-a.txt.',
     firstComment: 'https://ashishkharche.com/lab/charts',
     images: [
       {

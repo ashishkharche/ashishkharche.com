@@ -45,15 +45,15 @@ describe('Copy for LinkedIn', () => {
     }
   })
 
-  it('copies wd-b3-2 exactly as Ashish edited it', () => {
+  it('copies wd-b3-2 as its human-voice rewrite (human-2026-11-03)', () => {
     const post = draftPosts.find((p) => p.id === 'wd-b3-2')
     const paras = [
-      'At the bottom of a side-on deadlift the far plate can hide the near ankle, and its pose confidence drops under the 0.5 the counter needs.',
-      'If the hip and knee are still clear and the ankle stays at 0.3 or more, Workout Director keeps the leg in view for up to 3 s instead of losing the rep.',
-      'The image shows one clip: the ankle dims at the bottom of the lift, and the counter stays on.',
+      'At the bottom of a side-on deadlift, the far plate can hide the near ankle. The pose model gets less sure about where it is, and its confidence drops below what my counter normally needs.',
+      "Losing a rep over one hidden ankle felt wrong when the hip and knee are in plain view. So if those two are still clear and the ankle hasn't faded too far, the counter keeps the leg in view for up to 3 s.",
+      'In the clip in the image, you can see the ankle dim at the bottom of the lift while the counter keeps going.',
     ]
     expect(linkedinPlain(post?.text ?? '')).toBe(paras.join('\n\n'))
-    expect(linkedinHtml(post?.text ?? '')).toBe(paras.map((p) => `<p>${p}</p>`).join(''))
+    expect(linkedinHtml(post?.text ?? '')).toBe(paras.map((p) => `<p>${escapeHtml(p)}</p>`).join(''))
   })
 
   it('copies the batch 4 posts with their paragraphs and no credit lines', () => {

@@ -26,8 +26,8 @@ export const liDrafts: LiDraft[] = [
     n: 1,
     slot: 'Tue 3 Nov',
     why: 'One 4:5 portrait image: one person, three joints, one angle, and her hip angle frame by frame against the deadlift lines. Image 2 (camera to reps) was dropped in the 3 Nov cross-check.',
-    chars: 654,
-    text: "A phone camera counts a deadlift from one number, the hip angle. A rep counts once you pass 160° at the top and 125° at the bottom and cover at least 80% of that range.\n\nThe rep also has to take at least 0.6 s, and a rep that ends less than 1 s after the last one is refused. That stops jitter and half reps from counting.\n\nEach joint point goes through a One Euro filter, which smooths hard while you're still and eases off as you move, so lag stays low.\n\nOnce a rep of at least 15° has saved your range for that exercise, the lines adjust to you: the top line sits 12% of your range below your highest reading, and the bottom one never eases past 140°.",
+    chars: 735,
+    text: "When I taught my app to count deadlifts, I ended up watching just one number: the hip angle. Stand up past 160°, hinge down past 125°, cover most of that range, and that's a rep.\n\nThe harder part is everything that looks like a rep and isn't, like jitter and half reps. So a rep can't be too quick, and one that finishes less than a second after the last one gets thrown out.\n\nThe joint points from the camera need calming down too. Each one goes through a One Euro filter, which smooths hard while you're still and backs off as you move, so the line doesn't lag behind you.\n\nAnd nobody hinges quite the same way. Once you've done one proper rep, the top line moves to fit you, sitting 12% of your own range below your highest reading.",
     images: [
       {
         key: 'joints',
@@ -46,8 +46,8 @@ export const liDrafts: LiDraft[] = [
     n: 2,
     slot: 'Thu 5 Nov',
     why: 'Text only. The push-up bento and the pose model diagram were dropped in the 3 Nov cross-check, so the post makes no top line or push-up trace claim.',
-    chars: 759,
-    text: "Picking a pose model for a phone is a measuring job. On 156 COCO test photos, the share of joints within 5% of the person's size was 72% for Lite, 79% for Full and 84% for Heavy. Full cost about 4 ms more a frame than Lite on a desktop CPU and 3.6 MB more in the app, while Heavy added 21 MB and ran about 3x slower than Full.\n\nLive camera frames should be dropped, not queued. While one frame is in the model, new ones are skipped, so the count follows what is happening now.\n\nA frame still processing after 1 s is abandoned, and a result that arrives late is discarded instead of drawn.\n\nIf results fall below 12 a second after a 2 s warm-up, the workout falls back to Apple's Vision for the rest of that workout, and the next workout tries BlazePose again.",
+    chars: 839,
+    text: "Picking a pose model for a phone is a tradeoff, so I measured it. I ran Lite, Full and Heavy over 156 single-person photos from the COCO validation set.\n\nHeavy was the most accurate, but it would have added 21 MB to the app and ran about three times slower than Full. Full put 79% of joints within 5% of the person's size of the right spot, against 72% for Lite, for about 4 ms more a frame on a desktop CPU.\n\nSpeed matters because the camera doesn't wait for you. If a frame is still in the model when a new one arrives, I skip the new one instead of queueing it, so the count follows what you're doing now. Anything that arrives late is thrown away instead of drawn.\n\nIf the phone still can't keep up after a short warm-up, the workout switches to Apple's Vision for the rest of that session. The next workout gives BlazePose another go.",
     images: [],
   },
   {
@@ -55,8 +55,8 @@ export const liDrafts: LiDraft[] = [
     n: 3,
     slot: 'Mon 9 Nov',
     why: 'Text only for now. The checks bento was dropped. The rep 1 waits for rep 2 trace (wd-two-rep-trace.png) can come back once the Pexels 5319753 creator is confirmed, with a "Video: <creator> / Pexels. Pose landmarks: MediaPipe BlazePose." line.',
-    chars: 769,
-    text: "Cutting false reps, part 3 of 3.\n\nMost of the work in counting reps from a phone camera is not counting the things that are not reps.\n\nNothing counts until the move's joints have been seen on every frame for half a second. A rep is refused if it covers less than 80% of the gap between the two lines (at least 20°), is too quick (under 0.5 s for squats and push-ups, 0.6 s for deadlifts) or comes too soon after the last one.\n\nOn squats, curls, presses, rows and deadlifts, a first rep is held for up to 8 s and counts only when another follows. On curls that cut false reps from 35.4 an hour to 3.4, at a cost of 2.0% of real reps. Lunges would have lost 9.5%, so they count rep 1 at once.\n\nMore notes on how Workout Director is built: https://ashishkharche.com/notes/",
+    chars: 878,
+    text: "Cutting false reps, part 3 of 3.\n\nMost of the work in counting reps with a phone camera, I've found, is not counting the things that aren't reps.\n\nSo nothing counts until the counter has seen the joints it needs on every frame for half a second. After that, a rep has to cover most of the distance between its two lines, can't be rushed, and can't land right on top of the last one.\n\nOne rule makes the first rep wait. On squats, curls, presses, rows and deadlifts, it's held for up to 8 s and only counts if another one follows, or if you end the set while it's still waiting. On curls that took false reps from 35.4 an hour down to 3.4, at a cost of 2.0% of real reps.\n\nLunge sets are slow and alternate legs, so the wait would have cost 9.5% of real reps. Lunges count the first rep straight away.\n\nMore notes on how I built Workout Director: https://ashishkharche.com/notes/",
     images: [],
   },
 ]
