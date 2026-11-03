@@ -46,7 +46,10 @@ describe('the private drafts board', () => {
     expect(ids).toHaveLength(16)
     for (const post of draftPosts) {
       for (const img of post.images) expect(existsSync(join('public', img.src)), img.src).toBe(true)
-      expect(post.status === 'waiting').toBe(post.images.length === 0)
+      // A post with no image either waits for media or is text only on purpose (D2, D3 since the 3 Nov cross-check).
+      if (post.status === 'waiting') expect(post.images, post.id).toHaveLength(0)
+      if (post.images.length === 0)
+        expect(post.status === 'waiting' || post.media.join() === 'text', post.id).toBe(true)
       expect(post.length).toBe(lengthOf(post.chars))
     }
   })
@@ -84,6 +87,23 @@ describe('drafts filters', () => {
     expect(draftPosts.every((p) => matches(p, none))).toBe(true)
     const coach = draftPosts.filter((p) => matches(p, parseFilters('?topic=coach')))
     expect(coach.map((p) => p.id).sort()).toEqual(['wd-b2-1', 'wd-b3-4', 'wd-b3-5'])
+    const checked = draftPosts.filter((p) => matches(p, parseFilters('?status=checked')))
+    expect(checked.map((p) => p.id).sort()).toEqual(
+      [
+        'd1',
+        'd2',
+        'd3',
+        'sample-a',
+        'wd-b2-2',
+        'wd-b2-4',
+        'wd-b2-5',
+        'wd-b3-1',
+        'wd-b3-2',
+        'wd-b3-4',
+        'wd-b3-5',
+        'wd-b3-6',
+      ].sort(),
+    )
     const waiting = draftPosts.filter((p) => matches(p, parseFilters('?status=waiting')))
     expect(waiting.map((p) => p.id).sort()).toEqual(['wd-b2-1', 'wd-b2-3', 'wd-b3-3'])
     expect(draftPosts.filter((p) => matches(p, parseFilters('?q=Time+to+update'))).map((p) => p.id)).toEqual([

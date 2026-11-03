@@ -37,7 +37,11 @@ export const lengths = {
 } as const
 export type Length = keyof typeof lengths
 
-export const statuses = { ready: 'Ready', waiting: 'Waiting for media' } as const
+export const statuses = {
+  checked: 'Cross-checked by WD Engineering and Marketing, 3 Nov',
+  ready: 'Ready',
+  waiting: 'Waiting for media',
+} as const
 export type Status = keyof typeof statuses
 
 /** Length bands, in characters of the paste text. */
@@ -81,6 +85,27 @@ type Extra = Pick<DraftPost, 'title' | 'series' | 'version' | 'updated' | 'updat
   notes?: string[]
 }
 
+/**
+ * Posts revised on 3 Nov from /workspace/linkedin-samples/personal/revised-2026-11-03 after the WD Engineering and
+ * WD Marketing cross-checks. They show as cross-checked unless they still wait for media.
+ */
+const crossChecked = new Set([
+  'd1',
+  'd2',
+  'd3',
+  'sample-a',
+  'wd-b2-1',
+  'wd-b2-2',
+  'wd-b2-4',
+  'wd-b2-5',
+  'wd-b3-1',
+  'wd-b3-2',
+  'wd-b3-4',
+  'wd-b3-5',
+  'wd-b3-6',
+])
+const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; changes in revised-2026-11-03/CHANGES.md.'
+
 function make(
   base: Omit<DraftPost, 'primary' | 'length' | 'status' | 'notes'> & { notes?: string[]; waiting?: boolean },
 ): DraftPost {
@@ -90,46 +115,52 @@ function make(
     ...rest,
     primary,
     length: lengthOf(base.chars),
-    status: waiting ? 'waiting' : 'ready',
-    notes: notes ?? [],
+    status: waiting ? 'waiting' : crossChecked.has(base.id) ? 'checked' : 'ready',
+    notes: crossChecked.has(base.id) ? [checkedNote, ...(notes ?? [])] : (notes ?? []),
   }
 }
 
-const nov2 = (time: string) => ({ updated: `2026-11-02T${time}:00Z`, updatedLabel: `2 Nov 2026, ${time} GMT` })
 const nov3 = (time: string) => ({ updated: `2026-11-03T${time}:00Z`, updatedLabel: `3 Nov 2026, ${time} GMT` })
 
 const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
   'tue-3-nov': {
     title: 'D1: a deadlift counted from one hip angle',
     series: 'D1, slot Tue 3 Nov',
-    version: 'v12e',
-    ...nov2('18:27'),
+    version: 'v13, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
     notes: [
-      'Replaces v1, v1.1, v3, v4, v6.1, v7, v7.1, v7.2, v8, v9, v11 and v12 to v12d of D1.',
-      'Overlaps with WD batch 3, post 1 on the 12 % top line rule.',
+      'v13: a rep that ends less than 1 s after the last one is refused; the lines adjust only once a rep of at least 15° has saved your range; an image and credit line added at the end.',
+      'One image now: the v2 joints and hip angle render from saved landmark data. Image 2 (camera to reps) dropped.',
+      'Replaces v1, v1.1, v3, v4, v6.1, v7, v7.1, v7.2, v8, v9, v11 and v12 to v12e of D1.',
+      'Overlaps with WD batch 3, post 1 on the 12% top line rule.',
     ],
   },
   'thu-5-nov': {
     title: 'D2: picking a pose model for a phone',
     series: 'D2, slot Thu 5 Nov',
-    version: 'v12e',
-    ...nov2('18:27'),
+    version: 'v13, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'pose-model', 'rep-counter'],
-    media: ['image', 'diagram'],
-    notes: ['Replaces v1, v1.1, v2, v2.1, v3, v4, v6.1, v7, v7.1, v7.2, v8, v9, v11 and v12 to v12d of D2.'],
+    media: ['text'],
+    notes: [
+      'v13: says what the 72, 79 and 84 scores measure (joints within 5% of the person’s size on 156 COCO photos), that the 4 ms is on a desktop CPU, the 2 s warm-up, and that the Vision fallback lasts the rest of that workout.',
+      'Text only now: both images dropped.',
+      'Replaces v1, v1.1, v2, v2.1, v3, v4, v6.1, v7, v7.1, v7.2, v8, v9, v11 and v12 to v12e of D2.',
+    ],
   },
   'mon-9-nov': {
     title: 'D3: cutting false reps, part 3 of 3',
     series: 'D3, slot Mon 9 Nov',
-    version: 'v11 (unchanged in v12)',
-    ...nov2('14:37'),
+    version: 'v13 (trimmed), cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'rep-counter'],
-    media: ['image', 'diagram'],
+    media: ['text'],
     notes: [
-      'Replaces v1 to v9 of D3. v12 changed only D1 and D2, so v11 is the latest D3 text.',
-      'The planned 11 slide document is not made yet; until then it is a two image post.',
+      'v13: trimmed to WD Marketing’s shorter version, with WD Engineering’s fix (under 0.5 s for squats and push-ups). The headings, references and several details were cut; WD Engineering verified them, so they could come back in a longer part 3.',
+      'Text only for now: the checks bento dropped; the two rep trace waits for its Pexels creator.',
+      'Replaces v1 to v11 of D3.',
       'Overlaps with WD batch 3, post 6 on the 8 s first rep hold.',
     ],
   },
@@ -152,8 +183,8 @@ const sampleA = liSamples.map((s) =>
     id: s.id,
     title: 'Sample A: two apps on the US Top Free chart',
     series: 'Sample A',
-    version: 'v12c',
-    ...nov2('17:17'),
+    version: 'v13, cross-checked',
+    ...nov3('18:20'),
     topics: ['charts'],
     media: ['diagram'],
     chars: s.chars ?? 0,
@@ -161,10 +192,14 @@ const sampleA = liSamples.map((s) =>
     textNote: 'The real text is not shown here (its data source is on the blocked terms list).',
     images: s.images,
     firstComment: s.firstComment,
-    sources: ['/workspace/linkedin-samples/personal/SOURCES.md (Sample A).'],
+    sources: [
+      '/workspace/linkedin-samples/personal/SOURCES.md (Sample A).',
+      '/workspace/linkedin-samples/personal/revised-2026-11-03/CHANGES.md (sample-a).',
+    ],
     notes: [
-      'Paste the text from /workspace/linkedin-samples/personal/sample-a-post.txt.',
-      'Replaces the v12 and v12b images (re-rendered in v12c without the Source and Fetched lines).',
+      'Paste the text from /workspace/linkedin-samples/personal/revised-2026-11-03/sample-a.txt.',
+      'v13: the chart builder sentence names one store only, and the line pointing at the second image is gone.',
+      'One image now: the v12c chart. Image 2 (the numbers table) dropped.',
     ],
   }),
 )
@@ -173,11 +208,12 @@ const batchExtra: Record<string, Extra> = {
   'wd-b2-1': {
     title: 'When the voice coach may talk',
     series: 'WD batch 2, post 1',
-    version: 'batch 2, rewritten from code',
-    ...nov3('14:45'),
+    version: 'batch 2, revised 3 Nov, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'coach'],
     media: ['text'],
     notes: [
+      'Revised 3 Nov: the cue list is given as examples, and the gap is for the standard talk setting, with what talk less and talk more do and what skips the gap.',
       'Replaces the rejected v1 ("one line per set", wrong) and its designed card.',
       'Overlaps with WD batch 3, post 5: the same gap and per-set cap numbers. Batch 3 post 5 is newer and has an image; this one adds the recorded clips, the quiet last three reps and the rest tip. Pick one.',
     ],
@@ -185,11 +221,14 @@ const batchExtra: Record<string, Extra> = {
   'wd-b2-2': {
     title: 'How an old build is asked to update',
     series: 'WD batch 2, post 2',
-    version: 'batch 2, Pele diagram',
-    ...nov3('14:45'),
+    version: 'batch 2, Pele diagram v2, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'releases'],
     media: ['diagram'],
-    notes: ['Replaces the rejected designed diagram.'],
+    notes: [
+      'Revised 3 Nov: the second paragraph no longer repeats the image (both paths, the saved answer, the offline relaunch); Pele credit added. Image is the v2 Pele render.',
+      'Replaces the rejected designed diagram and the first Pele render.',
+    ],
   },
   'wd-b2-3': {
     title: 'What one trainer chat message carries',
@@ -203,23 +242,27 @@ const batchExtra: Record<string, Extra> = {
   'wd-b2-4': {
     title: 'Exercise figures from one 3D body',
     series: 'WD batch 2, post 4',
-    version: 'batch 2, shipped figures',
-    ...nov3('14:45'),
+    version: 'batch 2, revised 3 Nov, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'figures'],
     media: ['image'],
-    notes: ['Replaces the rejected designed figure images and in-app mock.'],
+    notes: [
+      'Revised 3 Nov: four claims WD Engineering could not verify were removed (no add-on, the JSON spec, the re-checks on backgrounds and crops, fingers through a handle); 115 exercises in light and dark added.',
+      'Two images: the f1 v2 goblet squat figure (approved by Ashish 3 Nov, with its CC BY-SA pose reference credit in the text), then the f2 deadlift figure. The earlier 4a to 4e images are removed.',
+      'Replaces the rejected designed figure images and in-app mock.',
+    ],
   },
   'wd-b2-5': {
     title: 'The side-on deadlift fix, before and after',
     series: 'WD batch 2, post 5',
-    version: 'batch 2, WD Marketing image, trimmed 3 Nov',
-    ...nov3('17:30'),
+    version: 'batch 2, WD Marketing image v4, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'rep-counter', 'pose-model'],
     media: ['image', 'diagram'],
     notes: [
-      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
+      'Revised 3 Nov: the far plate hides the near ankle; the hold lasts up to 3 s after the ankle was last seen clearly; the image pointer, the recall paragraph and the MyDeadlift credit were removed. Image is v4, with the stepped rest line.',
       'Replaces the rejected v1 text and its recall chart.',
-      'Overlaps with WD batch 3, post 2 (the 3 s ankle hold) and post 3 (the same Lite and Full recall numbers).',
+      'Overlaps with WD batch 3, post 2 (the 3 s ankle hold).',
     ],
   },
   'wd-b2-6': {
@@ -238,55 +281,56 @@ const batchExtra: Record<string, Extra> = {
   'wd-b3-1': {
     title: 'The counting lines for each move',
     series: 'WD batch 3, post 1',
-    version: 'batch 3',
-    ...nov3('15:52'),
+    version: 'batch 3, image v3, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'rep-counter'],
-    media: ['diagram'],
+    media: ['image', 'diagram'],
+    notes: [
+      'Revised 3 Nov: no space before the percent signs, and a video and landmark credit for the new image (v3: a deadlift frame, the hip trace and the joint per move).',
+    ],
   },
   'wd-b3-2': {
     title: 'When the plate hides the ankle',
     series: 'WD batch 3, post 2',
-    version: 'batch 3, trimmed 3 Nov',
-    ...nov3('17:30'),
+    version: 'batch 3, image v2, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
-    notes: [
-      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
-    ],
+    notes: ['Image updated 3 Nov: the v2 caption says the hold is for up to 3 s. Text unchanged.'],
   },
   'wd-b3-4': {
     title: 'When the voice coach drops',
     series: 'WD batch 3, post 4',
-    version: 'batch 3, trimmed 3 Nov',
-    ...nov3('17:30'),
+    version: 'batch 3, image v3, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'coach'],
     media: ['diagram'],
     notes: [
-      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
+      'Revised 3 Nov: the waits spelt out (1, 2, 4, 8 and 16 s, then 30 s), and the Pele credit removed because the v3 image is a plain step chart.',
       'Replaces Sample B (the coach reconnect sample, never posted). Sample B said the app shows no reconnecting message; the code at a0d27a7e shows "Coach reconnecting · counts still on".',
     ],
   },
   'wd-b3-5': {
     title: 'How often the voice coach speaks up',
     series: 'WD batch 3, post 5',
-    version: 'batch 3, rewritten from the corrected README, trimmed 3 Nov',
-    ...nov3('17:30'),
+    version: 'batch 3, image v2, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'coach'],
     media: ['diagram'],
     notes: [
-      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
+      'Revised 3 Nov: the opening names both limits, persona became coach style (the app’s label), and the talk less and talk more detail is left to the image.',
       'Overlaps with WD batch 2, post 1 (see there).',
     ],
   },
   'wd-b3-6': {
     title: 'A first rep waits for a second',
     series: 'WD batch 3, post 6',
-    version: 'batch 3, trimmed 3 Nov',
-    ...nov3('17:30'),
+    version: 'batch 3, image v3, cross-checked',
+    ...nov3('18:20'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
     notes: [
-      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
+      'Revised 3 Nov: waiting for the next rep (not a second one, which could read as 1 s), and the image pointer replaced by the 5.48 s wait. Image is v3, with the stepped rest line.',
     ],
   },
 }
