@@ -99,13 +99,13 @@ export const wdBatch3: WdBatchPost[] = [
     images: [
       {
         key: 'b3c',
-        src: '/assets/img/preview/wd-b3-5-coach-two-limits-v2.webp',
+        src: '/assets/img/preview/wd-b3-5-coach-two-limits-v3.webp',
         w: 1080,
         h: 1350,
-        upload: '/workspace/wd-marketing/linkedin-batch-4/review/05-coach-two-limits-v2.png',
-        name: '05-coach-two-limits-v2.png',
-        alt: 'How often the coach speaks up. Gap before it starts another line on its own: Hype 20 s, Calm 30 s, Minimal 45 s. Talk less stretches the gap by half; talk more cuts it by a quarter. Form, stall or out-of-view lines per set: talk less none, standard 1, talk more 3. Pain always gets through; a form break and the wrap-up skip the gap.',
-        note: 'WD Marketing review/05-coach-two-limits-v2.png (linkedin-batch-4): two small charts from batch-3 line-gap-by-persona-and-talk.csv and coach-talk-budget.csv. Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
+        upload: '/workspace/wd-marketing/linkedin-batch-4/review/05-coach-two-limits-v3.png',
+        name: '05-coach-two-limits-v3.png',
+        alt: 'How often the coach speaks up. Gap before it starts another line on its own: Hype 20 s, Calm 30 s, Minimal 45 s. Talk less stretches the gap by half; talk more cuts it by a quarter. Form, stall or out-of-view lines per set: talk less none, standard 1, talk more 3. Pain skips the gap and the cap, but still waits for 2.5 s of quiet.',
+        note: 'WD Marketing review/05-coach-two-limits-v3.png (3 Nov ~20:30 GMT): a text-only edit of v2; only the bottom caption changed (was "Pain always gets through. A form break and the wrap-up skip the gap."). Charts from batch-3 line-gap-by-persona-and-talk.csv and coach-talk-budget.csv. Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
       },
     ],
     sources: [
@@ -130,13 +130,13 @@ export const wdBatch3: WdBatchPost[] = [
     images: [
       {
         key: 'b3d',
-        src: '/assets/img/preview/wd-b3-6-first-rep-waits-v3.webp',
+        src: '/assets/img/preview/wd-b3-6-first-rep-waits-v4.webp',
         w: 1080,
         h: 1350,
-        upload: '/workspace/wd-marketing/linkedin-batch-4/review/06-first-rep-waits-v3.png',
-        name: '06-first-rep-waits-v3.png',
-        alt: 'The first rep waits for a second. A side-on photo of a woman standing tall at the top of a deadlift at 17.88 s, as rep 3 lands and the count goes from 0 to 2, with a 164.1 degree hip angle drawn on. A first rep is held; it counts only if another lands within 8 s. Below, her hip angle over the clip against the rest line and the 125 degree work line, with rep 2 held, the 8 s window shaded and rep 3 where both count; a count line stays at 0, then steps to 2.',
-        note: 'WD Marketing review/06-first-rep-waits-v3.png (linkedin-batch-4): Pexels 7674505 at 17.88 s, hip 164.1° from blog-data/deadlift-joint-trace.csv, stepped rest line labelled rest (160° to 12.40 s, 163.1° from 12.48 s), count from count-shown-trace.csv. Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
+        upload: '/workspace/wd-marketing/linkedin-batch-4/review/06-first-rep-waits-v4.png',
+        name: '06-first-rep-waits-v4.png',
+        alt: 'The first rep waits for the next one. A side-on photo of a woman standing tall at the top of a deadlift at 17.88 s, as rep 3 lands and the count goes from 0 to 2, with a 164.1 degree hip angle drawn on. It counts once another rep lands within 8 s, or when the set ends. Below, her hip angle over the clip against the rest line and the 125 degree work line, with rep 2 held, the 8 s window shaded and rep 3 where both count; a count line stays at 0, then steps to 2.',
+        note: 'WD Marketing review/06-first-rep-waits-v4.png (3 Nov ~20:30 GMT): a text-only edit of v3; only the headline (was "The first rep waits for a second.") and the caption changed. Pexels 7674505 at 17.88 s, hip 164.1° from blog-data/deadlift-joint-trace.csv, count from count-shown-trace.csv. Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
       },
     ],
     sources: [

@@ -96,13 +96,13 @@ export const wdBatch2: WdBatchPost[] = [
       },
       {
         key: 'b2f2',
-        src: '/assets/img/preview/wd-b2-4-f2-deadlift-fixed-gates.webp',
+        src: '/assets/img/preview/wd-b2-4-f2-deadlift-fixed-gates-v2.webp',
         w: 1080,
         h: 1350,
-        upload: '/workspace/wd-marketing/linkedin-batch-4/figures/f2-deadlift-fixed-gates.png',
-        name: 'f2-deadlift-fixed-gates.png',
-        alt: "Checked by gates that don't move. The app's barbell deadlift figures, start and end: a line-art body crouched over a loaded barbell, then standing tall holding it, worked muscles tinted red. Caption: barbell deadlift, posed from real demo frames. No limit changed to pass. Form gates: 242 checks, 0 fails.",
-        note: 'WD Marketing figures/f2-deadlift-fixed-gates.png: the shipped dark @3x asset-catalog figures (hash-checked against the figures repo), cropped left and right only, on #090A0B. Pack notes: FORM 242/0, references are real video frames only, no trace (linkedin-batch-4/SOURCES.md, section 4).',
+        upload: '/workspace/wd-marketing/linkedin-batch-4/figures/f2-deadlift-fixed-gates-v2.png',
+        name: 'f2-deadlift-fixed-gates-v2.png',
+        alt: "Checked by gates that don't move. The app's barbell deadlift figures, start and end: a line-art body crouched over a loaded barbell, then standing tall holding it, worked muscles tinted red. Caption: Posed in Blender to match joint angles from reference clips. Never traced. Form gates: 242 checks, 0 fails.",
+        note: 'WD Marketing figures/f2-deadlift-fixed-gates-v2.png (3 Nov 19:50 GMT): identical to v1 apart from the caption band, which now reads "Posed in Blender to match joint angles from reference clips. Never traced." (the barbell deadlift references are real video frames only, so "clips" is accurate for this figure). Pack notes: FORM 242/0, no trace (linkedin-batch-4/SOURCES.md). Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
       },
     ],
     sources: [

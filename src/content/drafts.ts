@@ -4,6 +4,7 @@ import { liSamples } from '~/content/linkedinSamples'
 import { wdBatch2, type WdBatchPost } from '~/content/linkedinWdBatch2'
 import { wdBatch3 } from '~/content/linkedinWdBatch3'
 import { wdBatch4 } from '~/content/linkedinWdBatch4'
+import { wdBatch5 } from '~/content/linkedinWdBatch5'
 
 /**
  * The private drafts board: one current version of each LinkedIn draft, with what the filters need.
@@ -20,6 +21,7 @@ export const topics = {
   product: 'Product',
   'rep-counter': 'Rep counter',
   'pose-model': 'Pose model',
+  technical: 'Technical',
   coach: 'Voice coach',
   'trainer-chat': 'Trainer chat',
   releases: 'Releases and updates',
@@ -110,6 +112,13 @@ const crossChecked = new Set([
   'wd-b4-p1',
   'wd-b4-fig1',
   'wd-b4-tech1',
+  'wd-b3-3',
+  'wd-b5-1',
+  'wd-b5-2',
+  'wd-b5-3',
+  'wd-b5-4',
+  'wd-b5-5',
+  'wd-b5-6',
 ])
 const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; see revised-2026-11-03/CHANGES.md.'
 /** Every post's text was replaced on 3 Nov 19:57 GMT by its human-voice rewrite. */
@@ -143,14 +152,17 @@ const pngNames: Record<string, string> = {
   '/assets/img/preview/v12c-sample-a-1-chart.webp': 'sample-a-chart.png',
   '/assets/img/preview/wd-b2-2-forced-update-v2.webp': 'wd-b2-2-forced-update.png',
   '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v2.webp': 'wd-b2-4-1-goblet-squat.png',
-  '/assets/img/preview/wd-b2-4-f2-deadlift-fixed-gates.webp': 'wd-b2-4-2-deadlift-fixed-gates.png',
+  '/assets/img/preview/wd-b2-4-f2-deadlift-fixed-gates-v2.webp': 'wd-b2-4-2-deadlift-fixed-gates.png',
   '/assets/img/preview/wd-b2-5-deadlift-fix-before-after-v4.webp': 'wd-b2-5-deadlift-fix-before-after.png',
   '/assets/img/preview/wd-b2-6-deadlift-rep1-refused.webp': 'wd-b2-6-deadlift-rep1-refused.png',
   '/assets/img/preview/wd-b3-1-one-angle-per-move-v3.webp': 'wd-b3-1-one-angle-per-move.png',
   '/assets/img/preview/wd-b3-2-plate-hides-the-ankle-v2.webp': 'wd-b3-2-plate-hides-the-ankle.png',
   '/assets/img/preview/wd-b3-4-coach-reconnect-backoff-v3.webp': 'wd-b3-4-coach-reconnect-backoff.png',
-  '/assets/img/preview/wd-b3-5-coach-two-limits-v2.webp': 'wd-b3-5-coach-two-limits.png',
-  '/assets/img/preview/wd-b3-6-first-rep-waits-v3.webp': 'wd-b3-6-first-rep-waits.png',
+  '/assets/img/preview/wd-b3-3-lite-vs-full-sharp.webp': 'wd-b3-3-1-lite-vs-full-sharp.png',
+  '/assets/img/preview/wd-b3-3-lite-vs-full-mydeadlift.webp': 'wd-b3-3-2-lite-vs-full-mydeadlift.png',
+  '/assets/img/preview/wd-b5-1-plank-straight-seconds.webp': 'wd-b5-1-plank-straight-seconds.png',
+  '/assets/img/preview/wd-b3-5-coach-two-limits-v3.webp': 'wd-b3-5-coach-two-limits.png',
+  '/assets/img/preview/wd-b3-6-first-rep-waits-v4.webp': 'wd-b3-6-first-rep-waits.png',
   '/assets/img/preview/wd-b4-p1-rep-counter-v2.webp': 'wd-b4-p1-rep-counter.png',
   '/assets/img/preview/wd-b4-fig1-bodyweight-squat-light-dark.webp': 'wd-b4-fig1-bodyweight-squat.png',
   '/assets/img/preview/wd-b4-tech1-counted-on-the-phone-v2.webp': 'wd-b4-tech1-counted-on-the-phone.png',
@@ -159,6 +171,10 @@ const pngNames: Record<string, string> = {
 const captions: Record<string, string> = {
   '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v2.webp':
     "Goblet squat reference (one of several): 'Kettlebell Goblet Squat' by Taco Fleur, Wikimedia Commons, CC BY-SA 4.0.",
+  '/assets/img/preview/wd-b3-3-lite-vs-full-mydeadlift.webp':
+    'Credit for first comment: Frame: MyDeadlift dataset, Ivan Conanta and Gloria Virginia, Mendeley Data, doi:10.17632/w5prmmxyt9.1, CC BY 4.0. Cropped, with pose landmarks drawn on it.',
+  '/assets/img/preview/wd-b4-fig1-bodyweight-squat-light-dark.webp':
+    'Credit for first comment: Figure reference: Taco Fleur, Wikimedia Commons, CC BY-SA 4.0.',
 }
 
 /** A page image with its full quality PNG download. */
@@ -327,10 +343,11 @@ const batchExtra: Record<string, Extra> = {
     title: 'Exercise figures from one 3D body',
     series: 'WD batch 2, post 4',
     version: 'batch 2, revised 3 Nov, cross-checked',
-    ...nov3('19:57'),
+    ...nov3('20:30'),
     topics: ['workout-director', 'figures'],
     media: ['image'],
     notes: [
+      'Image 2 swapped 3 Nov 20:30 GMT: the f2 v2 deadlift figure, whose caption now reads “Posed in Blender to match joint angles from reference clips. Never traced.” (text-only change from WD Marketing).',
       'Revised 3 Nov: four claims WD Engineering could not verify were removed (no add-on, the JSON spec, the re-checks on backgrounds and crops, fingers through a handle); 115 exercises in light and dark added.',
       'Two images: the f1 v2 goblet squat figure (approved by Ashish 3 Nov, its CC BY-SA pose reference credit is a caption under the image on this page, not in the post text), then the f2 deadlift figure. The earlier 4a to 4e images are removed.',
       'Replaces the rejected designed figure images and in-app mock.',
@@ -398,10 +415,11 @@ const batchExtra: Record<string, Extra> = {
     title: 'How often the voice coach speaks up',
     series: 'WD batch 3, post 5',
     version: 'batch 3, image v2, cross-checked',
-    ...nov3('19:57'),
+    ...nov3('20:30'),
     topics: ['workout-director', 'coach'],
     media: ['diagram'],
     notes: [
+      'Image swapped 3 Nov 20:30 GMT: v3, whose caption now says pain skips the gap and the cap but still waits for 2.5 s of quiet (text-only change from WD Marketing).',
       'Revised 3 Nov: the opening names both limits, persona became coach style (the app’s label), and the talk less and talk more detail is left to the image.',
       'Overlaps with WD batch 2, post 1 (see there).',
     ],
@@ -410,10 +428,11 @@ const batchExtra: Record<string, Extra> = {
     title: 'A first rep waits for a second',
     series: 'WD batch 3, post 6',
     version: 'batch 3, image v3, cross-checked',
-    ...nov3('19:57'),
+    ...nov3('20:30'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
     notes: [
+      'Image swapped 3 Nov 20:30 GMT: v4, headline “The first rep waits for the next one.” and caption “It counts once another rep lands within 8 s, or when the set ends.” (text-only change from WD Marketing).',
       'Revised 3 Nov: waiting for the next rep (not a second one, which could read as 1 s), and the image pointer replaced by the 5.48 s wait. Image is v3, with the stepped rest line.',
     ],
   },
@@ -434,10 +453,11 @@ const batchExtra: Record<string, Extra> = {
     title: '115 figures for 869 catalogue exercises',
     series: 'WD batch 4, figures post 1',
     version: 'batch 4, cross-checked',
-    ...nov3('19:57'),
+    ...nov3('20:30'),
     topics: ['workout-director', 'figures'],
     media: ['image'],
     notes: [
+      '3 Nov 20:30 GMT: a board-only credit caption under the image (Taco Fleur, Wikimedia Commons, CC BY-SA 4.0) for the first comment; not in the post text.',
       'New 3 Nov: the figures post (fig1.txt), with the shipped bodyweight squat figures in dark and light. No credit line.',
       'WD Engineering fixes: 750 not 754 (115 figures cover 119 entries); most have a start and an end pose; the app offers only moves with figures.',
       'Overlaps with WD batch 2, post 4 on the 115 figures in light and dark.',
@@ -453,6 +473,72 @@ const batchExtra: Record<string, Extra> = {
     notes: [
       'New 3 Nov: the technical post (tech1.txt). Image is the v2 Pele diagram, whose caption says the pose model ships inside the app; The Pele credit was taken out of the post text on 3 Nov.',
       'Overlaps with D2 (pose models and the Vision fallback).',
+    ],
+  },
+  'wd-b5-1': {
+    title: 'Only the straight seconds count: the plank clock',
+    series: 'WD batch 5, post 1',
+    version: 'batch 5, cross-checked',
+    ...nov3('20:30'),
+    topics: ['workout-director', 'technical', 'rep-counter'],
+    media: ['image', 'diagram'],
+    notes: [
+      'New 3 Nov: batch 5 post 1, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). WD Marketing plank image added 3 Nov 20:35 GMT (Pexels, no credit).',
+    ],
+  },
+  'wd-b5-2': {
+    title: 'Eight dips, three push-ups',
+    series: 'WD batch 5, post 2',
+    version: 'batch 5, cross-checked',
+    ...nov3('20:30'),
+    topics: ['workout-director', 'technical', 'rep-counter'],
+    media: ['text'],
+    notes: [
+      'New 3 Nov: batch 5 post 2, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only: its WD Marketing image was not used (3 Nov 20:27).',
+    ],
+  },
+  'wd-b5-3': {
+    title: 'A row needs the hinge',
+    series: 'WD batch 5, post 3',
+    version: 'batch 5, cross-checked',
+    ...nov3('20:30'),
+    topics: ['workout-director', 'technical', 'rep-counter'],
+    media: ['text'],
+    notes: [
+      'New 3 Nov: batch 5 post 3, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only: its WD Marketing image was not used (3 Nov 20:27).',
+    ],
+  },
+  'wd-b5-4': {
+    title: 'Checking the Android counter frame by frame',
+    series: 'WD batch 5, post 4',
+    version: 'batch 5, cross-checked',
+    ...nov3('20:30'),
+    topics: ['workout-director', 'technical', 'rep-counter'],
+    media: ['text'],
+    notes: [
+      'New 3 Nov: batch 5 post 4, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only by design.',
+    ],
+  },
+  'wd-b5-5': {
+    title: 'Pacing the camera when the phone runs hot',
+    series: 'WD batch 5, post 5',
+    version: 'batch 5, cross-checked',
+    ...nov3('20:30'),
+    topics: ['workout-director', 'technical', 'pose-model'],
+    media: ['text'],
+    notes: [
+      'New 3 Nov: batch 5 post 5, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only by design.',
+    ],
+  },
+  'wd-b5-6': {
+    title: 'The Android GPU bug on frame one',
+    series: 'WD batch 5, post 6',
+    version: 'batch 5, cross-checked',
+    ...nov3('20:30'),
+    topics: ['workout-director', 'technical', 'pose-model'],
+    media: ['text'],
+    notes: [
+      'New 3 Nov: batch 5 post 6, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only by design.',
     ],
   },
 }
@@ -476,32 +562,57 @@ function fromBatch(post: WdBatchPost): DraftPost {
 const liteVsFull =
   "I wanted to know what the bigger pose model actually buys on real lifts, so I ran the same deadlift reps through the same counter with BlazePose Full and with Lite.\n\nOn the MyDeadlift clips, Full found 115 of 191 barbell deadlift reps and Lite found 106. Neither counted more reps than a clip actually had.\n\nBoth numbers look low, and part of that is the clips themselves: they're single reps joined end to end, with a cut between each one.\n\nI measured this on the counter build after the deadlift fix and haven't re-run it since, so treat it as a snapshot."
 
-/** Batch 3 post 3 has no image (WD Marketing dropped it), so it waits for media. Text from post-03-lite-vs-full.txt. */
+/** Batch 3 post 3: two image options approved by Ashish (3 Nov), the sharp Pexels frame first. Text from human-2026-11-03/wd-b3-3.txt. */
 const b3post3 = make({
   id: 'wd-b3-3',
   title: 'Lite against Full on the same deadlift reps',
   series: 'WD batch 3, post 3',
-  version: 'batch 3',
-  ...nov3('19:57'),
+  version: 'batch 3, two image options, cross-checked',
+  ...nov3('20:30'),
   topics: ['workout-director', 'pose-model', 'rep-counter'],
-  media: ['text'],
+  media: ['image'],
   chars: [...liteVsFull].length,
   text: liteVsFull,
-  images: [],
+  images: [
+    {
+      key: 'b3l1',
+      src: '/assets/img/preview/wd-b3-3-lite-vs-full-sharp.webp',
+      w: 1080,
+      h: 1350,
+      upload: '/workspace/wd-marketing/linkedin-batch-4/new/wd-b3-3-lite-vs-full-sharp.png',
+      name: 'wd-b3-3-lite-vs-full-sharp.png',
+      alt: 'Same frame, two pose models. A woman at the floor setting up a barbell deadlift, side-on, with two pose skeletons drawn on her shoulder, hip, knee and ankle: BlazePose Full in coral and Lite in white, labelled at each ankle. They agree at the shoulder and hip and part at the knee and the plate-hidden ankle. Caption: BlazePose Full and Lite, run on the same deadlift frame.',
+      note: 'WD Marketing new/wd-b3-3-lite-vs-full-sharp.png (3 Nov 20:10 GMT): Pexels 7674505 (cottonbro studio), 4K copy, frame 69 at 2.76 s, cropped and downscaled; Lite and Full re-run on the box with the lock-pinned .task files (not Engineering data). The caption gives no numbers; the 115 and 106 in the text are the MyDeadlift eval, not this frame. Pexels License, no credit needed (courtesy: Video: cottonbro studio / Pexels). Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
+    },
+    {
+      key: 'b3l2',
+      src: '/assets/img/preview/wd-b3-3-lite-vs-full-mydeadlift.webp',
+      w: 1080,
+      h: 1350,
+      upload: '/workspace/wd-marketing/linkedin-batch-4/new/wd-b3-3-lite-vs-full.png',
+      name: 'wd-b3-3-lite-vs-full.png',
+      alt: 'Same reps, two pose models. A man in a gym lifting a barbell from the floor, side-on, with BlazePose Lite in white and Full in coral drawn on his shoulder, hip, knee and ankle; on this frame Lite puts the knee and ankle behind the leg. Other gym-goers are in the background. Caption: Full found 115 of 191 deadlift reps, Lite 106. Neither added one.',
+      note: 'WD Marketing new/wd-b3-3-lite-vs-full.png (3 Nov 19:40 GMT): MyDeadlift GB_S01_R01.mp4 frame 0, cropped and upscaled; caption numbers from blog-data/batch-3/03-lite-vs-full/mydeadlift-lite-vs-full.csv (after, 9258fab0). CC BY 4.0: the credit goes in the first comment (caption under the image on this page), never in the post text. Bystanders in the background: Ashish’s call. Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
+    },
+  ],
   concept: 'Two pose models on the same deadlift reps: recall for BlazePose Full and Lite after the deadlift fix',
-  mediaNote: 'Media pending: WD Marketing dropped the image for this post.',
-  waiting: true,
+  mediaNote:
+    'Two image options, both approved by Ashish (3 Nov): 1, the sharp Pexels frame (no credit needed); 2, the MyDeadlift frame (CC BY 4.0, credit for the first comment under the image). Use one.',
   sources: [
     'wd-share/blog-data/batch-3/03-lite-vs-full/README.md:4 (Full 0.602, 115 of 191; Lite 0.555, 106 of 191; barbell, counter after PR #322), :2 (no extra reps either way), :11 (single rep clips joined with a cut), :7 (not re-run at main).',
-    'Caveats kept: no timing comparison (Mac times only), the Romanian row left out. The MyDeadlift CC BY 4.0 credit was taken out of the post text on 3 Nov 19:15 GMT (Ashish’s call).',
+    'Caveats kept: no timing comparison (Mac times only), the Romanian row left out. The MyDeadlift CC BY 4.0 credit was taken out of the post text on 3 Nov 19:15 GMT (Ashish’s call); it is a board-only caption under image 2.',
   ],
-  notes: ['Shares its recall numbers with WD batch 2, post 5.'],
+  notes: [
+    'Images added 3 Nov 20:30 GMT (Ashish approved both): the sharp Pexels frame first, then the MyDeadlift frame. Now Ready to post. The text cites no number from either image; its 115 and 106 come from the MyDeadlift eval.',
+    'Shares its recall numbers with WD batch 2, post 5.',
+  ],
 })
 
 const b2 = wdBatch2.map(fromBatch)
 const b3 = wdBatch3.map(fromBatch)
 const b3Ordered = [...b3.slice(0, 2), b3post3, ...b3.slice(2)]
 const b4 = wdBatch4.map(fromBatch)
+const b5 = wdBatch5.map(fromBatch)
 
 /** Every post on the board, in the order they were written. */
-export const draftPosts: DraftPost[] = [...fromV11, ...sampleA, ...b2, ...b3Ordered, ...b4]
+export const draftPosts: DraftPost[] = [...fromV11, ...sampleA, ...b2, ...b3Ordered, ...b4, ...b5]
