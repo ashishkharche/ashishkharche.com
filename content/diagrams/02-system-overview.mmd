@@ -24,6 +24,6 @@ flowchart TB
   CHAT -- "mints short-lived<br/>voice token" --> OAI["Realtime voice model"]
   APP <-- "WebRTC audio" --> OAI
   RC["RevenueCat"] -- "webhook" --> GW
-  APP --> MCDN["Media CDN<br/>exercise figures"]
-  APP -. "errors, flags" .-> PH["PostHog (EU)"]
+  APP --> MCDN["Media CDN<br/>profile photos"]
+  APP -. "errors" .-> PH["PostHog (EU)"]
   API -. "flags" .-> PH

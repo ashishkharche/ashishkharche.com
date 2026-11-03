@@ -30,7 +30,7 @@ A rep counter that streams video to a server would be easier in some ways, becau
 
 Keeping the camera local allows a privacy statement that can be made plainly in the App Store listing. It also splits the app into two parts.
 
-The phone owns everything that has to happen in real time: pose tracking, counting, timers and cues. The network is used only for things a workout can continue without: syncing the log, the trainer chat and the voice coach.
+The phone owns everything that has to happen in real time: pose tracking, counting, timers and cues. The network is used only for things a workout can continue without: syncing the log, the trainer chat, the voice coach, the app's settings from the server and error reports.
 
 <Diagram
   diagram={onDevice}
@@ -94,11 +94,11 @@ Two more mechanisms sit around the counter rather than inside it:
 
 ## Feature flags and shadow mode
 
-Changes to counting were the riskiest changes in the app, because a wrong count is the first thing a user notices. They ship behind feature flags.
+Changes to counting were the riskiest changes in the app, because a wrong count is the first thing a user notices. Camera counting as a whole, and a few behaviours around it, can be turned off from the server, and changes to the counter itself go through a pose test gate before each release.
 
 Camera counting has its own flag, and MediaPipe has a switch that sends everyone back to Apple's Vision. The internal team gets a pose debug overlay that only the server can turn on.
 
-Individual behaviours, such as asking for a count confirmation only when the counter is uncertain, can be turned off from the server. That does not require a new build to get through App Review.
+One of those behaviours is asking for a count confirmation only when the counter is uncertain. Turning one off does not require a new build to get through App Review.
 
 I also trained a small rep classifier that runs in shadow mode for internal testing. It is made of gradient-boosted trees on pose features and runs on the phone with Core ML. It ships in the app, but it only runs for the internal team, behind a server flag.
 
@@ -119,7 +119,7 @@ The voice coach is the only feature that needs the network during a set, so it i
 
 The phone opens a WebRTC call to a realtime voice model, using an `RTCPeerConnection` from the WebRTC framework. Audio goes straight from the phone to the voice service.
 
-When the call opens, the backend gives the model the user's profile, plan and recent workouts. During the workout the model gets short text notes about the state of the set over the WebRTC data channel (`RTCDataChannel`), and, if Apple Health is on, the set's heart rate and calories.
+When the call opens, the backend gives the model the user's profile, plan and recent workouts, what the trainer remembers about them, and any food they logged today. During the workout the model gets short text notes about the state of the set over the WebRTC data channel (`RTCDataChannel`), and, if Apple Health is on, the set's heart rate and calories.
 
 The model never gets video frames.
 
