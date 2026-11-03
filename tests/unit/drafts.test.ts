@@ -43,7 +43,7 @@ describe('the private drafts board', () => {
   it('shows one version of each post, with real images', () => {
     const ids = draftPosts.map((p) => p.id)
     expect(new Set(ids).size).toBe(ids.length)
-    expect(ids).toHaveLength(16)
+    expect(ids).toHaveLength(19)
     for (const post of draftPosts) {
       for (const img of post.images) expect(existsSync(join('public', img.src)), img.src).toBe(true)
       // A post with no image either waits for media or is text only on purpose (D2, D3 since the 3 Nov cross-check).
@@ -102,6 +102,9 @@ describe('drafts filters', () => {
         'wd-b3-4',
         'wd-b3-5',
         'wd-b3-6',
+        'wd-b4-p1',
+        'wd-b4-fig1',
+        'wd-b4-tech1',
       ].sort(),
     )
     const waiting = draftPosts.filter((p) => matches(p, parseFilters('?status=waiting')))
@@ -110,7 +113,7 @@ describe('drafts filters', () => {
       'wd-b2-2',
     ])
     const grouped = arrange(draftPosts, parseFilters('?sort=topic'))
-    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(16)
+    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(19)
     const newest = arrange(draftPosts, none)[0]?.posts ?? []
     expect((newest[0]?.updated ?? '') >= (newest.at(-1)?.updated ?? '')).toBe(true)
   })

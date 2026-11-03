@@ -53,4 +53,23 @@ describe('Copy for LinkedIn', () => {
     expect(linkedinPlain(post?.text ?? '')).toBe(paras.join('\n\n'))
     expect(linkedinHtml(post?.text ?? '')).toBe(paras.map((p) => `<p>${p}</p>`).join(''))
   })
+
+  it('copies the batch 4 posts with their paragraphs and credit lines', () => {
+    const expected = { 'wd-b4-p1': 6, 'wd-b4-fig1': 3, 'wd-b4-tech1': 4 }
+    for (const [id, n] of Object.entries(expected)) {
+      const post = draftPosts.find((p) => p.id === id)
+      if (!post) throw new Error(`${id} is missing`)
+      const plain = linkedinPlain(post.text)
+      expect(plain, id).toBe(post.text)
+      expect(plain.split('\n\n'), id).toHaveLength(n)
+      expect(linkedinHtml(post.text).match(/<p>/g), id).toHaveLength(n)
+      expect(linkedinHtml(post.text), id).not.toContain('<p><br></p>')
+    }
+    const p1 = draftPosts.find((p) => p.id === 'wd-b4-p1')
+    expect(p1?.text).toMatch(
+      /\n\nImage: the app counting a Pexels clip played in place of the camera\. Video: Aliaksei Masiukevich \/ Pexels\.$/,
+    )
+    expect(JSON.stringify(p1?.images)).not.toMatch(/live/i)
+    expect(draftPosts.find((p) => p.id === 'wd-b4-tech1')?.text).toMatch(/\n\nDiagram rendered with Pele\.$/)
+  })
 })

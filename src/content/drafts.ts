@@ -3,6 +3,7 @@ import { liDrafts } from '~/content/linkedinV11Li'
 import { liSamples } from '~/content/linkedinSamples'
 import { wdBatch2, type WdBatchPost } from '~/content/linkedinWdBatch2'
 import { wdBatch3 } from '~/content/linkedinWdBatch3'
+import { wdBatch4 } from '~/content/linkedinWdBatch4'
 
 /**
  * The private drafts board: one current version of each LinkedIn draft, with what the filters need.
@@ -16,6 +17,7 @@ export const draftsPath = `/drafts/${draftsSlug}/`
 
 export const topics = {
   'workout-director': 'Workout Director',
+  product: 'Product',
   'rep-counter': 'Rep counter',
   'pose-model': 'Pose model',
   coach: 'Voice coach',
@@ -87,7 +89,8 @@ type Extra = Pick<DraftPost, 'title' | 'series' | 'version' | 'updated' | 'updat
 
 /**
  * Posts revised on 3 Nov from /workspace/linkedin-samples/personal/revised-2026-11-03 after the WD Engineering and
- * WD Marketing cross-checks. They show as cross-checked unless they still wait for media.
+ * WD Marketing cross-checks, and the three batch 4 posts (wd-batch-4, cross-checked the same day). They show as
+ * cross-checked unless they still wait for media.
  */
 const crossChecked = new Set([
   'd1',
@@ -103,6 +106,9 @@ const crossChecked = new Set([
   'wd-b3-4',
   'wd-b3-5',
   'wd-b3-6',
+  'wd-b4-p1',
+  'wd-b4-fig1',
+  'wd-b4-tech1',
 ])
 const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; changes in revised-2026-11-03/CHANGES.md.'
 
@@ -333,6 +339,44 @@ const batchExtra: Record<string, Extra> = {
       'Revised 3 Nov: waiting for the next rep (not a second one, which could read as 1 s), and the image pointer replaced by the 5.48 s wait. Image is v3, with the stepped rest line.',
     ],
   },
+  'wd-b4-p1': {
+    title: 'What Workout Director is',
+    series: 'WD batch 4, product post 1',
+    version: 'batch 4, image p1 v2, cross-checked',
+    ...nov3('19:00'),
+    topics: ['workout-director', 'product', 'rep-counter'],
+    media: ['image'],
+    notes: [
+      'New 3 Nov: the product post (p1.txt). Image is p1 v2, the app counting a Pexels clip played in place of the camera, with the video credit in the text. The first p1 image is not used.',
+      'WD Engineering fix: "six" programs dropped (the code has at least 7).',
+      'Open: the image is a 1.0.94 frame; a shoe brand print is mostly hidden but can be recognised zoomed in (WD Marketing; final call is Ashish’s).',
+    ],
+  },
+  'wd-b4-fig1': {
+    title: '115 figures for 869 catalogue exercises',
+    series: 'WD batch 4, figures post 1',
+    version: 'batch 4, cross-checked',
+    ...nov3('19:00'),
+    topics: ['workout-director', 'figures'],
+    media: ['image'],
+    notes: [
+      'New 3 Nov: the figures post (fig1.txt), with the shipped bodyweight squat figures in dark and light. No credit line.',
+      'WD Engineering fixes: 750 not 754 (115 figures cover 119 entries); most have a start and an end pose; the app offers only moves with figures.',
+      'Overlaps with WD batch 2, post 4 on the 115 figures in light and dark.',
+    ],
+  },
+  'wd-b4-tech1': {
+    title: 'Pose tracking and counting on the iPhone',
+    series: 'WD batch 4, technical post 1',
+    version: 'batch 4, Pele diagram v2, cross-checked',
+    ...nov3('19:00'),
+    topics: ['workout-director', 'pose-model', 'rep-counter'],
+    media: ['diagram'],
+    notes: [
+      'New 3 Nov: the technical post (tech1.txt). Image is the v2 Pele diagram, whose caption says the pose model ships inside the app; Pele credit in the text. No other credit line.',
+      'Overlaps with D2 (pose models and the Vision fallback).',
+    ],
+  },
 }
 
 function fromBatch(post: WdBatchPost): DraftPost {
@@ -379,6 +423,7 @@ const b3post3 = make({
 const b2 = wdBatch2.map(fromBatch)
 const b3 = wdBatch3.map(fromBatch)
 const b3Ordered = [...b3.slice(0, 2), b3post3, ...b3.slice(2)]
+const b4 = wdBatch4.map(fromBatch)
 
 /** Every post on the board, in the order they were written. */
-export const draftPosts: DraftPost[] = [...fromV11, ...sampleA, ...b2, ...b3Ordered]
+export const draftPosts: DraftPost[] = [...fromV11, ...sampleA, ...b2, ...b3Ordered, ...b4]
