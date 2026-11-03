@@ -43,7 +43,7 @@ describe('the private drafts board', () => {
   it('shows one version of each post, with real images', () => {
     const ids = draftPosts.map((p) => p.id)
     expect(new Set(ids).size).toBe(ids.length)
-    expect(ids).toHaveLength(29)
+    expect(ids).toHaveLength(28)
     for (const post of draftPosts) {
       for (const img of post.images) expect(existsSync(join('public', img.src)), img.src).toBe(true)
       // A post with no image either waits for media or is text only on purpose (D2, D3 since the 3 Nov cross-check).
@@ -118,7 +118,7 @@ describe('drafts filters', () => {
 
   it('keeps the batch 6 product posts to the availability and wording rules', () => {
     const b6 = draftPosts.filter((p) => p.id.startsWith('wd-b6-'))
-    expect(b6).toHaveLength(4)
+    expect(b6).toHaveLength(3)
     for (const post of b6) {
       expect(post.topics, post.id).toContain('product')
       expect(post.text.trim().endsWith('Free on the App Store.'), post.id).toBe(true)
@@ -161,17 +161,18 @@ describe('drafts filters', () => {
         'wd-b5-4',
         'wd-b5-5',
         'wd-b5-6',
+        'wd-b6-1',
+        'wd-b6-2',
+        'wd-b6-3',
       ].sort(),
     )
     const waiting = draftPosts.filter((p) => matches(p, parseFilters('?status=waiting')))
     expect(waiting.map((p) => p.id).sort()).toEqual(['wd-b2-1', 'wd-b2-3'])
-    const checking = draftPosts.filter((p) => matches(p, parseFilters('?status=checking')))
-    expect(checking.map((p) => p.id)).toEqual(['wd-b6-1', 'wd-b6-2', 'wd-b6-3', 'wd-b6-4'])
     expect(draftPosts.filter((p) => matches(p, parseFilters('?q=Time+to+update'))).map((p) => p.id)).toEqual([
       'wd-b2-2',
     ])
     const grouped = arrange(draftPosts, parseFilters('?sort=topic'))
-    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(29)
+    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(28)
     const newest = arrange(draftPosts, none)[0]?.posts ?? []
     expect((newest[0]?.updated ?? '') >= (newest.at(-1)?.updated ?? '')).toBe(true)
   })

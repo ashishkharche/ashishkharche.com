@@ -42,11 +42,10 @@ export const lengths = {
 } as const
 export type Length = keyof typeof lengths
 
-/** Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov). The rest wait for media or for that cross-check. */
+/** Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov); every post not waiting for media is. */
 export const statuses = {
   ready: 'Ready to post',
   waiting: 'Waiting for media',
-  checking: 'Waiting for cross-check',
 } as const
 export type Status = keyof typeof statuses
 
@@ -121,12 +120,10 @@ const crossChecked = new Set([
   'wd-b5-4',
   'wd-b5-5',
   'wd-b5-6',
+  'wd-b6-1',
+  'wd-b6-2',
+  'wd-b6-3',
 ])
-/**
- * Written but not yet cross-checked by WD Engineering and WD Marketing: shown as Waiting for cross-check, never Ready.
- * When both verdicts are in and applied, move the id from here to crossChecked.
- */
-const awaitingCrossCheck = new Set(['wd-b6-1', 'wd-b6-2', 'wd-b6-3', 'wd-b6-4'])
 const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; see revised-2026-11-03/CHANGES.md.'
 /** Every post's text was replaced on 3 Nov 19:57 GMT by its human-voice rewrite. */
 const humanNote =
@@ -211,9 +208,7 @@ function make(
 ): DraftPost {
   const primary = base.topics.find((t) => t !== 'workout-director') ?? base.topics[0] ?? 'workout-director'
   const { waiting, notes, images, ...rest } = base
-  const checking = awaitingCrossCheck.has(base.id)
-  if (checking && crossChecked.has(base.id)) throw new Error(`${base.id} is both cross-checked and awaiting it`)
-  if (!waiting && !checking && !crossChecked.has(base.id))
+  if (!waiting && !crossChecked.has(base.id))
     throw new Error(`${base.id} is not waiting for media but not cross-checked`)
   const lead = [
     ...(base.id.startsWith('wd-b6-') ? [] : [humanNote]),
@@ -225,7 +220,7 @@ function make(
     images: images.map(withPng),
     primary,
     length: lengthOf(base.chars),
-    status: checking ? 'checking' : waiting ? 'waiting' : 'ready',
+    status: waiting ? 'waiting' : 'ready',
     notes: [...lead, ...(notes ?? [])],
   }
 }
@@ -488,45 +483,34 @@ const batchExtra: Record<string, Extra> = {
   'wd-b6-1': {
     title: "Today's target comes with a reason",
     series: 'WD batch 6 (product), post 1',
-    version: 'batch 6, awaiting cross-check',
-    ...nov3('21:55'),
+    version: 'batch 6, cross-checked',
+    ...nov3('22:15'),
     topics: ['workout-director', 'product'],
     media: ['text'],
     notes: [
-      'New 3 Nov: product promotion batch 6 (Ashish 21:25 GMT, "Do few on product promotion"). Sent for the WD Engineering and WD Marketing cross-check; not Ready until both verdicts are applied.',
+      'New 3 Nov: product promotion batch 6 (Ashish 21:25 GMT, "Do few on product promotion"). Cross-checked: Eng OK, WD Marketing FIX applied (paragraph split, "fixed rules" wording). See wd-batch-6-product/README.md.',
     ],
   },
   'wd-b6-2': {
     title: "Search by the name you'd use in the gym",
     series: 'WD batch 6 (product), post 2',
-    version: 'batch 6, awaiting cross-check',
-    ...nov3('21:55'),
+    version: 'batch 6, cross-checked',
+    ...nov3('22:15'),
     topics: ['workout-director', 'product'],
     media: ['image'],
     notes: [
-      'New 3 Nov: product promotion batch 6. Image is the real iOS search screen (no credit needed). Sent for the WD Engineering and WD Marketing cross-check; not Ready until both verdicts are applied.',
+      'New 3 Nov: product promotion batch 6. Image is the real iOS search screen with the WD logo (no credit needed). Cross-checked: Eng OK, WD Marketing FIX applied; press-up example dropped. Don’t run it on the same day as p1 (WD Marketing).',
     ],
   },
   'wd-b6-3': {
     title: 'Fit my day',
     series: 'WD batch 6 (product), post 3',
-    version: 'batch 6, awaiting cross-check',
-    ...nov3('21:55'),
+    version: 'batch 6, cross-checked',
+    ...nov3('22:15'),
     topics: ['workout-director', 'product'],
     media: ['text'],
     notes: [
-      'New 3 Nov: product promotion batch 6. Sent for the WD Engineering and WD Marketing cross-check; not Ready until both verdicts are applied.',
-    ],
-  },
-  'wd-b6-4': {
-    title: 'Pick a program and it becomes your week',
-    series: 'WD batch 6 (product), post 4',
-    version: 'batch 6, awaiting cross-check',
-    ...nov3('21:55'),
-    topics: ['workout-director', 'product'],
-    media: ['text'],
-    notes: [
-      'New 3 Nov: product promotion batch 6. No program count in the text (the code has more than the six the listing names). Sent for the WD Engineering and WD Marketing cross-check; not Ready until both verdicts are applied.',
+      'New 3 Nov: product promotion batch 6. Cross-checked: Eng FIX applied (same muscles and body limits, not “a safe one”), WD Marketing OK with its optional sentence 2 tweak. Batch 6 post 4 (programs) is held off the board (WD Marketing DROP: overlaps p1).',
     ],
   },
   'wd-b5-1': {

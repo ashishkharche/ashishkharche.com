@@ -187,11 +187,7 @@ function Board() {
                         {p.title}
                       </a>{' '}
                       <span {...stylex.props(styles.count)}>
-                        {p.status === 'waiting'
-                          ? 'waiting for media, '
-                          : p.status === 'checking'
-                            ? 'waiting for cross-check, '
-                            : ''}
+                        {p.status === 'waiting' ? 'waiting for media, ' : ''}
                         {p.chars.toLocaleString('en-GB')} chars
                       </span>
                     </li>
@@ -261,7 +257,7 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
           {post.series} · {post.version} · updated {post.updatedLabel}
         </p>
         <ul aria-label="Tags" {...stylex.props(styles.tags)}>
-          <li {...stylex.props(styles.tag, post.status !== 'ready' && styles.tagWaiting)}>{statuses[post.status]}</li>
+          <li {...stylex.props(styles.tag, post.status === 'waiting' && styles.tagWaiting)}>{statuses[post.status]}</li>
           <li {...stylex.props(styles.tag)}>
             {lengths[post.length].split(' (')[0]}, {post.chars.toLocaleString('en-GB')} characters
           </li>
