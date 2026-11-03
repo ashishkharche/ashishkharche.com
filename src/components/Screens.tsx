@@ -14,7 +14,7 @@ import {
   type ScreenId,
   type StageSpec,
 } from '~/content/workoutDirectorScreens'
-import { breakpoints, colors, type } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 interface PictureProps {
@@ -419,7 +419,7 @@ const styles = stylex.create({
   fullRow: { gridColumnStart: 1, gridColumnEnd: -1 },
   caption: {
     marginTop: '0.7rem',
-    fontSize: '0.95rem',
+    fontSize: type.meta,
     lineHeight: 1.5,
     color: colors.muted,
   },
@@ -439,7 +439,7 @@ const styles = stylex.create({
     marginBottom: '1rem',
     minHeight: '40px',
   },
-  count: { marginLeft: '0.5rem', fontSize: '0.95rem', fontWeight: 400, color: colors.muted },
+  count: { marginLeft: '0.5rem', fontSize: type.meta, fontWeight: weights.regular, color: colors.muted },
   buttons: { display: 'flex', gap: '0.5rem' },
   button: {
     display: 'grid',
@@ -487,8 +487,8 @@ const styles = stylex.create({
     alignItems: 'baseline',
     gap: '0.5rem',
     marginTop: '0.75rem',
-    fontSize: '0.95rem',
+    fontSize: type.meta,
     color: colors.muted,
   },
-  number: { fontVariantNumeric: 'tabular-nums', color: colors.text, fontWeight: 600 },
+  number: { fontVariantNumeric: 'tabular-nums', color: colors.text, fontWeight: weights.medium },
 })

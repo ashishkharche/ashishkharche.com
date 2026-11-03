@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import type { ReactNode } from 'react'
-import { breakpoints, colors, layout } from '~/styles/tokens.stylex'
+import { breakpoints, colors, layout, type } from '~/styles/tokens.stylex'
 
 export interface ThemedImage {
   /** File stem in /assets/img: `<name>-light.webp` and `<name>-dark.webp`. */
@@ -64,7 +64,7 @@ const styles = stylex.create({
   fullRow: { gridColumnStart: 1, gridColumnEnd: -1 },
   caption: {
     marginTop: '0.7rem',
-    fontSize: '0.95rem',
+    fontSize: type.meta,
     lineHeight: 1.5,
     color: colors.muted,
   },
@@ -80,6 +80,6 @@ const styles = stylex.create({
     borderBlockColor: colors.line,
     maxWidth: layout.columnWide,
   },
-  term: { color: colors.muted, fontSize: '0.95rem' },
-  detail: { marginTop: '0.15rem', fontSize: '1rem' },
+  term: { color: colors.muted, fontSize: type.meta },
+  detail: { marginTop: '0.15rem', fontSize: type.body, textWrap: 'pretty' },
 })

@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import type { MDXComponents } from 'mdx/types'
 import type { ComponentPropsWithoutRef, ReactNode } from 'react'
 import { CodeBlock } from '~/components/CodeBlock'
-import { breakpoints, colors, fonts } from '~/styles/tokens.stylex'
+import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 /** Container for long-form text: case studies, notes and the About page. */
@@ -51,6 +51,8 @@ export const mdxComponents: MDXComponents = {
   ul: ({ children }) => <ul {...stylex.props(styles.block, styles.list)}>{children}</ul>,
   ol: ({ children }) => <ol {...stylex.props(styles.block, styles.list)}>{children}</ol>,
   li: ({ children }) => <li {...stylex.props(styles.item)}>{children}</li>,
+  // The site uses two weights, so bold text is the medium weight, not the browser's 700.
+  strong: ({ children }) => <strong {...stylex.props(styles.strong)}>{children}</strong>,
   // Inline `code` gets the chip style. Code inside a fenced block is marked by Shiki and left plain.
   code: ({ children, ...rest }: ComponentPropsWithoutRef<'code'> & { 'data-language'?: string }) =>
     rest['data-language'] ? <code>{children}</code> : <code {...stylex.props(styles.code)}>{children}</code>,
@@ -64,7 +66,8 @@ const styles = stylex.create({
     marginTop: { default: '1.35rem', ':first-child': 0 },
     textWrap: 'pretty',
   },
-  lead: { fontSize: '1.25rem', lineHeight: 1.55 },
+  lead: { fontSize: type.lead, lineHeight: 1.55 },
+  strong: { fontWeight: weights.medium },
   h2: {
     marginTop: { default: '4.5rem', ':first-child': 0, [breakpoints.phone]: '3.5rem' },
   },

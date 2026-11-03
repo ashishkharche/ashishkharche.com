@@ -12,7 +12,7 @@ import { formatLongDate } from '~/lib/dates'
 import { seo } from '~/lib/seo'
 import { jsonLdScript, noteJsonLd } from '~/lib/structuredData'
 import dates from 'virtual:content-dates'
-import { colors, fonts } from '~/styles/tokens.stylex'
+import { colors, fonts, type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/notes/$slug')({
@@ -71,18 +71,18 @@ const styles = stylex.create({
   back: {
     display: 'inline-block',
     marginBottom: '1.75rem',
-    fontSize: '1rem',
+    fontSize: type.meta,
     color: { default: colors.muted, ':hover': colors.accent },
     textDecorationLine: 'none',
   },
-  meta: { color: colors.muted, fontSize: '1rem' },
+  meta: { color: colors.muted, fontSize: type.meta },
   title: {
     marginTop: '0.6rem',
     fontFamily: fonts.serif,
-    fontSize: 'clamp(2.15rem, 5.2vw, 2.95rem)',
-    lineHeight: 1.1,
+    fontSize: type.title,
+    lineHeight: 1.15,
     textWrap: 'balance',
-    fontWeight: 400,
+    fontWeight: weights.regular,
     letterSpacing: '-0.012em',
   },
   body: { marginTop: '2rem' },

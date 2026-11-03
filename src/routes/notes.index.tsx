@@ -7,6 +7,7 @@ import { comingNotes, noteListSummary, notes } from '~/content/notes'
 import { formatShortDate } from '~/lib/dates'
 import { feedPath } from '~/lib/feed'
 import { seo } from '~/lib/seo'
+import { type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/notes/')({
@@ -57,6 +58,6 @@ function Notes() {
 
 const styles = stylex.create({
   sub: { marginTop: '0.3rem', marginBottom: '2.25rem' },
-  comingTitle: { marginTop: '3rem', marginBottom: '1.25rem', fontSize: '0.9rem', fontWeight: 500 },
-  feed: { marginTop: '3rem', fontSize: '1rem' },
+  comingTitle: { marginTop: '3rem', marginBottom: '1.25rem', fontSize: type.meta, fontWeight: weights.medium },
+  feed: { marginTop: '3rem', fontSize: type.body },
 })

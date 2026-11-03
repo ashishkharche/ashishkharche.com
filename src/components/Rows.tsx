@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
-import { breakpoints, colors } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export interface Row {
@@ -53,6 +53,6 @@ const styles = stylex.create({
     borderBottomStyle: 'solid',
     borderBottomColor: colors.line,
   },
-  date: { color: colors.muted, fontSize: '0.95rem', whiteSpace: 'nowrap' },
-  desc: { gridColumnStart: 1, gridColumnEnd: -1, color: colors.muted, fontSize: '1rem' },
+  date: { color: colors.muted, fontSize: type.meta, whiteSpace: 'nowrap' },
+  desc: { gridColumnStart: 1, gridColumnEnd: -1, color: colors.muted, fontSize: type.body, textWrap: 'pretty' },
 })

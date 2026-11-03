@@ -14,7 +14,7 @@ import { workoutDirectorCard, workoutDirectorHero, workoutDirectorStackGroups } 
 import { links } from '~/content/site'
 import { stagePreload } from '~/content/workoutDirectorScreens'
 import { seo } from '~/lib/seo'
-import { colors } from '~/styles/tokens.stylex'
+import { colors, type } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 const pageSeo = () =>
@@ -103,7 +103,7 @@ const styles = stylex.create({
   back: {
     display: 'inline-block',
     marginBottom: '1.75rem',
-    fontSize: '1rem',
+    fontSize: type.meta,
     color: { default: colors.muted, ':hover': colors.accent },
     textDecorationLine: 'none',
   },

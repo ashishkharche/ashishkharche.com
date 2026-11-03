@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
-import { breakpoints, colors, fonts, layout } from '~/styles/tokens.stylex'
+import { breakpoints, colors, fonts, layout, type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 const TITLE_PLACEHOLDER = '__DIAGRAM_TITLE__'
@@ -66,7 +66,7 @@ const styles = stylex.create({
     '--_b': colors.diagramEdge,
     '--_c': colors.accent,
     '--_r': '6px',
-    '--_hw': '600',
+    '--_hw': weights.medium,
     '--_fm': fonts.mono,
     color: colors.text,
     fontFamily: fonts.sans,
@@ -76,7 +76,9 @@ const styles = stylex.create({
   },
   caption: {
     marginTop: '0.7rem',
-    fontSize: '0.95rem',
+    // Starts at the text column's left edge and keeps its measure, even under a wide drawing.
+    maxWidth: layout.column,
+    fontSize: type.meta,
     lineHeight: 1.5,
     color: colors.muted,
   },

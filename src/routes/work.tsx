@@ -7,7 +7,7 @@ import { PageHead } from '~/components/PageHead'
 import { Rows } from '~/components/Rows'
 import { certificationsNote, maestroArticles, roles, tools, workIntro } from '~/content/work'
 import { seo } from '~/lib/seo'
-import { breakpoints, colors } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/work')({
@@ -115,11 +115,11 @@ const styles = stylex.create({
     borderBottomStyle: 'solid',
     borderBottomColor: colors.line,
   },
-  when: { color: colors.muted, fontSize: '1rem', paddingTop: '0.1rem', textWrap: 'balance' },
+  when: { color: colors.muted, fontSize: type.meta, paddingTop: '0.1rem', textWrap: 'balance' },
   org: { display: 'flex', alignItems: 'center', gap: '0.75rem' },
   mark: { display: 'flex', justifyContent: 'center', width: '2.6rem', flex: 'none' },
-  role: { color: colors.muted, marginTop: '0.4rem' },
-  para: { marginTop: '0.75rem' },
+  role: { color: colors.muted, marginTop: '0.4rem', textWrap: 'pretty' },
+  para: { marginTop: '0.75rem', textWrap: 'pretty' },
   skill: {
     display: 'grid',
     gridTemplateColumns: { default: '7rem 1fr', [breakpoints.phone]: '1fr' },

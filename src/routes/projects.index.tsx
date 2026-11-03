@@ -7,7 +7,7 @@ import { ProjectCard } from '~/components/ProjectCard'
 import { kaloCard, workoutDirectorCard } from '~/content/projects'
 import { stagePreload } from '~/content/workoutDirectorScreens'
 import { seo } from '~/lib/seo'
-import { breakpoints, colors } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/projects/')({
@@ -61,7 +61,7 @@ function Projects() {
 const styles = stylex.create({
   tool: { marginTop: '1.5rem', maxWidth: '40rem' },
   toolText: { marginTop: '0.5rem', color: colors.muted },
-  toolMeta: { marginTop: '0.6rem', color: colors.muted, fontSize: '0.9rem' },
+  toolMeta: { marginTop: '0.6rem', color: colors.muted, fontSize: type.meta },
   grid: {
     display: 'grid',
     gridTemplateColumns: '1fr',

@@ -308,7 +308,7 @@ const styles = stylex.create({
     lineHeight: 1.2,
     letterSpacing: '-0.01em',
   },
-  appText: { marginTop: '0.3rem', fontSize: type.meta, lineHeight: 1.45, color: colors.muted },
+  appText: { marginTop: '0.3rem', fontSize: type.meta, lineHeight: 1.45, color: colors.muted, textWrap: 'pretty' },
   appLinks: { display: 'flex', flexWrap: 'wrap', gap: { default: '0.6rem', [breakpoints.phone]: '0.5rem' } },
   button: {
     display: 'inline-flex',

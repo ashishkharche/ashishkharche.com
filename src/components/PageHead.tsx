@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import type { ReactNode } from 'react'
-import { colors, fonts } from '~/styles/tokens.stylex'
+import { colors, fonts, type, weights } from '~/styles/tokens.stylex'
 
 export function PageHead({ title, lead, icon }: { title: string; lead?: ReactNode; icon?: ReactNode }) {
   return (
@@ -16,17 +16,18 @@ const styles = stylex.create({
   icon: { marginBottom: '1rem' },
   title: {
     fontFamily: fonts.serif,
-    fontSize: 'clamp(2.5rem, 6vw, 3.5rem)',
+    fontSize: type.title,
     lineHeight: 1.15,
     textWrap: 'balance',
-    fontWeight: 400,
+    fontWeight: weights.regular,
     letterSpacing: '-0.012em',
   },
   lead: {
     marginTop: '1.25rem',
-    fontSize: '1.25rem',
+    fontSize: type.lead,
     lineHeight: 1.6,
     color: colors.muted,
     maxWidth: '36em',
+    textWrap: 'pretty',
   },
 })

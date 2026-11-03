@@ -1,6 +1,9 @@
 import * as stylex from '@stylexjs/stylex'
 import { breakpoints, colors, fonts, layout, type, weights } from './tokens.stylex'
 
+// The left edge of `wrap`: half the gutter on narrow screens, centred in the 1040px width on wide ones.
+const alignedLeft = `max(${layout.gutter} / 2, (100% - ${layout.wide}) / 2)`
+
 const focusRing = {
   outline: { default: null, ':focus-visible': `2px solid ${colors.accent}` },
   outlineOffset: { default: null, ':focus-visible': '3px' },
@@ -12,20 +15,27 @@ export const ui = stylex.create({
     width: { default: `min(100% - ${layout.gutter}, ${layout.wide})`, [breakpoints.phone]: 'calc(100% - 3rem)' },
     marginInline: 'auto',
   },
+  /**
+   * The text columns start at the same left edge as `wrap` (and the header), so page titles and
+   * text line up on every page; the space they leave is on the right.
+   */
   column: {
     width: { default: `min(100% - ${layout.gutter}, ${layout.column})`, [breakpoints.phone]: 'calc(100% - 3rem)' },
-    marginInline: 'auto',
+    marginLeft: { default: alignedLeft, [breakpoints.phone]: 'auto' },
+    marginRight: 'auto',
   },
   columnWide: {
     width: { default: `min(100% - ${layout.gutter}, ${layout.columnWide})`, [breakpoints.phone]: 'calc(100% - 3rem)' },
-    marginInline: 'auto',
+    marginLeft: { default: alignedLeft, [breakpoints.phone]: 'auto' },
+    marginRight: 'auto',
   },
   narrow: { maxWidth: layout.column },
-  /** Breaks a block out of the text column to the full content width. */
+  /**
+   * Breaks a block out of the text column to the full content width. The column starts at the
+   * wrap's left edge, so the wide block starts there too and runs to the wrap's right edge.
+   */
   wide: {
-    width: `min(100vw - ${layout.gutter}, ${layout.wide})`,
-    marginLeft: '50%',
-    transform: 'translateX(-50%)',
+    width: { default: `min(100vw - ${layout.gutter}, ${layout.wide})`, [breakpoints.phone]: 'calc(100vw - 3rem)' },
   },
   link: {
     color: { default: colors.text, ':hover': colors.accent },
@@ -87,12 +97,12 @@ export const ui = stylex.create({
     textWrap: 'balance',
   },
   h3: {
-    fontSize: '1.15rem',
-    fontWeight: 500,
+    fontSize: type.lead,
+    fontWeight: weights.medium,
     lineHeight: 1.45,
     textWrap: 'balance',
   },
-  note: { marginTop: '1.5rem', color: colors.muted, fontSize: '1rem' },
+  note: { marginTop: '1.5rem', color: colors.muted, fontSize: type.meta },
   mt06: { marginTop: '0.6rem' },
   mt1: { marginTop: '1rem' },
   mt2: { marginTop: '2rem' },
