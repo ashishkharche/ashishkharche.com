@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { draftPosts, draftsImagesPath, draftsPath, draftsSlug, lengthOf } from '~/content/drafts'
+import { draftPosts, draftsImagesPath, draftsPath, draftsSlug, lengthOf, statuses } from '~/content/drafts'
 import { sitemapPaths } from '~/content/site'
 import { arrange, filtersToSearch, matches, parseFilters } from '~/lib/drafts'
 
@@ -132,7 +132,9 @@ describe('drafts filters', () => {
 
   it('keeps the audit wording rules: no "my app", no show-off lines, no version numbers, no repeats', () => {
     for (const post of draftPosts) {
-      expect(post.text, post.id).not.toMatch(/\bmy (own )?app\b|\bmy own\b|\bour own\b|own artwork|own figures/i)
+      expect(post.text, post.id).not.toMatch(
+        /\bmy (own )?app\b|\bmy own\b|\bour own\b|own artwork|own figures|\bmy (rep |row )?counter\b|\bmy row\b|Android version I'm porting/i,
+      )
       expect(post.text, post.id).not.toMatch(/\b\d+\.\d+\.\d+\b|\bversion \d/i)
       expect(post.text, post.id).not.toMatch(/part \d of \d/i)
     }
@@ -158,12 +160,13 @@ describe('drafts filters', () => {
     expect(coach.map((p) => p.id).sort()).toEqual(['wd-b3-4', 'wd-b3-5'])
     // One status for every cross-checked post: Ready to post. The rest wait for media.
     expect(parseFilters('?status=checked').status).toEqual([])
-    // After the 3 Nov audit pass only the unchanged, cross-checked posts are Ready; the changed ones wait for the re-check.
+    // After the 3 Nov audit pass and its re-check, every post not waiting for media is Ready; no cross-check status is left.
+    expect(Object.keys(statuses).sort()).toEqual(['ready', 'waiting'])
+    expect(parseFilters('?status=checking').status).toEqual([])
     const ready = draftPosts.filter((p) => matches(p, parseFilters('?status=ready')))
-    expect(ready.map((p) => p.id).sort()).toEqual(['sample-a', 'wd-b3-2', 'wd-b3-5', 'wd-b5-6'])
-    const checking = draftPosts.filter((p) => matches(p, parseFilters('?status=checking')))
-    expect(checking).toHaveLength(21)
-    for (const post of checking) expect(post.version, post.id).toMatch(/awaiting cross-check$/)
+    expect(ready).toHaveLength(25)
+    expect(ready.map((p) => p.id)).not.toContain('wd-b2-3')
+    for (const post of draftPosts) expect(post.version, post.id).not.toMatch(/awaiting/)
     const waiting = draftPosts.filter((p) => matches(p, parseFilters('?status=waiting')))
     expect(waiting.map((p) => p.id).sort()).toEqual(['wd-b2-3'])
     expect(draftPosts.filter((p) => matches(p, parseFilters('?q=Time+to+update'))).map((p) => p.id)).toEqual([
