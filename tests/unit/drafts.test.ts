@@ -43,7 +43,7 @@ describe('the private drafts board', () => {
   it('shows one version of each post, with real images', () => {
     const ids = draftPosts.map((p) => p.id)
     expect(new Set(ids).size).toBe(ids.length)
-    expect(ids).toHaveLength(25)
+    expect(ids).toHaveLength(29)
     for (const post of draftPosts) {
       for (const img of post.images) expect(existsSync(join('public', img.src)), img.src).toBe(true)
       // A post with no image either waits for media or is text only on purpose (D2, D3 since the 3 Nov cross-check).
@@ -57,7 +57,7 @@ describe('the private drafts board', () => {
   it('offers each page image as its lossless PNG under the noindex /drafts/ path', () => {
     const names = new Set<string>()
     const pngs = draftPosts.flatMap((p) => p.images)
-    expect(pngs).toHaveLength(18)
+    expect(pngs).toHaveLength(19)
     for (const img of pngs) {
       expect(img.png).toBe(`${draftsImagesPath}${img.pngName}`)
       expect(img.pngName, img.src).toMatch(/^[a-z0-9-]+\.png$/)
@@ -116,6 +116,18 @@ describe('drafts filters', () => {
     expect(parseFilters('?topic=nope&sort=x').topic).toEqual([])
   })
 
+  it('keeps the batch 6 product posts to the availability and wording rules', () => {
+    const b6 = draftPosts.filter((p) => p.id.startsWith('wd-b6-'))
+    expect(b6).toHaveLength(4)
+    for (const post of b6) {
+      expect(post.topics, post.id).toContain('product')
+      expect(post.text.trim().endsWith('Free on the App Store.'), post.id).toBe(true)
+      expect(post.text, post.id).not.toMatch(
+        /\bPro\b|£|\$|Play Store|Google Play|Android|GitHub|Shelgaon|part-time|sponsor|\b\d+\.\d+\.\d+\b|—|–|#/,
+      )
+    }
+  })
+
   it('filters by topic, status and text, and groups by topic', () => {
     const none = parseFilters('')
     expect(draftPosts.every((p) => matches(p, none))).toBe(true)
@@ -153,11 +165,13 @@ describe('drafts filters', () => {
     )
     const waiting = draftPosts.filter((p) => matches(p, parseFilters('?status=waiting')))
     expect(waiting.map((p) => p.id).sort()).toEqual(['wd-b2-1', 'wd-b2-3'])
+    const checking = draftPosts.filter((p) => matches(p, parseFilters('?status=checking')))
+    expect(checking.map((p) => p.id)).toEqual(['wd-b6-1', 'wd-b6-2', 'wd-b6-3', 'wd-b6-4'])
     expect(draftPosts.filter((p) => matches(p, parseFilters('?q=Time+to+update'))).map((p) => p.id)).toEqual([
       'wd-b2-2',
     ])
     const grouped = arrange(draftPosts, parseFilters('?sort=topic'))
-    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(25)
+    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(29)
     const newest = arrange(draftPosts, none)[0]?.posts ?? []
     expect((newest[0]?.updated ?? '') >= (newest.at(-1)?.updated ?? '')).toBe(true)
   })

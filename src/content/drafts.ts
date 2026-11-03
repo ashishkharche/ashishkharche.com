@@ -5,6 +5,7 @@ import { wdBatch2, type WdBatchPost } from '~/content/linkedinWdBatch2'
 import { wdBatch3 } from '~/content/linkedinWdBatch3'
 import { wdBatch4 } from '~/content/linkedinWdBatch4'
 import { wdBatch5 } from '~/content/linkedinWdBatch5'
+import { wdBatch6 } from '~/content/linkedinWdBatch6'
 
 /**
  * The private drafts board: one current version of each LinkedIn draft, with what the filters need.
@@ -41,10 +42,11 @@ export const lengths = {
 } as const
 export type Length = keyof typeof lengths
 
-/** Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov); every post not waiting for media is. */
+/** Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov). The rest wait for media or for that cross-check. */
 export const statuses = {
   ready: 'Ready to post',
   waiting: 'Waiting for media',
+  checking: 'Waiting for cross-check',
 } as const
 export type Status = keyof typeof statuses
 
@@ -120,6 +122,11 @@ const crossChecked = new Set([
   'wd-b5-5',
   'wd-b5-6',
 ])
+/**
+ * Written but not yet cross-checked by WD Engineering and WD Marketing: shown as Waiting for cross-check, never Ready.
+ * When both verdicts are in and applied, move the id from here to crossChecked.
+ */
+const awaitingCrossCheck = new Set(['wd-b6-1', 'wd-b6-2', 'wd-b6-3', 'wd-b6-4'])
 const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; see revised-2026-11-03/CHANGES.md.'
 /** Every post's text was replaced on 3 Nov 19:57 GMT by its human-voice rewrite. */
 const humanNote =
@@ -166,6 +173,7 @@ const pngNames: Record<string, string> = {
   '/assets/img/preview/wd-b4-p1-rep-counter-v2.webp': 'wd-b4-p1-rep-counter.png',
   '/assets/img/preview/wd-b4-fig1-bodyweight-squat-light-dark.webp': 'wd-b4-fig1-bodyweight-squat.png',
   '/assets/img/preview/wd-b4-tech1-counted-on-the-phone-v2.webp': 'wd-b4-tech1-counted-on-the-phone.png',
+  '/assets/img/preview/wd-b6-2-search-rdl.webp': 'wd-b6-2-search-rdl.png',
 }
 /** Shown under an image on this page only, never in the post text. */
 const captions: Record<string, string> = {
@@ -203,10 +211,12 @@ function make(
 ): DraftPost {
   const primary = base.topics.find((t) => t !== 'workout-director') ?? base.topics[0] ?? 'workout-director'
   const { waiting, notes, images, ...rest } = base
-  if (!waiting && !crossChecked.has(base.id))
+  const checking = awaitingCrossCheck.has(base.id)
+  if (checking && crossChecked.has(base.id)) throw new Error(`${base.id} is both cross-checked and awaiting it`)
+  if (!waiting && !checking && !crossChecked.has(base.id))
     throw new Error(`${base.id} is not waiting for media but not cross-checked`)
   const lead = [
-    humanNote,
+    ...(base.id.startsWith('wd-b6-') ? [] : [humanNote]),
     ...(crossChecked.has(base.id) ? [checkedNote] : []),
     ...(creditsRemoved.has(base.id) ? [creditsNote] : []),
   ]
@@ -215,7 +225,7 @@ function make(
     images: images.map(withPng),
     primary,
     length: lengthOf(base.chars),
-    status: waiting ? 'waiting' : 'ready',
+    status: checking ? 'checking' : waiting ? 'waiting' : 'ready',
     notes: [...lead, ...(notes ?? [])],
   }
 }
@@ -475,6 +485,50 @@ const batchExtra: Record<string, Extra> = {
       'Overlaps with D2 (pose models and the Vision fallback).',
     ],
   },
+  'wd-b6-1': {
+    title: "Today's target comes with a reason",
+    series: 'WD batch 6 (product), post 1',
+    version: 'batch 6, awaiting cross-check',
+    ...nov3('21:55'),
+    topics: ['workout-director', 'product'],
+    media: ['text'],
+    notes: [
+      'New 3 Nov: product promotion batch 6 (Ashish 21:25 GMT, "Do few on product promotion"). Sent for the WD Engineering and WD Marketing cross-check; not Ready until both verdicts are applied.',
+    ],
+  },
+  'wd-b6-2': {
+    title: "Search by the name you'd use in the gym",
+    series: 'WD batch 6 (product), post 2',
+    version: 'batch 6, awaiting cross-check',
+    ...nov3('21:55'),
+    topics: ['workout-director', 'product'],
+    media: ['image'],
+    notes: [
+      'New 3 Nov: product promotion batch 6. Image is the real iOS search screen (no credit needed). Sent for the WD Engineering and WD Marketing cross-check; not Ready until both verdicts are applied.',
+    ],
+  },
+  'wd-b6-3': {
+    title: 'Fit my day',
+    series: 'WD batch 6 (product), post 3',
+    version: 'batch 6, awaiting cross-check',
+    ...nov3('21:55'),
+    topics: ['workout-director', 'product'],
+    media: ['text'],
+    notes: [
+      'New 3 Nov: product promotion batch 6. Sent for the WD Engineering and WD Marketing cross-check; not Ready until both verdicts are applied.',
+    ],
+  },
+  'wd-b6-4': {
+    title: 'Pick a program and it becomes your week',
+    series: 'WD batch 6 (product), post 4',
+    version: 'batch 6, awaiting cross-check',
+    ...nov3('21:55'),
+    topics: ['workout-director', 'product'],
+    media: ['text'],
+    notes: [
+      'New 3 Nov: product promotion batch 6. No program count in the text (the code has more than the six the listing names). Sent for the WD Engineering and WD Marketing cross-check; not Ready until both verdicts are applied.',
+    ],
+  },
   'wd-b5-1': {
     title: 'Only the straight seconds count: the plank clock',
     series: 'WD batch 5, post 1',
@@ -613,6 +667,7 @@ const b3 = wdBatch3.map(fromBatch)
 const b3Ordered = [...b3.slice(0, 2), b3post3, ...b3.slice(2)]
 const b4 = wdBatch4.map(fromBatch)
 const b5 = wdBatch5.map(fromBatch)
+const b6 = wdBatch6.map(fromBatch)
 
 /** Every post on the board, in the order they were written. */
-export const draftPosts: DraftPost[] = [...fromV11, ...sampleA, ...b2, ...b3Ordered, ...b4, ...b5]
+export const draftPosts: DraftPost[] = [...fromV11, ...sampleA, ...b2, ...b3Ordered, ...b4, ...b5, ...b6]
