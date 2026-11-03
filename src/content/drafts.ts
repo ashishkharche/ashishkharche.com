@@ -39,9 +39,9 @@ export const lengths = {
 } as const
 export type Length = keyof typeof lengths
 
+/** Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov); every post not waiting for media is. */
 export const statuses = {
-  checked: 'Cross-checked by WD Engineering and Marketing, 3 Nov',
-  ready: 'Ready',
+  ready: 'Ready to post',
   waiting: 'Waiting for media',
 } as const
 export type Status = keyof typeof statuses
@@ -74,7 +74,7 @@ export interface DraftPost {
   text: string
   /** Set when the card shows a note in place of the real text. */
   textNote?: string
-  images: LiImage[]
+  images: DraftImage[]
   concept?: string
   mediaNote?: string
   firstComment?: string
@@ -89,8 +89,8 @@ type Extra = Pick<DraftPost, 'title' | 'series' | 'version' | 'updated' | 'updat
 
 /**
  * Posts revised on 3 Nov from /workspace/linkedin-samples/personal/revised-2026-11-03 after the WD Engineering and
- * WD Marketing cross-checks, and the three batch 4 posts (wd-batch-4, cross-checked the same day). They show as
- * cross-checked unless they still wait for media.
+ * WD Marketing cross-checks, the three batch 4 posts (wd-batch-4, cross-checked the same day), and wd-b2-6, which
+ * passed both reviews unchanged. They show as ready to post unless they still wait for media.
  */
 const crossChecked = new Set([
   'd1',
@@ -101,6 +101,7 @@ const crossChecked = new Set([
   'wd-b2-2',
   'wd-b2-4',
   'wd-b2-5',
+  'wd-b2-6',
   'wd-b3-1',
   'wd-b3-2',
   'wd-b3-4',
@@ -110,19 +111,92 @@ const crossChecked = new Set([
   'wd-b4-fig1',
   'wd-b4-tech1',
 ])
-const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; changes in revised-2026-11-03/CHANGES.md.'
+const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; see revised-2026-11-03/CHANGES.md.'
+
+/** Posts whose credit lines (video, pose landmarks, Pele, the goblet squat reference) were taken out of the text. */
+const creditsRemoved = new Set([
+  'd1',
+  'wd-b2-2',
+  'wd-b2-4',
+  'wd-b2-5',
+  'wd-b2-6',
+  'wd-b3-1',
+  'wd-b3-2',
+  'wd-b3-6',
+  'wd-b4-p1',
+  'wd-b4-tech1',
+])
+const creditsNote =
+  'Credit lines taken out of the post text on 3 Nov 19:15 GMT (Ashish’s call), so Copy for LinkedIn copies none. The credits stay in the sources below.'
+
+/**
+ * Full quality PNG copies of the page images, the files to upload to LinkedIn (the page shows smaller WebP copies).
+ * They live in public/drafts/<slug>/img/, under the /drafts/ X-Robots-Tag noindex rule and out of the sitemap.
+ * Each is the lossless original named in the image's upload path, copied byte for byte.
+ */
+export const draftsImagesPath = `${draftsPath}img/`
+const pngNames: Record<string, string> = {
+  '/assets/img/preview/d1-joints-and-hip-angle-nocount-v2.webp': 'd1-joints-and-hip-angle.png',
+  '/assets/img/preview/v12c-sample-a-1-chart.webp': 'sample-a-chart.png',
+  '/assets/img/preview/wd-b2-2-forced-update-v2.webp': 'wd-b2-2-forced-update.png',
+  '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v2.webp': 'wd-b2-4-1-goblet-squat.png',
+  '/assets/img/preview/wd-b2-4-f2-deadlift-fixed-gates.webp': 'wd-b2-4-2-deadlift-fixed-gates.png',
+  '/assets/img/preview/wd-b2-5-deadlift-fix-before-after-v4.webp': 'wd-b2-5-deadlift-fix-before-after.png',
+  '/assets/img/preview/wd-b2-6-deadlift-rep1-refused.webp': 'wd-b2-6-deadlift-rep1-refused.png',
+  '/assets/img/preview/wd-b3-1-one-angle-per-move-v3.webp': 'wd-b3-1-one-angle-per-move.png',
+  '/assets/img/preview/wd-b3-2-plate-hides-the-ankle-v2.webp': 'wd-b3-2-plate-hides-the-ankle.png',
+  '/assets/img/preview/wd-b3-4-coach-reconnect-backoff-v3.webp': 'wd-b3-4-coach-reconnect-backoff.png',
+  '/assets/img/preview/wd-b3-5-coach-two-limits-v2.webp': 'wd-b3-5-coach-two-limits.png',
+  '/assets/img/preview/wd-b3-6-first-rep-waits-v3.webp': 'wd-b3-6-first-rep-waits.png',
+  '/assets/img/preview/wd-b4-p1-rep-counter-v2.webp': 'wd-b4-p1-rep-counter.png',
+  '/assets/img/preview/wd-b4-fig1-bodyweight-squat-light-dark.webp': 'wd-b4-fig1-bodyweight-squat.png',
+  '/assets/img/preview/wd-b4-tech1-counted-on-the-phone-v2.webp': 'wd-b4-tech1-counted-on-the-phone.png',
+}
+/** Shown under an image on this page only, never in the post text. */
+const captions: Record<string, string> = {
+  '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v2.webp':
+    "Goblet squat reference (one of several): 'Kettlebell Goblet Squat' by Taco Fleur, Wikimedia Commons, CC BY-SA 4.0.",
+}
+
+/** A page image with its full quality PNG download. */
+export interface DraftImage extends LiImage {
+  /** Where the PNG is served, under draftsImagesPath. */
+  png: string
+  /** The file name the browser saves it as. */
+  pngName: string
+  /** A credit or note shown under the image on this page, not part of the post. */
+  caption?: string
+}
+
+function withPng(img: LiImage): DraftImage {
+  const pngName = pngNames[img.src]
+  if (!pngName) throw new Error(`No full quality PNG for ${img.src}`)
+  const caption = captions[img.src]
+  return { ...img, png: `${draftsImagesPath}${pngName}`, pngName, ...(caption ? { caption } : {}) }
+}
 
 function make(
-  base: Omit<DraftPost, 'primary' | 'length' | 'status' | 'notes'> & { notes?: string[]; waiting?: boolean },
+  base: Omit<DraftPost, 'primary' | 'length' | 'status' | 'notes' | 'images'> & {
+    images: LiImage[]
+    notes?: string[]
+    waiting?: boolean
+  },
 ): DraftPost {
   const primary = base.topics.find((t) => t !== 'workout-director') ?? base.topics[0] ?? 'workout-director'
-  const { waiting, notes, ...rest } = base
+  const { waiting, notes, images, ...rest } = base
+  if (!waiting && !crossChecked.has(base.id))
+    throw new Error(`${base.id} is not waiting for media but not cross-checked`)
+  const lead = [
+    ...(crossChecked.has(base.id) ? [checkedNote] : []),
+    ...(creditsRemoved.has(base.id) ? [creditsNote] : []),
+  ]
   return {
     ...rest,
+    images: images.map(withPng),
     primary,
     length: lengthOf(base.chars),
-    status: waiting ? 'waiting' : crossChecked.has(base.id) ? 'checked' : 'ready',
-    notes: crossChecked.has(base.id) ? [checkedNote, ...(notes ?? [])] : (notes ?? []),
+    status: waiting ? 'waiting' : 'ready',
+    notes: [...lead, ...(notes ?? [])],
   }
 }
 
@@ -254,7 +328,7 @@ const batchExtra: Record<string, Extra> = {
     media: ['image'],
     notes: [
       'Revised 3 Nov: four claims WD Engineering could not verify were removed (no add-on, the JSON spec, the re-checks on backgrounds and crops, fingers through a handle); 115 exercises in light and dark added.',
-      'Two images: the f1 v2 goblet squat figure (approved by Ashish 3 Nov, with its CC BY-SA pose reference credit in the text), then the f2 deadlift figure. The earlier 4a to 4e images are removed.',
+      'Two images: the f1 v2 goblet squat figure (approved by Ashish 3 Nov, its CC BY-SA pose reference credit is a caption under the image on this page, not in the post text), then the f2 deadlift figure. The earlier 4a to 4e images are removed.',
       'Replaces the rejected designed figure images and in-app mock.',
     ],
   },
@@ -274,7 +348,7 @@ const batchExtra: Record<string, Extra> = {
   'wd-b2-6': {
     title: 'One deadlift set as the counter sees it',
     series: 'WD batch 2, post 6',
-    version: 'batch 2, WD Marketing image, trimmed 3 Nov',
+    version: 'batch 2, WD Marketing image, trimmed 3 Nov, cross-checked',
     ...nov3('17:30'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
@@ -347,7 +421,7 @@ const batchExtra: Record<string, Extra> = {
     topics: ['workout-director', 'product', 'rep-counter'],
     media: ['image'],
     notes: [
-      'New 3 Nov: the product post (p1.txt). Image is p1 v2, the app counting a Pexels clip played in place of the camera, with the video credit in the text. The first p1 image is not used.',
+      'New 3 Nov: the product post (p1.txt). Image is p1 v2, the app counting a Pexels clip played in place of the camera, The video credit was taken out of the post text on 3 Nov. The first p1 image is not used.',
       'WD Engineering fix: "six" programs dropped (the code has at least 7).',
       'Open: the image is a 1.0.94 frame; a shoe brand print is mostly hidden but can be recognised zoomed in (WD Marketing; final call is Ashish’s).',
     ],
@@ -373,7 +447,7 @@ const batchExtra: Record<string, Extra> = {
     topics: ['workout-director', 'pose-model', 'rep-counter'],
     media: ['diagram'],
     notes: [
-      'New 3 Nov: the technical post (tech1.txt). Image is the v2 Pele diagram, whose caption says the pose model ships inside the app; Pele credit in the text. No other credit line.',
+      'New 3 Nov: the technical post (tech1.txt). Image is the v2 Pele diagram, whose caption says the pose model ships inside the app; The Pele credit was taken out of the post text on 3 Nov.',
       'Overlaps with D2 (pose models and the Vision fallback).',
     ],
   },
@@ -396,7 +470,7 @@ function fromBatch(post: WdBatchPost): DraftPost {
 }
 
 const liteVsFull =
-  "Same deadlift reps, same counter, two pose models. On the MyDeadlift clips (CC BY 4.0), BlazePose Full found 115 of 191 barbell deadlift reps (0.602) and Lite found 106 (0.555). Neither added a rep that wasn't there.\n\nRecall is low for both partly because the clips are single reps joined end to end, with a cut between reps.\n\nThis was measured on the counter build after the deadlift fix and hasn't been re-run since."
+  "Same deadlift reps, same counter, two pose models. On the MyDeadlift clips, BlazePose Full found 115 of 191 barbell deadlift reps (0.602) and Lite found 106 (0.555). Neither added a rep that wasn't there.\n\nRecall is low for both partly because the clips are single reps joined end to end, with a cut between reps.\n\nThis was measured on the counter build after the deadlift fix and hasn't been re-run since."
 
 /** Batch 3 post 3 has no image (WD Marketing dropped it), so it waits for media. Text from post-03-lite-vs-full.txt. */
 const b3post3 = make({
@@ -415,7 +489,7 @@ const b3post3 = make({
   waiting: true,
   sources: [
     'wd-share/blog-data/batch-3/03-lite-vs-full/README.md:4 (Full 0.602, 115 of 191; Lite 0.555, 106 of 191; barbell, counter after PR #322), :2 (no extra reps either way), :11 (single rep clips joined with a cut), :7 (not re-run at main).',
-    'Caveats kept: no timing comparison (Mac times only), the Romanian row left out, MyDeadlift credited as CC BY 4.0.',
+    'Caveats kept: no timing comparison (Mac times only), the Romanian row left out. The MyDeadlift CC BY 4.0 credit was taken out of the post text on 3 Nov 19:15 GMT (Ashish’s call).',
   ],
   notes: ['Shares its recall numbers with WD batch 2, post 5.'],
 })

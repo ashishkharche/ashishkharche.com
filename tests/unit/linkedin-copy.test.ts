@@ -24,7 +24,7 @@ describe('Copy for LinkedIn', () => {
     )
   })
 
-  it('copies every post exactly, with credit lines and without review notes', () => {
+  it('copies every post exactly, without credit lines or review notes', () => {
     for (const post of draftPosts) {
       const plain = linkedinPlain(post.text)
       // The canonical text already uses one blank line between paragraphs and no trailing spaces.
@@ -36,10 +36,13 @@ describe('Copy for LinkedIn', () => {
       expect(html, post.id).not.toContain('<p><br></p>')
       expect(html.match(/<p>/g)?.length, post.id).toBe(paras)
     }
-    const b32 = draftPosts.find((p) => p.id === 'wd-b3-2')
-    expect(linkedinPlain(b32?.text ?? '')).toMatch(
-      /\n\nVideo: cottonbro studio \/ Pexels\. Pose landmarks: MediaPipe BlazePose\.$/,
-    )
+    // Credit lines were taken out of every post text on 3 Nov (Ashish's call); credits stay in the sources.
+    const credit =
+      /^(Image:|Video:|Pose landmarks:|Diagram rendered with|Goblet squat reference)|\/ Pexels|MediaPipe BlazePose\.|CC BY|Wikimedia|Taco Fleur/m
+    for (const post of draftPosts) {
+      expect(linkedinPlain(post.text), post.id).not.toMatch(credit)
+      expect(linkedinHtml(post.text), post.id).not.toMatch(/Pexels|CC BY|Wikimedia|rendered with Pele/)
+    }
   })
 
   it('copies wd-b3-2 exactly as Ashish edited it', () => {
@@ -48,14 +51,13 @@ describe('Copy for LinkedIn', () => {
       'At the bottom of a side-on deadlift the far plate can hide the near ankle, and its pose confidence drops under the 0.5 the counter needs.',
       'If the hip and knee are still clear and the ankle stays at 0.3 or more, Workout Director keeps the leg in view for up to 3 s instead of losing the rep.',
       'The image shows one clip: the ankle dims at the bottom of the lift, and the counter stays on.',
-      'Video: cottonbro studio / Pexels. Pose landmarks: MediaPipe BlazePose.',
     ]
     expect(linkedinPlain(post?.text ?? '')).toBe(paras.join('\n\n'))
     expect(linkedinHtml(post?.text ?? '')).toBe(paras.map((p) => `<p>${p}</p>`).join(''))
   })
 
-  it('copies the batch 4 posts with their paragraphs and credit lines', () => {
-    const expected = { 'wd-b4-p1': 6, 'wd-b4-fig1': 3, 'wd-b4-tech1': 4 }
+  it('copies the batch 4 posts with their paragraphs and no credit lines', () => {
+    const expected = { 'wd-b4-p1': 5, 'wd-b4-fig1': 3, 'wd-b4-tech1': 3 }
     for (const [id, n] of Object.entries(expected)) {
       const post = draftPosts.find((p) => p.id === id)
       if (!post) throw new Error(`${id} is missing`)
@@ -66,10 +68,8 @@ describe('Copy for LinkedIn', () => {
       expect(linkedinHtml(post.text), id).not.toContain('<p><br></p>')
     }
     const p1 = draftPosts.find((p) => p.id === 'wd-b4-p1')
-    expect(p1?.text).toMatch(
-      /\n\nImage: the app counting a Pexels clip played in place of the camera\. Video: Aliaksei Masiukevich \/ Pexels\.$/,
-    )
+    expect(p1?.text).not.toMatch(/Aliaksei Masiukevich|\/ Pexels/)
     expect(JSON.stringify(p1?.images)).not.toMatch(/live/i)
-    expect(draftPosts.find((p) => p.id === 'wd-b4-tech1')?.text).toMatch(/\n\nDiagram rendered with Pele\.$/)
+    expect(draftPosts.find((p) => p.id === 'wd-b4-tech1')?.text).not.toMatch(/Pele/)
   })
 })

@@ -101,11 +101,12 @@ test('Copy for LinkedIn puts the post text on the clipboard with blank lines bet
   expect(clip.types).toEqual(expect.arrayContaining(['text/plain', 'text/html']))
   expect(clip.plain).toBe(post.text)
   expect(clip.plain).toContain('°\u0020and 115°')
-  expect(clip.plain.split('\n\n')).toHaveLength(5)
+  expect(clip.plain.split('\n\n')).toHaveLength(4)
+  expect(clip.plain).not.toMatch(/Pexels|BlazePose\./)
   // One <p> per paragraph and no empty spacer paragraphs, so LinkedIn shows one blank line per gap.
   expect(clip.html).toContain('</p><p>')
   expect(clip.html).not.toContain('<p><br></p>')
-  expect(clip.html.match(/<p>/g)).toHaveLength(5)
+  expect(clip.html.match(/<p>/g)).toHaveLength(4)
   expect(clip.html).toContain('147°')
   expect(clip.html).toContain('code')
   // The message clears after about 2 s.
@@ -118,7 +119,7 @@ test('every post with real text has a Copy for LinkedIn button, and the card sho
   const withText = draftPosts.filter((p) => !p.textNote)
   await expect(page.getByRole('button', { name: /^Copy for LinkedIn/ })).toHaveCount(withText.length)
   const text = page.locator('[data-li-text="wd-b3-1-desktop"]')
-  await expect(text.locator('p')).toHaveCount(5)
+  await expect(text.locator('p')).toHaveCount(4)
   expect(
     await text
       .locator('p')
@@ -131,4 +132,24 @@ test('every post with real text has a Copy for LinkedIn button, and the card sho
       .first()
       .evaluate((el) => getComputedStyle(el).whiteSpace),
   ).toBe('pre-wrap')
+})
+
+test('each image has a full quality PNG download, and the goblet credit is a caption only', async ({
+  page,
+  request,
+}) => {
+  await page.goto(draftsPath)
+  const links = page.locator('a[data-download-png]')
+  const images = draftPosts.flatMap((p) => p.images)
+  await expect(links).toHaveCount(images.length)
+  for (const img of images) {
+    const link = page.locator(`a[data-download-png="${img.pngName}"]`)
+    await expect(link).toHaveAttribute('download', img.pngName)
+    await expect(link).toHaveAttribute('href', img.png)
+    const res = await request.get(img.png)
+    expect(res.status(), img.png).toBe(200)
+    expect(res.headers()['content-type'], img.png).toContain('image/png')
+  }
+  await expect(page.locator('#wd-b2-4 [data-caption]')).toHaveText(/Taco Fleur, Wikimedia Commons, CC BY-SA 4\.0\./)
+  await expect(page.locator('[data-paste="wd-b2-4"]')).not.toContainText('Taco Fleur')
 })

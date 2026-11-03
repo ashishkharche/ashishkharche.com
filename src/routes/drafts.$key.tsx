@@ -276,6 +276,7 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
       <CardFrame label={device === 'mobile' ? 'Phone app' : 'Desktop feed'} device={device}>
         <FeedCard draft={post} device={device} />
       </CardFrame>
+      <ImageDownloads post={post} />
       {post.textNote ? (
         <p {...stylex.props(styles.meta)}>{post.textNote} No copy button: the text on this page is not the post.</p>
       ) : (
@@ -332,6 +333,40 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
 }
 
 const noop = () => () => {}
+
+/**
+ * One full quality PNG download per image (the cards show smaller WebP copies), saved under a clean file name for
+ * the LinkedIn upload. A caption, such as the goblet squat reference credit, shows here and never in the post text.
+ */
+function ImageDownloads({ post }: { post: DraftPost }) {
+  if (post.images.length === 0) return null
+  const many = post.images.length > 1
+  return (
+    <ul aria-label={`Full quality images: ${post.title}`} {...stylex.props(styles.downloads)} data-downloads={post.id}>
+      {post.images.map((img, i) => (
+        <li key={img.key} {...stylex.props(styles.download)}>
+          <a
+            href={img.png}
+            download={img.pngName}
+            data-download-png={img.pngName}
+            {...stylex.props(styles.downloadLink, ui.focusRing)}
+          >
+            Download image{many ? ` ${i + 1}` : ''} (PNG)
+            <span {...stylex.props(ui.visuallyHidden)}>: {post.title}</span>
+          </a>{' '}
+          <span {...stylex.props(styles.downloadMeta)}>
+            {img.w} x {img.h}, {img.pngName}
+          </span>
+          {img.caption ? (
+            <span {...stylex.props(styles.caption)} data-caption={img.pngName}>
+              {img.caption}
+            </span>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 /**
  * Copies the post's canonical text (post.text, credit lines included, review notes left out) in the form LinkedIn's
@@ -397,6 +432,16 @@ const styles = stylex.create({
     cursor: 'pointer',
     opacity: { default: 1, ':hover': 0.88 },
   },
+  downloads: { display: 'grid', gap: '0.35rem', margin: 0, padding: 0, listStyle: 'none', maxWidth: '50rem' },
+  download: { fontSize: type.meta, lineHeight: 1.5 },
+  downloadLink: {
+    color: colors.text,
+    fontWeight: weights.medium,
+    textDecorationLine: 'underline',
+    textUnderlineOffset: '3px',
+  },
+  downloadMeta: { color: colors.muted },
+  caption: { display: 'block', color: colors.muted, fontSize: type.meta },
   copyStatus: { fontSize: type.meta, color: colors.text, fontWeight: weights.medium },
   main: { paddingTop: { default: '3rem', [breakpoints.phone]: '2rem' }, paddingBottom: '3rem' },
   page: { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '2rem', minWidth: 0 },

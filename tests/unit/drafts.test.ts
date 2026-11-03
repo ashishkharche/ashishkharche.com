@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { draftPosts, draftsPath, draftsSlug, lengthOf } from '~/content/drafts'
+import { draftPosts, draftsImagesPath, draftsPath, draftsSlug, lengthOf } from '~/content/drafts'
 import { sitemapPaths } from '~/content/site'
 import { arrange, filtersToSearch, matches, parseFilters } from '~/lib/drafts'
 
@@ -54,6 +54,36 @@ describe('the private drafts board', () => {
     }
   })
 
+  it('offers each page image as its lossless PNG under the noindex /drafts/ path', () => {
+    const names = new Set<string>()
+    const pngs = draftPosts.flatMap((p) => p.images)
+    expect(pngs).toHaveLength(15)
+    for (const img of pngs) {
+      expect(img.png).toBe(`${draftsImagesPath}${img.pngName}`)
+      expect(img.pngName, img.src).toMatch(/^[a-z0-9-]+\.png$/)
+      expect(img.pngName, img.src).not.toMatch(/live/i)
+      expect(names.has(img.pngName), img.pngName).toBe(false)
+      names.add(img.pngName)
+      const bytes = readFileSync(join('public', img.png))
+      // PNG signature, then the IHDR width and height, which match the WebP shown on the page.
+      expect(bytes.subarray(0, 8).toString('hex'), img.pngName).toBe('89504e470d0a1a0a')
+      expect([bytes.readUInt32BE(16), bytes.readUInt32BE(20)], img.pngName).toEqual([img.w, img.h])
+    }
+    expect(readdirSync(join('public', draftsImagesPath)).sort()).toEqual([...names].sort())
+    const p1 = draftPosts.find((p) => p.id === 'wd-b4-p1')
+    expect(p1?.images.map((i) => i.pngName)).toEqual(['wd-b4-p1-rep-counter.png'])
+  })
+
+  it('shows the goblet squat credit as a caption on the page, not in the post text', () => {
+    const post = draftPosts.find((p) => p.id === 'wd-b2-4')
+    expect(post?.images[0]?.caption).toMatch(
+      /^Goblet squat reference .*Taco Fleur, Wikimedia Commons, CC BY-SA 4\.0\.$/,
+    )
+    expect(post?.images[1]?.caption).toBeUndefined()
+    expect(post?.text).not.toMatch(/Taco Fleur|Wikimedia|CC BY/)
+    expect(draftPosts.filter((p) => p.images.some((i) => i.caption)).map((p) => p.id)).toEqual(['wd-b2-4'])
+  })
+
   it('keeps out the details that must not be posted', () => {
     const all = JSON.stringify(draftPosts)
     expect(all).not.toMatch(/shelgaon/i)
@@ -87,8 +117,10 @@ describe('drafts filters', () => {
     expect(draftPosts.every((p) => matches(p, none))).toBe(true)
     const coach = draftPosts.filter((p) => matches(p, parseFilters('?topic=coach')))
     expect(coach.map((p) => p.id).sort()).toEqual(['wd-b2-1', 'wd-b3-4', 'wd-b3-5'])
-    const checked = draftPosts.filter((p) => matches(p, parseFilters('?status=checked')))
-    expect(checked.map((p) => p.id).sort()).toEqual(
+    // One status for every cross-checked post: Ready to post. The rest wait for media.
+    expect(parseFilters('?status=checked').status).toEqual([])
+    const ready = draftPosts.filter((p) => matches(p, parseFilters('?status=ready')))
+    expect(ready.map((p) => p.id).sort()).toEqual(
       [
         'd1',
         'd2',
@@ -97,6 +129,7 @@ describe('drafts filters', () => {
         'wd-b2-2',
         'wd-b2-4',
         'wd-b2-5',
+        'wd-b2-6',
         'wd-b3-1',
         'wd-b3-2',
         'wd-b3-4',

@@ -26,8 +26,8 @@ export const liDrafts: LiDraft[] = [
     n: 1,
     slot: 'Tue 3 Nov',
     why: 'One 4:5 portrait image: one person, three joints, one angle, and her hip angle frame by frame against the deadlift lines. Image 2 (camera to reps) was dropped in the 3 Nov cross-check.',
-    chars: 848,
-    text: "A phone camera counts a deadlift from one number, the hip angle. A rep counts once you pass 160° at the top and 125° at the bottom and cover at least 80% of that range.\n\nThe rep also has to take at least 0.6 s, and a rep that ends less than 1 s after the last one is refused. That stops jitter and half reps from counting.\n\nEach joint point goes through a One Euro filter, which smooths hard while you're still and eases off as you move, so lag stays low.\n\nOnce a rep of at least 15° has saved your range for that exercise, the lines adjust to you: the top line sits 12% of your range below your highest reading, and the bottom one never eases past 140°.\n\nImage: Pexels clip (cottonbro studio) run through MediaPipe Pose Landmarker on a computer, with the app's deadlift lines. Video: cottonbro studio / Pexels. Pose landmarks: MediaPipe BlazePose.",
+    chars: 654,
+    text: "A phone camera counts a deadlift from one number, the hip angle. A rep counts once you pass 160° at the top and 125° at the bottom and cover at least 80% of that range.\n\nThe rep also has to take at least 0.6 s, and a rep that ends less than 1 s after the last one is refused. That stops jitter and half reps from counting.\n\nEach joint point goes through a One Euro filter, which smooths hard while you're still and eases off as you move, so lag stays low.\n\nOnce a rep of at least 15° has saved your range for that exercise, the lines adjust to you: the top line sits 12% of your range below your highest reading, and the bottom one never eases past 140°.",
     images: [
       {
         key: 'joints',
