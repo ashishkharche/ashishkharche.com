@@ -6,6 +6,7 @@ import { wdBatch3 } from '~/content/linkedinWdBatch3'
 import { wdBatch4 } from '~/content/linkedinWdBatch4'
 import { wdBatch5 } from '~/content/linkedinWdBatch5'
 import { wdBatch6 } from '~/content/linkedinWdBatch6'
+import { auditTexts } from '~/content/linkedinAudit'
 
 /**
  * The private drafts board: one current version of each LinkedIn draft, with what the filters need.
@@ -42,10 +43,11 @@ export const lengths = {
 } as const
 export type Length = keyof typeof lengths
 
-/** Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov); every post not waiting for media is. */
+/** Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov). The rest wait for media or for that cross-check. */
 export const statuses = {
   ready: 'Ready to post',
   waiting: 'Waiting for media',
+  checking: 'Waiting for cross-check',
 } as const
 export type Status = keyof typeof statuses
 
@@ -95,35 +97,44 @@ type Extra = Pick<DraftPost, 'title' | 'series' | 'version' | 'updated' | 'updat
  * WD Marketing cross-checks, the three batch 4 posts (wd-batch-4, cross-checked the same day), and wd-b2-6, which
  * passed both reviews unchanged. They show as ready to post unless they still wait for media.
  */
-const crossChecked = new Set([
+const crossChecked = new Set(['sample-a', 'wd-b3-2', 'wd-b3-5', 'wd-b5-6'])
+/**
+ * Changed in the 3 Nov audit pass (23:00 GMT: plain wording, no "my app" or show-off lines, duplicates cut, number
+ * stacking trimmed, image footers stripped). Their earlier versions were cross-checked; these are not yet, so they show
+ * as Waiting for cross-check, never Ready. Request: /workspace/wd-share/crosscheck/audit-fixes-request.md. When both
+ * verdicts are in and applied, move the id from here to crossChecked.
+ */
+const awaitingCrossCheck = new Set([
   'd1',
   'd2',
   'd3',
-  'sample-a',
-  'wd-b2-1',
   'wd-b2-2',
+  'wd-b2-3',
   'wd-b2-4',
-  'wd-b2-5',
   'wd-b2-6',
   'wd-b3-1',
-  'wd-b3-2',
+  'wd-b3-3',
   'wd-b3-4',
-  'wd-b3-5',
   'wd-b3-6',
   'wd-b4-p1',
   'wd-b4-fig1',
   'wd-b4-tech1',
-  'wd-b3-3',
   'wd-b5-1',
   'wd-b5-2',
   'wd-b5-3',
   'wd-b5-4',
   'wd-b5-5',
-  'wd-b5-6',
   'wd-b6-1',
   'wd-b6-2',
   'wd-b6-3',
 ])
+/**
+ * Taken off the board in the 3 Nov audit as duplicates (their source files stay; see audit-2026-11-03/CHANGES.md):
+ * wd-b2-1 repeats wd-b3-5 (the coach's gap and per-set cap), wd-b2-5 repeats wd-b3-2 (the hidden ankle hold).
+ */
+const dropped = new Set(['wd-b2-1', 'wd-b2-5'])
+const auditNote =
+  'Changed in the 3 Nov audit pass (23:00 GMT; text from linkedin-samples/personal/audit-2026-11-03/, see its CHANGES.md). The earlier version was cross-checked; this one waits for the WD Engineering and WD Marketing re-check (wd-share/crosscheck/audit-fixes-request.md).'
 const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; see revised-2026-11-03/CHANGES.md.'
 /** Every post's text was replaced on 3 Nov 19:57 GMT by its human-voice rewrite. */
 const humanNote =
@@ -155,15 +166,13 @@ const pngNames: Record<string, string> = {
   '/assets/img/preview/d1-joints-and-hip-angle-nocount-v2.webp': 'd1-joints-and-hip-angle.png',
   '/assets/img/preview/v12c-sample-a-1-chart.webp': 'sample-a-chart.png',
   '/assets/img/preview/wd-b2-2-forced-update-v2.webp': 'wd-b2-2-forced-update.png',
-  '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v2.webp': 'wd-b2-4-1-goblet-squat.png',
-  '/assets/img/preview/wd-b2-4-f2-deadlift-fixed-gates-v2.webp': 'wd-b2-4-2-deadlift-fixed-gates.png',
-  '/assets/img/preview/wd-b2-5-deadlift-fix-before-after-v4.webp': 'wd-b2-5-deadlift-fix-before-after.png',
+  '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v3.webp': 'wd-b2-4-1-goblet-squat.png',
+  '/assets/img/preview/wd-b2-4-f2-deadlift-fixed-gates-v3.webp': 'wd-b2-4-2-deadlift-fixed-gates.png',
   '/assets/img/preview/wd-b2-6-deadlift-rep1-refused.webp': 'wd-b2-6-deadlift-rep1-refused.png',
-  '/assets/img/preview/wd-b3-1-one-angle-per-move-v3.webp': 'wd-b3-1-one-angle-per-move.png',
+  '/assets/img/preview/wd-b3-1-one-angle-per-move-v4.webp': 'wd-b3-1-one-angle-per-move.png',
   '/assets/img/preview/wd-b3-2-plate-hides-the-ankle-v2.webp': 'wd-b3-2-plate-hides-the-ankle.png',
   '/assets/img/preview/wd-b3-4-coach-reconnect-backoff-v3.webp': 'wd-b3-4-coach-reconnect-backoff.png',
   '/assets/img/preview/wd-b3-3-lite-vs-full-sharp.webp': 'wd-b3-3-1-lite-vs-full-sharp.png',
-  '/assets/img/preview/wd-b3-3-lite-vs-full-mydeadlift.webp': 'wd-b3-3-2-lite-vs-full-mydeadlift.png',
   '/assets/img/preview/wd-b5-1-plank-straight-seconds.webp': 'wd-b5-1-plank-straight-seconds.png',
   '/assets/img/preview/wd-b3-5-coach-two-limits-v3.webp': 'wd-b3-5-coach-two-limits.png',
   '/assets/img/preview/wd-b3-6-first-rep-waits-v4.webp': 'wd-b3-6-first-rep-waits.png',
@@ -174,10 +183,8 @@ const pngNames: Record<string, string> = {
 }
 /** Shown under an image on this page only, never in the post text. */
 const captions: Record<string, string> = {
-  '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v2.webp':
+  '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v3.webp':
     "Goblet squat reference (one of several): 'Kettlebell Goblet Squat' by Taco Fleur, Wikimedia Commons, CC BY-SA 4.0.",
-  '/assets/img/preview/wd-b3-3-lite-vs-full-mydeadlift.webp':
-    'Credit for first comment: Frame: MyDeadlift dataset, Ivan Conanta and Gloria Virginia, Mendeley Data, doi:10.17632/w5prmmxyt9.1, CC BY 4.0. Cropped, with pose landmarks drawn on it.',
   '/assets/img/preview/wd-b4-fig1-bodyweight-squat-light-dark.webp':
     'Credit for first comment: Figure reference: Taco Fleur, Wikimedia Commons, CC BY-SA 4.0.',
 }
@@ -190,6 +197,68 @@ export interface DraftImage extends LiImage {
   pngName: string
   /** A credit or note shown under the image on this page, not part of the post. */
   caption?: string
+}
+
+/**
+ * 3 Nov audit re-renders (/workspace/drafts-audit/rerender.py, which runs WD Marketing's make_batch4.py unchanged and
+ * only skips the footer text): the wd-b2-4 figures without the "form gates" line, and wd-b3-1 without the joint list.
+ * Pixel diffs against the previous files touch only those footer rows.
+ */
+const imageSwaps: Record<string, Pick<LiImage, 'src' | 'upload' | 'name' | 'note'>> = {
+  '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v2.webp': {
+    src: '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v3.webp',
+    upload: '/workspace/drafts-audit/img/figures/f1-goblet-squat-built-not-traced-v3.png',
+    name: 'f1-goblet-squat-built-not-traced-v3.png',
+    note: 'Audit re-render (3 Nov 23:10 GMT) of WD Marketing figures/f1-goblet-squat-built-not-traced-v2.png with the "form gates: 183 checks, 0 fails" footer left out; nothing else changed (diff confined to y 1167 to 1193). The shipped dark @3x goblet squat figures. Pose reference credit (CC BY-SA 4.0) shown as a caption under the image on this page only, not in the post text.',
+  },
+  '/assets/img/preview/wd-b2-4-f2-deadlift-fixed-gates-v2.webp': {
+    src: '/assets/img/preview/wd-b2-4-f2-deadlift-fixed-gates-v3.webp',
+    upload: '/workspace/drafts-audit/img/figures/f2-deadlift-fixed-gates-v3.png',
+    name: 'f2-deadlift-fixed-gates-v3.png',
+    note: 'Audit re-render (3 Nov 23:10 GMT) of WD Marketing figures/f2-deadlift-fixed-gates-v2.png with the "form gates: 242 checks, 0 fails" footer left out; nothing else changed (diff confined to y 1167 to 1193). Caption: "Posed in Blender to match joint angles from reference clips. Never traced."',
+  },
+  '/assets/img/preview/wd-b3-1-one-angle-per-move-v3.webp': {
+    src: '/assets/img/preview/wd-b3-1-one-angle-per-move-v4.webp',
+    upload: '/workspace/drafts-audit/img/review/01-one-angle-per-move-v4.png',
+    name: '01-one-angle-per-move-v4.png',
+    note: 'Audit re-render (3 Nov 23:10 GMT) of WD Marketing review/01-one-angle-per-move-v3.png with the joint-per-move list (hip, knee, elbow rows) left out; nothing else changed (diff confined to y 1217 to 1310). Pexels 7674505 at 16.00 s, BlazePose Lite landmarks, hip 70.9° from blog-data/deadlift-joint-trace.csv.',
+  },
+}
+
+/** What the 3 Nov audit pass changed in each post (full old and new texts: wd-share/crosscheck/audit-fixes-request.md). */
+const auditChanges: Record<string, string> = {
+  d1: 'Audit: "When I taught my app to count deadlifts" became "When I wrote the deadlift counter". Nothing else changed.',
+  d2: 'Audit: paragraph 2 trimmed (the 5% PCK definition and the 4 ms desktop figure dropped; "So Full is the one the app ships" added, from tech1).',
+  d3: 'Audit: the "part 3 of 3" label, the first-rep wait paragraph (curl numbers) and the lunge paragraph cut, so the first-rep wait lives in wd-b3-6 only; a plain closing line; link line "More notes on the counter".',
+  'wd-b2-2': 'Audit: "Sometimes an old build of my app has to go" became "Sometimes an old build has to go".',
+  'wd-b2-3':
+    'Audit: "in my app" became "in Workout Director"; the 36-message trigger and the eight-line limit dropped, "the last 24 messages" became "the recent messages".',
+  'wd-b2-4':
+    'Audit: the 115 figures in light and dark sentence cut (fig1 owns the catalogue numbers), "in my app" became "in Workout Director". Both images re-rendered without the "form gates" footers.',
+  'wd-b2-6':
+    'Audit: "my app\'s counter" became "the counter"; the rep 2 paragraph no longer explains the first-rep wait (wd-b3-6 does): "Reps 2 and 3 pass, and both count."',
+  'wd-b3-1':
+    'Audit: "Every rep my app counts" became "Every rep Workout Director counts". Image re-rendered without the joint-per-move list.',
+  'wd-b3-3': 'Audit: image option 2 (MyDeadlift) removed; text unchanged.',
+  'wd-b3-4':
+    'Audit: the wait list (1, 2, 4, 8, 16, 30), the 150 s budget and the 8 to 10 retries trimmed to "from 1 second up to 30" and "two and a half minutes".',
+  'wd-b3-6':
+    'Audit: now the only post on the first-rep wait; gains the curl figure from D3 (35.4 to 3.4 false reps an hour, 2.0% of real reps); "my app holds" became "the counter holds"; board title made unambiguous.',
+  'wd-b4-p1':
+    'Audit: "my own iPhone app" became "an iPhone app"; the version line and the RDL search line cut (wd-b6-2 covers search).',
+  'wd-b4-fig1':
+    'Audit: about the catalogue and figures only; "all our own artwork", "Workout Director\'s own figures" and the 920 PNGs sentence cut.',
+  'wd-b4-tech1': 'Audit: p1\'s "never recorded, saved or uploaded" line cut from tech1.',
+  'wd-b5-1': 'Audit: "my app times it" became "the app times it", "My app gives it 2" became "The clock gives it 2".',
+  'wd-b5-2': 'Audit: "the elbow angle my app reads" became "the elbow angle the counter reads".',
+  'wd-b5-3': 'Audit: "my app counts zero" became "the counter counts zero".',
+  'wd-b5-4':
+    'Audit: "I\'m porting my app\'s rep counter from Swift to Kotlin for the Android version" became "I\'m porting the rep counter from Swift to Kotlin".',
+  'wd-b5-5': 'Audit: "So my app\'s counter checks" became "So the counter checks".',
+  'wd-b6-1':
+    'Audit: opening "I wanted my app to say why today\'s numbers are what they are." replaced with "A number on its own doesn\'t tell you much, so the targets on the Today screen come with one plain line explaining them."',
+  'wd-b6-2': 'Audit: "My app\'s exercise search" became "The exercise search".',
+  'wd-b6-3': 'Audit: "My app\'s Today screen" became "The Today screen".',
 }
 
 function withPng(img: LiImage): DraftImage {
@@ -208,20 +277,30 @@ function make(
 ): DraftPost {
   const primary = base.topics.find((t) => t !== 'workout-director') ?? base.topics[0] ?? 'workout-director'
   const { waiting, notes, images, ...rest } = base
-  if (!waiting && !crossChecked.has(base.id))
+  const checking = awaitingCrossCheck.has(base.id)
+  if (checking && crossChecked.has(base.id)) throw new Error(`${base.id} is both cross-checked and awaiting it`)
+  if (!waiting && !checking && !crossChecked.has(base.id))
     throw new Error(`${base.id} is not waiting for media but not cross-checked`)
+  const audited = auditTexts[base.id]
+  if (audited !== undefined && !checking)
+    throw new Error(`${base.id} has an audit text but is not awaiting the re-check`)
+  const text = audited ?? rest.text
+  const chars = audited === undefined ? base.chars : [...audited].length
   const lead = [
+    ...(checking ? [auditNote] : []),
     ...(base.id.startsWith('wd-b6-') ? [] : [humanNote]),
     ...(crossChecked.has(base.id) ? [checkedNote] : []),
     ...(creditsRemoved.has(base.id) ? [creditsNote] : []),
   ]
   return {
     ...rest,
-    images: images.map(withPng),
+    text,
+    chars,
+    images: images.map((img) => withPng({ ...img, ...(imageSwaps[img.src] ?? {}) })),
     primary,
-    length: lengthOf(base.chars),
-    status: waiting ? 'waiting' : 'ready',
-    notes: [...lead, ...(notes ?? [])],
+    length: lengthOf(chars),
+    status: waiting ? 'waiting' : checking ? 'checking' : 'ready',
+    notes: [...lead, ...[auditChanges[base.id]].flatMap((n) => (n ? [n] : [])), ...(notes ?? [])],
   }
 }
 
@@ -231,9 +310,9 @@ const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
   'tue-3-nov': {
     title: 'D1: a deadlift counted from one hip angle',
     series: 'D1, slot Tue 3 Nov',
-    version: 'v13, cross-checked',
-    ...nov3('19:57'),
-    topics: ['workout-director', 'rep-counter'],
+    version: 'v13, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
       'v13: a rep that ends less than 1 s after the last one is refused; the lines adjust only once a rep of at least 15° has saved your range; an image and credit line added at the end.',
@@ -245,9 +324,9 @@ const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
   'thu-5-nov': {
     title: 'D2: picking a pose model for a phone',
     series: 'D2, slot Thu 5 Nov',
-    version: 'v13, cross-checked',
-    ...nov3('19:57'),
-    topics: ['workout-director', 'pose-model', 'rep-counter'],
+    version: 'v13, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'pose-model', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
       'v13: says what the 72, 79 and 84 scores measure (joints within 5% of the person’s size on 156 COCO photos), that the 4 ms is on a desktop CPU, the 2 s warm-up, and that the Vision fallback lasts the rest of that workout.',
@@ -256,11 +335,11 @@ const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
     ],
   },
   'mon-9-nov': {
-    title: 'D3: cutting false reps, part 3 of 3',
+    title: 'D3: the checks before a rep counts',
     series: 'D3, slot Mon 9 Nov',
-    version: 'v13 (trimmed), cross-checked',
-    ...nov3('19:57'),
-    topics: ['workout-director', 'rep-counter'],
+    version: 'v13 (trimmed), audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
       'v13: trimmed to WD Marketing’s shorter version, with WD Engineering’s fix (under 0.5 s for squats and push-ups). The headings, references and several details were cut; WD Engineering verified them, so they could come back in a longer part 3.',
@@ -326,9 +405,9 @@ const batchExtra: Record<string, Extra> = {
   'wd-b2-2': {
     title: 'How an old build is asked to update',
     series: 'WD batch 2, post 2',
-    version: 'batch 2, Pele diagram v2, cross-checked',
-    ...nov3('19:57'),
-    topics: ['workout-director', 'releases'],
+    version: 'batch 2, Pele diagram v2, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'releases', 'technical'],
     media: ['diagram'],
     notes: [
       'Revised 3 Nov: the second paragraph no longer repeats the image (both paths, the saved answer, the offline relaunch); Pele credit added. Image is the v2 Pele render.',
@@ -338,18 +417,18 @@ const batchExtra: Record<string, Extra> = {
   'wd-b2-3': {
     title: 'What one trainer chat message carries',
     series: 'WD batch 2, post 3',
-    version: 'batch 2',
-    ...nov3('19:57'),
-    topics: ['workout-director', 'trainer-chat'],
+    version: 'batch 2, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'trainer-chat', 'technical'],
     media: ['text'],
     notes: ['Replaces the rejected designed bento.'],
   },
   'wd-b2-4': {
     title: 'Exercise figures from one 3D body',
     series: 'WD batch 2, post 4',
-    version: 'batch 2, revised 3 Nov, cross-checked',
-    ...nov3('20:30'),
-    topics: ['workout-director', 'figures'],
+    version: 'batch 2, revised 3 Nov, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'figures', 'technical'],
     media: ['image'],
     notes: [
       'Image 2 swapped 3 Nov 20:30 GMT: the f2 v2 deadlift figure, whose caption now reads “Posed in Blender to match joint angles from reference clips. Never traced.” (text-only change from WD Marketing).',
@@ -374,9 +453,9 @@ const batchExtra: Record<string, Extra> = {
   'wd-b2-6': {
     title: 'One deadlift set as the counter sees it',
     series: 'WD batch 2, post 6',
-    version: 'batch 2, WD Marketing image, trimmed 3 Nov, cross-checked',
-    ...nov3('19:57'),
-    topics: ['workout-director', 'rep-counter'],
+    version: 'batch 2, WD Marketing image, trimmed 3 Nov, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
       'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
@@ -387,9 +466,9 @@ const batchExtra: Record<string, Extra> = {
   'wd-b3-1': {
     title: 'The counting lines for each move',
     series: 'WD batch 3, post 1',
-    version: 'batch 3, image v3, cross-checked',
-    ...nov3('19:57'),
-    topics: ['workout-director', 'rep-counter'],
+    version: 'batch 3, image v3, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
       'Revised 3 Nov: no space before the percent signs, and a video and landmark credit for the new image (v3: a deadlift frame, the hip trace and the joint per move).',
@@ -400,16 +479,16 @@ const batchExtra: Record<string, Extra> = {
     series: 'WD batch 3, post 2',
     version: 'batch 3, image v2, cross-checked',
     ...nov3('19:57'),
-    topics: ['workout-director', 'rep-counter'],
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: ['Image updated 3 Nov: the v2 caption says the hold is for up to 3 s. Text unchanged.'],
   },
   'wd-b3-4': {
     title: 'When the voice coach drops',
     series: 'WD batch 3, post 4',
-    version: 'batch 3, image v3, cross-checked',
-    ...nov3('19:57'),
-    topics: ['workout-director', 'coach'],
+    version: 'batch 3, image v3, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'coach', 'technical'],
     media: ['diagram'],
     notes: [
       'Revised 3 Nov: the waits spelt out (1, 2, 4, 8 and 16 s, then 30 s), and the Pele credit removed because the v3 image is a plain step chart.',
@@ -421,7 +500,7 @@ const batchExtra: Record<string, Extra> = {
     series: 'WD batch 3, post 5',
     version: 'batch 3, image v2, cross-checked',
     ...nov3('20:30'),
-    topics: ['workout-director', 'coach'],
+    topics: ['workout-director', 'coach', 'technical'],
     media: ['diagram'],
     notes: [
       'Image swapped 3 Nov 20:30 GMT: v3, whose caption now says pain skips the gap and the cap but still waits for 2.5 s of quiet (text-only change from WD Marketing).',
@@ -430,11 +509,11 @@ const batchExtra: Record<string, Extra> = {
     ],
   },
   'wd-b3-6': {
-    title: 'A first rep waits for a second',
+    title: 'Why the first rep waits for the next one',
     series: 'WD batch 3, post 6',
-    version: 'batch 3, image v3, cross-checked',
-    ...nov3('20:30'),
-    topics: ['workout-director', 'rep-counter'],
+    version: 'batch 3, image v3, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
       'Image swapped 3 Nov 20:30 GMT: v4, headline “The first rep waits for the next one.” and caption “It counts once another rep lands within 8 s, or when the set ends.” (text-only change from WD Marketing).',
@@ -444,8 +523,8 @@ const batchExtra: Record<string, Extra> = {
   'wd-b4-p1': {
     title: 'What Workout Director is',
     series: 'WD batch 4, product post 1',
-    version: 'batch 4, image p1 v2, cross-checked',
-    ...nov3('19:57'),
+    version: 'batch 4, image p1 v2, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
     topics: ['workout-director', 'product', 'rep-counter'],
     media: ['image'],
     notes: [
@@ -457,8 +536,8 @@ const batchExtra: Record<string, Extra> = {
   'wd-b4-fig1': {
     title: '115 figures for 869 catalogue exercises',
     series: 'WD batch 4, figures post 1',
-    version: 'batch 4, cross-checked',
-    ...nov3('20:30'),
+    version: 'batch 4, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
     topics: ['workout-director', 'figures'],
     media: ['image'],
     notes: [
@@ -471,9 +550,9 @@ const batchExtra: Record<string, Extra> = {
   'wd-b4-tech1': {
     title: 'Pose tracking and counting on the iPhone',
     series: 'WD batch 4, technical post 1',
-    version: 'batch 4, Pele diagram v2, cross-checked',
-    ...nov3('19:57'),
-    topics: ['workout-director', 'pose-model', 'rep-counter'],
+    version: 'batch 4, Pele diagram v2, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'pose-model', 'rep-counter', 'technical'],
     media: ['diagram'],
     notes: [
       'New 3 Nov: the technical post (tech1.txt). Image is the v2 Pele diagram, whose caption says the pose model ships inside the app; The Pele credit was taken out of the post text on 3 Nov.',
@@ -483,8 +562,8 @@ const batchExtra: Record<string, Extra> = {
   'wd-b6-1': {
     title: "Today's target comes with a reason",
     series: 'WD batch 6 (product), post 1',
-    version: 'batch 6, cross-checked',
-    ...nov3('22:15'),
+    version: 'batch 6, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
     topics: ['workout-director', 'product'],
     media: ['text'],
     notes: [
@@ -494,8 +573,8 @@ const batchExtra: Record<string, Extra> = {
   'wd-b6-2': {
     title: "Search by the name you'd use in the gym",
     series: 'WD batch 6 (product), post 2',
-    version: 'batch 6, cross-checked',
-    ...nov3('22:15'),
+    version: 'batch 6, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
     topics: ['workout-director', 'product'],
     media: ['image'],
     notes: [
@@ -505,8 +584,8 @@ const batchExtra: Record<string, Extra> = {
   'wd-b6-3': {
     title: 'Fit my day',
     series: 'WD batch 6 (product), post 3',
-    version: 'batch 6, cross-checked',
-    ...nov3('22:15'),
+    version: 'batch 6, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
     topics: ['workout-director', 'product'],
     media: ['text'],
     notes: [
@@ -516,9 +595,9 @@ const batchExtra: Record<string, Extra> = {
   'wd-b5-1': {
     title: 'Only the straight seconds count: the plank clock',
     series: 'WD batch 5, post 1',
-    version: 'batch 5, cross-checked',
-    ...nov3('20:30'),
-    topics: ['workout-director', 'technical', 'rep-counter'],
+    version: 'batch 5, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
       'New 3 Nov: batch 5 post 1, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). WD Marketing plank image added 3 Nov 20:35 GMT (Pexels, no credit).',
@@ -527,9 +606,9 @@ const batchExtra: Record<string, Extra> = {
   'wd-b5-2': {
     title: 'Eight dips, three push-ups',
     series: 'WD batch 5, post 2',
-    version: 'batch 5, cross-checked',
-    ...nov3('20:30'),
-    topics: ['workout-director', 'technical', 'rep-counter'],
+    version: 'batch 5, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
       'New 3 Nov: batch 5 post 2, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only: its WD Marketing image was not used (3 Nov 20:27).',
@@ -538,9 +617,9 @@ const batchExtra: Record<string, Extra> = {
   'wd-b5-3': {
     title: 'A row needs the hinge',
     series: 'WD batch 5, post 3',
-    version: 'batch 5, cross-checked',
-    ...nov3('20:30'),
-    topics: ['workout-director', 'technical', 'rep-counter'],
+    version: 'batch 5, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
       'New 3 Nov: batch 5 post 3, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only: its WD Marketing image was not used (3 Nov 20:27).',
@@ -549,9 +628,9 @@ const batchExtra: Record<string, Extra> = {
   'wd-b5-4': {
     title: 'Checking the Android counter frame by frame',
     series: 'WD batch 5, post 4',
-    version: 'batch 5, cross-checked',
-    ...nov3('20:30'),
-    topics: ['workout-director', 'technical', 'rep-counter'],
+    version: 'batch 5, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
       'New 3 Nov: batch 5 post 4, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only by design.',
@@ -560,9 +639,9 @@ const batchExtra: Record<string, Extra> = {
   'wd-b5-5': {
     title: 'Pacing the camera when the phone runs hot',
     series: 'WD batch 5, post 5',
-    version: 'batch 5, cross-checked',
-    ...nov3('20:30'),
-    topics: ['workout-director', 'technical', 'pose-model'],
+    version: 'batch 5, audit 3 Nov, awaiting cross-check',
+    ...nov3('23:15'),
+    topics: ['workout-director', 'pose-model', 'technical'],
     media: ['text'],
     notes: [
       'New 3 Nov: batch 5 post 5, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only by design.',
@@ -573,7 +652,7 @@ const batchExtra: Record<string, Extra> = {
     series: 'WD batch 5, post 6',
     version: 'batch 5, cross-checked',
     ...nov3('20:30'),
-    topics: ['workout-director', 'technical', 'pose-model'],
+    topics: ['workout-director', 'pose-model', 'technical'],
     media: ['text'],
     notes: [
       'New 3 Nov: batch 5 post 6, with the WD Engineering and WD Marketing batch 5 fixes applied (wd-batch-5/README.md). Text only by design.',
@@ -605,9 +684,9 @@ const b3post3 = make({
   id: 'wd-b3-3',
   title: 'Lite against Full on the same deadlift reps',
   series: 'WD batch 3, post 3',
-  version: 'batch 3, two image options, cross-checked',
-  ...nov3('20:30'),
-  topics: ['workout-director', 'pose-model', 'rep-counter'],
+  version: 'batch 3, one image (audit 3 Nov), awaiting cross-check',
+  ...nov3('23:15'),
+  topics: ['workout-director', 'pose-model', 'rep-counter', 'technical'],
   media: ['image'],
   chars: [...liteVsFull].length,
   text: liteVsFull,
@@ -622,31 +701,22 @@ const b3post3 = make({
       alt: 'Same frame, two pose models. A woman at the floor setting up a barbell deadlift, side-on, with two pose skeletons drawn on her shoulder, hip, knee and ankle: BlazePose Full in coral and Lite in white, labelled at each ankle. They agree at the shoulder and hip and part at the knee and the plate-hidden ankle. Caption: BlazePose Full and Lite, run on the same deadlift frame.',
       note: 'WD Marketing new/wd-b3-3-lite-vs-full-sharp.png (3 Nov 20:10 GMT): Pexels 7674505 (cottonbro studio), 4K copy, frame 69 at 2.76 s, cropped and downscaled; Lite and Full re-run on the box with the lock-pinned .task files (not Engineering data). The caption gives no numbers; the 115 and 106 in the text are the MyDeadlift eval, not this frame. Pexels License, no credit needed (courtesy: Video: cottonbro studio / Pexels). Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
     },
-    {
-      key: 'b3l2',
-      src: '/assets/img/preview/wd-b3-3-lite-vs-full-mydeadlift.webp',
-      w: 1080,
-      h: 1350,
-      upload: '/workspace/wd-marketing/linkedin-batch-4/new/wd-b3-3-lite-vs-full.png',
-      name: 'wd-b3-3-lite-vs-full.png',
-      alt: 'Same reps, two pose models. A man in a gym lifting a barbell from the floor, side-on, with BlazePose Lite in white and Full in coral drawn on his shoulder, hip, knee and ankle; on this frame Lite puts the knee and ankle behind the leg. Other gym-goers are in the background. Caption: Full found 115 of 191 deadlift reps, Lite 106. Neither added one.',
-      note: 'WD Marketing new/wd-b3-3-lite-vs-full.png (3 Nov 19:40 GMT): MyDeadlift GB_S01_R01.mp4 frame 0, cropped and upscaled; caption numbers from blog-data/batch-3/03-lite-vs-full/mydeadlift-lite-vs-full.csv (after, 9258fab0). CC BY 4.0: the credit goes in the first comment (caption under the image on this page), never in the post text. Bystanders in the background: Ashish’s call. Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
-    },
   ],
   concept: 'Two pose models on the same deadlift reps: recall for BlazePose Full and Lite after the deadlift fix',
   mediaNote:
-    'Two image options, both approved by Ashish (3 Nov): 1, the sharp Pexels frame (no credit needed); 2, the MyDeadlift frame (CC BY 4.0, credit for the first comment under the image). Use one.',
+    'One image: the sharp Pexels frame (no credit needed). The MyDeadlift option was taken off the board in the 3 Nov audit (soft upscale, bystanders, a CC BY 4.0 credit to place, and the caption "Neither added one." that the reviewers flagged).',
   sources: [
     'wd-share/blog-data/batch-3/03-lite-vs-full/README.md:4 (Full 0.602, 115 of 191; Lite 0.555, 106 of 191; barbell, counter after PR #322), :2 (no extra reps either way), :11 (single rep clips joined with a cut), :7 (not re-run at main).',
     'Caveats kept: no timing comparison (Mac times only), the Romanian row left out. The MyDeadlift CC BY 4.0 credit was taken out of the post text on 3 Nov 19:15 GMT (Ashish’s call); it is a board-only caption under image 2.',
   ],
   notes: [
+    'Audit 3 Nov 23:15 GMT: image option 2 (MyDeadlift frame, wd-marketing/linkedin-batch-4/new/wd-b3-3-lite-vs-full.png) removed from the board; the file stays. Text unchanged.',
     'Images added 3 Nov 20:30 GMT (Ashish approved both): the sharp Pexels frame first, then the MyDeadlift frame. Now Ready to post. The text cites no number from either image; its 115 and 106 come from the MyDeadlift eval.',
     'Shares its recall numbers with WD batch 2, post 5.',
   ],
 })
 
-const b2 = wdBatch2.map(fromBatch)
+const b2 = wdBatch2.filter((p) => !dropped.has(p.id)).map(fromBatch)
 const b3 = wdBatch3.map(fromBatch)
 const b3Ordered = [...b3.slice(0, 2), b3post3, ...b3.slice(2)]
 const b4 = wdBatch4.map(fromBatch)

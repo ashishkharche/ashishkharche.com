@@ -37,8 +37,8 @@ test('filters, search and sort update the list and the URL', async ({ page }) =>
   await page.waitForLoadState('networkidle')
   await page.getByRole('button', { name: /^Waiting for media/ }).click()
   await expect(page).toHaveURL(/\?status=waiting$/)
-  await expect(page.locator('[data-draft]')).toHaveCount(2)
-  await expect(page.getByRole('status')).toHaveText(`Showing 2 of ${draftPosts.length} posts.`)
+  await expect(page.locator('[data-draft]')).toHaveCount(1)
+  await expect(page.getByRole('status')).toHaveText(`Showing 1 of ${draftPosts.length} posts.`)
   await page.getByRole('button', { name: 'Clear filters' }).click()
   await page.getByLabel('Search', { exact: true }).fill('Time to update')
   await expect(page.locator('[data-draft]')).toHaveCount(1)
@@ -51,7 +51,7 @@ test('filters, search and sort update the list and the URL', async ({ page }) =>
 
 test('a linked filter opens filtered, and the index jumps to a post', async ({ page }) => {
   await page.goto(`${draftsPath}?topic=coach`)
-  await expect(page.locator('[data-draft]')).toHaveCount(3)
+  await expect(page.locator('[data-draft]')).toHaveCount(2)
   await expect(page.getByRole('button', { name: /^Voice coach/ })).toHaveAttribute('aria-pressed', 'true')
   const index = page.getByRole('navigation', { name: 'Posts on this page' })
   await index.getByRole('link', { name: 'When the voice coach drops' }).click()

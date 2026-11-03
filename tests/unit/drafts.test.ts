@@ -43,7 +43,10 @@ describe('the private drafts board', () => {
   it('shows one version of each post, with real images', () => {
     const ids = draftPosts.map((p) => p.id)
     expect(new Set(ids).size).toBe(ids.length)
-    expect(ids).toHaveLength(28)
+    expect(ids).toHaveLength(26)
+    // Dropped as duplicates in the 3 Nov audit (source files kept).
+    expect(ids).not.toContain('wd-b2-1')
+    expect(ids).not.toContain('wd-b2-5')
     for (const post of draftPosts) {
       for (const img of post.images) expect(existsSync(join('public', img.src)), img.src).toBe(true)
       // A post with no image either waits for media or is text only on purpose (D2, D3 since the 3 Nov cross-check).
@@ -57,7 +60,7 @@ describe('the private drafts board', () => {
   it('offers each page image as its lossless PNG under the noindex /drafts/ path', () => {
     const names = new Set<string>()
     const pngs = draftPosts.flatMap((p) => p.images)
-    expect(pngs).toHaveLength(19)
+    expect(pngs).toHaveLength(17)
     for (const img of pngs) {
       expect(img.png).toBe(`${draftsImagesPath}${img.pngName}`)
       expect(img.pngName, img.src).toMatch(/^[a-z0-9-]+\.png$/)
@@ -83,7 +86,6 @@ describe('the private drafts board', () => {
     expect(post?.text).not.toMatch(/Taco Fleur|Wikimedia|CC BY/)
     expect(draftPosts.filter((p) => p.images.some((i) => i.caption)).map((p) => p.id)).toEqual([
       'wd-b2-4',
-      'wd-b3-3',
       'wd-b4-fig1',
     ])
   })
@@ -128,51 +130,47 @@ describe('drafts filters', () => {
     }
   })
 
+  it('keeps the audit wording rules: no "my app", no show-off lines, no version numbers, no repeats', () => {
+    for (const post of draftPosts) {
+      expect(post.text, post.id).not.toMatch(/\bmy (own )?app\b|\bmy own\b|\bour own\b|own artwork|own figures/i)
+      expect(post.text, post.id).not.toMatch(/\b\d+\.\d+\.\d+\b|\bversion \d/i)
+      expect(post.text, post.id).not.toMatch(/part \d of \d/i)
+    }
+    const p1 = draftPosts.find((p) => p.id === 'wd-b4-p1')
+    expect(p1?.text.startsWith('Workout Director is an iPhone app for training at the gym or at home.')).toBe(true)
+    expect(p1?.text).not.toMatch(/RDL|Skull Crusher/)
+    expect(draftPosts.find((p) => p.id === 'wd-b4-tech1')?.text).not.toMatch(/recorded, saved or uploaded/)
+    // The first-rep wait is told in wd-b3-6 only.
+    const wait = draftPosts.filter((p) =>
+      /first rep (the counter accepts )?waits|holds the first rep|held for up to 8|waits 5\.48/.test(p.text),
+    )
+    expect(wait.map((p) => p.id)).toEqual(['wd-b3-6'])
+    // Every engineering post carries the Technical tag; product, figures and charts posts don't need it.
+    for (const post of draftPosts)
+      if (post.topics.some((t) => ['rep-counter', 'pose-model', 'coach', 'releases', 'trainer-chat'].includes(t)))
+        expect(post.topics.includes('technical') || post.topics.includes('product'), post.id).toBe(true)
+  })
+
   it('filters by topic, status and text, and groups by topic', () => {
     const none = parseFilters('')
     expect(draftPosts.every((p) => matches(p, none))).toBe(true)
     const coach = draftPosts.filter((p) => matches(p, parseFilters('?topic=coach')))
-    expect(coach.map((p) => p.id).sort()).toEqual(['wd-b2-1', 'wd-b3-4', 'wd-b3-5'])
+    expect(coach.map((p) => p.id).sort()).toEqual(['wd-b3-4', 'wd-b3-5'])
     // One status for every cross-checked post: Ready to post. The rest wait for media.
     expect(parseFilters('?status=checked').status).toEqual([])
+    // After the 3 Nov audit pass only the unchanged, cross-checked posts are Ready; the changed ones wait for the re-check.
     const ready = draftPosts.filter((p) => matches(p, parseFilters('?status=ready')))
-    expect(ready.map((p) => p.id).sort()).toEqual(
-      [
-        'd1',
-        'd2',
-        'd3',
-        'sample-a',
-        'wd-b2-2',
-        'wd-b2-4',
-        'wd-b2-5',
-        'wd-b2-6',
-        'wd-b3-1',
-        'wd-b3-2',
-        'wd-b3-4',
-        'wd-b3-5',
-        'wd-b3-6',
-        'wd-b4-p1',
-        'wd-b4-fig1',
-        'wd-b4-tech1',
-        'wd-b3-3',
-        'wd-b5-1',
-        'wd-b5-2',
-        'wd-b5-3',
-        'wd-b5-4',
-        'wd-b5-5',
-        'wd-b5-6',
-        'wd-b6-1',
-        'wd-b6-2',
-        'wd-b6-3',
-      ].sort(),
-    )
+    expect(ready.map((p) => p.id).sort()).toEqual(['sample-a', 'wd-b3-2', 'wd-b3-5', 'wd-b5-6'])
+    const checking = draftPosts.filter((p) => matches(p, parseFilters('?status=checking')))
+    expect(checking).toHaveLength(21)
+    for (const post of checking) expect(post.version, post.id).toMatch(/awaiting cross-check$/)
     const waiting = draftPosts.filter((p) => matches(p, parseFilters('?status=waiting')))
-    expect(waiting.map((p) => p.id).sort()).toEqual(['wd-b2-1', 'wd-b2-3'])
+    expect(waiting.map((p) => p.id).sort()).toEqual(['wd-b2-3'])
     expect(draftPosts.filter((p) => matches(p, parseFilters('?q=Time+to+update'))).map((p) => p.id)).toEqual([
       'wd-b2-2',
     ])
     const grouped = arrange(draftPosts, parseFilters('?sort=topic'))
-    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(28)
+    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(26)
     const newest = arrange(draftPosts, none)[0]?.posts ?? []
     expect((newest[0]?.updated ?? '') >= (newest.at(-1)?.updated ?? '')).toBe(true)
   })
