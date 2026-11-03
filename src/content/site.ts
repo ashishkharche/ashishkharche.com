@@ -16,9 +16,6 @@ export const links = {
   workoutDirectorStore: 'https://apps.apple.com/gb/app/workout-director-gym-home/id6813645709',
   workoutDirectorSite: 'https://workoutdirector.com',
   kaloStore: 'https://apps.apple.com/gb/app/kalo-ai-macro-tracker/id6752915724',
-  /** Phone-free CVs in public/, copied from the web CV build. */
-  cv: '/Ashish-Kharche-CV.pdf',
-  cvIos: '/Ashish-Kharche-iOS-CV.pdf',
   /** Role CVs in public/cv/, from the same web CV build. */
   roleCvs: [
     { label: 'Mobile', href: '/cv/Ashish-Kharche-CV-Mobile.pdf' },
