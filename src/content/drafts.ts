@@ -133,7 +133,7 @@ const dropped = new Set(['wd-b2-1', 'wd-b2-5'])
  * stacking trimmed, image footers stripped) and then cross-checked again: their text is in auditTexts.
  */
 const auditNote =
-  'Changed in the 3 Nov audit pass (text from linkedin-samples/personal/audit-2026-11-03/, see its CHANGES.md) and cross-checked again by WD Engineering and WD Marketing, 3 Nov ~23:45 GMT (wd-share/crosscheck/eng-verdicts-audit-2026-11-03.md and marketing-verdicts-audit-2026-11-03.md), with their fixes applied.'
+  'Changed in the 3 Nov audit pass (text from linkedin-samples/personal/audit-2026-11-03/, see its CHANGES.md) and cross-checked again by WD Engineering and WD Marketing, 3 Nov 23:28 GMT (wd-share/crosscheck/eng-verdicts-audit-2026-11-03.md and marketing-verdicts-audit-2026-11-03.md), with their fixes applied.'
 const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; see revised-2026-11-03/CHANGES.md.'
 /** Every post's text was replaced on 3 Nov 19:57 GMT by its human-voice rewrite. */
 const humanNote =
@@ -220,7 +220,7 @@ const imageSwaps: Record<string, Pick<LiImage, 'src' | 'upload' | 'name' | 'note
     src: '/assets/img/preview/wd-b3-4-coach-reconnect-backoff-v4.webp',
     upload: '/workspace/drafts-audit/img/review/04-coach-reconnect-backoff-v4.png',
     name: '04-coach-reconnect-backoff-v4.png',
-    note: 'Verdict-pass re-render (3 Nov 23:50 GMT, WD Marketing image FIX) of WD Marketing review/04-coach-reconnect-backoff-v3.png with its one-line jitter footer left out; nothing else changed (diff confined to y 1282 to 1308). A plain step chart from batch-3 backoff-timeline.csv; WD Engineering: the steps, the 150 s budget and "gives up at 121 s, offers Retry" match the text.',
+    note: 'Verdict-pass re-render (3 Nov 23:29 GMT, WD Marketing image FIX) of WD Marketing review/04-coach-reconnect-backoff-v3.png with its one-line jitter footer left out; nothing else changed (diff confined to y 1282 to 1308). A plain step chart from batch-3 backoff-timeline.csv; WD Engineering: the steps, the 150 s budget and "gives up at 121 s, offers Retry" match the text.',
   },
   '/assets/img/preview/wd-b3-1-one-angle-per-move-v3.webp': {
     src: '/assets/img/preview/wd-b3-1-one-angle-per-move-v4.webp',
@@ -317,7 +317,7 @@ const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
     title: 'D1: a deadlift counted from one hip angle',
     series: 'D1, slot Tue 3 Nov',
     version: 'v13, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
@@ -331,7 +331,7 @@ const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
     title: 'D2: picking a pose model for a phone',
     series: 'D2, slot Thu 5 Nov',
     version: 'v13, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'pose-model', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
@@ -344,7 +344,7 @@ const dExtra: Record<(typeof liDrafts)[number]['id'], Extra> = {
     title: 'D3: the checks before a rep counts',
     series: 'D3, slot Mon 9 Nov',
     version: 'v13 (trimmed), audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
@@ -412,7 +412,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'How an old build is asked to update',
     series: 'WD batch 2, post 2',
     version: 'batch 2, Pele diagram v2, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'releases', 'technical'],
     media: ['diagram'],
     notes: [
@@ -424,7 +424,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'What one trainer chat message carries',
     series: 'WD batch 2, post 3',
     version: 'batch 2, audit 3 Nov, text cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'trainer-chat', 'technical'],
     media: ['text'],
     notes: ['Replaces the rejected designed bento.'],
@@ -433,7 +433,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Exercise figures from one 3D body',
     series: 'WD batch 2, post 4',
     version: 'batch 2, revised 3 Nov, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'figures', 'technical'],
     media: ['image'],
     notes: [
@@ -460,7 +460,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'One deadlift set as the counter sees it',
     series: 'WD batch 2, post 6',
     version: 'batch 2, WD Marketing image, trimmed 3 Nov, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
@@ -473,7 +473,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'The counting lines for each move',
     series: 'WD batch 3, post 1',
     version: 'batch 3, image v3, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
@@ -484,7 +484,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'When the plate hides the ankle',
     series: 'WD batch 3, post 2',
     version: 'batch 3, image v2, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: ['Image updated 3 Nov: the v2 caption says the hold is for up to 3 s. Text unchanged.'],
@@ -493,7 +493,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'When the voice coach drops',
     series: 'WD batch 3, post 4',
     version: 'batch 3, image v4 (no footer), audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'coach', 'technical'],
     media: ['diagram'],
     notes: [
@@ -518,7 +518,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Why the first rep waits for the next one',
     series: 'WD batch 3, post 6',
     version: 'batch 3, image v3, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
@@ -530,7 +530,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'What Workout Director is',
     series: 'WD batch 4, product post 1',
     version: 'batch 4, image p1 v2, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'product', 'rep-counter'],
     media: ['image'],
     notes: [
@@ -543,7 +543,7 @@ const batchExtra: Record<string, Extra> = {
     title: '115 figures for 869 catalogue exercises',
     series: 'WD batch 4, figures post 1',
     version: 'batch 4, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'figures'],
     media: ['image'],
     notes: [
@@ -557,7 +557,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Pose tracking and counting on the iPhone',
     series: 'WD batch 4, technical post 1',
     version: 'batch 4, Pele diagram v2, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'pose-model', 'rep-counter', 'technical'],
     media: ['diagram'],
     notes: [
@@ -569,7 +569,7 @@ const batchExtra: Record<string, Extra> = {
     title: "Today's target comes with a reason",
     series: 'WD batch 6 (product), post 1',
     version: 'batch 6, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'product'],
     media: ['text'],
     notes: [
@@ -580,7 +580,7 @@ const batchExtra: Record<string, Extra> = {
     title: "Search by the name you'd use in the gym",
     series: 'WD batch 6 (product), post 2',
     version: 'batch 6, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'product'],
     media: ['image'],
     notes: [
@@ -591,7 +591,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Fit my day',
     series: 'WD batch 6 (product), post 3',
     version: 'batch 6, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'product'],
     media: ['text'],
     notes: [
@@ -602,7 +602,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Only the straight seconds count: the plank clock',
     series: 'WD batch 5, post 1',
     version: 'batch 5, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['image', 'diagram'],
     notes: [
@@ -613,7 +613,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Eight dips, three push-ups',
     series: 'WD batch 5, post 2',
     version: 'batch 5, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
@@ -624,7 +624,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'A row needs the hinge',
     series: 'WD batch 5, post 3',
     version: 'batch 5, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
@@ -635,7 +635,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Checking the Android counter frame by frame',
     series: 'WD batch 5, post 4',
     version: 'batch 5, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'rep-counter', 'technical'],
     media: ['text'],
     notes: [
@@ -646,7 +646,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'Pacing the camera when the phone runs hot',
     series: 'WD batch 5, post 5',
     version: 'batch 5, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'pose-model', 'technical'],
     media: ['text'],
     notes: [
@@ -657,7 +657,7 @@ const batchExtra: Record<string, Extra> = {
     title: 'The Android GPU bug on frame one',
     series: 'WD batch 5, post 6',
     version: 'batch 5, audit 3 Nov, cross-checked',
-    ...nov3('23:55'),
+    ...nov3('23:34'),
     topics: ['workout-director', 'pose-model', 'technical'],
     media: ['text'],
     notes: [
@@ -691,7 +691,7 @@ const b3post3 = make({
   title: 'Lite against Full on the same deadlift reps',
   series: 'WD batch 3, post 3',
   version: 'batch 3, one image (audit 3 Nov), cross-checked',
-  ...nov3('23:55'),
+  ...nov3('23:34'),
   topics: ['workout-director', 'pose-model', 'rep-counter', 'technical'],
   media: ['image'],
   chars: [...liteVsFull].length,
