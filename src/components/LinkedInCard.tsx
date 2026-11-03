@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
-import { Fragment, useId, useState, type ReactNode } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { liHeadline, type LiImage } from '~/content/linkedinV11Li'
 import { paragraphsOf } from '~/lib/linkedinCopy'
 import { breakpoints, colors } from '~/styles/tokens.stylex'
@@ -201,19 +201,12 @@ export function FeedCard({ draft, device }: { draft: CardPost; device: Device })
       </header>
       <div {...stylex.props(s.textWrap)}>
         <div id={textId} data-li-text={`${draft.id}-${device}`} {...stylex.props(s.text, !open && s.folded)}>
+          {/* One <p> per paragraph with a one-line gap, as LinkedIn shows it; text selected by hand pastes into
+              LinkedIn with one blank line between paragraphs, like the Copy for LinkedIn button. */}
           {paragraphsOf(draft.text).map((lines, i) => (
-            <Fragment key={i}>
-              {/* An empty paragraph between paragraphs, as LinkedIn's composer stores a blank line, so text selected
-                  by hand keeps the gap when pasted there. */}
-              {i > 0 ? (
-                <p {...stylex.props(s.para)}>
-                  <br />
-                </p>
-              ) : null}
-              <p {...stylex.props(s.para)}>
-                <LiText text={lines.join('\n')} />
-              </p>
-            </Fragment>
+            <p key={i} {...stylex.props(s.para, i > 0 && s.paraGap)}>
+              <LiText text={lines.join('\n')} />
+            </p>
           ))}
         </div>
         {!open && (
@@ -473,6 +466,7 @@ const s = stylex.create({
   textWrap: { position: 'relative', marginTop: '8px', marginRight: '16px', marginBottom: 0, marginLeft: '16px' },
   text: { whiteSpace: 'pre-wrap', overflowWrap: 'break-word', color: 'rgba(0, 0, 0, 0.9)' },
   para: { margin: 0, whiteSpace: 'pre-wrap' },
+  paraGap: { marginTop: '21px' },
   folded: { maxHeight: '63px', overflow: 'hidden' },
   more: {
     position: 'absolute',

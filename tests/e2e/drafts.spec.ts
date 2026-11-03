@@ -102,8 +102,10 @@ test('Copy for LinkedIn puts the post text on the clipboard with blank lines bet
   expect(clip.plain).toBe(post.text)
   expect(clip.plain).toContain('°\u0020and 115°')
   expect(clip.plain.split('\n\n')).toHaveLength(4)
-  expect(clip.html).toContain('</p><p><br></p><p>')
-  expect(clip.html.match(/<p><br><\/p>/g)).toHaveLength(3)
+  // One <p> per paragraph and no empty spacer paragraphs, so LinkedIn shows one blank line per gap.
+  expect(clip.html).toContain('</p><p>')
+  expect(clip.html).not.toContain('<p><br></p>')
+  expect(clip.html.match(/<p>/g)).toHaveLength(4)
   expect(clip.html).toContain('147°')
   expect(clip.html).toContain('code')
   // The message clears after about 2 s.
@@ -116,7 +118,13 @@ test('every post with real text has a Copy for LinkedIn button, and the card sho
   const withText = draftPosts.filter((p) => !p.textNote)
   await expect(page.getByRole('button', { name: /^Copy for LinkedIn/ })).toHaveCount(withText.length)
   const text = page.locator('[data-li-text="wd-b3-1-desktop"]')
-  await expect(text.locator('p')).toHaveCount(7)
+  await expect(text.locator('p')).toHaveCount(4)
+  expect(
+    await text
+      .locator('p')
+      .nth(1)
+      .evaluate((el) => getComputedStyle(el).marginTop),
+  ).toBe('21px')
   expect(
     await text
       .locator('p')

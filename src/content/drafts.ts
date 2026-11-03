@@ -212,11 +212,12 @@ const batchExtra: Record<string, Extra> = {
   'wd-b2-5': {
     title: 'The side-on deadlift fix, before and after',
     series: 'WD batch 2, post 5',
-    version: 'batch 2, WD Marketing image',
-    ...nov3('15:31'),
+    version: 'batch 2, WD Marketing image, trimmed 3 Nov',
+    ...nov3('17:30'),
     topics: ['workout-director', 'rep-counter', 'pose-model'],
     media: ['image', 'diagram'],
     notes: [
+      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
       'Replaces the rejected v1 text and its recall chart.',
       'Overlaps with WD batch 3, post 2 (the 3 s ankle hold) and post 3 (the same Lite and Full recall numbers).',
     ],
@@ -224,11 +225,12 @@ const batchExtra: Record<string, Extra> = {
   'wd-b2-6': {
     title: 'One deadlift set as the counter sees it',
     series: 'WD batch 2, post 6',
-    version: 'batch 2, WD Marketing image',
-    ...nov3('15:31'),
+    version: 'batch 2, WD Marketing image, trimmed 3 Nov',
+    ...nov3('17:30'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
     notes: [
+      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
       'Replaces the rejected v1 text and its hip trace.',
       'Overlaps with WD batch 3, post 6: the same clip and times (12.40 s, 17.88 s, count 2).',
     ],
@@ -244,38 +246,48 @@ const batchExtra: Record<string, Extra> = {
   'wd-b3-2': {
     title: 'When the plate hides the ankle',
     series: 'WD batch 3, post 2',
-    version: 'batch 3',
-    ...nov3('15:52'),
+    version: 'batch 3, trimmed 3 Nov',
+    ...nov3('17:30'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
+    notes: [
+      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
+    ],
   },
   'wd-b3-4': {
     title: 'When the voice coach drops',
     series: 'WD batch 3, post 4',
-    version: 'batch 3',
-    ...nov3('15:52'),
+    version: 'batch 3, trimmed 3 Nov',
+    ...nov3('17:30'),
     topics: ['workout-director', 'coach'],
     media: ['diagram'],
     notes: [
+      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
       'Replaces Sample B (the coach reconnect sample, never posted). Sample B said the app shows no reconnecting message; the code at a0d27a7e shows "Coach reconnecting · counts still on".',
     ],
   },
   'wd-b3-5': {
     title: 'How often the voice coach speaks up',
     series: 'WD batch 3, post 5',
-    version: 'batch 3, rewritten from the corrected README',
-    ...nov3('15:52'),
+    version: 'batch 3, rewritten from the corrected README, trimmed 3 Nov',
+    ...nov3('17:30'),
     topics: ['workout-director', 'coach'],
     media: ['diagram'],
-    notes: ['Overlaps with WD batch 2, post 1 (see there).'],
+    notes: [
+      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
+      'Overlaps with WD batch 2, post 1 (see there).',
+    ],
   },
   'wd-b3-6': {
     title: 'A first rep waits for a second',
     series: 'WD batch 3, post 6',
-    version: 'batch 3',
-    ...nov3('15:52'),
+    version: 'batch 3, trimmed 3 Nov',
+    ...nov3('17:30'),
     topics: ['workout-director', 'rep-counter'],
     media: ['image', 'diagram'],
+    notes: [
+      'Trimmed 3 Nov 17:30 GMT: the paragraphs that repeated the image in numbers were replaced by one line that points at the image.',
+    ],
   },
 }
 

@@ -51,11 +51,11 @@ export const wdBatch3: WdBatchPost[] = [
     sources: [
       'blog-data batch-3/02-ankle-confidence/README.md: PostureGate.swift readHoldingHiddenAnkles :567-590, minimumConfidence 0.5 (:135), hiddenAnkleConfidence 0.3 (:131), hiddenAnkleHold 3 s for deadlifts and RDLs (:273, :281) at WD main a0d27a7e (3 Nov 2026 14:41 GMT), read through the GitHub connector.',
       'ankle-confidence-trace.csv: right ankle held on 42 frames in three stretches (3.96-5.60 s, 15.88-16.48 s, 21.36-21.68 s); counter_gate ok on every held frame (PR #322 replay run at 9258fab0, not re-run at main).',
-      'Before the rule (main 1808411c) the gate dropped out at 4.96 s and 16.40 s: README.md:13.',
+      'Image line: the 3 held stretches all fall in work phases (3.96-5.60, 15.88-16.48, 21.36-21.68 s) with counter_gate ok, but only 3 of the 4 lifts have one (8.96-12.40 s has none), so the post says "the bottom of the lift", not "each rep". It says the counter stays on, not that the rep is kept: the 4.96 s frame in the image is in the movement refused at 7.48 s (see post 6). Before the rule (main 1808411c) the gate dropped out at 4.96 s and 16.40 s: README.md:13 (no longer in the post).',
       'Credits in the post text: cottonbro studio / Pexels (Pexels 7674505, "A Woman Lifting A Barbell", Pexels License), MediaPipe BlazePose.',
     ],
-    text: 'At the bottom of a side-on deadlift the far plate can hide the near ankle, and its pose confidence drops under the 0.5 the counter needs.\n\nIf the hip and knee are still clear and the ankle stays at 0.3 or more, Workout Director keeps the leg in view for up to 3 s instead of losing the rep.\n\nIn a replay of one clip, the right ankle was held this way on 42 frames in three stretches and the counter stayed on for all of them. Before the rule it dropped out at 4.96 s and 16.40 s.\n\nVideo: cottonbro studio / Pexels. Pose landmarks: MediaPipe BlazePose.',
-    chars: 551,
+    text: 'At the bottom of a side-on deadlift the far plate can hide the near ankle, and its pose confidence drops under the 0.5 the counter needs.\n\nIf the hip and knee are still clear and the ankle stays at 0.3 or more, Workout Director keeps the leg in view for up to 3 s instead of losing the rep.\n\nThe image shows one clip: the ankle dims at the bottom of the lift, and the counter stays on.\n\nVideo: cottonbro studio / Pexels. Pose landmarks: MediaPipe BlazePose.',
+    chars: 457,
   },
   {
     id: 'wd-b3-4',
@@ -81,8 +81,8 @@ export const wdBatch3: WdBatchPost[] = [
       'Assumption from README.md:12: each connection attempt takes 0 s, so real retries are the same or fewer.',
       'Credit in the post text: Pele (optional per WD Marketing SOURCES.md).',
     ],
-    text: 'When the voice coach connection drops in Workout Director, rep counting carries on and the screen says "Coach reconnecting · counts still on".\n\nThe phone retries after 1, 2, 4, 8, 16, then 30 s, each wait jittered by up to a fifth either way, and gives up when the next full wait would pass a 150 s budget.\n\nWith no jitter that is 8 waits and 121 s, counting only the waits; with jitter, 8 to 10. Real connection attempts take time of their own, so real retries are the same or fewer.\n\nDiagram rendered with Pele.',
-    chars: 513,
+    text: 'When the voice coach connection drops in Workout Director, rep counting carries on and the screen says "Coach reconnecting · counts still on".\n\nThe phone retries with waits that double from 1 s up to 30 s, each jittered by up to a fifth either way, and gives up when the next full wait would pass a 150 s budget.\n\nThe image shows the waits with no jitter. Real connection attempts take time of their own, so real retries are the same or fewer.\n\nDiagram rendered with Pele.',
+    chars: 472,
   },
   {
     id: 'wd-b3-5',
@@ -109,8 +109,8 @@ export const wdBatch3: WdBatchPost[] = [
       '20 s stall and out-of-view timer: coach-timing-constants.json quiet_seconds_stall_or_out_of_view 20 (README.md:18, LiveCoachPolicy.swift:42-63).',
       'Caveat: from the code; whether the server currently has .liveCoach on was not checked (README.md caveat).',
     ],
-    text: 'The Workout Director voice coach has two limits on the lines it starts on its own.\n\nA minimum gap between them, set by persona: Hype 20 s, Calm 30 s, Minimal 45 s, times 1.5 on "talk less" and 0.75 on "talk more". Pain, a form break and the workout wrap-up skip the gap, but still wait for 2.5 s of quiet.\n\nA per-set cap on form, stall and out-of-view lines: 0 on "talk less", 1 on standard, 3 on "talk more". A stall or stepping out of view only gets a line after 20 s, and pain always gets through.',
-    chars: 500,
+    text: 'The Workout Director voice coach has two limits on the lines it starts on its own. The image has both, for each persona and talk setting.\n\nA minimum gap between them, set by persona and made longer or shorter by "talk less" and "talk more". Pain, a form break and the workout wrap-up skip the gap, but still wait for 2.5 s of quiet.\n\nA per-set cap on form, stall and out-of-view lines, which also follows the talk setting. A stall or stepping out of view only gets a line after 20 s, and pain always gets through.',
+    chars: 513,
   },
   {
     id: 'wd-b3-6',
@@ -136,7 +136,7 @@ export const wdBatch3: WdBatchPost[] = [
       'The post never says 3 reps counted; the count shown is 2.',
       'Credits in the post text: cottonbro studio / Pexels (Pexels 7674505), MediaPipe BlazePose.',
     ],
-    text: 'For curls, presses, rows, squats and deadlifts, Workout Director holds a first rep for up to 8 s, waiting for a second one. A single bend while tidying up never becomes a set.\n\nIn one deadlift clip, the first rep the counter accepts is held at 12.40 s with the count still at 0. The next lands at 17.88 s, 5.48 s later, and the count goes from 0 to 2.\n\nAn earlier movement at 7.48 s was refused as not the move, because she never stood up straight.\n\nVideo: cottonbro studio / Pexels. Pose landmarks: MediaPipe BlazePose.',
-    chars: 520,
+    text: 'For curls, presses, rows, squats and deadlifts, Workout Director holds a first rep for up to 8 s, waiting for a second one. A single bend while tidying up never becomes a set.\n\nThe image shows one deadlift clip: the count stays at 0 while the first accepted rep is held, and goes to 2 when the next one lands.\n\nVideo: cottonbro studio / Pexels. Pose landmarks: MediaPipe BlazePose.',
+    chars: 381,
   },
 ]

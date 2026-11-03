@@ -7,9 +7,7 @@ describe('Copy for LinkedIn', () => {
     const text = 'Hook line\n\nFirst para line 1\nline 2\n\n\n\nLast  \t\n'
     expect(paragraphsOf(text)).toEqual([['Hook line'], ['First para line 1', 'line 2'], ['Last']])
     expect(linkedinPlain(text)).toBe('Hook line\n\nFirst para line 1\nline 2\n\nLast')
-    expect(linkedinHtml(text)).toBe(
-      '<p>Hook line</p><p><br></p><p>First para line 1<br>line 2</p><p><br></p><p>Last</p>',
-    )
+    expect(linkedinHtml(text)).toBe('<p>Hook line</p><p>First para line 1<br>line 2</p><p>Last</p>')
   })
 
   it('trims trailing spaces, reads CRLF and spaces-only lines as blank', () => {
@@ -22,7 +20,7 @@ describe('Copy for LinkedIn', () => {
     expect(escapeHtml('<a href="x">&\'</a>')).toBe('&lt;a href=&quot;x&quot;&gt;&amp;&#39;&lt;/a&gt;')
     expect(linkedinPlain(text)).toBe(text)
     expect(linkedinHtml(text)).toBe(
-      '<p>Elbow 147° &amp; knee &lt;155°&gt; &quot;quoted&quot; it&#39;s 🏋️‍♀️ 💪</p><p><br></p><p>MediaPipe · 12 % → done</p>',
+      '<p>Elbow 147° &amp; knee &lt;155°&gt; &quot;quoted&quot; it&#39;s 🏋️‍♀️ 💪</p><p>MediaPipe · 12 % → done</p>',
     )
   })
 
@@ -33,11 +31,26 @@ describe('Copy for LinkedIn', () => {
       expect(plain, post.id).toBe(post.text.trim())
       for (const note of post.notes) expect(plain).not.toContain(note)
       const paras = plain.split('\n\n').length
-      expect(linkedinHtml(post.text).match(/<p><br><\/p>/g)?.length ?? 0, post.id).toBe(paras - 1)
+      const html = linkedinHtml(post.text)
+      // No empty spacer paragraphs: LinkedIn already leaves one blank line at each paragraph boundary.
+      expect(html, post.id).not.toContain('<p><br></p>')
+      expect(html.match(/<p>/g)?.length, post.id).toBe(paras)
     }
     const b32 = draftPosts.find((p) => p.id === 'wd-b3-2')
     expect(linkedinPlain(b32?.text ?? '')).toMatch(
       /\n\nVideo: cottonbro studio \/ Pexels\. Pose landmarks: MediaPipe BlazePose\.$/,
     )
+  })
+
+  it('copies wd-b3-2 exactly as Ashish edited it', () => {
+    const post = draftPosts.find((p) => p.id === 'wd-b3-2')
+    const paras = [
+      'At the bottom of a side-on deadlift the far plate can hide the near ankle, and its pose confidence drops under the 0.5 the counter needs.',
+      'If the hip and knee are still clear and the ankle stays at 0.3 or more, Workout Director keeps the leg in view for up to 3 s instead of losing the rep.',
+      'The image shows one clip: the ankle dims at the bottom of the lift, and the counter stays on.',
+      'Video: cottonbro studio / Pexels. Pose landmarks: MediaPipe BlazePose.',
+    ]
+    expect(linkedinPlain(post?.text ?? '')).toBe(paras.join('\n\n'))
+    expect(linkedinHtml(post?.text ?? '')).toBe(paras.map((p) => `<p>${p}</p>`).join(''))
   })
 })

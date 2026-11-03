@@ -2,10 +2,11 @@
  * What the "Copy for LinkedIn" button on the drafts board puts on the clipboard, built from a post's canonical text
  * (never from the page).
  *
- * LinkedIn's composer is a rich text editor: when the clipboard holds HTML it reads that, one paragraph per line, and
- * an empty paragraph becomes an empty line. Selecting the card text by hand gives it HTML whose gaps are newlines
- * inside one block, which it drops, so the paragraphs ran together. The button writes both types:
- * - text/html: each paragraph as <p>, single line breaks as <br>, and an empty <p><br></p> between paragraphs;
+ * LinkedIn's composer is a rich text editor and reads text/html when the clipboard has it. Tested by pasting on
+ * 3 Nov 2026: newlines inside one block are dropped (the paragraphs ran together), and every <p> boundary already
+ * becomes a blank line, so an extra empty <p><br></p> between paragraphs gave 3 to 4 blank lines. The button writes:
+ * - text/html: one <p> per paragraph and nothing between them (single line breaks as <br>), so each gap is one
+ *   blank line;
  * - text/plain: paragraphs separated by one blank line (\n\n), for editors that only read plain text.
  */
 
@@ -36,7 +37,7 @@ export function linkedinPlain(text: string): string {
 export function linkedinHtml(text: string): string {
   return paragraphsOf(text)
     .map((p) => `<p>${p.map(escapeHtml).join('<br>')}</p>`)
-    .join('<p><br></p>')
+    .join('')
 }
 
 /**
