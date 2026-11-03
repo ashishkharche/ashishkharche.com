@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { createFileRoute } from '@tanstack/react-router'
-import { useId, useMemo, useSyncExternalStore, type ReactNode } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { NotFound } from '~/components/NotFound'
 import { CardFrame, CardNotes, FeedCard, ImageOrder, type Device } from '~/components/LinkedInCard'
 import { draftPosts, draftsSlug, lengths, mediaTypes, statuses, topics, type DraftPost } from '~/content/drafts'
@@ -14,6 +14,7 @@ import {
   type Filters,
   type GroupKey,
 } from '~/lib/drafts'
+import { copyForLinkedIn } from '~/lib/linkedinCopy'
 import { pageMeta } from '~/lib/seo'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
@@ -275,7 +276,11 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
       <CardFrame label={device === 'mobile' ? 'Phone app' : 'Desktop feed'} device={device}>
         <FeedCard draft={post} device={device} />
       </CardFrame>
-      {post.textNote ? <p {...stylex.props(styles.meta)}>{post.textNote}</p> : null}
+      {post.textNote ? (
+        <p {...stylex.props(styles.meta)}>{post.textNote} No copy button: the text on this page is not the post.</p>
+      ) : (
+        <CopyButton post={post} />
+      )}
       <details {...stylex.props(styles.details)} data-review={post.id}>
         <summary {...stylex.props(styles.summary, ui.focusRing)}>Sources and review notes</summary>
         <div {...stylex.props(styles.detailsBody)}>
@@ -326,7 +331,73 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
   )
 }
 
+const noop = () => () => {}
+
+/**
+ * Copies the post's canonical text (post.text, credit lines included, review notes left out) in the form LinkedIn's
+ * composer keeps blank lines from (see src/lib/linkedinCopy.ts). Shown once the page has hydrated.
+ */
+function CopyButton({ post }: { post: DraftPost }) {
+  const canCopy = useSyncExternalStore(
+    noop,
+    () => typeof navigator !== 'undefined' && !!navigator.clipboard,
+    () => false,
+  )
+  const [message, setMessage] = useState('')
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => () => clearTimeout(timer.current), [])
+
+  async function copy() {
+    clearTimeout(timer.current)
+    let next: string
+    try {
+      await copyForLinkedIn(post.text)
+      next = 'Copied'
+    } catch {
+      next = 'Could not copy. Open “Sources and review notes” and select the text by hand.'
+    }
+    setMessage(next)
+    timer.current = setTimeout(() => setMessage(''), 2000)
+  }
+
+  return (
+    <div {...stylex.props(styles.copyRow)}>
+      {canCopy ? (
+        <button
+          type="button"
+          onClick={copy}
+          data-copy-linkedin={post.id}
+          {...stylex.props(styles.copyButton, ui.focusRing)}
+        >
+          Copy for LinkedIn<span {...stylex.props(ui.visuallyHidden)}>: {post.title}</span>
+        </button>
+      ) : null}
+      <span aria-live="polite" data-copy-status={post.id} {...stylex.props(styles.copyStatus)}>
+        {message}
+      </span>
+    </div>
+  )
+}
+
 const styles = stylex.create({
+  copyRow: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.75rem', minHeight: '2.5rem' },
+  copyButton: {
+    fontFamily: fonts.sans,
+    fontSize: type.meta,
+    fontWeight: weights.medium,
+    color: colors.bg,
+    backgroundColor: colors.text,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.text,
+    borderRadius: '999px',
+    paddingBlock: '0.45rem',
+    paddingInline: '1rem',
+    minHeight: '2.5rem',
+    cursor: 'pointer',
+    opacity: { default: 1, ':hover': 0.88 },
+  },
+  copyStatus: { fontSize: type.meta, color: colors.text, fontWeight: weights.medium },
   main: { paddingTop: { default: '3rem', [breakpoints.phone]: '2rem' }, paddingBottom: '3rem' },
   page: { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '2rem', minWidth: 0 },
   title: {

@@ -70,3 +70,57 @@ test('the filter chips work from the keyboard', async ({ page }) => {
   await page.keyboard.press('Enter')
   await expect(chip).toHaveAttribute('aria-pressed', 'false')
 })
+
+test('Copy for LinkedIn puts the post text on the clipboard with blank lines between paragraphs', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  const post = draftPosts.find((p) => p.id === 'wd-b3-1')
+  if (!post) throw new Error('wd-b3-1 is missing')
+  await page.goto(draftsPath)
+  await page.waitForLoadState('networkidle')
+  const card = page.locator('#wd-b3-1')
+  const button = card.getByRole('button', { name: /^Copy for LinkedIn/ })
+  await expect(card.getByRole('button', { name: /^Copy for LinkedIn/ })).toHaveCount(1)
+  // Keyboard: focus and Enter.
+  await button.focus()
+  await page.keyboard.press('Enter')
+  const status = card.locator('[data-copy-status]')
+  await expect(status).toHaveText('Copied')
+  await expect(status).toHaveAttribute('aria-live', 'polite')
+  const clip = await page.evaluate(async () => {
+    const [item] = await navigator.clipboard.read()
+    if (!item) return { types: [], plain: '', html: '' }
+    return {
+      types: item.types,
+      plain: await (await item.getType('text/plain')).text(),
+      html: await (await item.getType('text/html')).text(),
+    }
+  })
+  expect(clip.types).toEqual(expect.arrayContaining(['text/plain', 'text/html']))
+  expect(clip.plain).toBe(post.text)
+  expect(clip.plain).toContain('°\u0020and 115°')
+  expect(clip.plain.split('\n\n')).toHaveLength(4)
+  expect(clip.html).toContain('</p><p><br></p><p>')
+  expect(clip.html.match(/<p><br><\/p>/g)).toHaveLength(3)
+  expect(clip.html).toContain('147°')
+  expect(clip.html).toContain('code')
+  // The message clears after about 2 s.
+  await expect(status).toHaveText('', { timeout: 4000 })
+})
+
+test('every post with real text has a Copy for LinkedIn button, and the card shows the gaps', async ({ page }) => {
+  await page.goto(draftsPath)
+  await page.waitForLoadState('networkidle')
+  const withText = draftPosts.filter((p) => !p.textNote)
+  await expect(page.getByRole('button', { name: /^Copy for LinkedIn/ })).toHaveCount(withText.length)
+  const text = page.locator('[data-li-text="wd-b3-1-desktop"]')
+  await expect(text.locator('p')).toHaveCount(7)
+  expect(
+    await text
+      .locator('p')
+      .first()
+      .evaluate((el) => getComputedStyle(el).whiteSpace),
+  ).toBe('pre-wrap')
+})

@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
-import { useId, useState, type ReactNode } from 'react'
+import { Fragment, useId, useState, type ReactNode } from 'react'
 import { liHeadline, type LiImage } from '~/content/linkedinV11Li'
+import { paragraphsOf } from '~/lib/linkedinCopy'
 import { breakpoints, colors } from '~/styles/tokens.stylex'
 
 /**
@@ -105,7 +106,7 @@ function ImageGrid({ images }: { images: LiImage[] }) {
   )
 }
 
-/** Post text as LinkedIn shows it: line breaks kept, links blue. The text content equals the paste text. */
+/** One paragraph of post text as LinkedIn shows it: line breaks kept (pre-wrap), links blue. */
 function LiText({ text }: { text: string }) {
   const parts: ReactNode[] = []
   const re = /https?:\/\/\S+/g
@@ -200,7 +201,20 @@ export function FeedCard({ draft, device }: { draft: CardPost; device: Device })
       </header>
       <div {...stylex.props(s.textWrap)}>
         <div id={textId} data-li-text={`${draft.id}-${device}`} {...stylex.props(s.text, !open && s.folded)}>
-          <LiText text={draft.text} />
+          {paragraphsOf(draft.text).map((lines, i) => (
+            <Fragment key={i}>
+              {/* An empty paragraph between paragraphs, as LinkedIn's composer stores a blank line, so text selected
+                  by hand keeps the gap when pasted there. */}
+              {i > 0 ? (
+                <p {...stylex.props(s.para)}>
+                  <br />
+                </p>
+              ) : null}
+              <p {...stylex.props(s.para)}>
+                <LiText text={lines.join('\n')} />
+              </p>
+            </Fragment>
+          ))}
         </div>
         {!open && (
           <button
@@ -458,6 +472,7 @@ const s = stylex.create({
   controls: { color: 'rgba(0, 0, 0, 0.6)', fontSize: '18px', lineHeight: '20px', flexShrink: 0, letterSpacing: '2px' },
   textWrap: { position: 'relative', marginTop: '8px', marginRight: '16px', marginBottom: 0, marginLeft: '16px' },
   text: { whiteSpace: 'pre-wrap', overflowWrap: 'break-word', color: 'rgba(0, 0, 0, 0.9)' },
+  para: { margin: 0, whiteSpace: 'pre-wrap' },
   folded: { maxHeight: '63px', overflow: 'hidden' },
   more: {
     position: 'absolute',
