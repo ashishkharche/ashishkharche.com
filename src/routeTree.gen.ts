@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as WorkRouteImport } from './routes/work'
+import { Route as DraftsKeyRouteImport } from './routes/drafts.$key'
 import { Route as LabChartsRouteImport } from './routes/lab.charts'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
 import { Route as NotesSlugRouteImport } from './routes/notes.$slug'
@@ -31,6 +32,11 @@ const AboutRoute = AboutRouteImport.update({
 const WorkRoute = WorkRouteImport.update({
   id: '/work',
   path: '/work',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DraftsKeyRoute = DraftsKeyRouteImport.update({
+  id: '/drafts/$key',
+  path: '/drafts/$key',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabChartsRoute = LabChartsRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/work': typeof WorkRoute
+  '/drafts/$key': typeof DraftsKeyRoute
   '/lab/charts': typeof LabChartsRoute
   '/notes/$slug': typeof NotesSlugRoute
   '/projects/workout-director': typeof ProjectsWorkoutDirectorRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/work': typeof WorkRoute
+  '/drafts/$key': typeof DraftsKeyRoute
   '/lab/charts': typeof LabChartsRoute
   '/notes/$slug': typeof NotesSlugRoute
   '/projects/workout-director': typeof ProjectsWorkoutDirectorRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/work': typeof WorkRoute
+  '/drafts/$key': typeof DraftsKeyRoute
   '/lab/charts': typeof LabChartsRoute
   '/notes/$slug': typeof NotesSlugRoute
   '/projects/workout-director': typeof ProjectsWorkoutDirectorRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/work'
+    | '/drafts/$key'
     | '/lab/charts'
     | '/notes/$slug'
     | '/projects/workout-director'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/work'
+    | '/drafts/$key'
     | '/lab/charts'
     | '/notes/$slug'
     | '/projects/workout-director'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/work'
+    | '/drafts/$key'
     | '/lab/charts'
     | '/notes/$slug'
     | '/projects/workout-director'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   WorkRoute: typeof WorkRoute
+  DraftsKeyRoute: typeof DraftsKeyRoute
   LabChartsRoute: typeof LabChartsRoute
   NotesSlugRoute: typeof NotesSlugRoute
   ProjectsWorkoutDirectorRoute: typeof ProjectsWorkoutDirectorRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/work'
       fullPath: '/work'
       preLoaderRoute: typeof WorkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/drafts/$key': {
+      id: '/drafts/$key'
+      path: '/drafts/$key'
+      fullPath: '/drafts/$key'
+      preLoaderRoute: typeof DraftsKeyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lab/charts': {
@@ -199,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   WorkRoute: WorkRoute,
+  DraftsKeyRoute: DraftsKeyRoute,
   LabChartsRoute: LabChartsRoute,
   NotesSlugRoute: NotesSlugRoute,
   ProjectsWorkoutDirectorRoute: ProjectsWorkoutDirectorRoute,

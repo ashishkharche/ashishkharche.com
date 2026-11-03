@@ -1,0 +1,72 @@
+import AxeBuilder from '@axe-core/playwright'
+import { expect, test } from '@playwright/test'
+import { draftPosts, draftsPath } from '../../src/content/drafts'
+
+const tags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']
+
+test('the drafts board is noindex, has no canonical and no og:url', async ({ page }) => {
+  const response = await page.goto(draftsPath)
+  expect(response?.status()).toBe(200)
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow, noarchive')
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
+  await expect(page.locator('meta[property="og:url"]')).toHaveCount(0)
+  await expect(page.locator('[data-draft]')).toHaveCount(draftPosts.length)
+})
+
+test('the drafts board is not linked from the home page', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('a[href*="/drafts/"]')).toHaveCount(0)
+})
+
+for (const theme of ['light', 'dark'] as const) {
+  test(`the drafts board has no accessibility violations (${theme})`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
+    await page.goto(draftsPath)
+    await page.waitForLoadState('networkidle')
+    await page.locator('summary').first().click()
+    await expect(page.locator('details').first()).toHaveAttribute('open', '')
+    await page.evaluate(() => document.querySelectorAll('details').forEach((d) => (d.open = true)))
+    await page.getByRole('button', { name: /^Voice coach/ }).click()
+    const results = await new AxeBuilder({ page }).withTags(tags).analyze()
+    expect(results.violations.map((v) => `${v.impact} ${v.id}: ${v.nodes.map((n) => n.target.join(' '))}`)).toEqual([])
+  })
+}
+
+test('filters, search and sort update the list and the URL', async ({ page }) => {
+  await page.goto(draftsPath)
+  await page.waitForLoadState('networkidle')
+  await page.getByRole('button', { name: /^Waiting for media/ }).click()
+  await expect(page).toHaveURL(/\?status=waiting$/)
+  await expect(page.locator('[data-draft]')).toHaveCount(3)
+  await expect(page.getByRole('status')).toHaveText(`Showing 3 of ${draftPosts.length} posts.`)
+  await page.getByRole('button', { name: 'Clear filters' }).click()
+  await page.getByLabel('Search', { exact: true }).fill('Time to update')
+  await expect(page.locator('[data-draft]')).toHaveCount(1)
+  await expect(page).toHaveURL(/q=Time\+to\+update/)
+  await page.getByRole('button', { name: 'Clear filters' }).click()
+  await page.getByLabel('Sort', { exact: true }).selectOption('topic')
+  await expect(page).toHaveURL(/sort=topic/)
+  await expect(page.getByRole('heading', { level: 2, name: 'Voice coach' })).toBeVisible()
+})
+
+test('a linked filter opens filtered, and the index jumps to a post', async ({ page }) => {
+  await page.goto(`${draftsPath}?topic=coach`)
+  await expect(page.locator('[data-draft]')).toHaveCount(3)
+  await expect(page.getByRole('button', { name: /^Voice coach/ })).toHaveAttribute('aria-pressed', 'true')
+  const index = page.getByRole('navigation', { name: 'Posts on this page' })
+  await index.getByRole('link', { name: 'When the voice coach drops' }).click()
+  await expect(page).toHaveURL(/\?topic=coach#wd-b3-4$/)
+  await expect(page.locator('#wd-b3-4')).toBeInViewport()
+})
+
+test('the filter chips work from the keyboard', async ({ page }) => {
+  await page.goto(draftsPath)
+  await page.waitForLoadState('networkidle')
+  const chip = page.getByRole('button', { name: /^Trainer chat/ })
+  await chip.focus()
+  await page.keyboard.press('Space')
+  await expect(chip).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('[data-draft]')).toHaveCount(1)
+  await page.keyboard.press('Enter')
+  await expect(chip).toHaveAttribute('aria-pressed', 'false')
+})

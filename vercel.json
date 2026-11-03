@@ -20,6 +20,10 @@
       ]
     },
     {
+      "source": "/drafts/(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
       "source": "/feed.xml",
       "headers": [{ "key": "Content-Type", "value": "application/atom+xml; charset=utf-8" }]
     },

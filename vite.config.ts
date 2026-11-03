@@ -50,6 +50,8 @@ export default defineConfig(({ command }) => ({
       // No route matches this path, so it renders the same not found page the browser renders for unknown URLs.
       // The header makes src/server.ts answer 200 so the page is saved.
       pages: [
+        // Private drafts board, not linked from any page, so the crawler would not find it (src/content/drafts.ts).
+        { path: '/drafts/ixixlepdu/', prerender: { enabled: true } },
         {
           path: '/404',
           prerender: { enabled: true, outputPath: '/404.html', headers: { 'x-prerender-not-found': '1' } },
