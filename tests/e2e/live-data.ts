@@ -14,8 +14,12 @@ export async function mockLive(page: Page, override?: { status: number; body: un
     const body = fixtures[fixtureKey(url)]
     return route.fulfill(body ? { json: body } : { status: 404, json: { error: 'Not found', code: 'not_found' } })
   })
-  await page.route(/^https:\/\/(is[1-9]-ssl\.mzstatic\.com|play-lh\.googleusercontent\.com)\//, (route) =>
-    route.fulfill({ body: icon, contentType: 'image/png', headers: { 'access-control-allow-origin': '*' } }),
-  )
+  // Icons come from our own origin only: the route answers with a local file (baked icons are real files).
+  await page.route(/\/api\/icon\/?\?/, (route) => route.fulfill({ body: icon, contentType: 'image/png' }))
+  // The icon hosts must never be asked; fail loudly if they are.
+  await page.route(/^https:\/\/(is[1-9]-ssl\.mzstatic\.com|play-lh\.googleusercontent\.com)\//, (route) => {
+    requested.push(`EXTERNAL ${route.request().url()}`)
+    return route.abort()
+  })
   return requested
 }

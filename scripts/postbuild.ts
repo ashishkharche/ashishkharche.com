@@ -6,7 +6,7 @@ import { findBanned, loadLocalTerms, localTermsFile } from '../src/content/rules
 import { readFrontmatter } from '../plugins/content.ts'
 import { site, sitemapPaths } from '../src/content/site.ts'
 import { contentDates, noteDates } from '../src/lib/contentDates.ts'
-import { chartIconHosts, withPolicy } from '../src/lib/csp.ts'
+import { withPolicy } from '../src/lib/csp.ts'
 import { buildAtomFeed, feedPath, type FeedEntry } from '../src/lib/feed.ts'
 import { checkPreviewTags, pngSize } from '../src/lib/preview.ts'
 import { buildSitemap } from '../src/lib/sitemap.ts'
@@ -47,8 +47,8 @@ for (const file of pages) {
       }
     }
   }
-  // Only the chart builder loads images from other hosts (app icons from the live data).
-  html = withPolicy(html, name === 'lab/charts/index.html' ? chartIconHosts : [])
+  // No page loads images from other hosts: chart app icons come from our own origin (baked files or /api/icon/).
+  html = withPolicy(html)
   await writeFile(file, html)
 }
 

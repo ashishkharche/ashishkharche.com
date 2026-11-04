@@ -2,9 +2,12 @@ import * as stylex from '@stylexjs/stylex'
 import { useEffect, useRef, useState } from 'react'
 import { collectionRuns, deepestRank, trackedApps, type TrackedApp } from '~/lib/charts/about'
 import { getHistory, getRankings, plainName, retryDelay, sortedRankings } from '~/lib/charts/live'
+import { iconSources, manifestLoader, type IconManifest } from '~/lib/charts/icons'
 import { formatDataTime, recordedAt, type TdnClient } from '~/lib/charts/tdn'
 import { breakpoints, colors, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
+
+const readManifest = manifestLoader()
 
 export interface AboutEntry {
   id: string
@@ -47,7 +50,18 @@ export function AboutData({
   const [facts, setFacts] = useState<Facts | null>(null)
   /** Failed loads so far; each one is asked again after retryDelay. */
   const [failures, setFailures] = useState(0)
-  const [broken, setBroken] = useState<Set<string>>(() => new Set())
+  // Icons come from our own origin: the baked copy, then the icon route; each failure moves to the next source.
+  const [iconMisses, setIconMisses] = useState<Map<string, number>>(() => new Map())
+  const [manifest, setManifest] = useState<IconManifest | null | undefined>(undefined)
+  useEffect(() => {
+    let live = true
+    void readManifest().then((m) => live && setManifest(m))
+    return () => {
+      live = false
+    }
+  }, [])
+  const iconSrc = (url: string | null | undefined): string | null =>
+    manifest === undefined || !url ? null : (iconSources(url, manifest)[iconMisses.get(url) ?? 0] ?? null)
 
   useEffect(() => {
     const box = ref.current
@@ -134,16 +148,17 @@ export function AboutData({
                     <ul {...stylex.props(styles.apps)}>
                       {group(store).map((a) => (
                         <li key={`${a.store}:${a.appId}`} {...stylex.props(styles.app)}>
-                          {a.iconUrl && !broken.has(a.iconUrl) ? (
+                          {iconSrc(a.iconUrl) ? (
                             <img
-                              src={a.iconUrl}
+                              src={iconSrc(a.iconUrl) ?? ''}
                               alt=""
                               width={20}
                               height={20}
                               loading="lazy"
                               decoding="async"
-                              referrerPolicy="no-referrer"
-                              onError={() => setBroken((b) => new Set(b).add(a.iconUrl ?? ''))}
+                              onError={() =>
+                                setIconMisses((f) => new Map(f).set(a.iconUrl ?? '', (f.get(a.iconUrl ?? '') ?? 0) + 1))
+                              }
                               {...stylex.props(styles.icon)}
                             />
                           ) : (

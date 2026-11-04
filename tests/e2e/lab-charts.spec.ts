@@ -298,7 +298,7 @@ test.describe('chart builder', () => {
     await page.unrouteAll()
     await mockLive(page)
     // Every icon answers 404, as an icon that failed to load on a phone would.
-    await page.route(/^https:\/\/(is[1-9]-ssl\.mzstatic\.com|play-lh\.googleusercontent\.com)\//, (route) =>
+    await page.route(/\/api\/icon\/?\?|\/lab\/charts\/icons\/.*\.webp$/, (route) =>
       route.fulfill({ status: 404, body: '' }),
     )
     await page.goto('/lab/charts/')

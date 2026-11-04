@@ -54,6 +54,7 @@ import {
 } from '~/lib/charts/live'
 import { autoAxis, drawChart, drawPlaceholder, type Ctx } from '~/lib/charts/render'
 import { CHART_FONT_FILES } from '~/lib/charts/type'
+import { iconSources, manifestLoader } from '~/lib/charts/icons'
 import { chartSizes, fileName, X_MAX_BYTES, type ChartSize } from '~/lib/charts/spec'
 import { asCtx, SvgContext, type SvgFont } from '~/lib/charts/svg'
 import { createTdnClient, iconAllowed, PAGE_CLIENT, snapshotLookup, trackClient, type Fetched } from '~/lib/charts/tdn'
@@ -158,35 +159,47 @@ const iconCache = new Map<string, Promise<Icon | null>>()
 const noIcons = new Map<string, Icon>()
 /** An icon that has not loaded by then is drawn without, so a slow image never holds the chart back. */
 const ICON_TIMEOUT_MS = 8000
+const iconManifest = manifestLoader()
+
+/** One image from our own origin, or null when it does not load in time. */
+function loadImageFrom(src: string): Promise<Icon | null> {
+  return new Promise<Icon | null>((resolve) => {
+    const image = new Image()
+    const timer = setTimeout(() => done(false), ICON_TIMEOUT_MS)
+    function done(ok: boolean) {
+      clearTimeout(timer)
+      image.onload = image.onerror = null
+      resolve(ok && image.naturalWidth > 0 ? { image, width: image.naturalWidth, height: image.naturalHeight } : null)
+    }
+    image.decoding = 'async'
+    // decode() can reject in some browsers for an image that has loaded fine (WebKit), so loaded is enough.
+    image.onload = () => {
+      image.decode().then(
+        () => done(true),
+        () => done(true),
+      )
+    }
+    image.onerror = () => done(false)
+    image.src = src
+  })
+}
+
 /**
- * An app icon from an allowed host, loaded with CORS so the canvas stays exportable (a CORS failure is a load
- * error, so a loaded icon can always be drawn into a PNG). Null when it does not load in time; the chart is then
- * drawn without that icon. Failures are not kept, so the next load asks for the icon again.
+ * An app icon, always from our own origin (so the canvas stays exportable): the copy baked into the deploy, then the
+ * icon route. Null when neither loads in time; the chart then draws the neutral tile. Failures are not kept, so the
+ * next load asks again.
  */
 function loadIcon(url: string): Promise<Icon | null> {
   let found = iconCache.get(url)
   if (!found) {
-    found = new Promise<Icon | null>((resolve) => {
-      if (!iconAllowed(url)) return resolve(null)
-      const image = new Image()
-      const timer = setTimeout(() => done(false), ICON_TIMEOUT_MS)
-      function done(ok: boolean) {
-        clearTimeout(timer)
-        image.onload = image.onerror = null
-        resolve(ok && image.naturalWidth > 0 ? { image, width: image.naturalWidth, height: image.naturalHeight } : null)
+    found = (async () => {
+      if (!iconAllowed(url)) return null
+      for (const src of iconSources(url, await iconManifest())) {
+        const icon = await loadImageFrom(src)
+        if (icon) return icon
       }
-      image.crossOrigin = 'anonymous'
-      image.decoding = 'async'
-      // decode() can reject in some browsers for an image that has loaded fine (WebKit), so loaded is enough.
-      image.onload = () => {
-        image.decode().then(
-          () => done(true),
-          () => done(true),
-        )
-      }
-      image.onerror = () => done(false)
-      image.src = url
-    })
+      return null
+    })()
     iconCache.set(url, found)
     void found.then((icon) => {
       if (!icon) iconCache.delete(url)
