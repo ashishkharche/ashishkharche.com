@@ -27,6 +27,14 @@ export const xImageSources = {
   adSpecs: 'https://business.x.com/en/help/campaign-setup/creative-ad-specifications',
 } as const
 
+/** A slug cut to at most `max` characters at a word boundary (never mid-word). */
+export function trimSlug(slug: string, max: number): string {
+  if (slug.length <= max) return slug
+  const cut = slug.slice(0, max + 1)
+  const at = cut.lastIndexOf('-')
+  return (at > 0 ? cut.slice(0, at) : slug.slice(0, max)).replace(/-+$/, '')
+}
+
 /** A file name for a download, from the title, size and scale. */
 export function fileName(
   title: string,
@@ -38,8 +46,7 @@ export function fileName(
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 60)
-    .replace(/-+$/, '')
+  const short = trimSlug(slug, 60)
   const pixels = extension === 'svg' ? `${size.width}x${size.height}` : `${size.width * scale}x${size.height * scale}`
-  return `${slug || 'chart'}-${pixels}.${extension}`
+  return `${short || 'chart'}-${pixels}.${extension}`
 }

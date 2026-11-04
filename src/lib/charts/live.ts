@@ -770,11 +770,17 @@ export function mapIosAndroid(appleBody: unknown, googleBody: unknown, limit: nu
   }
 }
 
+/** A kind label to show: TDN's "Unknown" (for SDKs or app extensions) is shown as "Other". */
+export function kindLabel(label: string | undefined | null): string {
+  const v = (label ?? '').trim()
+  return !v || /^unknown$/i.test(v) ? 'Other' : v
+}
+
 export function mapSdkKinds(rankingsBody: unknown, detailBody: unknown, app: RankingRow) {
   const detail = readTechStackDetail(detailBody)
   const grouped = (detail?.techStack?.sdks ?? [])
     .map((g) => ({
-      label: realValue(g.label) ? g.label : g.category,
+      label: kindLabel(realValue(g.label) ? g.label : g.category),
       value: Array.isArray(g.items) ? g.items.length : 0,
     }))
     .filter((g) => realValue(g.label) && g.value > 0)

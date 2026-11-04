@@ -41,8 +41,12 @@ export const FALLBACK = 'ui-sans-serif, system-ui, sans-serif'
 export const ASCENT = 1005 / 1000
 export const DESCENT = 295 / 1000
 
-/** The size in px for a role at a layout scale. */
-export const sizeOf = (role: TypeRole, s: number) => CHART_SIZES[role] * s
+/** The size in px for a role at a layout scale; nothing is drawn below the 14 px meta size on any export. */
+export const META_MIN_PX = 14
+/** Gallery thumbnails (s 0.4) are not exports and keep the plain scale; every export size has s of 0.6 or more. */
+export const EXPORT_MIN_SCALE = 0.5
+export const sizeOf = (role: TypeRole, s: number) =>
+  role === 'meta' && s >= EXPORT_MIN_SCALE ? Math.max(CHART_SIZES.meta * s, META_MIN_PX) : CHART_SIZES[role] * s
 
 /** A canvas font string. */
 export function fontString(size: number, weight: ChartWeight, family: ChartFamily = 'sans'): string {

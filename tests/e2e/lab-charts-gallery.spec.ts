@@ -154,3 +154,14 @@ test.describe('chart builder gallery', () => {
     expect(page_).toBeLessThanOrEqual(0)
   })
 })
+
+test.describe('chart builder gallery count', () => {
+  test('the header count matches the cards on the page', async ({ page }) => {
+    await mockLive(page)
+    await page.goto('/lab/charts/')
+    const gallery = page.getByTestId('gallery')
+    await expect(gallery.locator('input[value="us-rating-countries"]')).toHaveCount(1)
+    const cards = await gallery.getByRole('radiogroup', { name: 'Templates' }).locator('input[type=radio]').count()
+    await expect(page.getByTestId('gallery-count')).toHaveText(`${cards} templates`)
+  })
+})

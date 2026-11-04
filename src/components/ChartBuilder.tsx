@@ -423,6 +423,14 @@ export function ChartBuilder({
       return
     }
     paint(ctx, size.width, size.height, sprite)
+    // For checks: how many verified icons the chart has, and how many of them are drawn (not the neutral tile).
+    if (liveTemplate && chart) {
+      const wanted = appsIn(chart.model).filter((a) => iconAllowed(a.iconUrl))
+      canvas.dataset.iconsWanted = String(new Set(wanted.map((a) => a.appId)).size)
+      canvas.dataset.iconsDrawn = String(new Set(wanted.filter((a) => icons.has(a.appId)).map((a) => a.appId)).size)
+    } else {
+      canvas.dataset.iconsWanted = canvas.dataset.iconsDrawn = sprite ? 'sprite' : '0'
+    }
     canvas.dataset.rendered = `${templateId}:${size.width}x${size.height}`
     // paint reads the same state as the dependencies below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1043,7 +1051,9 @@ function Gallery({
         <h2 id={headingId} {...stylex.props(styles.galleryTitle)}>
           Templates
         </h2>
-        <p {...stylex.props(styles.galleryCount)}>{ready.length} templates</p>
+        <p data-testid="gallery-count" {...stylex.props(styles.galleryCount)}>
+          {entries.length} templates
+        </p>
       </div>
       <div role="radiogroup" aria-labelledby={headingId} {...stylex.props(styles.groups)}>
         {groups.map((g) => (
