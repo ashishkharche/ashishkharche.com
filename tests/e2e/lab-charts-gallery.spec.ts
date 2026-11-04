@@ -16,20 +16,34 @@ test.describe('chart builder gallery', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
   })
 
-  test('shows at least 15 templates, with the unverified ones only under Pending verification', async ({ page }) => {
+  test('groups the templates into Headlines, Leaderboards, Head-to-head and Over time, pending ones last', async ({
+    page,
+  }) => {
     await page.goto('/lab/charts/')
     const gallery = page.getByTestId('gallery')
-    const cards = gallery.getByRole('radiogroup', { name: 'Templates' }).locator('input[type=radio]')
     // The data-file templates join once their list has loaded.
     await expect(gallery.locator('input[value="us-rating-countries"]')).toHaveCount(1)
-    expect(await cards.count()).toBeGreaterThanOrEqual(15)
-    await expect(gallery.locator('input[value="android-permissions"]')).toHaveCount(0)
-    await expect(gallery.locator('input[value="ai-apps-ios-android-sdks"]')).toHaveCount(0)
-    await gallery.getByRole('button', { name: 'Pending verification' }).click()
-    await expect(cards).toHaveCount(2)
-    await expect(gallery.getByText('not in the default gallery')).toBeVisible()
-    await gallery.getByRole('button', { name: 'All' }).click()
-    expect(await cards.count()).toBeGreaterThanOrEqual(15)
+    const titles = await gallery.locator('h3').allInnerTexts()
+    expect(titles.map((t) => t.replace(/\s*\d+$/, ''))).toEqual([
+      'Headlines',
+      'Leaderboards',
+      'Head-to-head',
+      'Over time',
+      'Data files, not live',
+      'Pending verification',
+    ])
+    const cards = gallery.getByRole('radiogroup', { name: 'Templates' }).locator('input[type=radio]')
+    expect(await cards.count()).toBeGreaterThanOrEqual(23)
+    const pendingGroup = gallery.getByTestId('group-pending')
+    await expect(pendingGroup.locator('input[type=radio]')).toHaveCount(2)
+    await expect(pendingGroup.getByText('not in the default gallery')).toBeVisible()
+    await expect(
+      gallery.getByTestId('group-headlines').locator('input[value="chatgpt-number-one-countries"]'),
+    ).toHaveCount(1)
+    await expect(gallery.getByTestId('group-head-to-head').locator('input[value="widest-gap"]')).toHaveCount(1)
+    await expect(gallery.getByTestId('group-over-time').locator('input[value="ai-rank-30-days"]')).toHaveCount(1)
+    // Each card shows its question.
+    await expect(gallery.getByText('In how many countries is ChatGPT #1?')).toBeVisible()
   })
 
   test('draws a real preview for every template, with no "Unknown"', async ({ page }) => {
@@ -67,11 +81,10 @@ test.describe('chart builder gallery', () => {
     await expect(page.locator('canvas[data-rendered^="ios-vs-android:"]')).toBeInViewport()
   })
 
-  test('opens a pending template from the address under its own filter', async ({ page }) => {
+  test('opens a pending template from the address, checked in its group', async ({ page }) => {
     await page.goto('/lab/charts/?template=android-native-libs')
     await expect(page.locator('canvas[data-rendered^="android-native-libs:"]')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Pending verification' })).toHaveAttribute('aria-pressed', 'true')
-    await expect(page.locator('input[value="android-native-libs"]')).toBeChecked()
+    await expect(page.getByTestId('group-pending').locator('input[value="android-native-libs"]')).toBeChecked()
   })
 
   test('About the data states the tracked apps, runs and coverage from the answers', async ({ page }) => {
@@ -134,7 +147,7 @@ test.describe('chart builder gallery', () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto('/lab/charts/')
     await expect(page.locator('canvas[data-rendered]')).toBeVisible()
-    const strip = page.getByTestId('gallery').getByRole('radiogroup', { name: 'Templates' })
+    const strip = page.getByTestId('group-headlines').locator('> div').last()
     const { scroll, client } = await strip.evaluate((el) => ({ scroll: el.scrollWidth, client: el.clientWidth }))
     expect(scroll).toBeGreaterThan(client)
     const page_ = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)

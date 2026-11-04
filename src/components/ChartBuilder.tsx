@@ -36,8 +36,10 @@ import {
 } from '~/lib/charts/data'
 import { drawLive, type Icon } from '~/lib/charts/kinds'
 import {
+  isPlace,
   kindNames,
   liveTemplates,
+  PLACES,
   loadWithFallback,
   retryDelay,
   scatterNotes,
@@ -48,19 +50,21 @@ import {
   type LiveChart,
   type LiveTemplate,
   type Model,
+  type PlaceId,
 } from '~/lib/charts/live'
 import { autoAxis, drawChart, drawPlaceholder, type Ctx } from '~/lib/charts/render'
 import { CHART_FONT_FILES } from '~/lib/charts/type'
 import { chartSizes, fileName, X_MAX_BYTES, type ChartSize } from '~/lib/charts/spec'
 import { asCtx, SvgContext, type SvgFont } from '~/lib/charts/svg'
-import { createTdnClient, formatDataTime, PAGE_CLIENT, iconAllowed, type TdnClient } from '~/lib/charts/tdn'
+import { createTdnClient, iconAllowed, PAGE_CLIENT, snapshotLookup, trackClient, type Fetched } from '~/lib/charts/tdn'
+import { fetchedLine, galleryGroups, keptCopyNote } from '~/lib/charts/page'
 import { AboutData } from './AboutData'
-import { breakpoints, colors, fonts, type as text, weights } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 let fontsLoading: Promise<void> | undefined
 /**
- * The site's Geist and Geist Serif files, registered under the chart family names. Charts are drawn only after these
+ * The site's Geist file, registered under the chart family name. Charts are drawn only after these
  * load, so the canvas, PNG and SVG never fall back to another font by accident.
  */
 function loadChartFonts(): Promise<void> {
@@ -149,8 +153,6 @@ type Entry = {
   /** Why a template is held back from the default gallery, until its field is verified. */
   pending?: string
 }
-type Filter = Kind | 'scatter' | 'all' | 'pending'
-const kindOrder: Array<Kind | 'scatter'> = ['headline', 'leaderboard', 'head-to-head', 'bump', 'dumbbell', 'scatter']
 
 const iconCache = new Map<string, Promise<Icon | null>>()
 const noIcons = new Map<string, Icon>()
@@ -203,20 +205,6 @@ async function iconsFor(model: Model): Promise<Map<string, Icon>> {
   return new Map(found.filter((f): f is readonly [string, Icon] => f[1] !== null))
 }
 
-/**
- * A line for answers that are not fresh: the proxy's kept copy when the source did not answer (X-TDN-Stale), or an
- * answer fetched more than two hours ago (a CDN copy), each with when it was fetched. Empty when all are fresh.
- */
-function keptCopyNote(client: TdnClient): string {
-  const old = [...client.fetched.values()].filter((f) => f.stale)
-  if (!old.length) return ''
-  const times = old.map((f) => f.fetchedAt?.getTime() ?? 0).filter((t) => t > 0)
-  const at = times.length ? formatDataTime(new Date(Math.min(...times))) : ''
-  const failed = old.some((f) => f.kept)
-  if (failed) return at ? `The data source did not answer, so the copy fetched ${at} is shown.` : ''
-  return at ? `Live data last fetched ${at}.` : ''
-}
-
 function appsIn(model: Model): AppRef[] {
   switch (model.kind) {
     case 'headline':
@@ -266,7 +254,7 @@ export function ChartBuilder({
   const id = useId()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
-  const client = useMemo(() => createTdnClient(undefined, PAGE_CLIENT), [])
+  const client = useMemo(() => createTdnClient(undefined, { ...PAGE_CLIENT, lastGood: snapshotLookup() }), [])
   const [scatterList, setScatterList] = useState<TemplateSummary[]>([])
   const [templateId, setTemplateId] = useState('')
   const [template, setTemplate] = useState<ChartTemplate | null>(null)
@@ -281,12 +269,15 @@ export function ChartBuilder({
   // Live templates.
   const [rowCount, setRowCount] = useState<number | undefined>(undefined)
   const [pair, setPair] = useState<[string, string] | undefined>(undefined)
+  const [place, setPlace] = useState<PlaceId | undefined>(undefined)
   /** The last finished load, with the request it answers. Only shown while that is still the request. */
   const [result, setResult] = useState<{
     key: string
     chart: LiveChart
     note: string
     icons: Map<string, Icon>
+    /** This chart's answers, with when the proxy fetched each (x-tdn-fetched-at). */
+    answers: Fetched[]
   } | null>(null)
   /** How many loads in a row have failed for the current request; the page keeps asking, and never shows an error. */
   const [failed, setFailed] = useState<{ key: string; n: number }>({ key: '', n: 0 })
@@ -300,7 +291,7 @@ export function ChartBuilder({
   )
 
   const liveTemplate = live.find((t) => t.id === templateId)
-  const loadKey = liveTemplate ? `${templateId}|${rowCount ?? ''}|${pair?.join(',') ?? ''}` : ''
+  const loadKey = liveTemplate ? `${templateId}|${rowCount ?? ''}|${pair?.join(',') ?? ''}|${place ?? ''}` : ''
   const current = result && result.key === loadKey ? result : null
   const chart = current?.chart ?? null
   const icons = current?.icons ?? noIcons
@@ -377,13 +368,15 @@ export function ChartBuilder({
     let cancelled = false
     let timer: ReturnType<typeof setTimeout> | undefined
     const run = (failures: number) => {
-      loadWithFallback(liveTemplate, client, { rows: rowCount, apps: pair }, live)
+      const tracked = trackClient(client)
+      loadWithFallback(liveTemplate, tracked.client, { rows: rowCount, apps: pair, place }, live)
         .then(async ({ chart: loaded, note }) => {
+          const answers = tracked.answers()
           const iconMap = await iconsFor(loaded.model)
           if (cancelled) return
           setLiveText(structuredClone(loaded.text))
-          setResult({ key: loadKey, chart: loaded, note, icons: iconMap })
-          if (rowCount === undefined && pair === undefined)
+          setResult({ key: loadKey, chart: loaded, note, icons: iconMap, answers })
+          if (rowCount === undefined && pair === undefined && place === undefined)
             noteCoverage(liveTemplate.id, note ? `${note} ${loaded.coverage}` : loaded.coverage)
         })
         .catch(() => {
@@ -397,7 +390,7 @@ export function ChartBuilder({
       cancelled = true
       clearTimeout(timer)
     }
-  }, [liveTemplate, client, rowCount, pair, loadKey, noteCoverage, live])
+  }, [liveTemplate, client, rowCount, pair, place, loadKey, noteCoverage, live])
 
   const problems = useMemo(() => {
     if (liveTemplate) return chart && liveText ? validateLive(chart, liveText) : []
@@ -493,6 +486,7 @@ export function ChartBuilder({
     setDownloadNote('')
     setRowCount(undefined)
     setPair(undefined)
+    setPlace(undefined)
     setTemplateId(next)
     // The address names the template, so a chart can be shared or reloaded.
     const url = new URL(window.location.href)
@@ -605,7 +599,7 @@ export function ChartBuilder({
   }
   const dataLine = liveTemplate
     ? liveReady && chart
-      ? `Data from ${chart.dataTime}`
+      ? fetchedLine(current?.answers ?? [], chart.dataTime)
       : ''
     : scatterReady && config?.template?.date
       ? `Data file from ${formatDate(config.template.date)}, not live`
@@ -615,10 +609,11 @@ export function ChartBuilder({
       ? waiting
         ? 'Waiting for live data. Asking again…'
         : 'Loading live data…'
-      : [current?.note, keptCopyNote(client), downloadNote].filter(Boolean).join(' ')
+      : [current?.note, downloadNote].filter(Boolean).join(' ')
     : template && template.config.id !== templateId && !status
       ? 'Loading the template…'
       : status || downloadNote
+  const keptNote = liveTemplate ? keptCopyNote(current?.answers ?? []) : ''
   const footnote = liveTemplate ? (liveText?.footnote ?? []) : (config?.footnote ?? [])
   const choices = (chart?.choices ?? []).map((app) => ({ value: app.appId, label: app.name }))
   const pairNow: [string, string] | undefined =
@@ -650,6 +645,11 @@ export function ChartBuilder({
                 {dataLine ? (
                   <p {...stylex.props(styles.dataTime)} data-testid="data-time">
                     {dataLine}
+                  </p>
+                ) : null}
+                {liveReady && keptNote ? (
+                  <p data-testid="kept-copy" {...stylex.props(styles.kept)}>
+                    {keptNote}
                   </p>
                 ) : null}
                 <p role="status" {...stylex.props(styles.status)}>
@@ -726,7 +726,7 @@ export function ChartBuilder({
                 </Field>
               </Section>
 
-              {liveTemplate && (liveTemplate.rowChoices || liveTemplate.pickApps) ? (
+              {liveTemplate && (liveTemplate.rowChoices || liveTemplate.pickApps || liveTemplate.pickPlace) ? (
                 <Section title="Data" id={`${id}-s-data`}>
                   {liveTemplate.rowChoices ? (
                     <Segmented
@@ -751,6 +751,14 @@ export function ChartBuilder({
                         />
                       ))
                     : null}
+                  {liveTemplate.pickPlace ? (
+                    <Segmented
+                      label="Store and country"
+                      value={place ?? 'apple-us'}
+                      options={Object.entries(PLACES).map(([value, p]) => ({ value, label: p.label }))}
+                      onChange={(value) => isPlace(value) && setPlace(value)}
+                    />
+                  ) : null}
                 </Section>
               ) : null}
 
@@ -964,14 +972,70 @@ function Gallery({
 }) {
   const ready = entries.filter((e) => !e.pending)
   const held = entries.filter((e) => e.pending)
-  const [chosen, setFilter] = useState<Filter | null>(null)
-  // A template opened from the address that is pending verification opens its own filter, so its card is shown.
-  const filter: Filter = chosen ?? (held.some((e) => e.id === selected) ? 'pending' : 'all')
   const pointer = useRef(false)
-
-  const kinds = kindOrder.filter((k) => ready.some((e) => e.kind === k))
-  const shown = filter === 'pending' ? held : filter === 'all' ? ready : ready.filter((e) => e.kind === filter)
   const headingId = `${id}-gallery`
+  const groups = [
+    ...galleryGroups.map((g) => ({ ...g, items: ready.filter((e) => g.kinds.includes(e.kind)) })),
+    { id: 'pending', title: 'Pending verification', kinds: [], items: held },
+  ].filter((g) => g.items.length)
+
+  const card = (t: Entry) => {
+    const on = t.id === selected
+    return (
+      <label
+        key={t.id}
+        onPointerDown={() => {
+          pointer.current = true
+        }}
+        {...stylex.props(styles.card, on && styles.cardOn)}
+      >
+        <input
+          type="radio"
+          name={`${id}-template`}
+          value={t.id}
+          checked={on}
+          onChange={() => {
+            onPick(t.id)
+            if (pointer.current) onShow()
+            pointer.current = false
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              if (!on) onPick(t.id)
+              onShow()
+            }
+          }}
+          aria-describedby={`${id}-about-${t.id}`}
+          {...stylex.props(styles.cardInput)}
+        />
+        <span {...stylex.props(styles.thumbBox, on && styles.thumbOn)}>
+          <Thumb
+            entry={t}
+            live={live}
+            client={client}
+            source={source}
+            enabled={fontsReady && !waitFor}
+            onCoverage={onCoverage}
+          />
+          {on ? (
+            <span {...stylex.props(styles.badge)}>
+              <Check />
+              Selected
+            </span>
+          ) : null}
+        </span>
+        <span {...stylex.props(styles.cardKind)}>
+          <KindGlyph kind={t.kind} />
+          {kindNames[t.kind]}
+        </span>
+        <span {...stylex.props(styles.cardName)}>{t.name}</span>
+        <span id={`${id}-about-${t.id}`} {...stylex.props(styles.cardAbout)}>
+          {t.pending ? `Pending verification · ${t.about}` : t.about}
+        </span>
+      </label>
+    )
+  }
 
   return (
     <section aria-labelledby={headingId} data-testid="gallery" {...stylex.props(styles.gallery)}>
@@ -979,88 +1043,28 @@ function Gallery({
         <h2 id={headingId} {...stylex.props(styles.galleryTitle)}>
           Templates
         </h2>
-        <p {...stylex.props(styles.galleryCount)}>
-          {filter === 'pending' ? `${shown.length} pending verification` : `${shown.length} of ${ready.length}`}
-        </p>
+        <p {...stylex.props(styles.galleryCount)}>{ready.length} templates</p>
       </div>
-      <div role="group" aria-label="Show templates of one kind" {...stylex.props(styles.chips, styles.filters)}>
-        <Chip pressed={filter === 'all'} onClick={() => setFilter('all')}>
-          All
-        </Chip>
-        {kinds.map((k) => (
-          <Chip key={k} pressed={filter === k} onClick={() => setFilter(k)}>
-            {kindNames[k]}
-          </Chip>
+      <div role="radiogroup" aria-labelledby={headingId} {...stylex.props(styles.groups)}>
+        {groups.map((g) => (
+          <div
+            key={g.id}
+            role="group"
+            aria-labelledby={`${id}-group-${g.id}`}
+            data-testid={`group-${g.id}`}
+            {...stylex.props(styles.group)}
+          >
+            <h3 id={`${id}-group-${g.id}`} {...stylex.props(styles.groupTitle)}>
+              {g.title} <span {...stylex.props(styles.groupCount)}>{g.items.length}</span>
+            </h3>
+            {g.id === 'pending' ? (
+              <p {...stylex.props(styles.galleryNote)}>
+                These use fields not yet checked against the live API, so they are not in the default gallery.
+              </p>
+            ) : null}
+            <div {...stylex.props(styles.cards)}>{g.items.map(card)}</div>
+          </div>
         ))}
-        {held.length ? (
-          <Chip pressed={filter === 'pending'} onClick={() => setFilter('pending')}>
-            Pending verification
-          </Chip>
-        ) : null}
-      </div>
-      {filter === 'pending' ? (
-        <p {...stylex.props(styles.galleryNote)}>
-          These use fields not yet checked against the live API, so they are not in the default gallery.
-        </p>
-      ) : null}
-      <div role="radiogroup" aria-labelledby={headingId} {...stylex.props(styles.cards)}>
-        {shown.map((t) => {
-          const on = t.id === selected
-          return (
-            <label
-              key={t.id}
-              onPointerDown={() => {
-                pointer.current = true
-              }}
-              {...stylex.props(styles.card, on && styles.cardOn)}
-            >
-              <input
-                type="radio"
-                name={`${id}-template`}
-                value={t.id}
-                checked={on}
-                onChange={() => {
-                  onPick(t.id)
-                  if (pointer.current) onShow()
-                  pointer.current = false
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    if (!on) onPick(t.id)
-                    onShow()
-                  }
-                }}
-                aria-describedby={`${id}-about-${t.id}`}
-                {...stylex.props(styles.cardInput)}
-              />
-              <span {...stylex.props(styles.thumbBox, on && styles.thumbOn)}>
-                <Thumb
-                  entry={t}
-                  live={live}
-                  client={client}
-                  source={source}
-                  enabled={fontsReady && !waitFor}
-                  onCoverage={onCoverage}
-                />
-                {on ? (
-                  <span {...stylex.props(styles.badge)}>
-                    <Check />
-                    Selected
-                  </span>
-                ) : null}
-              </span>
-              <span {...stylex.props(styles.cardKind)}>
-                <KindGlyph kind={t.kind} />
-                {kindNames[t.kind]}
-              </span>
-              <span {...stylex.props(styles.cardName)}>{t.name}</span>
-              <span id={`${id}-about-${t.id}`} {...stylex.props(styles.cardAbout)}>
-                {t.pending ? `Pending verification · ${t.about}` : t.about}
-              </span>
-            </label>
-          )
-        })}
       </div>
     </section>
   )
@@ -1386,6 +1390,16 @@ const styles = stylex.create({
     backgroundColor: '#151515',
     boxShadow: `0 0 0 1px ${colors.line}`,
   },
+  kept: {
+    marginTop: '4px',
+    paddingBlock: '4px',
+    paddingInline: '8px',
+    borderRadius: '4px',
+    backgroundColor: 'rgba(244, 162, 97, 0.14)',
+    color: colors.text,
+    fontSize: text.meta,
+    lineHeight: 1.5,
+  },
   status: {
     minHeight: '24px',
     color: colors.muted,
@@ -1595,19 +1609,13 @@ const styles = stylex.create({
     borderTopColor: colors.line,
   },
   galleryHead: { display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px' },
-  galleryTitle: { fontFamily: fonts.serif, fontSize: text.lead, fontWeight: weights.regular, lineHeight: 1.3 },
+  galleryTitle: { fontSize: text.body, fontWeight: weights.medium, lineHeight: 1.5 },
+  groups: { display: 'grid', gap: '32px', marginTop: '16px' },
+  group: { display: 'grid', gap: '16px', minWidth: 0 },
+  groupTitle: { fontSize: text.meta, fontWeight: weights.medium, lineHeight: 1.5, color: colors.text },
+  groupCount: { color: colors.muted, fontWeight: weights.regular },
   galleryCount: { fontSize: text.meta, color: colors.muted, lineHeight: 1.5 },
-  galleryNote: { marginTop: '-12px', marginBottom: '24px', fontSize: text.meta, color: colors.muted, lineHeight: 1.5 },
-  filters: {
-    marginTop: '16px',
-    marginBottom: '24px',
-    flexWrap: { default: 'wrap', [breakpoints.phone]: 'nowrap' },
-    overflowX: { default: 'visible', [breakpoints.phone]: 'auto' },
-    marginInline: { default: 0, [breakpoints.phone]: '-4px' },
-    paddingInline: { default: 0, [breakpoints.phone]: '4px' },
-    paddingBlock: { default: 0, [breakpoints.phone]: '4px' },
-    scrollbarWidth: 'none',
-  },
+  galleryNote: { marginTop: '-8px', fontSize: text.meta, color: colors.muted, lineHeight: 1.5 },
   cards: {
     display: 'grid',
     gridTemplateColumns: {

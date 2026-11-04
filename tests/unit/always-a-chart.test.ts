@@ -194,7 +194,7 @@ describe('Muse from Meta, the top US app on 2 Nov 2026', () => {
 
   it('draws its rank history across the missed run', () => {
     const out = mapNumberOne(rankings(), history)
-    if (out.model.support.type !== 'spark') throw new Error('support')
+    if (out.model.support?.type !== 'spark') throw new Error('support')
     expect(out.model.support.values.filter((v) => v !== null)).toEqual([40, 12, 3])
     const ctx = recordingCtx()
     trace(
@@ -205,8 +205,8 @@ describe('Muse from Meta, the top US app on 2 Nov 2026', () => {
       '#fff',
       4,
     )
-    // Two gaps, each bridged with a dashed line; no solid run between them.
-    expect(ctx.dashes.filter((d) => d.length > 0)).toHaveLength(2)
+    // Gaps are left empty (never a dashed bridge or a drop): no dashed line at all.
+    expect(ctx.dashes.filter((d) => d.length > 0)).toHaveLength(0)
   })
 })
 

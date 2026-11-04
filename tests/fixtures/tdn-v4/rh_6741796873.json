@@ -1,0 +1,16 @@
+{
+  "data": {
+    "appId": "6741796873",
+    "store": "apple",
+    "chart": "top-free",
+    "category": "all",
+    "series": [{ "country": "us", "points": [{ "at": "2026-11-04 12:06:34", "rank": 1 }] }]
+  },
+  "meta": {
+    "from": "2026-10-05 13:33:41",
+    "to": "2026-11-04 13:33:41",
+    "countries": 1,
+    "points": 1,
+    "truncated": false
+  }
+}

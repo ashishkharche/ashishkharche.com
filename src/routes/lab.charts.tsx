@@ -5,7 +5,9 @@ import { ChartBuilder } from '~/components/ChartBuilder'
 import { Main } from '~/components/Main'
 import { seo } from '~/lib/seo'
 import { xImageSources } from '~/lib/charts/spec'
-import { breakpoints, colors, fonts, type as text, weights } from '~/styles/tokens.stylex'
+import { dataFromLine, dataLineOf, parseDataTime } from '~/lib/charts/tdn'
+import poster from '../../public/lab/charts/poster.json'
+import { breakpoints, colors, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export const chartBuilderMeta = {
@@ -15,13 +17,29 @@ export const chartBuilderMeta = {
     'Charts of App Store, Google Play and app build data, read live when the page loads. Download as PNG or SVG.',
 } as const
 
+/** The default chart as an image, from live data saved at build time (scripts/lab-charts-snapshot.ts and -poster.ts). */
+export const chartPoster = {
+  src: '/lab/charts/poster.png',
+  og: '/assets/og/lab-charts.png',
+  width: 1800,
+  height: 1390,
+  alt: `${poster.title} ${poster.subtitle}`,
+  // Always with the day: the page is built once and read on other days.
+  // When the proxy fetched the data (x-tdn-fetched-at), else the data time in the answer.
+  dataLine: (() => {
+    const fetched = parseDataTime(poster.fetchedAt)
+    return fetched ? dataFromLine(fetched, new Date(0)) : dataLineOf(poster.dataTime, new Date(0))
+  })(),
+}
+
 export const Route = createFileRoute('/lab/charts')({
-  head: () => seo(chartBuilderMeta),
+  head: () => seo({ ...chartBuilderMeta, image: { src: chartPoster.og, alt: chartPoster.alt } }),
   component: LabCharts,
 })
 
 function LabCharts() {
-  // The builder draws on a canvas in the browser, so it is only shown once scripts run.
+  // The builder draws on a canvas in the browser, so it is shown once scripts run. Before that (and without
+  // scripts) the page shows the default chart as an image made from live data at build time.
   const ready = useSyncExternalStore(noop, isClient, isServer)
   return (
     <Main>
@@ -31,10 +49,23 @@ function LabCharts() {
           <p {...stylex.props(styles.lead)}>{chartBuilderMeta.description}</p>
         </header>
         <div {...stylex.props(styles.builder)}>
-          {ready ? <ChartBuilder /> : null}
-          <noscript>
-            <p {...stylex.props(styles.noscript)}>The chart builder needs JavaScript.</p>
-          </noscript>
+          {ready ? (
+            <ChartBuilder />
+          ) : (
+            <figure data-testid="chart-poster" {...stylex.props(styles.poster)}>
+              <img
+                src={chartPoster.src}
+                width={chartPoster.width}
+                height={chartPoster.height}
+                alt={chartPoster.alt}
+                fetchPriority="high"
+                {...stylex.props(styles.posterImage)}
+              />
+              <figcaption {...stylex.props(styles.posterCaption)}>
+                {chartPoster.dataLine}. Saved when the site was built; live charts load with the page.
+              </figcaption>
+            </figure>
+          )}
         </div>
         <div {...stylex.props(styles.notes)}>
           <section aria-labelledby="rules">
@@ -89,15 +120,16 @@ const isServer = () => false
 
 const styles = stylex.create({
   title: {
-    fontFamily: fonts.serif,
     fontSize: text.title,
-    fontWeight: weights.regular,
+    fontWeight: weights.medium,
     lineHeight: 1.2,
     letterSpacing: '-0.01em',
   },
   lead: { marginTop: '8px', fontSize: text.body, lineHeight: 1.5, color: colors.muted, maxWidth: '36em' },
   builder: { marginTop: '32px' },
-  noscript: { color: colors.muted, fontSize: text.body },
+  poster: { margin: 0, maxWidth: '1200px' },
+  posterImage: { display: 'block', width: '100%', height: 'auto', borderRadius: '8px', backgroundColor: '#151515' },
+  posterCaption: { marginTop: '8px', fontSize: text.meta, lineHeight: '24px', color: colors.text },
   notes: {
     display: 'grid',
     gridTemplateColumns: { default: 'repeat(2, minmax(0, 1fr))', [breakpoints.tablet]: 'minmax(0, 1fr)' },

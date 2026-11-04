@@ -7,3 +7,4 @@ reports
 test-results
 playwright-report
 content/**/*.mdx
+public/lab/charts/snapshot.json

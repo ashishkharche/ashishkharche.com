@@ -18,15 +18,16 @@ const live = [
   { id: 'chatgpt-vs-gemini', kind: 'Head to head', requests: 5 },
   { id: 'ai-rank-30-days', kind: 'Rank over time', requests: 5 },
   { id: 'ios-vs-android', kind: 'iOS vs Android', requests: 2 },
+  { id: 'chatgpt-number-one-countries', kind: 'Headline', requests: 2 },
+  { id: 'chatgpt-grossing-runs', kind: 'Headline', requests: 2 },
+  { id: 'ai-three-countries', kind: 'Headline', requests: 4 },
+  { id: 'most-sdks-headline', kind: 'Headline', requests: 3 },
+  { id: 'widest-gap', kind: 'iOS vs Android', requests: 2 },
 ]
 
 const templates = ['us-rank-countries', 'android-permissions', 'android-native-libs', 'us-rating-countries']
-/** Data-file templates held back from the default gallery until their fields are verified. */
-const pending = ['android-permissions', 'android-native-libs']
 
 async function pick(page: Page, id: string) {
-  const filters = page.getByRole('group', { name: 'Show templates of one kind' })
-  await filters.getByRole('button', { name: pending.includes(id) ? 'Pending verification' : 'All' }).click()
   await page.locator(`input[type=radio][value="${id}"]`).check()
   await expect(page.locator(`canvas[data-rendered^="${id}:"]`)).toBeVisible()
 }
@@ -206,7 +207,7 @@ test.describe('chart builder', () => {
       const requested = await mockLive(page)
       await page.goto(`/lab/charts/?template=${t.id}`)
       await expect(page.locator(`canvas[data-rendered^="${t.id}:"]`)).toBeVisible()
-      await expect(page.getByTestId('data-time')).toHaveText(/^Data from \d{1,2} \w{3} 2026, \d{2}:\d{2} UTC$/)
+      await expect(page.getByTestId('data-time')).toHaveText(/^Data from \d{2}:\d{2} (GMT|BST)(, \d{1,2} \w{3})?$/)
       await expect(page.getByRole('alert')).toHaveCount(0)
       await expect(page.getByRole('button', { name: 'Download PNG' })).toBeEnabled()
       const group = page.getByRole('radiogroup', { name: 'Templates' })
@@ -246,8 +247,33 @@ test.describe('chart builder', () => {
     expect(await differenceFromPreview(page, svg.bytes, 'image/svg+xml')).toBeLessThan(0.03)
   })
 
-  test('waits and asks again when the proxy fails, with no error and no old numbers', async ({ page }) => {
+  test('a TDN outage draws the last good copy, flagged as a kept copy with its fetch time', async ({ page }) => {
     await page.unrouteAll()
+    await mockLive(page, {
+      status: 502,
+      body: { error: 'The data service did not answer', code: 'upstream_unavailable' },
+    })
+    await page.goto('/lab/charts/?template=us-number-one')
+    await expect(page.locator('canvas[data-rendered^="us-number-one:"]')).toBeVisible()
+    await expect(page.getByTestId('kept-copy')).toHaveText(
+      /^Kept copy\. Live data did not load, so the copy fetched at \d{2}:\d{2} (GMT|BST) is shown\.( It is \d+ hours old\.)?$/,
+    )
+    await expect(page.getByTestId('data-time')).toHaveText(/^Data from \d{2}:\d{2} (GMT|BST)/)
+    await expect(page.getByRole('alert')).toHaveCount(0)
+  })
+
+  test('a cold cache that does not answer in time also draws the kept copy', async ({ page }) => {
+    await page.unrouteAll()
+    // The proxy never answers: the page gives up after its request timeout and uses the snapshot.
+    await page.route(/\/api\/tdn\/?\?/, () => new Promise(() => {}))
+    await page.goto('/lab/charts/?template=us-climbers')
+    await expect(page.locator('canvas[data-rendered^="us-climbers:"]')).toBeVisible({ timeout: 25_000 })
+    await expect(page.getByTestId('kept-copy')).toContainText('Kept copy.')
+  })
+
+  test('with no kept copy either, it waits and asks again, with no error and no old numbers', async ({ page }) => {
+    await page.unrouteAll()
+    await page.route('**/lab/charts/snapshot.json', (route) => route.fulfill({ status: 404, body: '' }))
     await mockLive(page, {
       status: 502,
       body: { error: 'The data service did not answer', code: 'upstream_unavailable' },
@@ -262,6 +288,7 @@ test.describe('chart builder', () => {
     await expect(page.getByRole('button', { name: 'Download PNG' })).toBeDisabled()
     // The source answers again: the chart is drawn on the next try, with nothing clicked.
     await page.unrouteAll()
+    await page.route('**/lab/charts/snapshot.json', (route) => route.fulfill({ status: 404, body: '' }))
     await mockLive(page)
     await expect(page.locator('canvas[data-rendered^="us-climbers:"]')).toBeVisible({ timeout: 15_000 })
     await expect(page.getByRole('alert')).toHaveCount(0)

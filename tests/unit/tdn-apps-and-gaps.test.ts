@@ -152,7 +152,7 @@ describe('rank history with missing and partial slots', () => {
     expect(chart.text.footnote[1]).toBe(
       'Last rank each day. 21 of 30 days have one. A gap: a failed run or below #100.',
     )
-    if (chart.model.kind !== 'headline' || chart.model.support.type !== 'spark') throw new Error('spark')
+    if (chart.model.kind !== 'headline' || chart.model.support?.type !== 'spark') throw new Error('spark')
     const values = chart.model.support.values
     const ctx = dashCtx()
     trace(
@@ -163,12 +163,9 @@ describe('rank history with missing and partial slots', () => {
       '#000',
       4,
     )
-    const bridges = ctx.lines.filter((l) => l.dash.length > 0)
-    expect(bridges).toHaveLength(1)
-    // The bridge spans the gap: from the last day before it to the first day after it, with no point inside.
-    const first = values.findIndex((v, i) => v === null && values[i - 1] !== null)
-    expect(bridges[0]).toMatchObject({ x0: first - 1, x1: first + 9 })
-    expect(ctx.lines.filter((l) => !l.dash.length).every((l) => l.x1 - l.x0 === 1)).toBe(true)
+    // The gap is left empty: no dashed bridge, and every line joins two days next to each other.
+    expect(ctx.lines.filter((l) => l.dash.length > 0)).toHaveLength(0)
+    expect(ctx.lines.every((l) => l.x1 - l.x0 === 1)).toBe(true)
   })
 
   it('a missed 12:00 run keeps that day’s 00:00 rank', () => {

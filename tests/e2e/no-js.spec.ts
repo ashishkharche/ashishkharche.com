@@ -35,3 +35,15 @@ test('the case study screens are all there without JavaScript, with no dead butt
   await expect(page.getByRole('group', { name: 'iPad screens, scrolls sideways' }).locator('img')).toHaveCount(7)
   await expect(page.getByRole('button', { name: /screens$/ })).toHaveCount(0)
 })
+
+test('the chart builder shows a chart from live data without JavaScript', async ({ page, request }) => {
+  await page.goto('/lab/charts/')
+  const poster = page.getByTestId('chart-poster')
+  await expect(poster.locator('img')).toHaveAttribute('src', '/lab/charts/poster.png')
+  expect(await poster.locator('img').getAttribute('alt')).toMatch(/\?/)
+  await expect(poster.locator('figcaption')).toHaveText(/^Data from \d{2}:\d{2} (GMT|BST), \d{1,2} \w{3}\. /)
+  await expect(page.getByText('needs JavaScript')).toHaveCount(0)
+  const image = await request.get('/lab/charts/poster.png')
+  expect(image.status()).toBe(200)
+  expect(image.headers()['content-type']).toContain('image/png')
+})

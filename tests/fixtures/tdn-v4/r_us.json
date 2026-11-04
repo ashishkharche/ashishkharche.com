@@ -1,0 +1,527 @@
+{
+  "data": [
+    {
+      "rank": 1,
+      "appId": "6741796873",
+      "store": "apple",
+      "name": "TikTok Pro - Events",
+      "developer": "TikTok Ltd.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/c7/e0/05/c7e00539-f686-7de1-776b-2389d4f8d3af/AppIcon_TikTok-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 2,
+      "appId": "284862083",
+      "store": "apple",
+      "name": "NYTimes: Breaking World News",
+      "developer": "The New York Times Company",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/1f/85/a4/1f85a424-868d-7dcb-5d8b-9bf0c0207e39/Release-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 3,
+      "appId": "6760173601",
+      "store": "apple",
+      "name": "Muse from Meta",
+      "developer": "Meta Platforms, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f4/d1/60/f4d160d7-fdfd-9631-6c52-857718d5636a/HatchAppIconPublic-0-0-1x_U007epad-0-1-0-sRGB-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 4,
+      "appId": "632064380",
+      "store": "apple",
+      "name": "Vinted: Pre-loved marketplace",
+      "developer": "Vinted Limited",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b4/12/46/b4124635-390a-e3ec-7787-f94588165444/VintedAppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 5,
+      "appId": "6448311069",
+      "store": "apple",
+      "name": "ChatGPT",
+      "developer": "OpenAI OpCo, LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/5c/9c/84/5c9c8431-bd39-08fa-cba4-8bb6561f9877/AppIcon-0-0-1x_U007epad-0-0-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 9,
+      "appId": "6473753684",
+      "store": "apple",
+      "name": "Claude by Anthropic",
+      "developer": "Anthropic PBC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/d7/d6/f1/d7d6f168-f3ce-ee3c-e8fd-0563019400d4/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 10,
+      "appId": "6477489729",
+      "store": "apple",
+      "name": "Google Gemini",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/63/33/1b/63331b32-bc24-fa24-d7e7-935cb16e6c34/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 11,
+      "appId": "1605170923",
+      "store": "apple",
+      "name": "GoWish - Your Digital Wishlist",
+      "developer": "Onskeskyen ApS",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/42/89/93/42899305-70fb-3c96-43e0-f6a802e7cd38/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 12,
+      "appId": "686449807",
+      "store": "apple",
+      "name": "Telegram Messenger",
+      "developer": "Telegram FZ-LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ce/41/d8/ce41d807-350e-69f1-f31e-16be42b6ebfb/Telegram-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 13,
+      "appId": "6446901002",
+      "store": "apple",
+      "name": "Threads",
+      "developer": "Instagram, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/41/ae/77/41ae77b4-ea15-2bbf-dc7d-3b67e887209e/Prod-0-0-1x_U007ephone-0-0-0-1-0-0-sRGB-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 14,
+      "appId": "1500855883",
+      "store": "apple",
+      "name": "CapCut: Photo & Video Editor",
+      "developer": "BYTEDANCE PTE. LTD.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/31/d8/5b/31d85b5d-7785-5789-df84-1b052afd2e43/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 15,
+      "appId": "6742024490",
+      "store": "apple",
+      "name": "Reco Social",
+      "developer": "Reco Social, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/24/93/5c/24935c5a-4d1b-79a5-ef65-3f54759a412e/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 16,
+      "appId": "284815942",
+      "store": "apple",
+      "name": "Google",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/1b/2f/56/1b2f5678-e28a-32bf-3483-7aab05093f32/SuperG_ios26-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 17,
+      "appId": "1641486558",
+      "store": "apple",
+      "name": "Temu: Shop Like a Billionaire",
+      "developer": "Whaleco Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/1a/99/fa/1a99faf0-689d-6ef5-6bff-b16162fbd4c1/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 18,
+      "appId": "310633997",
+      "store": "apple",
+      "name": "WhatsApp Messenger",
+      "developer": "WhatsApp Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/15/eb/39/15eb3965-bec3-4737-950a-9d9df5303e93/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 19,
+      "appId": "1089294040",
+      "store": "apple",
+      "name": "Capital One Shopping: Save Now",
+      "developer": "Wikibuy, LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/53/a9/90/53a990eb-f123-204a-cbe8-0da415f0142d/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 20,
+      "appId": "518684914",
+      "store": "apple",
+      "name": "Depop - Buy & Sell Clothes",
+      "developer": "Depop Ltd",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/e4/db/64/e4db640e-9638-1f6b-838e-88c24fa9be44/AppIcon-0-0-1x_U007ephone-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 21,
+      "appId": "333903271",
+      "store": "apple",
+      "name": "X",
+      "developer": "X Corp.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/e3/b3/93/e3b393f1-101b-5e94-d31e-38f6ddabce76/ProductionAppIcon-0-0-1x_U007emarketing-0-8-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 23,
+      "appId": "422689480",
+      "store": "apple",
+      "name": "Gmail - Email by Google",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/83/a9/eb/83a9eb0a-ab2b-da1f-41a9-8357822787a8/gmail_2026_ios-0-0-1x_U007epad-0-0-0-1-0-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 24,
+      "appId": "835599320",
+      "store": "apple",
+      "name": "TikTok - Videos, Shop & LIVE",
+      "developer": "TikTok Ltd.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/4b/af/40/4baf40d2-5fec-a1fe-da33-cafd0c87f18b/TikTok_AppIcon26-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 25,
+      "appId": "1488269261",
+      "store": "apple",
+      "name": "Whatnot: Shop, Sell, Connect",
+      "developer": "Whatnot Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/a1/d1/33/a1d133d6-48ee-d173-e9de-e2c6af9e705a/AppIcon-0-0-1x_U007ephone-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 27,
+      "appId": "6670430706",
+      "store": "apple",
+      "name": "DramaWave - Dramas & Reels",
+      "developer": "SKYWORK AI PTE LTD",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/45/8d/18/458d18f9-abec-fc34-84ec-1db33fb58832/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 28,
+      "appId": "585027354",
+      "store": "apple",
+      "name": "Google Maps",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/58/d3/ee/58d3eefe-ff6a-2309-faa8-b5043082bbb1/maps_2025-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 30,
+      "appId": "284882215",
+      "store": "apple",
+      "name": "Facebook",
+      "developer": "Meta Platforms, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/77/5b/7b/775b7b40-4e22-ba5e-2255-668c2473048c/Icon-Production-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 31,
+      "appId": "389801252",
+      "store": "apple",
+      "name": "Instagram",
+      "developer": "Instagram, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/65/b4/b1/65b4b1e1-9891-0b84-4d9a-6370410bfbf4/Prod-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 33,
+      "appId": "6670324846",
+      "store": "apple",
+      "name": "Grok - AI Chat & Video",
+      "developer": "X Corp.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/4a/02/51/4a025196-10ca-fe17-1591-c775eae939f8/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 38,
+      "appId": "544007664",
+      "store": "apple",
+      "name": "YouTube",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/be/56/df/be56dfa2-70bd-feb2-b666-38277eb5be3b/logo_youtube_2024_q4_color-0-0-1x_U007emarketing-0-0-0-7-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 39,
+      "appId": "6745274862",
+      "store": "apple",
+      "name": "DealSeek: Coupons & Discounts",
+      "developer": "DealSeek LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ab/0c/84/ab0c84f3-1a2b-e62f-6406-b90696d23054/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 40,
+      "appId": "1113153706",
+      "store": "apple",
+      "name": "Microsoft Teams",
+      "developer": "Microsoft Corporation",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/48/42/d4/4842d4b9-5d20-be03-d72d-6e81c1035773/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 41,
+      "appId": "719972451",
+      "store": "apple",
+      "name": "DoorDash: Food, Grocery, More",
+      "developer": "DoorDash, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/92/08/f8/9208f8f1-46bd-bd45-ff7b-1eb6337db1a4/AppIcon-0-0-1x_U007ephone-0-1-sRGB-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 42,
+      "appId": "6447582581",
+      "store": "apple",
+      "name": "Netflix Game Controller",
+      "developer": "Netflix, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/17/36/f1/1736f19b-ac32-eca3-764c-fa0cc3f5776f/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 43,
+      "appId": "985746746",
+      "store": "apple",
+      "name": "Discord - Talk, Play, Hang Out",
+      "developer": "Discord Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/65/9c/e0/659ce065-5dd8-eb35-378f-217d9658f6d9/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 44,
+      "appId": "324684580",
+      "store": "apple",
+      "name": "Spotify: Music and Podcasts",
+      "developer": "Spotify",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8b/f2/6a/8bf26ab9-3ced-cb5c-a2b3-19f65e7f5cc6/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 47,
+      "appId": "384830320",
+      "store": "apple",
+      "name": "Life360: Family Safety & GPS",
+      "developer": "Life360",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/05/bb/98/05bb9851-7c57-8445-e26e-c904e4eaf128/AppIcon-0-0-1x_U007ephone-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 48,
+      "appId": "541164041",
+      "store": "apple",
+      "name": "Microsoft Copilot",
+      "developer": "Microsoft Corporation",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/37/d4/7c/37d47cd5-4589-dd66-d248-780f0be78127/AppIcon-0-0-1x_U007epad-0-1-0-0-sRGB-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 49,
+      "appId": "368677368",
+      "store": "apple",
+      "name": "Uber - Rides, Eats, Hotels",
+      "developer": "Uber Technologies, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/79/9d/29/799d2981-68b0-ce94-161e-73a0268d91ef/AppIcon-0-0-1x_U007emarketing-0-8-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 50,
+      "appId": "1636235979",
+      "store": "apple",
+      "name": "ReelShort - Stream Drama & TV",
+      "developer": "New Leaf Publishing, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/41/d5/c1/41d5c184-935e-0040-b565-a9dedfeccbb5/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 52,
+      "appId": "546505307",
+      "store": "apple",
+      "name": "Zoom Workplace",
+      "developer": "Zoom Communications, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/d0/96/fcd09664-56c3-f856-4311-da9dcbae1fd2/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 54,
+      "appId": "429047995",
+      "store": "apple",
+      "name": "Pinterest",
+      "developer": "Pinterest, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f0/8e/3d/f08e3d30-65df-7233-d2e5-a9cb133c6af1/AppIcon-0-0-1x_U007epad-0-1-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 55,
+      "appId": "1662982304",
+      "store": "apple",
+      "name": "Partiful: Party Invite Maker",
+      "developer": "Partiful",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/44/da/e9/44dae97b-2231-d13f-56c0-2df856de04c2/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 56,
+      "appId": "447188370",
+      "store": "apple",
+      "name": "Snapchat",
+      "developer": "Snap, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/bf/73/37/bf7337b7-c382-5539-1180-d282ae58119c/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 57,
+      "appId": "545519333",
+      "store": "apple",
+      "name": "Amazon Prime Video",
+      "developer": "AMZN Mobile LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/29/11/e1/2911e167-83f8-c09c-d032-0816b66134c8/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 58,
+      "appId": "842842640",
+      "store": "apple",
+      "name": "Google Docs",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/41/91/fe/4191febf-4ea8-2f55-4c4b-3f7eec3503e8/docs_2026_ios-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 59,
+      "appId": "382952264",
+      "store": "apple",
+      "name": "MyChart",
+      "developer": "Epic",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/0f/c4/03/0fc40384-de22-a0cd-5bea-e4af3c95103c/MyChartAppIcon-0-0-1x_U007epad-0-1-sRGB-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 60,
+      "appId": "507874739",
+      "store": "apple",
+      "name": "Google Drive",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/4c/44/97/4c449717-ff3b-c65c-8491-2b1785675ad7/drive_2026_ios-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 63,
+      "appId": "6794501026",
+      "store": "apple",
+      "name": "Grok Bot",
+      "developer": "X Corp.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/82/30/59/8230590c-1289-c04c-bdc4-3883b1445ee8/app-0-0-1x_U007epad-0-0-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 64,
+      "appId": "1631584032",
+      "store": "apple",
+      "name": "PLAYFUL REWARDS: Earn Rewards",
+      "developer": "Playful Rewards",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/5d/f2/89/5df2899d-100a-146b-16f6-09493dbe4762/AppIcon-0-0-1x_U007epad-0-11-85-220.jpeg/512x512bb.jpg"
+    },
+    {
+      "rank": 66,
+      "appId": "897446215",
+      "store": "apple",
+      "name": "Canva AI Photo & Video Editor",
+      "developer": "Canva Pty Ltd",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/3f/a0/78/3fa078f4-ab6d-c5b7-ac83-873fc19a4685/AppIcon-0-0-1x_U007epad-0-11-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 67,
+      "appId": "1446075923",
+      "store": "apple",
+      "name": "Disney+",
+      "developer": "Disney",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/3f/7f/cb/3f7fcb64-82d5-7f5d-e453-6532b9e497d4/AppIcon-0-0-1x_U007emarketing-0-8-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 71,
+      "appId": "570060128",
+      "store": "apple",
+      "name": "Duolingo: Learn Languages",
+      "developer": "Duolingo, Inc",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/11/e8/8d11e8e6-8040-7512-d03e-ea56124d3eef/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 75,
+      "appId": "482066631",
+      "store": "apple",
+      "name": "Roku Remote (Official)",
+      "developer": "ROKU INC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/5e/51/bf/5e51bf6c-fbad-df69-79b7-e8acea78a85a/Roku-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 76,
+      "appId": "530168168",
+      "store": "apple",
+      "name": "Paramount+",
+      "developer": "CBS Interactive",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/69/05/ed/6905ed93-841f-8ed3-0fb7-de72e6f977fa/P_U002bAppIcon-0-0-1x_U007emarketing-0-8-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 77,
+      "appId": "388497605",
+      "store": "apple",
+      "name": "Google Authenticator",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/70/2b/df/702bdfd3-b008-3dd0-af69-da2c920847a2/app_icon-0-0-1x_U007epad-0-0-0-1-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 79,
+      "appId": "1510944943",
+      "store": "apple",
+      "name": "Cleanup: Phone Storage Cleaner",
+      "developer": "DEEP FLOW SOFTWARE SERVICES",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/30/85/0e/30850e5d-1fcf-70b9-bcda-beb222622baf/AppIcon-0-0-1x_U007ephone-0-1-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 81,
+      "appId": "6738967378",
+      "store": "apple",
+      "name": "Edits: Video Editor",
+      "developer": "Instagram, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/89/a7/47/89a74756-b678-97d8-9c2e-9632ddc4bf2d/Prod-0-0-1x_U007ephone-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 82,
+      "appId": "363590051",
+      "store": "apple",
+      "name": "Netflix",
+      "developer": "Netflix, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/73/dd/0e/73dd0eae-8fc8-94cc-da59-2512616c784f/AppIcon-0-0-1x_U007epad-0-1-0-sRGB-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 84,
+      "appId": "401626263",
+      "store": "apple",
+      "name": "Airbnb",
+      "developer": "Airbnb, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ad/ff/29/adff29b3-b964-bf50-25ad-c29f07ad55f1/AppIcon-0-0-1x_U007epad-0-1-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 85,
+      "appId": "288429040",
+      "store": "apple",
+      "name": "LinkedIn: Community & Network",
+      "developer": "LinkedIn Corporation",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/a2/30/fa/a230fa46-5c1d-b397-d1a9-e44fb20d34fc/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 86,
+      "appId": "529379082",
+      "store": "apple",
+      "name": "Lyft",
+      "developer": "Lyft, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/d9/4f/e1/d94fe126-a972-1957-e3df-236bd3326355/PassengerRelease-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 87,
+      "appId": "6480136315",
+      "store": "apple",
+      "name": "Suno - AI Songs, Music, Lyrics",
+      "developer": "Suno Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/75/5e/48/755e4824-18f5-f449-fa02-95e63eaf31ae/AppIcon-0-0-1x_U007ephone-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 91,
+      "appId": "878577184",
+      "store": "apple",
+      "name": "SHEIN - Shopping Online",
+      "developer": "ROADGET BUSINESS PTE. LTD.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/77/2d/94/772d94d9-edb2-4bcc-4075-f3237219ca2c/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 92,
+      "appId": "842849113",
+      "store": "apple",
+      "name": "Google Sheets",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/dc/36/91/dc369151-6af2-5807-fe06-cd5eb4ae3508/sheets_2026q3_ios-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 93,
+      "appId": "586447913",
+      "store": "apple",
+      "name": "Microsoft Word",
+      "developer": "Microsoft Corporation",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/c9/0d/34/c90d341a-8dfb-212e-b97f-90d48cb26233/AppIcon-0-0-1x_U007epad-0-1-0-0-sRGB-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 94,
+      "appId": "6768240254",
+      "store": "apple",
+      "name": "FreeDrama: Watch Short Stories",
+      "developer": "Kuku Technologies Limited",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fa/8f/31/fa8f31e3-213c-53f8-e131-c138c5fbf0f2/appIconFreeDrama-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+    }
+  ],
+  "meta": {
+    "store": "apple",
+    "country": "us",
+    "chart": "top-free",
+    "category": "all",
+    "recordedAt": "2026-11-04 12:06:34",
+    "count": 64,
+    "total": 64,
+    "limit": 200,
+    "nextCursor": null
+  }
+}

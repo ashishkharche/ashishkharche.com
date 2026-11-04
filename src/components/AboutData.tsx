@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { collectionRuns, deepestRank, trackedApps, type TrackedApp } from '~/lib/charts/about'
 import { getHistory, getRankings, plainName, retryDelay, sortedRankings } from '~/lib/charts/live'
 import { formatDataTime, recordedAt, type TdnClient } from '~/lib/charts/tdn'
-import { breakpoints, colors, fonts, type as text, weights } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type as text, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export interface AboutEntry {
@@ -259,7 +259,7 @@ const styles = stylex.create({
     borderTopStyle: 'solid',
     borderTopColor: colors.line,
   },
-  title: { fontFamily: fonts.serif, fontSize: text.lead, fontWeight: weights.regular, lineHeight: 1.3 },
+  title: { fontSize: text.body, fontWeight: weights.medium, lineHeight: 1.5 },
   facts: {
     display: 'grid',
     gridTemplateColumns: { default: 'repeat(2, minmax(0, 1fr))', [breakpoints.tablet]: 'minmax(0, 1fr)' },

@@ -1,0 +1,343 @@
+{
+  "data": [
+    {
+      "rank": 1,
+      "appId": "6448311069",
+      "store": "apple",
+      "name": "ChatGPT",
+      "developer": "OpenAI OpCo, LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/5c/9c/84/5c9c8431-bd39-08fa-cba4-8bb6561f9877/AppIcon-0-0-1x_U007epad-0-0-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 2,
+      "appId": "835599320",
+      "store": "apple",
+      "name": "TikTok - Videos, Shop & LIVE",
+      "developer": "TikTok Ltd.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/4b/af/40/4baf40d2-5fec-a1fe-da33-cafd0c87f18b/TikTok_AppIcon26-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 3,
+      "appId": "544007664",
+      "store": "apple",
+      "name": "YouTube",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/be/56/df/be56dfa2-70bd-feb2-b666-38277eb5be3b/logo_youtube_2024_q4_color-0-0-1x_U007emarketing-0-0-0-7-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 5,
+      "appId": "1508186374",
+      "store": "apple",
+      "name": "Peacock TV: Stream TV & Movies",
+      "developer": "Peacock TV LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/02/50/8f/02508fc6-59f4-fa16-893a-98d93f74af0a/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 6,
+      "appId": "447188370",
+      "store": "apple",
+      "name": "Snapchat",
+      "developer": "Snap, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/bf/73/37/bf7337b7-c382-5539-1180-d282ae58119c/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 7,
+      "appId": "389801252",
+      "store": "apple",
+      "name": "Instagram",
+      "developer": "Instagram, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/65/b4/b1/65b4b1e1-9891-0b84-4d9a-6370410bfbf4/Prod-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 8,
+      "appId": "6473753684",
+      "store": "apple",
+      "name": "Claude by Anthropic",
+      "developer": "Anthropic PBC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/d7/d6/f1/d7d6f168-f3ce-ee3c-e8fd-0563019400d4/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 9,
+      "appId": "530168168",
+      "store": "apple",
+      "name": "Paramount+",
+      "developer": "CBS Interactive",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/69/05/ed/6905ed93-841f-8ed3-0fb7-de72e6f977fa/P_U002bAppIcon-0-0-1x_U007emarketing-0-8-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 13,
+      "appId": "329913454",
+      "store": "apple",
+      "name": "Crunchyroll",
+      "developer": "Crunchyroll, LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/51/e2/8f/51e28f69-7bc1-d9e1-5c7e-d636f53ed0d2/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 14,
+      "appId": "1500855883",
+      "store": "apple",
+      "name": "CapCut: Photo & Video Editor",
+      "developer": "BYTEDANCE PTE. LTD.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/31/d8/5b/31d85b5d-7785-5789-df84-1b052afd2e43/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 15,
+      "appId": "1666653815",
+      "store": "apple",
+      "name": "HBO Max: Stream Movies & TV",
+      "developer": "WarnerMedia Global Digital Services, LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/4c/4a/9d/4c4a9dd8-66c9-4735-b6d3-b50d414a221f/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 17,
+      "appId": "1017492454",
+      "store": "apple",
+      "name": "YouTube Music",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/5c/0d/ab/5c0dab3f-62b2-6fb1-0e49-381c24c48843/logo_youtube_music_2024_q4_color-0-0-1x_U007emarketing-0-0-0-7-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 18,
+      "appId": "288429040",
+      "store": "apple",
+      "name": "LinkedIn: Community & Network",
+      "developer": "LinkedIn Corporation",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/a2/30/fa/a230fa46-5c1d-b397-d1a9-e44fb20d34fc/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 19,
+      "appId": "284882215",
+      "store": "apple",
+      "name": "Facebook",
+      "developer": "Meta Platforms, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/77/5b/7b/775b7b40-4e22-ba5e-2255-668c2473048c/Icon-Production-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 20,
+      "appId": "6670324846",
+      "store": "apple",
+      "name": "Grok - AI Chat & Video",
+      "developer": "X Corp.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/4a/02/51/4a025196-10ca-fe17-1591-c775eae939f8/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 21,
+      "appId": "422689480",
+      "store": "apple",
+      "name": "Gmail - Email by Google",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/83/a9/eb/83a9eb0a-ab2b-da1f-41a9-8357822787a8/gmail_2026_ios-0-0-1x_U007epad-0-0-0-1-0-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 23,
+      "appId": "284035177",
+      "store": "apple",
+      "name": "Pandora: Music & Podcasts",
+      "developer": "Pandora Media, LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/06/13/15/0613151d-52c0-6569-5ed8-10a04f6c9cde/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 24,
+      "appId": "384830320",
+      "store": "apple",
+      "name": "Life360: Family Safety & GPS",
+      "developer": "Life360",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/05/bb/98/05bb9851-7c57-8445-e26e-c904e4eaf128/AppIcon-0-0-1x_U007ephone-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 25,
+      "appId": "1446075923",
+      "store": "apple",
+      "name": "Disney+",
+      "developer": "Disney",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/3f/7f/cb/3f7fcb64-82d5-7f5d-e453-6532b9e497d4/AppIcon-0-0-1x_U007emarketing-0-8-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 29,
+      "appId": "570060128",
+      "store": "apple",
+      "name": "Duolingo: Learn Languages",
+      "developer": "Duolingo, Inc",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/11/e8/8d11e8e6-8040-7512-d03e-ea56124d3eef/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 31,
+      "appId": "962194608",
+      "store": "apple",
+      "name": "Google Photos: Backup & Edit",
+      "developer": "Google",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/e5/7b/39/e57b39ea-a504-e096-8e71-9280485ab0dc/Photos-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 32,
+      "appId": "379693831",
+      "store": "apple",
+      "name": "Audible: Audiobooks & Podcasts",
+      "developer": "Audible, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b7/89/5e/b7895e86-c4e1-2c3d-452a-a751301e80a9/AppIcon-0-0-1x_U007emarketing-0-0-0-8-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 33,
+      "appId": "545519333",
+      "store": "apple",
+      "name": "Amazon Prime Video",
+      "developer": "AMZN Mobile LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/29/11/e1/2911e167-83f8-c09c-d032-0816b66134c8/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 36,
+      "appId": "686449807",
+      "store": "apple",
+      "name": "Telegram Messenger",
+      "developer": "Telegram FZ-LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ce/41/d8/ce41d807-350e-69f1-f31e-16be42b6ebfb/Telegram-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 37,
+      "appId": "376510438",
+      "store": "apple",
+      "name": "Hulu: Stream TV shows & movies",
+      "developer": "Hulu, LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/03/c9/99/03c99983-a169-a097-d6a7-f8cad63e2acb/HuluAppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 39,
+      "appId": "897446215",
+      "store": "apple",
+      "name": "Canva AI Photo & Video Editor",
+      "developer": "Canva Pty Ltd",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/3f/a0/78/3fa078f4-ab6d-c5b7-ac83-873fc19a4685/AppIcon-0-0-1x_U007epad-0-11-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 41,
+      "appId": "327630330",
+      "store": "apple",
+      "name": "Dropbox: Cloud Storage Backup",
+      "developer": "Dropbox, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/94/2b/ca/942bcaba-f8db-9467-f3c9-10f6f35267a3/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 43,
+      "appId": "333903271",
+      "store": "apple",
+      "name": "X",
+      "developer": "X Corp.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/e3/b3/93/e3b393f1-101b-5e94-d31e-38f6ddabce76/ProductionAppIcon-0-0-1x_U007emarketing-0-8-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 46,
+      "appId": "985746746",
+      "store": "apple",
+      "name": "Discord - Talk, Play, Hang Out",
+      "developer": "Discord Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/65/9c/e0/659ce065-5dd8-eb35-378f-217d9658f6d9/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 47,
+      "appId": "6670430706",
+      "store": "apple",
+      "name": "DramaWave - Dramas & Reels",
+      "developer": "SKYWORK AI PTE LTD",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/45/8d/18/458d18f9-abec-fc34-84ec-1db33fb58832/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 48,
+      "appId": "1510944943",
+      "store": "apple",
+      "name": "Cleanup: Phone Storage Cleaner",
+      "developer": "DEEP FLOW SOFTWARE SERVICES",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/30/85/0e/30850e5d-1fcf-70b9-bcda-beb222622baf/AppIcon-0-0-1x_U007ephone-0-1-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 59,
+      "appId": "510855668",
+      "store": "apple",
+      "name": "Amazon Music: Songs & Podcasts",
+      "developer": "AMZN Mobile LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/50/24/2e/50242ec3-1266-8b79-de65-ed646b227176/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 62,
+      "appId": "1636235979",
+      "store": "apple",
+      "name": "ReelShort - Stream Drama & TV",
+      "developer": "New Leaf Publishing, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/41/d5/c1/41d5c184-935e-0040-b565-a9dedfeccbb5/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 69,
+      "appId": "460177396",
+      "store": "apple",
+      "name": "Twitch: Live Streaming",
+      "developer": "Twitch Interactive, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d5/af/88/d5af88c1-ef7a-2d28-90c0-1f3335b21efe/TwitchAppIcon-0-0-1x_U007epad-0-1-0-0-sRGB-0-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 71,
+      "appId": "484672289",
+      "store": "apple",
+      "name": "NBA: Live Games & Scores",
+      "developer": "NBA MEDIA VENTURES, LLC",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ae/5c/99/ae5c9954-fea2-de61-e740-17d0761a5042/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 73,
+      "appId": "1668000334",
+      "store": "apple",
+      "name": "Perplexity - AI Search & Chat",
+      "developer": "Perplexity AI, Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/4b/23/21/4b232195-cb50-abb8-6de0-fab8d0d6b67f/AppIcon-0-0-1x_U007epad-0-0-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 75,
+      "appId": "284862083",
+      "store": "apple",
+      "name": "NYTimes: Breaking World News",
+      "developer": "The New York Times Company",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/1f/85/a4/1f85a424-868d-7dcb-5d8b-9bf0c0207e39/Release-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 76,
+      "appId": "336353151",
+      "store": "apple",
+      "name": "SoundCloud: The Music You Love",
+      "developer": "SoundCloud Global Limited & Co KG",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/1b/03/50/1b035022-a482-798c-e754-798b78331c9b/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 90,
+      "appId": "6794501026",
+      "store": "apple",
+      "name": "Grok Bot",
+      "developer": "X Corp.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/82/30/59/8230590c-1289-c04c-bdc4-3883b1445ee8/app-0-0-1x_U007epad-0-0-0-1-0-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 92,
+      "appId": "317469184",
+      "store": "apple",
+      "name": "ESPN: Live Sports & Scores",
+      "developer": "Disney",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/37/d8/18/37d818f2-190f-649f-7992-574bf009d223/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg"
+    },
+    {
+      "rank": 97,
+      "appId": "6480136315",
+      "store": "apple",
+      "name": "Suno - AI Songs, Music, Lyrics",
+      "developer": "Suno Inc.",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/75/5e/48/755e4824-18f5-f449-fa02-95e63eaf31ae/AppIcon-0-0-1x_U007ephone-0-1-0-85-220.png/512x512bb.jpg"
+    }
+  ],
+  "meta": {
+    "store": "apple",
+    "country": "us",
+    "chart": "top-grossing",
+    "category": "all",
+    "recordedAt": "2026-11-04 12:06:34",
+    "count": 41,
+    "total": 41,
+    "limit": 200,
+    "nextCursor": null
+  }
+}

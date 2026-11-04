@@ -26,29 +26,27 @@ export const CHART_WEIGHTS = { regular: 400, medium: 500 } as const
 export type ChartWeight = (typeof CHART_WEIGHTS)[keyof typeof CHART_WEIGHTS]
 
 /** Families registered for the chart (FontFace on the page, @font-face in SVG files). */
-export const CHART_FAMILIES = { sans: 'ChartGeist', serif: 'ChartGeistSerif' } as const
+export const CHART_FAMILIES = { sans: 'ChartGeist' } as const
 export type ChartFamily = keyof typeof CHART_FAMILIES
 
-/** The site's own self-hosted files. Geist is a variable font (400 to 700); Geist Serif has one weight. */
+/** The site's own self-hosted Geist file, a variable font (400 to 700). Charts use Geist only. */
 export const CHART_FONT_FILES = [
   { family: CHART_FAMILIES.sans, weight: '400 500', url: '/assets/fonts/Geist-Latin.woff2' },
-  { family: CHART_FAMILIES.serif, weight: '400', url: '/assets/fonts/GeistSerif-Latin.woff2' },
 ] as const
 
 /** What a font string falls back to when a chart font is missing (and for glyphs Geist lacks). */
 export const FALLBACK = 'ui-sans-serif, system-ui, sans-serif'
 
-/** Geist's (and Geist Serif's) typographic ascender and descender, as fractions of the font size. */
+/** Geist's typographic ascender and descender, as fractions of the font size. */
 export const ASCENT = 1005 / 1000
 export const DESCENT = 295 / 1000
 
 /** The size in px for a role at a layout scale. */
 export const sizeOf = (role: TypeRole, s: number) => CHART_SIZES[role] * s
 
-/** A canvas font string. Geist Serif is only set at 400. */
+/** A canvas font string. */
 export function fontString(size: number, weight: ChartWeight, family: ChartFamily = 'sans'): string {
-  const w = family === 'serif' ? CHART_WEIGHTS.regular : weight
-  return `${w} ${size}px ${CHART_FAMILIES[family]}, ${FALLBACK}`
+  return `${weight} ${size}px ${CHART_FAMILIES[family]}, ${FALLBACK}`
 }
 
 /**

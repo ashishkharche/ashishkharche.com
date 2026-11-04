@@ -5,7 +5,7 @@
  * The layout follows the matplotlib renderer the X charts come from: a
  * 1800 × 1390 figure at 100 dpi, the same colours and the same text alignment
  * rules (text boxes from the font's ascender and descender, ink edges for
- * horizontal alignment). Type comes from type.ts: Geist and Geist Serif, four
+ * horizontal alignment). Type comes from type.ts: Geist only, four
  * sizes, two weights. Other sizes keep the same layout scaled to fit.
  */
 import type { ChartConfig, LabelConfig, Row } from './config.ts'
@@ -271,11 +271,11 @@ export function drawFrame(ctx: Ctx, L: Layout, title: string, subtitle: string, 
     const size = fitRole(role, s, maxWidth, (z) => inkWidth(ctx, value, z, weight, tracking, family))
     return { value: shorten(ctx, value, size, weight, family, maxWidth), size }
   }
-  const t = set(title, 'title', 400, 'serif')
+  const t = set(title, 'title', 500)
   text(t.value, L.padX, L.titleY, {
     size: t.size,
     weight: 400,
-    family: 'serif',
+    family: 'sans',
     color: palette.text,
     ha: 'left',
     va: 'center',

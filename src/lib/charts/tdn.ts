@@ -60,12 +60,12 @@ export function tdnUrl(endpoint: Endpoint, params: Params = {}): string {
 }
 
 export class TdnError extends Error {
-  constructor(
-    readonly status: number,
-    readonly code: string,
-    message: string,
-  ) {
+  readonly status: number
+  readonly code: string
+  constructor(status: number, code: string, message: string) {
     super(message)
+    this.status = status
+    this.code = code
   }
 }
 
@@ -93,6 +93,32 @@ export interface TdnClient {
   readonly fetched: Map<string, Fetched>
 }
 
+/**
+ * A view of a client that remembers the URLs one chart asked for, so the chart's own answers (and their
+ * x-tdn-fetched-at times) can be told apart from other charts' on the same page.
+ */
+export function trackClient(client: TdnClient): { client: TdnClient; answers: () => Fetched[] } {
+  const urls = new Set<string>()
+  const view: TdnClient = {
+    requested: client.requested,
+    fetched: client.fetched,
+    get<T>(endpoint: Endpoint, params: Params = {}) {
+      urls.add(tdnUrl(endpoint, params))
+      return client.get<T>(endpoint, params)
+    },
+  }
+  return {
+    client: view,
+    answers: () => [...urls].map((u) => client.fetched.get(u)).filter((f): f is Fetched => !!f),
+  }
+}
+
+/** The oldest fetch time among a chart's answers: the chart is as old as its oldest answer. */
+export function oldestFetch(answers: Fetched[]): Date | null {
+  const times = answers.map((f) => f.fetchedAt?.getTime() ?? 0).filter((t) => t > 0)
+  return times.length ? new Date(Math.min(...times)) : null
+}
+
 /** An answer the proxy fetched longer ago than this is labelled with its fetch time: it is a kept copy. */
 export const STALE_AFTER_MS = 2 * 3_600_000
 
@@ -103,7 +129,41 @@ export interface ClientOptions {
   maxInFlight?: number
   /** For tests: how to wait. */
   sleep?: (ms: number) => Promise<void>
+  /**
+   * The last good answer kept for a URL (the snapshot shipped with the page), used when the proxy does not answer
+   * after the retries. Its answer is marked kept and stale, with when it was fetched.
+   */
+  lastGood?: (url: string) => Promise<KeptAnswer | null>
 }
+
+/** One answer kept in the snapshot: the body and when the proxy fetched it. */
+export interface KeptAnswer {
+  body: unknown
+  fetchedAt: string
+}
+
+/** The snapshot file: the answers every live template's default chart needs, saved at build time. */
+export interface Snapshot {
+  savedAt: string
+  answers: Record<string, KeptAnswer>
+}
+
+export const SNAPSHOT_PATH = '/lab/charts/snapshot.json'
+
+/** Reads the snapshot once; a missing or broken file is no snapshot. */
+export function snapshotLookup(
+  load: () => Promise<Snapshot | null> = () =>
+    fetch(SNAPSHOT_PATH).then((r) => (r.ok ? (r.json() as Promise<Snapshot>) : null)),
+): (url: string) => Promise<KeptAnswer | null> {
+  let file: Promise<Snapshot | null> | undefined
+  return async (url) => {
+    file ??= load().catch(() => null)
+    return (await file)?.answers[url] ?? null
+  }
+}
+
+/** Longest wait for one proxy answer before it counts as failed, in ms. */
+export const REQUEST_TIMEOUT_MS = 8_000
 
 /**
  * Failures the client asks again for itself: rate limited (429). A 5xx is passed straight to the caller, which shows
@@ -119,7 +179,8 @@ export const PAGE_CLIENT: ClientOptions = { retry: [1, 3, 6], maxInFlight: 3 }
 const MAX_RETRY_AFTER = 10
 
 export function createTdnClient(
-  fetcher: Fetcher = (url) => fetch(url, { headers: { accept: 'application/json' } }),
+  fetcher: Fetcher = (url) =>
+    fetch(url, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }),
   options: ClientOptions = {},
 ) {
   const retries = options.retry ?? []
@@ -145,7 +206,8 @@ export function createTdnClient(
       try {
         response = await slot(() => fetcher(url))
       } catch (error) {
-        if (attempt >= retries.length) throw error
+        // A request that timed out is not asked again: the kept copy is drawn now, rather than after more waits.
+        if (attempt >= retries.length || (error as Error)?.name === 'TimeoutError') throw error
         await sleep((retries[attempt] ?? 1) * 1000)
         continue
       }
@@ -166,7 +228,7 @@ export function createTdnClient(
       let found = cache.get(url)
       if (!found) {
         requested.push(url)
-        found = send(url).then(async (response) => {
+        const live = send(url).then(async (response) => {
           const body = (await response.json().catch(() => null)) as { error?: string; code?: string } | null
           if (!response.ok) {
             throw new TdnError(response.status, body?.code ?? 'error', body?.error ?? `HTTP ${response.status}`)
@@ -181,6 +243,13 @@ export function createTdnClient(
             })
           }
           return body
+        })
+        found = live.catch(async (error: unknown) => {
+          const kept = await options.lastGood?.(url)
+          if (!kept) throw error
+          const at = parseDataTime(kept.fetchedAt)
+          fetched.set(url, { fetchedAt: at, stale: true, kept: true })
+          return kept.body
         })
         // A failed request is not kept, so Try again sends it again.
         found.catch(() => cache.delete(url))
@@ -239,6 +308,10 @@ export interface CompareRow {
   currentRating?: number | null
   rank?: number | null
   versionCount?: number | null
+  /** The newest snapshot's rating count (snapshots[] are snake_case: recorded_at, rating, rating_count). */
+  ratingCount?: number | null
+  /** Nested rank points (snake_case upstream: recorded_at, chart_type, rank), read in either case. */
+  rankings?: Array<{ recordedAt: string; chartType: string; rank: number }>
 }
 
 export interface MoverRow {
@@ -249,6 +322,8 @@ export interface MoverRow {
   currentRank: number
   previousRank: number
   change: number
+  /** When the row was recorded; movers has no top-level meta.recordedAt, and old rows can linger. */
+  recordedAt?: string
 }
 
 export interface TechStackRow {
@@ -296,6 +371,33 @@ export function formatDataTime(date: Date): string {
 }
 
 /** "1 Nov 2026". */
+/** "13:05 GMT" (or BST in summer): the time in London, for the line under a chart. */
+export function londonTime(date: Date): string {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/London',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+    timeZoneName: 'short',
+  }).formatToParts(date)
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? ''
+  const zone = ['BST', 'GMT+1'].includes(get('timeZoneName')) ? 'BST' : 'GMT'
+  return `${get('hour')}:${get('minute')} ${zone}`
+}
+
+/** "Data from 13:05 GMT", with the day when it is not today in London ("Data from 23:10 GMT, 3 Nov"). */
+export function dataFromLine(date: Date, now: Date = new Date()): string {
+  const day = (d: Date) => d.toLocaleDateString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'short' })
+  return `Data from ${londonTime(date)}${day(date) === day(now) ? '' : `, ${day(date)}`}`
+}
+
+/** "Data from 13:05 GMT" from a chart's data time ("1 Nov 2026, 00:18 UTC"). */
+export function dataLineOf(dataTime: string, now: Date = new Date()): string {
+  const m = /^(\d{1,2}) (\w{3}) (\d{4}), (\d{2}):(\d{2}) UTC$/.exec(dataTime)
+  const date = m ? parseDataTime(new Date(`${m[2]} ${m[1]}, ${m[3]} ${m[4]}:${m[5]}:00 UTC`).toISOString()) : null
+  return date ? dataFromLine(date, now) : `Data from ${dataTime}`
+}
+
 export function formatDay(date: Date): string {
   return `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()] ?? ''} ${date.getUTCFullYear()}`
 }
@@ -394,8 +496,32 @@ export function readCompare(body: unknown): CompareRow[] {
       currentRating: num(r.currentRating) ?? null,
       rank: num(r.rank) ?? null,
       versionCount: num(r.versionCount) ?? null,
+      ratingCount: newestRatingCount(r.snapshots),
+      rankings: (Array.isArray(r.rankings) ? (r.rankings as unknown[]) : [])
+        .filter((p): p is Raw => !!p && typeof p === 'object')
+        .map((p) => ({
+          recordedAt: str(p.recorded_at) ?? str(p.recordedAt) ?? '',
+          chartType: str(p.chart_type) ?? str(p.chartType) ?? '',
+          rank: num(p.rank) ?? 0,
+        }))
+        .filter((p) => p.rank > 0 && parseDataTime(p.recordedAt) !== null),
     }))
     .filter((r) => r.appId)
+}
+
+/** The rating count of the newest snapshot, from snake_case (rating_count) or camelCase fields. */
+function newestRatingCount(snapshots: unknown): number | null {
+  if (!Array.isArray(snapshots)) return null
+  let best: { at: number; count: number } | null = null
+  for (const p of snapshots as unknown[]) {
+    if (!p || typeof p !== 'object') continue
+    const r = p as Raw
+    const at = parseDataTime(str(r.recorded_at) ?? str(r.recordedAt))?.getTime()
+    const count = num(r.rating_count) ?? num(r.ratingCount)
+    if (at === undefined || count === undefined) continue
+    if (!best || at > best.at) best = { at, count }
+  }
+  return best?.count ?? null
 }
 
 export function readMovers(body: unknown): MoverRow[] {
@@ -412,6 +538,7 @@ export function readMovers(body: unknown): MoverRow[] {
       currentRank,
       previousRank,
       change,
+      recordedAt: str(r.recordedAt),
     })
   }
   return out

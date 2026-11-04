@@ -1,0 +1,335 @@
+{
+  "data": [
+    {
+      "rank": 1,
+      "appId": "com.facebook.aura",
+      "store": "google",
+      "name": "Muse from Meta",
+      "developer": "Meta Platforms, Inc.",
+      "iconUrl": "https://play-lh.googleusercontent.com/qDQUfohqN-eZh_a_YuWYlTsBPwjgrayoh2-Nf9o49kzN5Yjwk4yTyNUIFRI3o3PYks5lVAgEPrEPvFRYqxLP"
+    },
+    {
+      "rank": 2,
+      "appId": "com.openai.chatgpt",
+      "store": "google",
+      "name": "ChatGPT",
+      "developer": "OpenAI OpCo, LLC",
+      "iconUrl": "https://play-lh.googleusercontent.com/T9J8e9oxxPd600j_KPM4KK2GHfNpUpGBdTy8lHPXBXpOUfGusRuZXj0UMgFNrP8we6LVt9V-AibEgcLootE6VK4"
+    },
+    {
+      "rank": 3,
+      "appId": "com.ss.android.ugc.tiktok.pro",
+      "store": "google",
+      "name": "TikTok Pro - Events",
+      "developer": "TikTok Pte. Ltd.",
+      "iconUrl": "https://play-lh.googleusercontent.com/PKSZ5KxriEBiLm1_LyNrOMANu7sI59pfIxwzmv2-9NXqf3IaK1kRW13rj_J8PtrW72dcDdN9BzYsjs02Tge0OA"
+    },
+    {
+      "rank": 4,
+      "appId": "com.zhiliaoapp.musically",
+      "store": "google",
+      "name": "TikTok - Videos, Shop & LIVE",
+      "developer": "TikTok Pte. Ltd.",
+      "iconUrl": "https://play-lh.googleusercontent.com/2o7iuqPe-0msP3DvNhzoOgNo4eZ6GkL_RtGVeKyBn5UBQAW5cw-GW5V3wDOHB1yTQuqWzrFLFOv2u4_5ea1uhg"
+    },
+    {
+      "rank": 5,
+      "appId": "com.dealseekorg.dealseek",
+      "store": "google",
+      "name": "DealSeek: Coupons & Discounts",
+      "developer": "DealSeek LLC",
+      "iconUrl": "https://play-lh.googleusercontent.com/-BloZ64DbcUpLcfM6c9mHB_WvgynNPrT0Oe2Mbh6h82K5YermHsnB_CL0H4lNDTNXpz_shjM9XzrYgT1TRij"
+    },
+    {
+      "rank": 6,
+      "appId": "com.whatsapp",
+      "store": "google",
+      "name": "WhatsApp Messenger",
+      "developer": "WhatsApp LLC",
+      "iconUrl": "https://play-lh.googleusercontent.com/Gqxk4T0uZsDwFp07DE-508hkyvcNmgFuRwPiwTEfF7D7OzGv1FdHDzEyMxNsSBZLOJlGpe3ULvVM2RgrRAlBqA"
+    },
+    {
+      "rank": 8,
+      "appId": "com.freereels.app",
+      "store": "google",
+      "name": "FreeReels - Dramas & Reels",
+      "developer": "SKYWORK AI PTE.LTD.",
+      "iconUrl": "https://play-lh.googleusercontent.com/1ybMEp7xw4kTY-K7ocih3vcbTEyCEqaxerVB6tDT8WcE3k5zCRR-jhKwS6Ct0UXIorczCIat3wTV0QLiuoLPdbY"
+    },
+    {
+      "rank": 12,
+      "appId": "com.facebook.katana",
+      "store": "google",
+      "name": "Facebook",
+      "developer": "Meta Platforms, Inc.",
+      "iconUrl": "https://play-lh.googleusercontent.com/12KEJDhgk6oyE1VgmfCuFzFrQripZ_endElbvEhU1rZawQgV3RI-v3II8fDslI1sdC_WKBkmtxS3jxuIihk33Q"
+    },
+    {
+      "rank": 14,
+      "appId": "com.instagram.android",
+      "store": "google",
+      "name": "Instagram",
+      "developer": "Instagram",
+      "iconUrl": "https://play-lh.googleusercontent.com/yHi59jmO_lVamcyJ1i3rM1_E8bAiAspShnGjjURq05ipQQSUksO3QVEsXTegRSqul038-4YNA7O644XAcx251Q"
+    },
+    {
+      "rank": 15,
+      "appId": "com.tiktok.lite.go",
+      "store": "google",
+      "name": "TikTok Lite - Faster TikTok",
+      "developer": "TikTok Pte. Ltd.",
+      "iconUrl": "https://play-lh.googleusercontent.com/S86MXXSj9_08E__by-NaXaKwJTSYZXWuwOdEkeOeD1jH1Yu-l6yIdjOvjQWyphkYoarRyMSHKzTN83L73ZPieA"
+    },
+    {
+      "rank": 16,
+      "appId": "com.einnovation.temu",
+      "store": "google",
+      "name": "Temu: Shop Like a Billionaire",
+      "developer": "Temu",
+      "iconUrl": "https://play-lh.googleusercontent.com/opNFHpwXUxk8zAVzQbvBgEcBPmgYt0uX-p28VKDZ8nJNFPA7_JHx3PO3ski-GW_FW7gf3jrEP4OCKxTpP7Wv_w"
+    },
+    {
+      "rank": 17,
+      "appId": "com.alibaba.aliexpresshd",
+      "store": "google",
+      "name": "AliExpress - Shopping App",
+      "developer": "Alibaba Mobile",
+      "iconUrl": "https://play-lh.googleusercontent.com/-26EaFSeFE-GPfgjA98H_ukuK2AEN0ZlMNB9lECGJDxUSG7G20emcnXaHrM5fL2d7mCi3O825iShQvn2J0ZY"
+    },
+    {
+      "rank": 18,
+      "appId": "com.twitter.android",
+      "store": "google",
+      "name": "X",
+      "developer": "X Corp.",
+      "iconUrl": "https://play-lh.googleusercontent.com/IsLsCD4eLC2CYvlkgTI6Z5TROj0BJIBgUF7BZ5eliTzyyTjqG_mbofeG4kw2s7oG_JZMSi5ErLz_qsDi169C8w"
+    },
+    {
+      "rank": 22,
+      "appId": "com.facebook.orca",
+      "store": "google",
+      "name": "Messenger",
+      "developer": "Meta Platforms, Inc.",
+      "iconUrl": "https://play-lh.googleusercontent.com/cuRpiGqvAMkcbAOibD-AKCBagAunUkspQUWC_jVZF2Hob_ODdmkefnZeqkofW1idFQHhgZgnLIjsqT-2v7JKBw"
+    },
+    {
+      "rank": 24,
+      "appId": "com.lemon.lvoverseas",
+      "store": "google",
+      "name": "CapCut - Video Editor",
+      "developer": "Bytedance Pte. Ltd.",
+      "iconUrl": "https://play-lh.googleusercontent.com/M78HyakHaxKrjoeqYx41E9DXfVYYtx67nvc7Ks4G4zFQeaAJdGCi8gzzGSrHIwlrmnJS6zD9S4fAXqdEwfuHQAQ"
+    },
+    {
+      "rank": 28,
+      "appId": "com.snapchat.android",
+      "store": "google",
+      "name": "Snapchat",
+      "developer": "Snap Inc",
+      "iconUrl": "https://play-lh.googleusercontent.com/nOJWJoDAzuRSHmlFfpzHXAj8UbTJwk_JGYf0uAPTKPtiiIX_2Y7r5ATO1ZtxHRqaFTqfIDZ40PnBK4hukeJh"
+    },
+    {
+      "rank": 30,
+      "appId": "com.anthropic.claude",
+      "store": "google",
+      "name": "Claude by Anthropic",
+      "developer": "Anthropic PBC",
+      "iconUrl": "https://play-lh.googleusercontent.com/YeFCFSW5LkBVdsEAL_fjzxDxTbhKz31j1uZUfDbSaCeM0t4Bi3SqyHTWzWsUsZnbwjofXhYajitG_gr2_B2xil8"
+    },
+    {
+      "rank": 34,
+      "appId": "org.telegram.messenger",
+      "store": "google",
+      "name": "Telegram",
+      "developer": "Telegram FZ-LLC",
+      "iconUrl": "https://play-lh.googleusercontent.com/PyZ3akMGXPV0tKKirKNwfO--PSQW3FHR6rD_H9mAaukZ8LiHyYFuBLeU8UZ2ok6r5SP79-3prkfybWKh98AZAD0"
+    },
+    {
+      "rank": 35,
+      "appId": "com.tubitv",
+      "store": "google",
+      "name": "Tubi: Free Movies & Live TV",
+      "developer": "Tubi TV",
+      "iconUrl": "https://play-lh.googleusercontent.com/JcI8o5IHBMbNZ3tNE88Xnw8nwZYMZghNRTJ8JaiU_jXA4J2ShN1kybxOColfQW5UeRyykv3AFL6TcrmHGTRL9g"
+    },
+    {
+      "rank": 42,
+      "appId": "com.discord",
+      "store": "google",
+      "name": "Discord - Talk, Play, Hang Out",
+      "developer": "Discord Inc.",
+      "iconUrl": "https://play-lh.googleusercontent.com/w2DdjDHGSj3DQElQQM0_J3PsNsALS-WD3CBeH0aXOYceR-F3aT02gFonhoFzz-Tc9ec8Dx9cLqh48-tzIFcP"
+    },
+    {
+      "rank": 47,
+      "appId": "com.azure.authenticator",
+      "store": "google",
+      "name": "Microsoft Authenticator",
+      "developer": "Microsoft Corporation",
+      "iconUrl": "https://play-lh.googleusercontent.com/7Qf6PPkO5HPtxkkGdI56KAXonEzgzyUvQARaDWP3dUsmwweJEHAI1oiZf6tSZn1wkSKKj7SO-eemScUh9a5k"
+    },
+    {
+      "rank": 48,
+      "appId": "com.pinterest",
+      "store": "google",
+      "name": "Pinterest",
+      "developer": "Pinterest",
+      "iconUrl": "https://play-lh.googleusercontent.com/VExMwhu9Fe5kz72YnPWP6mHrNA5WfgZ-PJMnBnQmXFpLncTAOaaHtK4b8w7b2xxGxtqycDatYslVyNSLucl9QA"
+    },
+    {
+      "rank": 49,
+      "appId": "com.netflix.mediaclient",
+      "store": "google",
+      "name": "Netflix",
+      "developer": "Netflix, Inc.",
+      "iconUrl": "https://play-lh.googleusercontent.com/fXVS45nukV1x9PYVSKHkCQK0QGCOishIvAOxIZS3sgRem8HS7l9l94_Ggj-WZPrTLePRdNYN4pp4SPAQL7oS0PU"
+    },
+    {
+      "rank": 51,
+      "appId": "com.spotify.music",
+      "store": "google",
+      "name": "Spotify: Music and Podcasts",
+      "developer": "Spotify",
+      "iconUrl": "https://play-lh.googleusercontent.com/IzQgYCcnCFCD08GR-3bdtcT8xzOvrNkC84avGT5CwTX2VIqmTmKKJcP_Cd4JoBOdmCMlTndlOzV6hrthg2fOWA"
+    },
+    {
+      "rank": 53,
+      "appId": "com.amazon.mShop.android.shopping",
+      "store": "google",
+      "name": "Amazon Shopping",
+      "developer": "Amazon Mobile LLC",
+      "iconUrl": "https://play-lh.googleusercontent.com/UIYZ9hTFNg-zZUg_uzLS9YdyDpvoo1VHNFb6VlzHy5JqNMq9Uq-p2S1VPwzXCipHTFacfGKhJkyAuKL19VVlcWA"
+    },
+    {
+      "rank": 56,
+      "appId": "com.instagram.barcelona",
+      "store": "google",
+      "name": "Threads",
+      "developer": "Instagram",
+      "iconUrl": "https://play-lh.googleusercontent.com/6PzXaP0KaRU4DifAfsXKbWNVA3JPrP9uklvEh5EDhzPRdPfHV4tzszhAavQa4bq0YGdbnphBucz9vEUXiu1Ebg"
+    },
+    {
+      "rank": 58,
+      "appId": "com.duolingo",
+      "store": "google",
+      "name": "Duolingo: Learn Languages",
+      "developer": "Duolingo",
+      "iconUrl": "https://play-lh.googleusercontent.com/tw_coGKgk1K_zO-Ypf9zBKV1s-KT3dYN1MIUxIqtnbfmON5x_YmuoAr31gE4oSfJHNtA-aStTd-qe9R8S6NVyA"
+    },
+    {
+      "rank": 60,
+      "appId": "com.reddit.frontpage",
+      "store": "google",
+      "name": "Reddit",
+      "developer": "reddit Inc.",
+      "iconUrl": "https://play-lh.googleusercontent.com/8FVS0kvM60JwqZWRNzBIlwrZZxJa8vpli8IWaaTo8QXRe1PHmCNJ8UpWoXkGPV3jKEaTY2OVAeYoisOnGJXY"
+    },
+    {
+      "rank": 61,
+      "appId": "com.ubercab",
+      "store": "google",
+      "name": "Uber - Request a ride",
+      "developer": "Uber Technologies, Inc.",
+      "iconUrl": "https://play-lh.googleusercontent.com/OXQnDlRtPa5ha6KCnKPqVmxHYBP7tjrAa7PXGNRqcwDC_J03HVeuEKcKrkcIqnfOqsF5uy3uwWxIXR067QHsNQ"
+    },
+    {
+      "rank": 67,
+      "appId": "com.zzkko",
+      "store": "google",
+      "name": "SHEIN-Shopping Online",
+      "developer": "Roadget Business PTE. LTD.",
+      "iconUrl": "https://play-lh.googleusercontent.com/XVFGd_7tp_RcM05ZJPuPO_DPMfm5xZT3eFhug7tuEs1l0E6Ip9V0ejdMT1L-qtEGE22hoYi68PIlLI5bMiAB"
+    },
+    {
+      "rank": 68,
+      "appId": "ai.x.grok",
+      "store": "google",
+      "name": "Grok - AI Chat & Video",
+      "developer": "SpaceX Super Intelligence",
+      "iconUrl": "https://play-lh.googleusercontent.com/-VnI9BrQO0PYyZG15YE6wt68KOmZ7AXGAqGti58g25ES1XdXWDBaaWUMIewHaiROwge6ibvn_b3WalmpgWGG"
+    },
+    {
+      "rank": 69,
+      "appId": "com.cbs.app",
+      "store": "google",
+      "name": "Paramount+",
+      "developer": "CBS Interactive, Inc.",
+      "iconUrl": "https://play-lh.googleusercontent.com/k1l4W88OoOaTutOXjcZFAYaDWixhb9CDH3CyexsrtSYDFPbGr05qDsDNE6FTx2uDTM9SexZGfc9S6wHyqZF8Uw8"
+    },
+    {
+      "rank": 71,
+      "appId": "com.microsoft.teams",
+      "store": "google",
+      "name": "Microsoft Teams",
+      "developer": "Microsoft Corporation",
+      "iconUrl": "https://play-lh.googleusercontent.com/afnciqsoxrp8BYGFAS_BZtUBn2NvmxTVoKFproR5SljREfTBnueRjPxzxCXvIJNYTUdbtOWz-_GjVuOCMfi7fiU"
+    },
+    {
+      "rank": 75,
+      "appId": "com.microsoft.office.word",
+      "store": "google",
+      "name": "Microsoft Word: Edit Documents",
+      "developer": "Microsoft Corporation",
+      "iconUrl": "https://play-lh.googleusercontent.com/UPPHK323_gvNZWTnmq_lgp_qrSXwdXI8aYNfqNF27MtuujT2YAytdueWIKncRh5YfNB_rfpCBfImzo95iYC1Fw"
+    },
+    {
+      "rank": 78,
+      "appId": "com.amazon.avod.thirdpartyclient",
+      "store": "google",
+      "name": "Prime Video",
+      "developer": "Amazon Mobile LLC",
+      "iconUrl": "https://play-lh.googleusercontent.com/NnoDzfxkvlsAvU8jzoPeK8aaxbcU2sEH_btwgMQ2xI88_qtrNGQuf1vlFkxSiQODyKVFZ3-s71sU1MHyV-vc9Q"
+    },
+    {
+      "rank": 80,
+      "appId": "tv.pluto.android",
+      "store": "google",
+      "name": "PlutoTV: Stream Free Movies/TV",
+      "developer": "Pluto, Inc.",
+      "iconUrl": "https://play-lh.googleusercontent.com/O6MtMEvYNmr-I_cntqWT2Lq8L5Y5bG01V5udGLT8-8LcpNzeeOCDjgaX-mQEushfwrLjT74nVJMlmSgeIxtP"
+    },
+    {
+      "rank": 81,
+      "appId": "com.google.android.apps.bard",
+      "store": "google",
+      "name": "Google Gemini",
+      "developer": "Google",
+      "iconUrl": "https://play-lh.googleusercontent.com/C64IqPWyFoCZzXVxXVl0Y6mliiNlG_sZJsqul-SBvk9ZL0wJHlU0Eho2wvsBHhho0FT5XQtH55RVGerIwXF_MA"
+    },
+    {
+      "rank": 84,
+      "appId": "com.disney.disneyplus",
+      "store": "google",
+      "name": "Disney+",
+      "developer": "Disney",
+      "iconUrl": "https://play-lh.googleusercontent.com/AEX_3Bk5_SEZfR4fUcJsWiyqW_RRVcLED9AM2HMUVHAPVTZhZHfP2q3M35mRe4LtCXlb712DtkKwkZa_nJ-0"
+    },
+    {
+      "rank": 94,
+      "appId": "com.suno.android",
+      "store": "google",
+      "name": "Suno - AI Music & Songs Maker",
+      "developer": "Suno, Inc",
+      "iconUrl": "https://play-lh.googleusercontent.com/lIxYxKnQwksOzWMmNqWK3x3S5W7fDIVW9c5XWG9QF9KPHk5oZbsZcJKzWiKA-YOU7QiENwviQuyqXUkLPBaxNA"
+    },
+    {
+      "rank": 97,
+      "appId": "com.duckduckgo.mobile.android",
+      "store": "google",
+      "name": "DuckDuckGo, optional Duck.ai",
+      "developer": "DuckDuckGo",
+      "iconUrl": "https://play-lh.googleusercontent.com/R9-3PbO5ywKx6dA5OQI2wkesOpmgY9CzKhB_1Eqn-GC_vRjeqwtG-CLVs2o55wuRhiLS0pd1Sui_kUyn7Q4dng"
+    }
+  ],
+  "meta": {
+    "store": "google",
+    "country": "us",
+    "chart": "top-free",
+    "category": "APPLICATION",
+    "recordedAt": "2026-11-04 12:06:34",
+    "count": 40,
+    "total": 40,
+    "limit": 200,
+    "nextCursor": null
+  }
+}

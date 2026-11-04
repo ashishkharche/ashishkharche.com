@@ -60,7 +60,8 @@ describe('live templates with saved real answers', () => {
     if (h2h.model.kind !== 'head-to-head') throw new Error('kind')
     expect(h2h.model.metrics.map((m) => m.display)).toEqual([
       ['#3', '#14'],
-      ['169', '171'],
+      // Country rows older than 36 hours are left out, as on the countries chart.
+      ['169', '170'],
       ['4.8', '4.7'],
       ['28', '10'],
       ['26', '34'],

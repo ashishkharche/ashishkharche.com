@@ -118,7 +118,7 @@ describe('kind mappers', () => {
     expect(out.model.kind).toBe('headline')
     expect(out.model.answer).toBe('ChatGPT')
     expect(out.dataTime).toBe('1 Nov 2026, 12:18 UTC')
-    const ranks = out.model.support.type === 'spark' ? out.model.support.values : []
+    const ranks = out.model.support?.type === 'spark' ? out.model.support.values : []
     expect(ranks).toHaveLength(30)
     const days = ranks.filter((r) => r === 1).length
     expect(out.model.sentence).toContain(`#1 on ${days} of the last 30 days`)
@@ -152,11 +152,19 @@ describe('kind mappers', () => {
   })
   it('ranked list: most SDKs on one platform only, with the analysis dates', () => {
     const ios = mapMostSdks(f(TECH), f(APPLE), f(GOOGLE), 10)
-    expect(ios.model.rows.every((r) => r.app.store === 'apple' && r.detail === 'iOS, at least')).toBe(true)
+    expect(
+      ios.model.rows.every(
+        (r) =>
+          r.app.store === 'apple' &&
+          /^iOS, at least \d+, analyzed \d+ \w+ 2026$/.test(r.detail ?? '') &&
+          r.display === `${r.value}+`,
+      ),
+    ).toBe(true)
     expect(ios.text.title).toBe('Most SDKs in one iOS app build')
     expect(ios.text.footnote[1]).toMatch(/^Builds analyzed \d+ \w+ 2026 to \d+ \w+ 2026\. iOS counts are a floor/)
     const android = mapMostSdks(f(TECH), f(APPLE), f(GOOGLE), 10, 'google')
-    expect(android.model.rows[0]).toMatchObject({ value: 52, detail: 'Android' })
+    expect(android.model.rows[0]).toMatchObject({ value: 52, display: '52' })
+    expect(android.model.rows[0]?.detail).toMatch(/^Android, analyzed \d+ \w+ 2026$/)
     expect(android.model.rows.every((r) => r.app.store === 'google')).toBe(true)
   })
   it('head to head: up to 5 measures both apps have', () => {
@@ -230,8 +238,8 @@ describe('kind mappers', () => {
 })
 
 describe('live templates', () => {
-  it('has 14 live templates across the 5 kinds, each within 5 requests', () => {
-    expect(liveTemplates).toHaveLength(14)
+  it('has 19 live templates across the 5 kinds, each within 5 requests', () => {
+    expect(liveTemplates).toHaveLength(19)
     expect(new Set(liveTemplates.map((t) => t.kind))).toEqual(
       new Set(['headline', 'leaderboard', 'head-to-head', 'bump', 'dumbbell']),
     )

@@ -7,6 +7,7 @@ import { shortName } from './config.ts'
 import {
   formatDataTime,
   formatDay,
+  iconAllowed,
   latest,
   parseDataTime,
   readAppRankings,
@@ -50,10 +51,11 @@ export interface HeadlineModel {
   /** Small text after the answer ("countries"). */
   unit?: string
   sentence: string
-  /** The supporting chart. */
-  support:
+  /** The supporting chart, or none when the data cannot draw one (a line needs two points). */
+  support?:
     | { type: 'spark'; label: string; days: string[]; values: Array<number | null>; invert: boolean }
     | { type: 'bars'; label: string; bars: Array<{ label: string; value: number }> }
+    | { type: 'icon-bars'; label: string; bars: Array<{ app: AppRef; label: string; value: number }> }
   /** Other apps shown under the answer, with a short note each ("#2"). */
   others: Array<{ app: AppRef; note: string }>
 }
@@ -119,7 +121,19 @@ export interface LoadOptions {
   rows?: number
   /** App ids for a head to head. */
   apps?: [string, string]
+  /** Store and country for a rank-over-time chart. */
+  place?: PlaceId
 }
+
+/** The store and country pairs the source collects rank history for (Top Free). */
+export const PLACES = {
+  'apple-us': { label: 'US App Store' },
+  'google-us': { label: 'US Google Play' },
+  'apple-gb': { label: 'UK App Store' },
+  'google-gb': { label: 'UK Google Play' },
+} as const
+export type PlaceId = keyof typeof PLACES
+export const isPlace = (value: string): value is PlaceId => value in PLACES
 
 export interface LiveTemplate {
   id: string
@@ -132,6 +146,8 @@ export interface LiveTemplate {
   about: string
   rowChoices?: number[]
   pickApps?: boolean
+  /** Store and country can be picked (rank over time). */
+  pickPlace?: boolean
   /** The API field the chart is drawn from, for the About the data panel. */
   field: string
   load(client: TdnClient, options: LoadOptions): Promise<LiveChart>
@@ -172,6 +188,18 @@ export const US: Where = {
 export const US_GOOGLE: Where = { ...US, store: 'google', storeName: 'Google Play' }
 export const US_GROSSING: Where = { ...US, chart: 'top-grossing', chartName: 'Top Grossing' }
 export const UK: Where = { ...US, country: 'gb', place: 'UK' }
+
+/** The Where for a picked place, Top Free. */
+export function whereOf(place: PlaceId = 'apple-us'): Where {
+  const [store, country] = place.split('-') as ['apple' | 'google', 'us' | 'gb']
+  return {
+    ...US,
+    store,
+    country,
+    place: country === 'gb' ? 'UK' : 'US',
+    storeName: store === 'google' ? 'Google Play' : 'App Store',
+  }
+}
 
 /** "US Top Free", "US Google Play Top Free". */
 const chartLabel = (w: Where) =>
@@ -343,8 +371,11 @@ export function mapNumberOne(rankingsBody: unknown, historyBody: unknown, where:
   const picked = pickUsable(rows.slice(1), 4, ref)
   const others = picked.kept.map((r) => ({ app: ref(r), note: `#${r.rank}` }))
   const storeChart = `${where.place} ${where.storeName} ${where.chartName}`
+  const points = history?.series.find((x) => x.country.toLowerCase() === where.country)?.points.length ?? 0
   const sentence = isFirst
-    ? `${name} is #1 on the ${storeChart} chart, and was #1 on ${atTop} of the last ${days} days.`
+    ? recorded < 2
+      ? `${name} is #1 on the ${storeChart} chart. It is new: ${points === 1 ? 'one' : points} rank on record so far.`
+      : `${name} is #1 on the ${storeChart} chart, and was #1 on ${atTop} of the last ${days} days.`
     : `${name} is the highest tracked app on the ${label} chart, at #${top.rank}.`
   const notWhat = where.chart === 'top-grossing' ? 'not revenue, downloads or users' : 'not downloads or users'
   return {
@@ -353,20 +384,24 @@ export function mapNumberOne(rankingsBody: unknown, historyBody: unknown, where:
       app: ref(top),
       answer: name,
       sentence,
-      support: {
-        type: 'spark',
-        label: `${name}, ${where.place} rank by day`,
-        days: daily.days,
-        values: daily.ranks,
-        invert: true,
-      },
+      // A line needs two days with a rank; a new app gets no supporting chart.
+      support:
+        recorded >= 2
+          ? {
+              type: 'spark',
+              label: `${name}, ${where.place} rank by day`,
+              days: daily.days,
+              values: daily.ranks,
+              invert: true,
+            }
+          : undefined,
       others,
     } satisfies HeadlineModel,
     text: {
       title: isFirst
         ? `Which app is #1 on the ${label} chart right now?`
         : `Which tracked app ranks highest on the ${label} chart?`,
-      subtitle: `${where.place} ${where.storeName}, ${where.chartName}, ${where.store === 'google' ? 'all apps' : 'all categories'}. Rank by day for the last ${days} days.`,
+      subtitle: `${where.place} ${where.storeName}, ${where.chartName}, ${where.store === 'google' ? 'all apps' : 'all categories'}. ${recorded >= 2 ? `Rank by day for the last ${days} days.` : 'Latest update.'}`,
       footnote: [
         'Source: {source}. Data from {time}.',
         `Last rank each day. ${recorded} of ${days} days have one. A gap: a failed run or below #100.`,
@@ -375,7 +410,7 @@ export function mapNumberOne(rankingsBody: unknown, historyBody: unknown, where:
     },
     dataTime: formatDataTime(time),
     numbers: merge(
-      collect(top.rank, atTop, days, recorded, 100, ...daily.ranks),
+      collect(top.rank, atTop, days, recorded, 100, points, ...daily.ranks),
       ...others.map((o) => collect(o.note)),
     ),
     coverage: `${recorded} of ${days} days have a ${where.place} rank for ${name}. ${all.length} tracked apps on the chart.`,
@@ -432,12 +467,22 @@ export function mapCountries(rankingsBody: unknown, appRankingsBody: unknown, ap
   }
 }
 
+/** The rows recorded at the newest recordedAt; rows without a time are kept only when no row has one. */
+export function latestMovers<T extends { recordedAt?: string }>(rows: T[]): T[] {
+  const times = rows.map((r) => parseDataTime(r.recordedAt)?.getTime() ?? null)
+  const newest = Math.max(...times.filter((t): t is number => t !== null))
+  if (!Number.isFinite(newest)) return rows
+  return rows.filter((_, i) => times[i] === newest)
+}
+
 /** Climbers in order, biggest first, before any are left out. */
 export function moverCandidates(moversBody: unknown, rankingsBody: unknown, store: 'apple' | 'google' = 'apple') {
   const byId = new Map(sortedRankings(rankingsBody).map((r) => [r.appId, r]))
+  // Movers has no meta.recordedAt and keeps older rows (an app that moved days ago): only the latest run's rows count.
+  const rows = latestMovers(readMovers(moversBody))
   // Movers covers both stores, and some rows are from other charts than the tracked Top Free list. Keep rows of one
   // store whose current rank matches the rankings answer, so the list agrees with the other Top Free charts.
-  return readMovers(moversBody)
+  return rows
     .filter((m) => (m.store ?? 'apple') === store && byId.get(m.appId)?.rank === m.currentRank)
     .filter((m) => m.change > 0 && Number.isFinite(m.currentRank) && Number.isFinite(m.previousRank))
     .sort((a, b) => b.change - a.change || a.currentRank - b.currentRank)
@@ -529,8 +574,13 @@ export function mapMostSdks(
   const rows = top.map((r) => ({
     app: r.app,
     value: r.sdkCount,
-    display: String(r.sdkCount),
-    detail: store === 'apple' ? 'iOS, at least' : 'Android',
+    display: store === 'apple' ? `${r.sdkCount}+` : String(r.sdkCount),
+    detail: [
+      store === 'apple' ? `iOS, at least ${r.sdkCount}` : 'Android',
+      r.capturedAt && parseDataTime(r.capturedAt) ? `analyzed ${formatDay(parseDataTime(r.capturedAt) as Date)}` : '',
+    ]
+      .filter(Boolean)
+      .join(', '),
   }))
   return {
     model: { kind: 'leaderboard', rows } satisfies LeaderboardModel,
@@ -550,7 +600,7 @@ export function mapMostSdks(
     dataTime: formatDataTime(newest),
     numbers: merge(
       collect(rows.length, list.length, limit, formatDay(oldest), formatDay(newest)),
-      ...top.map((r) => collect(r.sdkCount)),
+      ...top.map((r) => collect(r.sdkCount, `${r.sdkCount}+`)),
     ),
     coverage: `${list.length} ${os} builds analyzed, ${top.length} shown${picked.skipped ? `, ${picked.skipped} passed over for names` : ''}.`,
   }
@@ -581,7 +631,7 @@ export function mapHeadToHead(
   const row = (app: RankingRow) => compared.find((c) => c.appId === app.appId)
   const sdk = (app: RankingRow) => tech.find((t) => t.store === app.store && t.appId === app.appId)?.sdkCount
   // A count only when the answer came: a failed request is a missing measure, not 0 countries.
-  const countries = (body: unknown) => (body ? readAppRankings(body).length : undefined)
+  const countries = (body: unknown) => (body ? freshCountryRanks(body).ranks.length : undefined)
   const [a, b] = pair
   const candidates: HeadToHeadModel['metrics'] = []
   const add = (
@@ -613,14 +663,14 @@ export function mapHeadToHead(
       ),
       footnote: [
         'Source: {source}. Data from {time}.',
-        'Rank and rating are for the US App Store. Countries: App Store countries with a recorded rank.',
+        `Rank and rating: US App Store. Countries: ranks recorded within ${FRESH_HOURS} hours of the latest.`,
         metrics.length < 5
           ? 'Rank is not downloads or users. Measures without values for both apps are left out.'
           : 'Rank is not downloads or users. Ratings round to one decimal.',
       ] as [string, string, string],
     },
     dataTime: formatDataTime(time),
-    numbers: merge(collect(1), ...metrics.map((m) => collect(...m.display))),
+    numbers: merge(collect(1, FRESH_HOURS), ...metrics.map((m) => collect(...m.display))),
     coverage: `${metrics.length} of 5 measures have values for both apps.`,
   }
 }
@@ -632,9 +682,10 @@ export function mapBump(
   days: number,
   skipped = 0,
   which = 'AI apps',
+  where: Where = US,
 ) {
   const series = apps
-    .map((app, i) => ({ app: ref(app), daily: dailyRanks(readRankHistory(historyBodies[i]), days) }))
+    .map((app, i) => ({ app: ref(app), daily: dailyRanks(readRankHistory(historyBodies[i]), days, where.country) }))
     .filter((s) => usable(s.app))
   // An app with one ranked day is drawn as a dot; gaps between days are drawn across.
   const withData = series.filter((s) => s.daily.ranks.some((r) => r !== null))
@@ -660,11 +711,11 @@ export function mapBump(
   return {
     model: { kind: 'bump', days: dayList, series: out } satisfies BumpModel,
     text: {
-      title: `US Top Free rank over ${days} days`,
+      title: `${chartLabel(where)} rank over ${days} days`,
       subtitle:
         out.length === 1
-          ? `Rank by day, US App Store, Top Free: ${list(names)}, the highest-ranked of the ${which} today.`
-          : `Rank by day, US App Store, Top Free: ${list(names)}, the ${out.length} highest-ranked ${which} today.`,
+          ? `Rank by day, ${where.place} ${where.storeName}, Top Free: ${list(names)}, the highest-ranked of the ${which} today.`
+          : `Rank by day, ${where.place} ${where.storeName}, Top Free: ${list(names)}, the ${out.length} highest-ranked ${which} today.`,
       footnote: [
         'Source: {source}. Data from {time}.',
         `${shortDay(dayList[0] ?? '')} to ${shortDay(last)}. Last rank each day. A gap: a failed run or below #100.`,
@@ -781,6 +832,221 @@ const chartsSource = 'public App Store chart data'
 const bothStores = 'public App Store and Google Play chart data'
 const buildSource = 'public app build analysis data'
 
+/**
+ * Apps offered in the head-to-head pickers: named apps with an icon from the stores' own image hosts, so a picked
+ * app is drawn with its icon. The current pair is always listed.
+ */
+export function pickChoices(rows: RankingRow[], pair: RankingRow[]): AppRef[] {
+  const ok = rows.filter((r) => usable(ref(r)) && (iconAllowed(r.iconUrl) || pair.some((p) => p.appId === r.appId)))
+  return ok.map(ref)
+}
+
+// New templates (v4) -----------------------------------------------------------------------------------------------
+
+/** Fresh country ranks of one app: rows within FRESH_HOURS of its newest row. */
+function freshCountryRanks(appRankingsBody: unknown) {
+  const ranked = readAppRankings(appRankingsBody)
+  const time = latest(ranked.map((r) => r.recordedAt))
+  if (!time) return { ranks: [] as typeof ranked, time: null, stale: ranked.length }
+  const cutoff = time.getTime() - FRESH_HOURS * 3_600_000
+  const ranks = ranked.filter((r) => (parseDataTime(r.recordedAt)?.getTime() ?? 0) >= cutoff)
+  return { ranks, time, stale: ranked.length - ranks.length }
+}
+
+/** "#1 in N of the M countries where ChatGPT charts", with a histogram of its country ranks. */
+export function mapNumberOneCountries(appRankingsBody: unknown, app: RankingRow) {
+  const { ranks, time, stale } = freshCountryRanks(appRankingsBody)
+  const name = plainName(app.name)
+  if (!ranks.length || !time) throw new NoDataError(`${name} has no fresh country ranks.`)
+  const m = ranks.length
+  const n = ranks.filter((r) => r.rank === 1).length
+  const band = (lo: number, hi: number) => ranks.filter((r) => (r.rank ?? 0) >= lo && (r.rank ?? 0) <= hi).length
+  const bars = [
+    { label: '#1', value: n },
+    { label: '#2', value: band(2, 2) },
+    { label: '#3', value: band(3, 3) },
+    { label: '#4 to #10', value: band(4, 10) },
+    { label: '#11 to #100', value: band(11, 100) },
+  ]
+  return {
+    model: {
+      kind: 'headline',
+      app: ref(app),
+      answer: String(n),
+      unit: `of ${m} countries`,
+      sentence: `${name} is #1 on the App Store Top Free chart in ${n} of the ${m} countries where it charts.`,
+      support: { type: 'bars', label: `Countries by ${name}'s rank`, bars },
+      others: [],
+    } satisfies HeadlineModel,
+    text: {
+      title: `In how many countries is ${name} #1?`,
+      subtitle: `App Store Top Free, every country where ${name} has a rank in the latest update.`,
+      footnote: [
+        'Source: {source}. Data from {time}.',
+        `Counts ranks recorded within ${FRESH_HOURS} hours of the latest. Only the top 100 is collected.`,
+        'Rank is the store chart position, not downloads or users.',
+      ] as [string, string, string],
+    },
+    dataTime: formatDataTime(time),
+    numbers: merge(collect(n, m, 1, 2, 3, 4, 10, 11, 100, FRESH_HOURS), collect(...bars.map((b) => b.value))),
+    coverage: `${m} countries with a fresh rank; ${stale} older rows left out.`,
+  }
+}
+
+/** "#1 on US Top Grossing in N of M runs over 30 days", with the rank by day. */
+export function mapGrossingRuns(historyBody: unknown, app: RankingRow, days = 30) {
+  const history = readRankHistory(historyBody)
+  const points = (history?.series.find((x) => x.country.toLowerCase() === 'us') ?? history?.series[0])?.points ?? []
+  const runs = points.filter((p) => typeof p.rank === 'number' && (p.rank ?? 0) > 0)
+  const name = plainName(app.name)
+  if (!runs.length) throw new NoDataError(`${name} has no US Top Grossing rank in the last ${days} days.`)
+  const n = runs.filter((p) => p.rank === 1).length
+  const m = runs.length
+  const time = requireTime(latest(runs.map((p) => p.at)), 'rank history')
+  const daily = dailyRanks(history, days, 'us')
+  const recorded = daily.ranks.filter((r) => r !== null).length
+  return {
+    model: {
+      kind: 'headline',
+      app: ref(app),
+      answer: String(n),
+      unit: `of ${m} runs`,
+      sentence: `${name} was #1 on the US Top Grossing chart in ${n} of ${m} runs over the last ${days} days.`,
+      support:
+        recorded >= 2
+          ? {
+              type: 'spark',
+              label: `${name}, US Top Grossing rank by day`,
+              days: daily.days,
+              values: daily.ranks,
+              invert: true,
+            }
+          : undefined,
+      others: [],
+    } satisfies HeadlineModel,
+    text: {
+      title: `How often is ${name} #1 on US Top Grossing?`,
+      subtitle: `US App Store, Top Grossing. Each run is one collection of the chart, about twice a day.`,
+      footnote: [
+        'Source: {source}. Data from {time}.',
+        `Runs with a rank in the last ${days} days. A missed run or a rank below #100 is not counted.`,
+        'Rank is the store chart position, not revenue, downloads or users.',
+      ] as [string, string, string],
+    },
+    dataTime: formatDataTime(time),
+    numbers: merge(collect(n, m, days, 1, 100, ...daily.ranks)),
+    coverage: `${m} runs with a rank; ${recorded} of ${days} days have one.`,
+  }
+}
+
+/** ChatGPT vs Gemini vs Claude: how many App Store countries each charts in, as icon bars. */
+export function mapThreeCountries(bodies: unknown[], apps: RankingRow[]) {
+  const rows = apps
+    .map((app, i) => ({ app, ...freshCountryRanks(bodies[i]) }))
+    .filter((r) => r.time !== null && usable(ref(r.app)))
+    .sort((a, b) => b.ranks.length - a.ranks.length)
+  const top = rows[0]
+  if (!top || rows.length < 2) throw new NoDataError('Fewer than 2 of the apps have country ranks.')
+  const time = requireTime(latest(rows.map((r) => r.time?.toISOString())), 'country ranks')
+  const names = rows.map((r) => plainName(r.app.name))
+  const bars = rows.map((r) => ({ app: ref(r.app), label: plainName(r.app.name), value: r.ranks.length }))
+  return {
+    model: {
+      kind: 'headline',
+      app: ref(top.app),
+      answer: plainName(top.app.name),
+      sentence:
+        (rows[1]?.ranks.length ?? 0) === top.ranks.length
+          ? `${list(rows.filter((r) => r.ranks.length === top.ranks.length).map((r) => plainName(r.app.name)))} tie: each charts in ${top.ranks.length} App Store countries.`
+          : `${plainName(top.app.name)} charts in ${top.ranks.length} App Store countries, more than ${list(names.slice(1))}.`,
+      support: { type: 'icon-bars', label: 'App Store countries with a Top Free rank', bars },
+      others: [],
+    } satisfies HeadlineModel,
+    text: {
+      title: `Which charts in more countries: ${list(apps.map((a) => plainName(a.name)))}?`,
+      subtitle: 'App Store countries where each app has a Top Free rank in the latest update.',
+      footnote: [
+        'Source: {source}. Data from {time}.',
+        `Counts ranks recorded within ${FRESH_HOURS} hours of each app's latest. Only the top 100 is collected.`,
+        'Rank is the store chart position, not downloads or users.',
+      ] as [string, string, string],
+    },
+    dataTime: formatDataTime(time),
+    numbers: merge(collect(FRESH_HOURS, 100), collect(...bars.map((b) => b.value))),
+    coverage: rows.map((r) => `${plainName(r.app.name)} ${r.ranks.length}`).join(', ') + ' countries.',
+  }
+}
+
+/** The iOS build with the most SDKs: "ships at least N SDKs, the most of M analysed iOS builds". */
+export function mapMostSdksHeadline(techBody: unknown, appleBody: unknown, googleBody: unknown) {
+  const { list: builds, sorted } = sdkCandidates(techBody, appleBody, googleBody, 'apple')
+  const picked = pickUsable(sorted, 5, (r) => r.app)
+  const top = picked.kept[0]
+  if (!top) throw new NoDataError('No analyzed iOS builds in the answer.')
+  const captured = requireTime(parseDataTime(top.capturedAt), 'tech stack')
+  const name = top.app.name
+  const m = builds.length
+  return {
+    model: {
+      kind: 'headline',
+      app: top.app,
+      answer: String(top.sdkCount),
+      unit: 'SDKs, at least',
+      sentence: `${name} ships at least ${top.sdkCount} SDKs, the most of ${m} analyzed iOS builds. Analyzed ${formatDay(captured)}.`,
+      support: {
+        type: 'icon-bars',
+        label: 'Most SDKs in one iOS build, at least',
+        bars: picked.kept.map((r) => ({ app: r.app, label: r.app.name, value: r.sdkCount })),
+      },
+      others: [],
+    } satisfies HeadlineModel,
+    text: {
+      title: 'Which iOS app ships the most SDKs?',
+      subtitle: `Third-party SDKs found in the latest analyzed build of ${m} iOS apps.`,
+      footnote: [
+        'Source: {source}. Data from {time}.',
+        `${name} analyzed ${formatDay(captured)}. iOS counts are a floor: at least this many.`,
+        noted('An SDK count says nothing about app size, quality or privacy.', picked.skipped),
+      ] as [string, string, string],
+    },
+    dataTime: formatDataTime(captured),
+    numbers: merge(collect(m, formatDay(captured)), ...picked.kept.map((r) => collect(r.sdkCount))),
+    coverage: `${m} iOS builds analyzed; ${name} captured ${formatDay(captured)}.`,
+  }
+}
+
+/** Of the apps on both US Top Free charts, the widest iOS vs Android rank gaps, widest first. */
+export function mapWidestGap(appleBody: unknown, googleBody: unknown, limit = 5) {
+  const appleTime = requireTime(recordedAt(appleBody), 'App Store')
+  const googleTime = requireTime(recordedAt(googleBody), 'Google Play')
+  const both = bothStoreCandidates(appleBody, googleBody).sort(
+    (a, b) => Math.abs(b.row.rank - b.right) - Math.abs(a.row.rank - a.right) || a.row.rank - b.row.rank,
+  )
+  const picked = pickUsable(both, limit, (c) => c.app)
+  const rows = picked.kept.map((c) => ({ app: c.app, left: c.row.rank, right: c.right }))
+  const top = rows[0]
+  if (!top) throw new NoDataError('No tracked app is on both US Top Free charts.')
+  const gap = Math.abs(top.left - top.right)
+  return {
+    model: { kind: 'dumbbell', left: 'App Store (iOS)', right: 'Google Play (Android)', rows } satisfies DumbbellModel,
+    text: {
+      title: `${top.app.name}: ${gap} places apart on iOS and Android`,
+      subtitle: `Of the ${both.length} apps on both US Top Free charts, the ${rows.length} with the widest rank gap.`,
+      footnote: [
+        'Source: {source}. Data from {time}.',
+        `Google Play data from ${formatDataTime(googleTime)}. Apps matched by name across the stores.`,
+        noted('Rank is the store chart position, not downloads or users.', picked.skipped),
+      ] as [string, string, string],
+    },
+    dataTime: formatDataTime(appleTime),
+    numbers: merge(
+      collect(gap, both.length, rows.length, formatDataTime(googleTime)),
+      ...rows.map((r) => collect(r.left, r.right)),
+    ),
+    coverage: `${both.length} tracked apps on both charts; widest gap ${gap} places.`,
+  }
+}
+
 function finish(
   templateId: string,
   source: string,
@@ -802,7 +1068,7 @@ function numberOne(id: string, where: Where, source: string): LiveTemplate['load
 }
 
 /** App Store ids of the apps some templates are about, for when the app is not in the latest rankings answer. */
-export const KNOWN_IDS = { chatgpt: '6448311069', claude: '6473753684' } as const
+export const KNOWN_IDS = { chatgpt: '6448311069', claude: '6473753684', gemini: '6477489729' } as const
 
 /** The app a template is about: its row in the rankings answer, or its known id and name when it is not there. */
 function appFor(rows: RankingRow[], pattern: RegExp, label: string, id: string): RankingRow {
@@ -956,7 +1222,7 @@ export const liveTemplates: LiveTemplate[] = [
     id: 'chatgpt-vs-gemini',
     about: 'Live · US App Store and builds',
     kind: 'head-to-head',
-    name: 'ChatGPT vs Gemini: rank, countries, rating, SDKs',
+    name: 'How do ChatGPT and Gemini compare? Pick any two apps.',
     field: 'compare rating and versions, rankings, app rankings, tech-stack sdkCount (iOS)',
     requests: 5,
     pickApps: true,
@@ -983,19 +1249,21 @@ export const liveTemplates: LiveTemplate[] = [
         'chatgpt-vs-gemini',
         chartsSource,
         mapHeadToHead(rankings, compare, tech, [ca, cb], [a, b]),
-        rows.map(ref),
+        pickChoices(rows, [a, b]),
       )
     },
   },
   {
     id: 'ai-rank-30-days',
-    about: 'Live · US App Store, 30 days',
+    about: 'Live · App Store or Google Play, US or UK, 30 days',
     kind: 'bump',
-    name: 'How have the top AI apps ranked in the US over 30 days?',
-    field: 'rank-history points (US, 30 days)',
+    name: 'How have the top AI apps ranked over 30 days?',
+    field: 'rank-history points (picked store and country, 30 days)',
+    pickPlace: true,
     requests: 5,
-    async load(client) {
-      const rankings = await getRankings(client)
+    async load(client, { place }) {
+      const where = whereOf(place)
+      const rankings = await getRankings(client, where)
       const rows = sortedRankings(rankings)
       const ai = pickUsable(
         rows.filter((r) => AI_APPS.test(plainName(r.name))),
@@ -1005,8 +1273,8 @@ export const liveTemplates: LiveTemplate[] = [
       // With fewer than 2 AI apps on the chart, the highest tracked apps are drawn, and the subtitle says so.
       const [{ kept: apps, skipped }, which] =
         ai.kept.length >= 2 ? [ai, 'AI apps'] : [pickUsable(rows, 4, ref), 'tracked apps']
-      const histories = await Promise.all(apps.map((app) => optional(getHistory(client, app.appId, 30))))
-      return finish('ai-rank-30-days', chartsSource, mapBump(rankings, histories, apps, 30, skipped, which))
+      const histories = await Promise.all(apps.map((app) => optional(getHistory(client, app.appId, 30, where))))
+      return finish('ai-rank-30-days', chartsSource, mapBump(rankings, histories, apps, 30, skipped, which, where))
     },
   },
   {
@@ -1020,6 +1288,82 @@ export const liveTemplates: LiveTemplate[] = [
     async load(client, { rows = 8 }) {
       const [apple, google] = await Promise.all([getRankings(client), getRankings(client, true)])
       return finish('ios-vs-android', bothStores, mapIosAndroid(apple, google, rows))
+    },
+  },
+  {
+    id: 'chatgpt-number-one-countries',
+    about: 'Live · App Store Top Free, every country',
+    kind: 'headline',
+    name: 'In how many countries is ChatGPT #1?',
+    field: 'app rankings rank per country (rank 1 count), recordedAt within 36 hours',
+    requests: 2,
+    async load(client) {
+      const rankings = await getRankings(client)
+      const app = appFor(sortedRankings(rankings), /^chatgpt$/i, 'ChatGPT', KNOWN_IDS.chatgpt)
+      const detail = await client.get('app-rankings', { id: app.appId, store: 'apple', chart_type: 'top-free' })
+      return finish('chatgpt-number-one-countries', chartsSource, mapNumberOneCountries(detail, app))
+    },
+  },
+  {
+    id: 'chatgpt-grossing-runs',
+    about: 'Live · US App Store Top Grossing, 30 days',
+    kind: 'headline',
+    name: 'How often is ChatGPT #1 on US Top Grossing?',
+    field: 'rank-history points (US, Top Grossing, 30 days): rank 1 count of runs',
+    requests: 2,
+    async load(client) {
+      const rankings = await getRankings(client, US_GROSSING)
+      const app = appFor(sortedRankings(rankings), /^chatgpt$/i, 'ChatGPT', KNOWN_IDS.chatgpt)
+      const history = await getHistory(client, app.appId, 30, US_GROSSING)
+      return finish('chatgpt-grossing-runs', chartsSource, mapGrossingRuns(history, app))
+    },
+  },
+  {
+    id: 'ai-three-countries',
+    about: 'Live · App Store Top Free, every country',
+    kind: 'headline',
+    name: 'ChatGPT, Gemini or Claude: which charts in more countries?',
+    field: 'app rankings per country for 3 apps, recordedAt within 36 hours',
+    requests: 4,
+    async load(client) {
+      const rows = sortedRankings(await getRankings(client))
+      const apps = [
+        appFor(rows, /^chatgpt$/i, 'ChatGPT', KNOWN_IDS.chatgpt),
+        appFor(rows, /^(google )?gemini$/i, 'Google Gemini', KNOWN_IDS.gemini),
+        appFor(rows, /^claude\b/i, 'Claude', KNOWN_IDS.claude),
+      ]
+      const bodies = await Promise.all(
+        apps.map((a) => optional(client.get('app-rankings', { id: a.appId, store: 'apple', chart_type: 'top-free' }))),
+      )
+      return finish('ai-three-countries', chartsSource, mapThreeCountries(bodies, apps))
+    },
+  },
+  {
+    id: 'most-sdks-headline',
+    about: 'Live · analyzed iOS builds',
+    kind: 'headline',
+    name: 'Which iOS app ships the most SDKs?',
+    field: 'tech-stack sdkCount (iOS, a floor) and capturedAt',
+    requests: 3,
+    async load(client) {
+      const [tech, apple, google] = await Promise.all([
+        getTechStack(client),
+        optional(getRankings(client)),
+        optional(getRankings(client, true)),
+      ])
+      return finish('most-sdks-headline', buildSource, mapMostSdksHeadline(tech, apple, google))
+    },
+  },
+  {
+    id: 'widest-gap',
+    about: 'Live · US App Store and Google Play',
+    kind: 'dumbbell',
+    name: 'Which app ranks most differently on iOS and Android?',
+    field: 'rankings rank on both stores, matched by name, sorted by gap',
+    requests: 2,
+    async load(client) {
+      const [apple, google] = await Promise.all([getRankings(client), getRankings(client, true)])
+      return finish('widest-gap', bothStores, mapWidestGap(apple, google))
     },
   },
 ]
