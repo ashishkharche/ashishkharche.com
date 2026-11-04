@@ -43,7 +43,7 @@ describe('the private drafts board', () => {
   it('shows one version of each post, with real images', () => {
     const ids = draftPosts.map((p) => p.id)
     expect(new Set(ids).size).toBe(ids.length)
-    expect(ids).toHaveLength(26)
+    expect(ids).toHaveLength(34)
     // Dropped as duplicates in the 3 Nov audit (source files kept).
     expect(ids).not.toContain('wd-b2-1')
     expect(ids).not.toContain('wd-b2-5')
@@ -60,7 +60,7 @@ describe('the private drafts board', () => {
   it('offers each page image as its lossless PNG under the noindex /drafts/ path', () => {
     const names = new Set<string>()
     const pngs = draftPosts.flatMap((p) => p.images)
-    expect(pngs).toHaveLength(17)
+    expect(pngs).toHaveLength(25)
     for (const img of pngs) {
       expect(img.png).toBe(`${draftsImagesPath}${img.pngName}`)
       expect(img.pngName, img.src).toMatch(/^[a-z0-9-]+\.png$/)
@@ -96,6 +96,54 @@ describe('the private drafts board', () => {
     expect(all).not.toMatch(/part[\s-]?time/i)
     expect(all).not.toMatch(/github\.com\/\S*workout-director/i)
     expect(all).not.toMatch(/\+44|\b07\d{3}\s?\d{6}\b/)
+  })
+})
+
+describe('the Data posts (StatMuse-style tech and app stats)', () => {
+  const data = draftPosts.filter((p) => p.topics.includes('data'))
+
+  it('has data-1 to data-8 under the Data topic, as Data check, not Ready to post', () => {
+    expect(data.map((p) => p.id)).toEqual([
+      'data-1',
+      'data-2',
+      'data-3',
+      'data-4',
+      'data-5',
+      'data-6',
+      'data-7',
+      'data-8',
+    ])
+    expect(statuses['data-check']).toBe('Data check')
+    for (const post of data) {
+      expect(post.status, post.id).toBe('data-check')
+      expect(post.primary, post.id).toBe('data')
+      expect(post.title, post.id).not.toBe('')
+      expect(post.leastSure?.length, post.id).toBeGreaterThan(0)
+      for (const l of post.leastSure ?? []) expect(post.notes, post.id).toContain(`Least sure: ${l}`)
+      expect(post.freshUntil, post.id).toMatch(/^(Fresh until|No expiry)/)
+      expect(post.images, post.id).toHaveLength(1)
+      expect(post.images[0]?.pngName, post.id).toMatch(new RegExp(`^${post.id}-[a-z0-9-]+\\.png$`))
+    }
+    expect(draftPosts.filter((p) => matches(p, parseFilters('?status=data-check'))).map((p) => p.id)).toEqual(
+      data.map((p) => p.id),
+    )
+    expect(draftPosts.filter((p) => matches(p, parseFilters('?topic=data')))).toHaveLength(8)
+  })
+
+  it('keeps the sources out of the post text and in the first comment', () => {
+    for (const post of data) {
+      expect(post.firstCommentSources, post.id).toMatch(/https:\/\//)
+      expect(post.text, post.id).not.toMatch(/https?:\/\/|Sources|Least sure|^#/m)
+      expect(post.text, post.id).not.toContain(post.firstCommentSources ?? '')
+      expect(post.text.split('\n\n').length, post.id).toBeGreaterThan(3)
+    }
+  })
+
+  it('marks the chart snapshots (01, 02, 04, 07, 08) for a refetch', () => {
+    const stale = data.filter((p) => /refetch and re-run make_posts\.py/.test(p.freshUntil ?? '')).map((p) => p.id)
+    expect(stale).toEqual(['data-1', 'data-2', 'data-4', 'data-7', 'data-8'])
+    for (const id of stale)
+      expect(draftPosts.find((p) => p.id === id)?.freshUntil).toMatch(/4 Nov 2026, 00:45 to 01:15 GMT/)
   })
 })
 
@@ -161,7 +209,8 @@ describe('drafts filters', () => {
     // One status for every cross-checked post: Ready to post. The rest wait for media.
     expect(parseFilters('?status=checked').status).toEqual([])
     // After the 3 Nov audit pass and its re-check, every post not waiting for media is Ready; no cross-check status is left.
-    expect(Object.keys(statuses).sort()).toEqual(['ready', 'waiting'])
+    // The Data posts (not Workout Director posts, so no WD cross-check) have their own status, Data check.
+    expect(Object.keys(statuses).sort()).toEqual(['data-check', 'ready', 'waiting'])
     expect(parseFilters('?status=checking').status).toEqual([])
     const ready = draftPosts.filter((p) => matches(p, parseFilters('?status=ready')))
     expect(ready).toHaveLength(25)
@@ -169,11 +218,11 @@ describe('drafts filters', () => {
     for (const post of draftPosts) expect(post.version, post.id).not.toMatch(/awaiting/)
     const waiting = draftPosts.filter((p) => matches(p, parseFilters('?status=waiting')))
     expect(waiting.map((p) => p.id).sort()).toEqual(['wd-b2-3'])
-    expect(draftPosts.filter((p) => matches(p, parseFilters('?q=Time+to+update'))).map((p) => p.id)).toEqual([
+    expect(draftPosts.filter((p) => matches(p, parseFilters('?q=app_update_required'))).map((p) => p.id)).toEqual([
       'wd-b2-2',
     ])
     const grouped = arrange(draftPosts, parseFilters('?sort=topic'))
-    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(26)
+    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(34)
     const newest = arrange(draftPosts, none)[0]?.posts ?? []
     expect((newest[0]?.updated ?? '') >= (newest.at(-1)?.updated ?? '')).toBe(true)
   })

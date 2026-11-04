@@ -70,7 +70,16 @@ export function matches(post: DraftPost, f: Filters): boolean {
   if (f.status.length > 0 && !f.status.includes(post.status)) return false
   const words = f.q.toLowerCase().split(/\s+/).filter(Boolean)
   if (words.length > 0) {
-    const hay = [post.title, post.series, post.version, post.text, post.concept ?? '', ...post.sources, ...post.notes]
+    const hay = [
+      post.title,
+      post.series,
+      post.version,
+      post.text,
+      post.concept ?? '',
+      post.firstCommentSources ?? '',
+      ...post.sources,
+      ...post.notes,
+    ]
       .join(' ')
       .toLowerCase()
     if (!words.every((w) => hay.includes(w))) return false

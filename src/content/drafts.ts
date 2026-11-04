@@ -7,6 +7,7 @@ import { wdBatch4 } from '~/content/linkedinWdBatch4'
 import { wdBatch5 } from '~/content/linkedinWdBatch5'
 import { wdBatch6 } from '~/content/linkedinWdBatch6'
 import { auditTexts } from '~/content/linkedinAudit'
+import { dataBatch1, type DataPost } from '~/content/linkedinData'
 
 /**
  * The private drafts board: one current version of each LinkedIn draft, with what the filters need.
@@ -29,6 +30,8 @@ export const topics = {
   releases: 'Releases and updates',
   figures: 'Exercise figures',
   charts: 'App Store charts',
+  /** StatMuse-style tech and app stats (not Workout Director posts). */
+  data: 'Data',
 } as const
 export type Topic = keyof typeof topics
 export const topicOrder = Object.keys(topics) as Topic[]
@@ -43,10 +46,15 @@ export const lengths = {
 } as const
 export type Length = keyof typeof lengths
 
-/** Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov); every post not waiting for media is. */
+/**
+ * Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov); every WD post not waiting for media is.
+ * Data check is for the Data posts, which are not Workout Director posts, so that cross-check does not apply: their
+ * least-sure items and stale numbers are checked before posting.
+ */
 export const statuses = {
   ready: 'Ready to post',
   waiting: 'Waiting for media',
+  'data-check': 'Data check',
 } as const
 export type Status = keyof typeof statuses
 
@@ -82,6 +90,12 @@ export interface DraftPost {
   concept?: string
   mediaNote?: string
   firstComment?: string
+  /** The sources, posted as the first comment; shown under the post, never in its text. */
+  firstCommentSources?: string
+  /** How long the numbers in the post stay current. */
+  freshUntil?: string
+  /** What the draft's author is least sure of, checked before posting (Data posts). */
+  leastSure?: string[]
   sources: string[]
   /** Review notes: what this version replaces, overlaps with other posts, what is still open. */
   notes: string[]
@@ -179,6 +193,7 @@ const pngNames: Record<string, string> = {
   '/assets/img/preview/wd-b4-fig1-bodyweight-squat-light-dark.webp': 'wd-b4-fig1-bodyweight-squat.png',
   '/assets/img/preview/wd-b4-tech1-counted-on-the-phone-v2.webp': 'wd-b4-tech1-counted-on-the-phone.png',
   '/assets/img/preview/wd-b6-2-search-rdl.webp': 'wd-b6-2-search-rdl.png',
+  ...Object.fromEntries(dataBatch1.map((d) => [d.image.src, d.pngName])),
 }
 /** Shown under an image on this page only, never in the post text. */
 const captions: Record<string, string> = {
@@ -729,5 +744,50 @@ const b4 = wdBatch4.map(fromBatch)
 const b5 = wdBatch5.map(fromBatch)
 const b6 = wdBatch6.map(fromBatch)
 
+/**
+ * Data batch 1 (4 Nov 2026): StatMuse-style tech and app stats from linkedin-samples/personal/statmuse-tech/posts/,
+ * generated into linkedinData.ts by /workspace/drafts-data/gen.py. Not Workout Director posts, so the WD Engineering
+ * and Marketing cross-check does not apply: they show as Data check, with the draft's least-sure items as notes and
+ * its sources as the first comment, never in the post text.
+ */
+function fromData(d: DataPost): DraftPost {
+  const updated = { updated: '2026-11-04T01:00:00Z', updatedLabel: '4 Nov 2026, 01:00 GMT' }
+  return {
+    id: d.id,
+    title: d.title,
+    series: `Data batch 1, post ${d.n}`,
+    version: 'data batch 1, 4 Nov, data check',
+    ...updated,
+    topics: ['data'],
+    primary: 'data',
+    media: ['diagram'],
+    status: 'data-check',
+    chars: d.chars,
+    length: lengthOf(d.chars),
+    text: d.text,
+    images: [withPng(d.image)],
+    concept: `Template ${d.template}`,
+    mediaNote:
+      'One 4:5 chart drawn from the fetched data (statmuse-tech/posts/make_posts.py). Its source line is small print on the chart; the full sources go in the first comment.',
+    firstCommentSources: d.firstComment,
+    freshUntil: d.freshUntil,
+    leastSure: d.leastSure,
+    sources: [
+      `/workspace/linkedin-samples/personal/statmuse-tech/posts/${d.file} (text copied as written; Sources section is the first comment).`,
+      'Numbers: statmuse-tech/data/ (FETCH-LOG.md), computed in posts/make_posts.py into posts/derived.json.',
+      `${d.image.name}: ${d.image.note ?? ''}`,
+    ],
+    notes: [
+      'New 4 Nov 2026: StatMuse-style data batch 1 (statmuse-tech/posts/README.md). Not a Workout Director post, so the WD Engineering and Marketing cross-check does not apply. Status Data check: go through the least-sure items below and refresh stale numbers before posting.',
+      ...(d.stale
+        ? ['Chart snapshot: refetch and re-run make_posts.py before posting, and correct the date in the text.']
+        : []),
+      ...d.textFixes,
+      ...d.leastSure.map((l) => `Least sure: ${l}`),
+    ],
+  }
+}
+const data = dataBatch1.map(fromData)
+
 /** Every post on the board, in the order they were written. */
-export const draftPosts: DraftPost[] = [...fromV11, ...sampleA, ...b2, ...b3Ordered, ...b4, ...b5, ...b6]
+export const draftPosts: DraftPost[] = [...fromV11, ...sampleA, ...b2, ...b3Ordered, ...b4, ...b5, ...b6, ...data]

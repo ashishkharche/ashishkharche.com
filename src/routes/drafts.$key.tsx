@@ -187,7 +187,11 @@ function Board() {
                         {p.title}
                       </a>{' '}
                       <span {...stylex.props(styles.count)}>
-                        {p.status === 'waiting' ? 'waiting for media, ' : ''}
+                        {p.status === 'waiting'
+                          ? 'waiting for media, '
+                          : p.status === 'data-check'
+                            ? 'data check, '
+                            : ''}
                         {p.chars.toLocaleString('en-GB')} chars
                       </span>
                     </li>
@@ -257,7 +261,7 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
           {post.series} · {post.version} · updated {post.updatedLabel}
         </p>
         <ul aria-label="Tags" {...stylex.props(styles.tags)}>
-          <li {...stylex.props(styles.tag, post.status === 'waiting' && styles.tagWaiting)}>{statuses[post.status]}</li>
+          <li {...stylex.props(styles.tag, post.status !== 'ready' && styles.tagWaiting)}>{statuses[post.status]}</li>
           <li {...stylex.props(styles.tag)}>
             {lengths[post.length].split(' (')[0]}, {post.chars.toLocaleString('en-GB')} characters
           </li>
@@ -282,6 +286,7 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
       ) : (
         <CopyButton post={post} />
       )}
+      <DataNotes post={post} />
       <details {...stylex.props(styles.details)} data-review={post.id}>
         <summary {...stylex.props(styles.summary, ui.focusRing)}>Sources and review notes</summary>
         <div {...stylex.props(styles.detailsBody)}>
@@ -335,6 +340,42 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
 const noop = () => () => {}
 
 /**
+ * For the Data posts: how long the numbers stay current, what to check before posting, and the sources to post as
+ * the first comment (never part of the post text or of Copy for LinkedIn).
+ */
+function DataNotes({ post }: { post: DraftPost }) {
+  if (!post.freshUntil && !post.firstCommentSources && !post.leastSure?.length) return null
+  return (
+    <div {...stylex.props(styles.dataNotes)} data-data-notes={post.id}>
+      {post.freshUntil ? (
+        <p {...stylex.props(styles.dataLine)} data-fresh-until={post.id}>
+          <strong>Fresh until:</strong> {post.freshUntil.replace(/^Fresh until /, '')}
+        </p>
+      ) : null}
+      {post.leastSure?.length ? (
+        <>
+          <h4 {...stylex.props(styles.h4)}>Data check: least sure</h4>
+          <ul {...stylex.props(styles.ul)} data-least-sure={post.id}>
+            {post.leastSure.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+      {post.firstCommentSources ? (
+        <>
+          <h4 {...stylex.props(styles.h4)}>First comment (sources)</h4>
+          <pre tabIndex={0} {...stylex.props(styles.paste, ui.focusRing)} data-first-comment={post.id}>
+            {post.firstCommentSources}
+          </pre>
+          <CopyButton post={post} text={post.firstCommentSources} label="Copy first comment" />
+        </>
+      ) : null}
+    </div>
+  )
+}
+
+/**
  * One full quality PNG download per image (the cards show smaller WebP copies), saved under a clean file name for
  * the LinkedIn upload. A caption, such as the goblet squat reference credit, shows here and never in the post text.
  */
@@ -372,7 +413,15 @@ function ImageDownloads({ post }: { post: DraftPost }) {
  * Copies the post's canonical text (post.text, credit lines included, review notes left out) in the form LinkedIn's
  * composer keeps blank lines from (see src/lib/linkedinCopy.ts). Shown once the page has hydrated.
  */
-function CopyButton({ post }: { post: DraftPost }) {
+function CopyButton({
+  post,
+  text = post.text,
+  label = 'Copy for LinkedIn',
+}: {
+  post: DraftPost
+  text?: string
+  label?: string
+}) {
   const canCopy = useSyncExternalStore(
     noop,
     () => typeof navigator !== 'undefined' && !!navigator.clipboard,
@@ -386,7 +435,7 @@ function CopyButton({ post }: { post: DraftPost }) {
     clearTimeout(timer.current)
     let next: string
     try {
-      await copyForLinkedIn(post.text)
+      await copyForLinkedIn(text)
       next = 'Copied'
     } catch {
       next = 'Could not copy. Open “Sources and review notes” and select the text by hand.'
@@ -401,13 +450,18 @@ function CopyButton({ post }: { post: DraftPost }) {
         <button
           type="button"
           onClick={copy}
-          data-copy-linkedin={post.id}
+          {...(label === 'Copy for LinkedIn' ? { 'data-copy-linkedin': post.id } : { 'data-copy-comment': post.id })}
           {...stylex.props(styles.copyButton, ui.focusRing)}
         >
-          Copy for LinkedIn<span {...stylex.props(ui.visuallyHidden)}>: {post.title}</span>
+          {label}
+          <span {...stylex.props(ui.visuallyHidden)}>: {post.title}</span>
         </button>
       ) : null}
-      <span aria-live="polite" data-copy-status={post.id} {...stylex.props(styles.copyStatus)}>
+      <span
+        aria-live="polite"
+        {...(label === 'Copy for LinkedIn' ? { 'data-copy-status': post.id } : { 'data-copy-comment-status': post.id })}
+        {...stylex.props(styles.copyStatus)}
+      >
         {message}
       </span>
     </div>
@@ -594,6 +648,16 @@ const styles = stylex.create({
     overflowWrap: 'anywhere',
   },
   ul: { margin: 0, paddingLeft: '1.2rem', display: 'grid', gap: '0.35rem' },
+  dataNotes: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr)',
+    gap: '0.5rem',
+    maxWidth: '50rem',
+    fontSize: type.meta,
+    lineHeight: 1.55,
+    overflowWrap: 'anywhere',
+  },
+  dataLine: { margin: 0 },
   paste: {
     margin: 0,
     paddingBlock: '0.8rem',
