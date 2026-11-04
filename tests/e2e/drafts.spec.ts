@@ -100,7 +100,7 @@ test('Copy for LinkedIn puts the post text on the clipboard with blank lines bet
   })
   expect(clip.types).toEqual(expect.arrayContaining(['text/plain', 'text/html']))
   expect(clip.plain).toBe(post.text)
-  expect(clip.plain).toContain('°\u0020and 110°')
+  expect(clip.plain).toContain('at least 15°,\u0020the start line')
   expect(clip.plain.split('\n\n')).toHaveLength(3)
   expect(clip.plain).not.toMatch(/Pexels|BlazePose\./)
   // One <p> per paragraph and no empty spacer paragraphs, so LinkedIn shows one blank line per gap.
