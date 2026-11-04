@@ -6,7 +6,7 @@ import { wdBatch3 } from '~/content/linkedinWdBatch3'
 import { wdBatch4 } from '~/content/linkedinWdBatch4'
 import { wdBatch5 } from '~/content/linkedinWdBatch5'
 import { wdBatch6 } from '~/content/linkedinWdBatch6'
-import { auditTexts } from '~/content/linkedinAudit'
+import { auditTexts, voiceRewritten } from '~/content/linkedinAudit'
 import { dataBatch1, type DataPost } from '~/content/linkedinData'
 
 /**
@@ -146,6 +146,8 @@ const dropped = new Set(['wd-b2-1', 'wd-b2-5'])
  * Posts changed in the 3 Nov audit pass (23:00 GMT: plain wording, no "my app" or show-off lines, duplicates cut, number
  * stacking trimmed, image footers stripped) and then cross-checked again: their text is in auditTexts.
  */
+const voiceNote =
+  'Voice pass 4 Nov 2026: rewritten in a StatMuse-style voice (lead with the fact, little or no first person) from statmuse-tech/voice-rewrite/. Same facts and numbers as the cross-checked text; see VOICE-REWRITE-BEFORE-AFTER.md.'
 const auditNote =
   'Changed in the 3 Nov audit pass (text from linkedin-samples/personal/audit-2026-11-03/, see its CHANGES.md) and cross-checked again by WD Engineering and WD Marketing, 3 Nov 23:28 GMT (wd-share/crosscheck/eng-verdicts-audit-2026-11-03.md and marketing-verdicts-audit-2026-11-03.md), with their fixes applied.'
 const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; see revised-2026-11-03/CHANGES.md.'
@@ -308,6 +310,7 @@ function make(
   const text = audited ?? rest.text
   const chars = audited === undefined ? base.chars : [...audited].length
   const lead = [
+    ...(voiceRewritten.has(base.id) ? [voiceNote] : []),
     ...(audited !== undefined || base.id === 'wd-b3-3' ? [auditNote] : []),
     ...(base.id.startsWith('wd-b6-') ? [] : [humanNote]),
     ...(crossChecked.has(base.id) ? [checkedNote] : []),
@@ -402,7 +405,7 @@ const sampleA = liSamples.map((s) =>
       '/workspace/linkedin-samples/personal/revised-2026-11-03/CHANGES.md (sample-a).',
     ],
     notes: [
-      'Paste the text from /workspace/linkedin-samples/personal/human-2026-11-03/sample-a.txt.',
+      'Paste the text from /workspace/linkedin-samples/personal/statmuse-tech/voice-rewrite/sample-a.txt (4 Nov StatMuse-voice pass; the earlier text is human-2026-11-03/sample-a.txt).',
       'v13: the chart builder sentence names one store only, and the line pointing at the second image is gone.',
       'One image now: the v12c chart. Image 2 (the numbers table) dropped.',
     ],

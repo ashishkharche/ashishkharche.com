@@ -27,8 +27,8 @@ export const dataBatch1: DataPost[] = [
     n: 1,
     title: 'AI assistants in the US top 10',
     template: 'T5 Trending this week',
-    text: "Four of the top 10 free iPhone apps in the US right now are AI assistants.\n\nMuse from Meta is No. 2, ChatGPT No. 4, Claude No. 7 and Google Gemini No. 9. That's the US Top Free chart, all categories, as of 00:48 UK time on 4 November.\n\nThe UK chart has two of them in its top 10: ChatGPT at No. 3 and Claude at No. 5. Muse isn't listed on the UK store.\n\nWhat I keep thinking about is what these apps actually do. Muse's own listing says it manages email, books dinners and finds deals, with your approval. Once an assistant books the table, the restaurant's app becomes something an agent uses, not something a person opens.\n\nThat changes what \"good UX\" means for the rest of us. Clear actions, predictable flows and solid deep links start to matter as much as the screens.\n\nRank is chart position, not downloads or users, and it moves by the hour.",
-    chars: 848,
+    text: "Four of the top 10 free iPhone apps in the US right now are AI assistants.\n\nMuse from Meta is No. 2, ChatGPT No. 4, Claude No. 7 and Google Gemini No. 9. That's the US Top Free chart, all categories, as of 00:48 UK time on 4 November.\n\nThe UK chart has two of them in its top 10: ChatGPT at No. 3 and Claude at No. 5. Muse isn't listed on the UK store.\n\nThe interesting part is what these apps actually do. Muse's own listing says it manages email, books dinners and finds deals, with your approval. Once an assistant books the table, the restaurant's app becomes something an agent uses, not something a person opens.\n\nThat changes what \"good UX\" means for everyone else. Clear actions, predictable flows and solid deep links start to matter as much as the screens.\n\nRank is chart position, not downloads or users, and it moves by the hour.",
+    chars: 841,
     firstComment:
       '- Apple App Store RSS, US Top Free 100 (updated 4 Nov 2026 00:48 UTC): https://rss.marketingtools.apple.com/api/v2/us/apps/top-free/100/apps.json\n- Apple App Store RSS, UK Top Free 100 (updated 4 Nov 2026 00:48 UTC): https://rss.marketingtools.apple.com/api/v2/gb/apps/top-free/100/apps.json\n- Muse listing text and UK availability: iTunes Lookup API, https://itunes.apple.com/lookup?id=6760173601&country=us (and &country=gb returns 0 results)',
     leastSure: [
@@ -39,7 +39,9 @@ export const dataBatch1: DataPost[] = [
       'Fresh until 5 Nov 2026. Chart data fetched 4 Nov 2026, 00:45 to 01:15 GMT, and chart ranks go stale within a day or two: refetch and re-run make_posts.py before posting, and update the date and time in the text.',
     stale: true,
     file: '01-ai-assistants-us-top10.md',
-    textFixes: [],
+    textFixes: [
+      'Voice pass 4 Nov 2026: text from statmuse-tech/voice-rewrite/data-1.txt (StatMuse voice, less first person, same facts).',
+    ],
     image: {
       key: 'data1',
       src: '/assets/img/preview/data-1-ai-top10-us.webp',
@@ -57,8 +59,8 @@ export const dataBatch1: DataPost[] = [
     n: 2,
     title: 'Muse ratings per day',
     template: 'T3 Ranked list ("Only N ... more than X")',
-    text: "Only three apps in the US top 100 have averaged more App Store ratings a day than Muse from Meta.\n\nMuse came out on 8 September. In 57 days it has 438,257 ratings on the US store, which works out at about 7,700 a day.\n\nThe three ahead of it are Facebook, YouTube and ChatGPT, all averaged over years. ChatGPT has 11.9 million US ratings since May 2023. Spotify is right behind Muse at about 7,675 a day, averaged over 15 years.\n\nI wouldn't read this as \"people love it\". My guess is it's a lot of installs and a well-timed rating prompt, and Meta has very big apps to send people over from.\n\nThat's still the useful bit for anyone shipping an app. When you ask for the rating, and who you ask, moves this number more than the app itself does.\n\nOne caveat: it's total ratings divided by days since first release, so it flatters apps that launch big and is unfair to apps that grew slowly.",
-    chars: 887,
+    text: "Only three apps in the US top 100 have averaged more App Store ratings a day than Muse from Meta.\n\nMuse came out on 8 September. In 57 days it has 438,257 ratings on the US store, which works out at about 7,700 a day.\n\nThe three ahead of it are Facebook, YouTube and ChatGPT, all averaged over years. ChatGPT has 11.9 million US ratings since May 2023. Spotify is right behind Muse at about 7,675 a day, averaged over 15 years.\n\nThat doesn't read as \"people love it\". A likelier guess: a lot of installs and a well-timed rating prompt, and Meta has very big apps to send people over from.\n\nThat's still the useful bit for anyone shipping an app. When you ask for the rating, and who you ask, moves this number more than the app itself does.\n\nOne caveat: it's total ratings divided by days since first release, so it flatters apps that launch big and is unfair to apps that grew slowly.",
+    chars: 885,
     firstComment:
       '- iTunes Lookup API (US) for every app in the US Top Free 100, fetched 4 Nov 2026 00:49 GMT: https://itunes.apple.com/lookup?id=<100 ids>&country=us (userRatingCount, releaseDate)\n- Chart: https://rss.marketingtools.apple.com/api/v2/us/apps/top-free/100/apps.json\n- Working: posts/make_posts.py, posts/derived.json (p2)',
     leastSure: [
@@ -70,7 +72,9 @@ export const dataBatch1: DataPost[] = [
       'Fresh until 5 Nov 2026. Chart data fetched 4 Nov 2026, 00:45 to 01:15 GMT, and chart ranks go stale within a day or two: refetch and re-run make_posts.py before posting, and update the date and time in the text.',
     stale: true,
     file: '02-muse-ratings-per-day.md',
-    textFixes: [],
+    textFixes: [
+      'Voice pass 4 Nov 2026: text from statmuse-tech/voice-rewrite/data-2.txt (StatMuse voice, less first person, same facts).',
+    ],
     image: {
       key: 'data2',
       src: '/assets/img/preview/data-2-ratings-per-day-us.webp',
@@ -88,8 +92,8 @@ export const dataBatch1: DataPost[] = [
     n: 3,
     title: 'Flutter vs React Native open issues',
     template: 'T2 Head-to-head',
-    text: "Flutter has 17 times as many open GitHub issues as React Native.\n\n12,761 against 738. Flutter has more stars too, 181,029 to 126,852, but the stars gap is nowhere near 17x.\n\nBefore anyone reads that as \"Flutter is buggier\", look at how the two repos handle old issues.\n\nReact Native runs a stale bot. An issue with no activity for 180 days gets a Stale label, and the bot closes it 7 days later unless someone comments. Flutter's bot only closes issues that have been waiting 21 days on the reporter for more info. I couldn't find a general stale bot in its workflows.\n\nSo the same number means different things. One repo's open count is closer to a full backlog, and the other's is closer to what's still active.\n\nWhen I'm choosing a framework I don't use this number at all. I search for the bug I'm likely to hit, check how old it is, and check whether anyone on the team has replied.",
-    chars: 887,
+    text: "Flutter has 17 times as many open GitHub issues as React Native.\n\n12,761 against 738. Flutter has more stars too, 181,029 to 126,852, but the stars gap is nowhere near 17x.\n\nBefore reading that as \"Flutter is buggier\", look at how the two repos handle old issues.\n\nReact Native runs a stale bot. An issue with no activity for 180 days gets a Stale label, and the bot closes it 7 days later unless someone comments. Flutter's bot only closes issues that have been waiting 21 days on the reporter for more info. No general stale bot turns up in its workflows.\n\nSo the same number means different things. One repo's open count is closer to a full backlog, and the other's is closer to what's still active.\n\nWhen choosing a framework, skip this number. Search for the bug you're likely to hit, check how old it is, and check whether anyone on the team has replied.",
+    chars: 860,
     firstComment:
       '- GitHub repos: https://api.github.com/repos/flutter/flutter , https://api.github.com/repos/facebook/react-native (redirects to react/react-native), fetched 4 Nov 2026 ~00:52 GMT\n- Open issues (PRs excluded): https://api.github.com/search/issues?q=repo:flutter/flutter+type:issue+state:open , ...?q=repo:react/react-native+type:issue+state:open\n- React Native stale bot: https://github.com/react/react-native/blob/main/.github/workflows/stale-bot.yml\n- Flutter no-response bot: https://github.com/flutter/flutter/blob/master/.github/scripts/no-response.js',
     leastSure: [
@@ -102,6 +106,7 @@ export const dataBatch1: DataPost[] = [
     file: '03-flutter-vs-react-native-issues.md',
     textFixes: [
       'Wording fix: the draft\'s passive verb in this sentence is on the site\'s blocked-terms list, so it now reads "An issue with no activity for 180 days gets a Stale label, and the bot closes it 7 days later unless someone comments." Same meaning; the draft file is unchanged.',
+      'Voice pass 4 Nov 2026: text from statmuse-tech/voice-rewrite/data-3.txt (StatMuse voice, less first person, same facts).',
     ],
     image: {
       key: 'data3',
@@ -133,7 +138,9 @@ export const dataBatch1: DataPost[] = [
       'Fresh until 5 Nov 2026. Chart data fetched 4 Nov 2026, 00:45 to 01:15 GMT, and chart ranks go stale within a day or two: refetch and re-run make_posts.py before posting, and update the date and time in the text.',
     stale: true,
     file: '04-ios26-minimum-microsoft.md',
-    textFixes: [],
+    textFixes: [
+      'Voice pass 4 Nov 2026: text from statmuse-tech/voice-rewrite/data-4.txt (StatMuse voice, less first person, same facts).',
+    ],
     image: {
       key: 'data4',
       src: '/assets/img/preview/data-4-min-ios-us-top100.webp',
@@ -151,8 +158,8 @@ export const dataBatch1: DataPost[] = [
     n: 5,
     title: 'React Native downloads, then vs now',
     template: 'T4 Then vs now',
-    text: "React Native's npm downloads are up 4.5x in a year. React's are up 4.9x.\n\nLast week (26 October to 1 November) react-native was downloaded 20.5 million times. In the same week last year it was 4.6 million, and in the same week of 2021 about 639,000.\n\nThat looks like a boom until you check React itself: 50 million to 244 million over the same year. Nearly everything on npm is being installed far more often. My guess is more CI, more generated projects and more agents running npm install, but that's a guess and the numbers can't show it.\n\nSo I compare against React. Measured that way, React Native is flat or a little behind. Expo (6.3x) and Capacitor (8.6x) grew faster than React did, and that's the more interesting signal.\n\nDownloads count installs, not developers. They're fine for comparing packages in the same week, and misleading in a headline like \"up 350%\".",
-    chars: 873,
+    text: "React Native's npm downloads are up 4.5x in a year. React's are up 4.9x.\n\nLast week (26 October to 1 November) react-native was downloaded 20.5 million times. In the same week last year it was 4.6 million, and in the same week of 2021 about 639,000.\n\nThat looks like a boom until you check React itself: 50 million to 244 million over the same year. Nearly everything on npm is being installed far more often. Probably more CI, more generated projects and more agents running npm install, but that's a guess and the numbers can't show it.\n\nSo the fair comparison is against React. Measured that way, React Native is flat or a little behind. Expo (6.3x) and Capacitor (8.6x) grew faster than React did, and that's the more interesting signal.\n\nDownloads count installs, not developers. They're fine for comparing packages in the same week, and misleading in a headline like \"up 350%\".",
+    chars: 883,
     firstComment:
       '- npm downloads API, fetched 4 Nov 2026 ~00:53 GMT:\n  - https://api.npmjs.org/downloads/point/2026-10-26:2026-11-01/react-native (20,470,945) and /2025-10-27:2025-11-02/react-native (4,566,258), /2021-10-25:2021-10-31/react-native (638,544)\n  - same weeks for react (243,715,739 vs 49,999,679), expo (15,807,850 vs 2,526,902), @capacitor/core (7,402,651 vs 858,192)\n- Monthly trend check: https://api.npmjs.org/downloads/range/2025-05-01:2026-11-01/{react,react-native,expo,@capacitor/core}',
     leastSure: [
@@ -164,7 +171,9 @@ export const dataBatch1: DataPost[] = [
       'Fresh until 8 Nov 2026. Fixed weeks (26 Oct to 1 Nov 2026 vs the same week of 2025), fetched 4 Nov 2026, 00:52 GMT. From 9 Nov "last week" means a different week, so refetch or reword then.',
     stale: false,
     file: '05-npm-then-vs-now.md',
-    textFixes: [],
+    textFixes: [
+      'Voice pass 4 Nov 2026: text from statmuse-tech/voice-rewrite/data-5.txt (StatMuse voice, less first person, same facts).',
+    ],
     image: {
       key: 'data5',
       src: '/assets/img/preview/data-5-npm-growth.webp',
@@ -182,8 +191,8 @@ export const dataBatch1: DataPost[] = [
     n: 6,
     title: 'Swift and experience',
     template: 'T1 "The only ..."',
-    text: "Of the five mobile languages I checked in this year's Stack Overflow survey, only Apple's two get more use as developers get more experienced.\n\nSwift goes from 5.1% of developers with 1 to 5 years' experience, to 5.8% at 6 to 15 years, to 6.6% at 16+. Objective-C goes from 2.0% to 3.2%.\n\nThe other three go down. Kotlin falls from 12.4% to 9.0%, Java from 33.2% to 24.8%, and Dart halves, from 7.7% to 3.7%.\n\nMy read is that newer developers pick tools that get them onto both platforms fast, which fits Dart and Flutter. Swift and Objective-C are where people end up after years on Apple's platforms, often on teams that kept a native iOS app and its older code.\n\nAcross everyone, Swift is at 5.9% and Dart at 4.9%. Last year it was the other way round, though this year's survey had far fewer respondents, so I wouldn't read much into that swap.",
-    chars: 848,
+    text: "Swift and Objective-C are the only two of five mobile languages in this year's Stack Overflow survey that get more use as developers get more experienced.\n\nSwift goes from 5.1% of developers with 1 to 5 years' experience, to 5.8% at 6 to 15 years, to 6.6% at 16+. Objective-C goes from 2.0% to 3.2%.\n\nThe other three go down. Kotlin falls from 12.4% to 9.0%, Java from 33.2% to 24.8%, and Dart halves, from 7.7% to 3.7%.\n\nA likely read: newer developers pick tools that get them onto both platforms fast, which fits Dart and Flutter. Swift and Objective-C are where people end up after years on Apple's platforms, often on teams that kept a native iOS app and its older code.\n\nAcross everyone, Swift is at 5.9% and Dart at 4.9%. Last year it was the other way round, though this year's survey had far fewer respondents, so that swap doesn't mean much.",
+    chars: 851,
     firstComment:
       '- Stack Overflow Developer Survey 2026, Technology > Languages, by years of work experience (n = 3,304 / 4,649 / 5,296; all respondents n = 14,099): https://survey.stackoverflow.co/2026/technology/data/languages (markdown at /2026/technology/data/languages.md)\n- 2025 survey, All Respondents tab (n = 31,771): https://survey.stackoverflow.co/2025/technology (Dart 5.9%, Swift 5.4%, Kotlin 10.8%)',
     leastSure: [
@@ -195,7 +204,9 @@ export const dataBatch1: DataPost[] = [
       'No expiry. Stack Overflow Developer Survey 2026 and 2025 figures (published yearly), fetched 4 Nov 2026, 00:53 GMT.',
     stale: false,
     file: '06-swift-experience.md',
-    textFixes: [],
+    textFixes: [
+      'Voice pass 4 Nov 2026: text from statmuse-tech/voice-rewrite/data-6.txt (StatMuse voice, less first person, same facts).',
+    ],
     image: {
       key: 'data6',
       src: '/assets/img/preview/data-6-so-mobile-langs-experience.webp',
@@ -213,8 +224,8 @@ export const dataBatch1: DataPost[] = [
     n: 7,
     title: 'UK fitness chart: the gym apps',
     template: 'T3 Ranked list',
-    text: "Three of the four lowest-rated apps in the UK's top 50 free Health & Fitness chart are gym apps.\n\nBetter UK is on 1.56 stars, JD Gyms on 1.63 and ClubRight on 2.22. The fourth is Airmid, an NHS records app, on 2.71. The median across all 50 is 4.73.\n\nThe odd part is that the No. 1 app on the same chart is a gym app too: PureGym, on 4.73 from 231,097 ratings.\n\nI think the difference is that nobody chooses these apps. You install them because your gym tells you to, often to get the QR code that opens the door. JD Gyms' own listing puts that first. When the door doesn't open, that's when the one-star review gets written.\n\nIf you build one of these, that's the job. Getting in, booking a class and paying have to work every time, because nobody opened the app for the features.",
-    chars: 781,
+    text: "Three of the four lowest-rated apps in the UK's top 50 free Health & Fitness chart are gym apps.\n\nBetter UK is on 1.56 stars, JD Gyms on 1.63 and ClubRight on 2.22. The fourth is Airmid, an NHS records app, on 2.71. The median across all 50 is 4.73.\n\nThe odd part is that the No. 1 app on the same chart is a gym app too: PureGym, on 4.73 from 231,097 ratings.\n\nThe likely difference: nobody chooses these apps. You install them because your gym tells you to, often to get the QR code that opens the door. JD Gyms' own listing puts that first. When the door doesn't open, that's when the one-star review gets written.\n\nIf you build one of these, that's the job. Getting in, booking a class and paying have to work every time, because nobody opened the app for the features.",
+    chars: 773,
     firstComment:
       '- UK Top Free, Health & Fitness (genre 6013), top 50: https://itunes.apple.com/gb/rss/topfreeapplications/limit=50/genre=6013/json (feed updated 3 Nov 2026 23:43 GMT)\n- Ratings: iTunes Lookup API (GB), https://itunes.apple.com/lookup?id=<50 ids>&country=gb (averageUserRating, userRatingCount), fetched 4 Nov 2026 00:49 GMT\n- App descriptions (JD Gyms QR entry, ClubRight member app, Airmid NHS app) from the same lookup.',
     leastSure: [
@@ -226,7 +237,9 @@ export const dataBatch1: DataPost[] = [
       'Fresh until 5 Nov 2026. Chart data fetched 4 Nov 2026, 00:45 to 01:15 GMT, and chart ranks go stale within a day or two: refetch and re-run make_posts.py before posting, and update the date and time in the text.',
     stale: true,
     file: '07-uk-fitness-gym-apps-ratings.md',
-    textFixes: [],
+    textFixes: [
+      'Voice pass 4 Nov 2026: text from statmuse-tech/voice-rewrite/data-7.txt (StatMuse voice, less first person, same facts).',
+    ],
     image: {
       key: 'data7',
       src: '/assets/img/preview/data-7-uk-fitness-lowest-rated.webp',
@@ -244,8 +257,8 @@ export const dataBatch1: DataPost[] = [
     n: 8,
     title: 'The smallest apps in the UK top 100',
     template: 'T6 Fun fact',
-    text: "Four of the five smallest apps in the UK's top 100 free chart are government apps.\n\nThe NHS App is 14 MB. GOV.UK ID Check is 29 MB, HMRC 36 MB and GOV.UK One Login 48 MB. The only non-government app in the bottom five is Google Authenticator, at 40 MB.\n\nFor scale, the median app in the UK top 100 is 257 MB, and TikTok is 1,080 MB.\n\nI don't think anyone set out to win a size contest. These apps do a narrow set of jobs and don't try to be anything else.\n\nIt's still a good reminder. People feel app size on older phones, on full storage and on slow connections. In my experience the bulk usually comes from what you bundle and depend on, not the code you write.",
-    chars: 663,
+    text: "Four of the five smallest apps in the UK's top 100 free chart are government apps.\n\nThe NHS App is 14 MB. GOV.UK ID Check is 29 MB, HMRC 36 MB and GOV.UK One Login 48 MB. The only non-government app in the bottom five is Google Authenticator, at 40 MB.\n\nFor scale, the median app in the UK top 100 is 257 MB, and TikTok is 1,080 MB.\n\nNobody set out to win a size contest, probably. These apps do a narrow set of jobs and don't try to be anything else.\n\nIt's still a good reminder. People feel app size on older phones, on full storage and on slow connections. The bulk usually comes from what you bundle and depend on, not the code you write.",
+    chars: 642,
     firstComment:
       '- UK Top Free 100: https://rss.marketingtools.apple.com/api/v2/gb/apps/top-free/100/apps.json (updated 4 Nov 2026 00:48 UTC)\n- Sizes: iTunes Lookup API (GB) fileSizeBytes, https://itunes.apple.com/lookup?id=<100 ids>&country=gb, fetched 4 Nov 2026 00:49 GMT',
     leastSure: [
@@ -257,7 +270,9 @@ export const dataBatch1: DataPost[] = [
       'Fresh until 5 Nov 2026. Chart data fetched 4 Nov 2026, 00:45 to 01:15 GMT, and chart ranks go stale within a day or two: refetch and re-run make_posts.py before posting, and update the date and time in the text.',
     stale: true,
     file: '08-uk-smallest-apps-government.md',
-    textFixes: [],
+    textFixes: [
+      'Voice pass 4 Nov 2026: text from statmuse-tech/voice-rewrite/data-8.txt (StatMuse voice, less first person, same facts).',
+    ],
     image: {
       key: 'data8',
       src: '/assets/img/preview/data-8-uk-smallest-apps.webp',
