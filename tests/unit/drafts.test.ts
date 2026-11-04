@@ -74,7 +74,7 @@ describe('the private drafts board', () => {
     }
     expect(readdirSync(join('public', draftsImagesPath)).sort()).toEqual([...names].sort())
     const p1 = draftPosts.find((p) => p.id === 'wd-b4-p1')
-    expect(p1?.images.map((i) => i.pngName)).toEqual(['wd-b4-p1-rep-counter.png'])
+    expect(p1?.images.map((i) => i.pngName)).toEqual(['wd-b4-p1-rep-counter-v3.png'])
   })
 
   it('shows the goblet squat credit as a caption on the page, not in the post text', () => {

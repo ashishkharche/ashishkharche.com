@@ -191,7 +191,7 @@ const pngNames: Record<string, string> = {
   '/assets/img/preview/wd-b5-1-plank-straight-seconds.webp': 'wd-b5-1-plank-straight-seconds.png',
   '/assets/img/preview/wd-b3-5-coach-two-limits-v3.webp': 'wd-b3-5-coach-two-limits.png',
   '/assets/img/preview/wd-b3-6-first-rep-waits-v4.webp': 'wd-b3-6-first-rep-waits.png',
-  '/assets/img/preview/wd-b4-p1-rep-counter-v2.webp': 'wd-b4-p1-rep-counter.png',
+  '/assets/img/preview/wd-b4-p1-rep-counter-v3.webp': 'wd-b4-p1-rep-counter-v3.png',
   '/assets/img/preview/wd-b4-fig1-bodyweight-squat-light-dark.webp': 'wd-b4-fig1-bodyweight-squat.png',
   '/assets/img/preview/wd-b4-tech1-counted-on-the-phone-v2.webp': 'wd-b4-tech1-counted-on-the-phone.png',
   '/assets/img/preview/wd-b6-2-search-rdl.webp': 'wd-b6-2-search-rdl.png',
@@ -220,7 +220,14 @@ export interface DraftImage extends LiImage {
  * only skips the footer text): the wd-b2-4 figures without the "form gates" line, and wd-b3-1 without the joint list.
  * Pixel diffs against the previous files touch only those footer rows.
  */
-const imageSwaps: Record<string, Pick<LiImage, 'src' | 'upload' | 'name' | 'note'>> = {
+const imageSwaps: Record<string, Pick<LiImage, 'src' | 'upload' | 'name' | 'note'> & Partial<Pick<LiImage, 'alt'>>> = {
+  '/assets/img/preview/wd-b4-p1-rep-counter-v2.webp': {
+    src: '/assets/img/preview/wd-b4-p1-rep-counter-v3.webp',
+    upload: '/workspace/wd-marketing/linkedin-batch-4/out/p1v3/p1-rep-counter-v3.png',
+    name: 'p1-rep-counter-v3.png',
+    alt: 'Workout Director counting 3 reps of a bodyweight squat on a phone',
+    note: 'WD Marketing out/p1v3/p1-rep-counter-v3.png (4 Nov 2026), checked by WD Engineering and WD Marketing. Replaces p1 v2. Upload file is the 1080 x 1350 PNG; the site copy is a WebP of it.',
+  },
   '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v2.webp': {
     src: '/assets/img/preview/wd-b2-4-f1-goblet-squat-built-not-traced-v3.webp',
     upload: '/workspace/drafts-audit/img/figures/f1-goblet-squat-built-not-traced-v3.png',
@@ -547,14 +554,13 @@ const batchExtra: Record<string, Extra> = {
   'wd-b4-p1': {
     title: 'What Workout Director is',
     series: 'WD batch 4, product post 1',
-    version: 'batch 4, image p1 v2, audit 3 Nov, cross-checked',
+    version: 'batch 4, image p1 v3, audit 3 Nov, cross-checked',
     ...nov3('23:34'),
     topics: ['workout-director', 'product', 'rep-counter'],
     media: ['image'],
     notes: [
-      'New 3 Nov: the product post (p1.txt). Image is p1 v2, the app counting a Pexels clip played in place of the camera, The video credit was taken out of the post text on 3 Nov. The first p1 image is not used.',
+      'New 3 Nov: the product post (p1.txt). Image is now p1 v3 (4 Nov, checked by WD Engineering and WD Marketing): Workout Director counting 3 reps of a bodyweight squat on a phone. p1 v2 and the first p1 image are no longer shown.',
       'WD Engineering fix: "six" programs dropped (the code has at least 7).',
-      'Open: the image is a 1.0.94 frame; a shoe brand print is mostly hidden but can be recognised zoomed in (WD Marketing; final call is Ashish’s).',
     ],
   },
   'wd-b4-fig1': {
