@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test'
+import { gotoHydrated } from './hydration'
 
 test('the theme toggle switches, is announced and is remembered', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' })
-  await page.goto('/')
+  await gotoHydrated(page, '/')
   const toggle = page.getByRole('button', { name: 'Dark theme' })
   await expect(toggle).toHaveAttribute('aria-pressed', 'false')
   const lightBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)

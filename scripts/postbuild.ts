@@ -1,11 +1,13 @@
 // Runs after `vite build`: writes the sitemap, adds a per-page
 // Content-Security-Policy, copies the host config and checks the output.
+import { readFileSync } from 'node:fs'
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 import { findBanned, loadLocalTerms, localTermsFile } from '../src/content/rules.ts'
 import { readFrontmatter } from '../plugins/content.ts'
 import { site, sitemapPaths } from '../src/content/site.ts'
 import { contentDates, noteDates } from '../src/lib/contentDates.ts'
+import { deferAssets, withoutFontFaces } from '../src/lib/critical.ts'
 import { withPolicy } from '../src/lib/csp.ts'
 import { buildAtomFeed, feedPath, type FeedEntry } from '../src/lib/feed.ts'
 import { checkPreviewTags, pngSize } from '../src/lib/preview.ts'
@@ -33,7 +35,7 @@ for (const file of pages) {
   const name = relative(out, file)
   let html = await readFile(file, 'utf8')
   if (/\sstyle="/i.test(html)) problems.push(`${name}: has an inline style attribute (blocked by the CSP)`)
-  if (/<style[\s>]/i.test(html)) problems.push(`${name}: has an inline <style> element (blocked by the CSP)`)
+  if (/<style[\s>]/i.test(html)) problems.push(`${name}: has an inline <style> element before the critical CSS step`)
   for (const hit of findBanned(html)) problems.push(`${name}: ${hit}`)
   if (name !== '404.html') {
     const preview = checkPreviewTags(html, site.url)
@@ -48,8 +50,21 @@ for (const file of pages) {
     }
   }
   // No page loads images from other hosts: chart app icons come from our own origin (baked files or /api/icon/).
+  // The page paints from its HTML: critical CSS inline, the stylesheet and scripts after the first paint.
+  try {
+    html = deferAssets(html, (href) => readFileSync(join(out, href.replace(/^\//, '')), 'utf8'))
+  } catch (error) {
+    problems.push(`${name}: ${(error as Error).message}`)
+  }
   html = withPolicy(html)
   await writeFile(file, html)
+}
+
+// Every page now declares the font faces inline, so the stylesheet (loaded after the first paint) does not repeat them.
+const assetsDir = join(out, 'assets')
+for (const name of (await readdir(assetsDir)).filter((n) => n.endsWith('.css'))) {
+  const css = await readFile(join(assetsDir, name), 'utf8')
+  await writeFile(join(assetsDir, name), withoutFontFaces(css))
 }
 
 for (const path of sitemapPaths) {

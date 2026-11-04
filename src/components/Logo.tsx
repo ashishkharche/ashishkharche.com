@@ -31,7 +31,7 @@ export function Logo({ name, size = 32, alt = '', inline = false }: Props) {
         alt={alt}
         loading="lazy"
         decoding="async"
-        {...stylex.props(styles.img, shape, darkSrc !== undefined && styles.lightOnly)}
+        {...stylex.props(styles.img, ratio(name), shape, darkSrc !== undefined && styles.lightOnly)}
       />
       {darkSrc !== undefined ? (
         <img
@@ -41,11 +41,25 @@ export function Logo({ name, size = 32, alt = '', inline = false }: Props) {
           alt={alt}
           loading="lazy"
           decoding="async"
-          {...stylex.props(styles.img, styles.darkOnly)}
+          {...stylex.props(styles.img, ratio(name), styles.darkOnly)}
         />
       ) : null}
     </span>
   )
+}
+
+/**
+ * The rounded width and height attributes give a slightly different shape from the file's own, so without this the
+ * box changed size by a fraction of a pixel when the image arrived after the first paint (a layout shift). The
+ * `auto` keeps the file's own shape once it has loaded, so the final size is exactly what it was.
+ */
+const ratios = stylex.create({
+  paythru: { aspectRatio: 'auto 107 / 121' },
+  spacexsi: { aspectRatio: 'auto 834 / 318' },
+})
+
+function ratio(name: LogoName) {
+  return name === 'paythru' || name === 'spacexsi' ? ratios[name] : null
 }
 
 const styles = stylex.create({

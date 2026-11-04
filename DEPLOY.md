@@ -15,9 +15,11 @@ pnpm lighthouse   # optional; needs Chrome (set CHROME_PATH if it is not found)
 
 - writes `dist/client/sitemap.xml`, with each page's `lastmod` taken from its content date or the last git commit that touched its source files (never the build time),
 - writes the Atom feed of the notes to `dist/client/feed.xml`,
-- adds a per-page Content-Security-Policy meta tag with the hashes of that page's inline scripts,
+- inlines each page's critical CSS (the stylesheet rules that can match that page) and moves the stylesheet and the app's
+  scripts to a small loader that runs after the first paint (`src/lib/critical.ts`),
+- adds a per-page Content-Security-Policy meta tag with the hashes of that page's inline scripts and inline style,
 - copies the headers from `vercel.json` into `dist/client/vercel.json` (without the build settings),
-- fails the build if a page has an inline style, a banned word (see `src/content/rules.ts`), or a sitemap page is missing.
+- fails the build if a page has an inline style attribute, a banned word (see `src/content/rules.ts`), or a sitemap page is missing.
 
 Requires Node 22.18 or newer (the scripts are TypeScript run directly by Node) and pnpm 10.
 

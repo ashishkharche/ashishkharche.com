@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { gotoHydrated } from './hydration'
 import { links } from '../../src/content/site'
 
 // A recruiter on the home page should find the app's real links and its stack without scrolling far.
@@ -37,7 +38,7 @@ test('the Selected work card shows the app type and the stack', async ({ page })
 })
 
 test('the outside links on the project card open their own pages, not the case study', async ({ page }) => {
-  await page.goto('/')
+  await gotoHydrated(page, '/')
   const card = page.locator('article').filter({ hasText: 'Workout Director' }).first()
   for (const href of [links.workoutDirectorStore, links.workoutDirectorSite]) {
     const link = card.locator(`a[href="${href}"]`)

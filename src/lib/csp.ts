@@ -28,17 +28,24 @@ export const chartIconHosts = [
   'https://play-lh.googleusercontent.com',
 ] as const
 
+/** Contents of every inline <style> element (the page's critical CSS, see src/lib/critical.ts). */
+export function inlineStyles(html: string): string[] {
+  return [...html.matchAll(/<style(\s[^>]*)?>([\s\S]*?)<\/style>/gi)].map((match) => match[2] ?? '')
+}
+
 /**
- * Content-Security-Policy for one page. Inline scripts are allowed by hash
- * only, styles must come from files, and nothing loads from other origins.
+ * Content-Security-Policy for one page. Inline scripts and the inline critical
+ * CSS are allowed by hash only (never 'unsafe-inline', so style attributes stay
+ * blocked), other styles come from files, and nothing loads from other origins.
  * frame-ancestors cannot be set from a meta tag; it is sent as a header.
  */
 export function pagePolicy(html: string, imgHosts: readonly string[] = []): string {
   const hashes = [...new Set(inlineScripts(html).map(sha256Source))]
+  const styleHashes = [...new Set(inlineStyles(html).map(sha256Source))]
   return [
     "default-src 'self'",
     `img-src 'self' data: ${imgHosts.join(' ')}`.trim(),
-    "style-src 'self'",
+    `style-src 'self' ${styleHashes.join(' ')}`.trim(),
     "font-src 'self'",
     `script-src 'self' ${hashes.join(' ')}`.trim(),
     "connect-src 'self'",

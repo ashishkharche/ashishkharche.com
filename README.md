@@ -31,8 +31,8 @@ Every page is prerendered to static HTML and works with JavaScript turned off.
 | Checks      | ESLint, Prettier, Vitest, Playwright with axe-core, linkinator         |
 | Hosting     | Vercel, as static files                                                |
 
-A strict Content Security Policy is applied: no inline styles, and each page gets a policy with the hashes of its own inline
-scripts. See [STACK.md](STACK.md) for the reasoning behind each choice.
+A strict Content Security Policy is applied: no inline style attributes, and each page gets a policy with the hashes of its own
+inline scripts and of its one inline `<style>` (the page's critical CSS, so the first paint needs only the HTML). See [STACK.md](STACK.md) for the reasoning behind each choice.
 
 ## Running locally
 
@@ -61,7 +61,7 @@ pnpm lighthouse     # mobile and desktop scores for every page
 Playwright, Lighthouse and the screenshot script use the installed Chrome. To use Playwright's own browser instead, run
 `pnpm exec playwright install chromium` and set `PW_CHANNEL=chromium`.
 
-The build also runs its own checks (`scripts/postbuild.ts`). It fails if a page has an inline style, a page in the sitemap
+The build also runs its own checks (`scripts/postbuild.ts`). It fails if a page has an inline style attribute, a page in the sitemap
 was not prerendered, a link preview image is missing or the wrong size, or a CV PDF in the output differs from the one in
 `public/`. Content rules in `src/content/rules.ts` are checked against the source by `tests/unit/content-rules.test.ts` and
 again against the built HTML.

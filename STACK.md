@@ -73,8 +73,15 @@ language and, once the page has hydrated, a small copy button. Pele only renders
 - **Content-Security-Policy.** TanStack Start writes small inline scripts into each page (router state and scroll restoration) whose
   contents change with every build. The post-build step hashes the inline scripts on each page and adds a per-page
   `<meta http-equiv="Content-Security-Policy">` with exactly those hashes. `frame-ancestors` cannot be set from a meta tag, so
-  `vercel.json` still sends a header with `frame-ancestors 'none'`, `object-src 'none'` and `base-uri 'self'`. Styles stay
-  `style-src 'self'` with no exceptions.
+  `vercel.json` still sends a header with `frame-ancestors 'none'`, `object-src 'none'` and `base-uri 'self'`. Styles are
+  `style-src 'self'` plus the hash of the page's one inline `<style>` (its critical CSS, below); never `'unsafe-inline'`, so
+  `style` attributes stay blocked.
+- **Slow connections (src/lib/critical.ts).** The post-build step inlines, per page, the rules of the StyleX stylesheet that can
+  match that page (a superset: every rule whose classes all appear in the HTML) in place of the render-blocking `<link>`. The
+  entry module, its module preloads and the whole stylesheet are then requested by a small inline loader once the first paint has
+  been reported, so on a slow connection they do not compete with the HTML, fonts and hero images. React finds the stylesheet and
+  the entry script already in the document when it hydrates. The `@font-face` rules live only in the inline CSS (the stylesheet's
+  copies are removed, so the fonts are not fetched and swapped twice), and the font preloads come first in `<head>`.
 - **Diagram SVG in JavaScript too.** A hydrated page has to be able to render itself, so the case study's diagrams are also in that
   page's JS chunk (about 8 KB compressed for the case study page).
 - **`head()` keeps one meta tag per name.** The two `theme-color` tags (light and dark) are written directly in the root document.
