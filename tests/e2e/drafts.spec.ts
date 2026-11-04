@@ -107,7 +107,7 @@ test('Copy for LinkedIn puts the post text on the clipboard with blank lines bet
   expect(clip.html).toContain('</p><p>')
   expect(clip.html).not.toContain('<p><br></p>')
   expect(clip.html.match(/<p>/g)).toHaveLength(3)
-  expect(clip.html).toContain('155°')
+  expect(clip.html).toContain('15°')
   expect(clip.html).toContain('code')
   // The message clears after about 2 s.
   await expect(status).toHaveText('', { timeout: 4000 })
