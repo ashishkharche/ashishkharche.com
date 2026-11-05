@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { draftPosts, draftsImagesPath, draftsPath, draftsSlug, lengthOf, statuses } from '~/content/drafts'
-import { compactTexts, compactWithheld } from '~/content/linkedinCompact'
+import { compactBannedPhrases, compactTexts, compactWithheld } from '~/content/linkedinCompact'
 import { sitemapPaths } from '~/content/site'
 import { arrange, filtersToSearch, matches, parseFilters } from '~/lib/drafts'
 
@@ -186,7 +186,7 @@ describe('the AI coding tools ideas', () => {
 
   it('flags the Grok posts and leads idea 1 with the fact', () => {
     expect(ai.filter((p) => p.caution).map((p) => p.id)).toEqual(['ai-4', 'ai-5'])
-    expect(ai[0]?.text).toMatch(/^Five AI coding CLIs unpacked\./)
+    expect(ai[0]?.text).toMatch(/^Codex and Grok Build ship as static Rust binaries/)
     expect(ai[0]?.text).not.toMatch(/\bI unpacked\b/)
     expect(ai[0]?.longerText).toMatch(/^Five AI coding CLIs, unpacked from their Linux builds\./)
   })
@@ -242,7 +242,7 @@ describe('drafts filters', () => {
       expect(post.text, post.id).not.toMatch(/part \d of \d/i)
     }
     const p1 = draftPosts.find((p) => p.id === 'wd-b4-p1')
-    expect(p1?.text.startsWith('Workout Director is an iPhone app for training at the gym or at home.')).toBe(true)
+    expect(p1?.text.startsWith('Workout Director counts squats')).toBe(true)
     expect(p1?.text).not.toMatch(/RDL|Skull Crusher/)
     expect(draftPosts.find((p) => p.id === 'wd-b4-tech1')?.text).not.toMatch(/recorded, saved or uploaded/)
     // The first-rep wait is told in wd-b3-6 only.
@@ -296,7 +296,7 @@ describe('compact LinkedIn paste text', () => {
       expect(post.chars, post.id).toBe([...post.text].length)
       expect(post.length, post.id).toBe(lengthOf(post.chars))
       expect(post.text, post.id).not.toMatch(/alongside/i)
-      // Compact is one short body; batch 6 keeps a separate "Free on the App Store." line.
+      // StatMuse stacks use a few blank-line blocks; TechDevNotes is usually one.
       expect(post.text.split('\n\n').length, post.id).toBeLessThanOrEqual(2)
     }
   })
@@ -304,5 +304,15 @@ describe('compact LinkedIn paste text', () => {
   it('covers every board id except withheld placeholders', () => {
     const ids = draftPosts.filter((p) => !p.textNote && !compactWithheld.has(p.id)).map((p) => p.id)
     expect(Object.keys(compactTexts).sort()).toEqual([...ids].sort())
+  })
+
+  it('rejects wrap-up phrases that read like AI mannerisms', () => {
+    for (const post of draftPosts) {
+      if (post.textNote || compactWithheld.has(post.id)) continue
+      const lower = post.text.toLowerCase()
+      for (const phrase of compactBannedPhrases) {
+        expect(lower.includes(phrase), `${post.id} contains "${phrase}"`).toBe(false)
+      }
+    }
   })
 })

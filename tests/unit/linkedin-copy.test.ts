@@ -48,7 +48,7 @@ describe('Copy for LinkedIn', () => {
   it('copies wd-b3-2 compact text, and keeps the audit text as the longer version', () => {
     const post = draftPosts.find((p) => p.id === 'wd-b3-2')
     const compact =
-      'At the bottom of a side-on deadlift, the far plate can hide the near ankle and drop pose confidence below what the counter normally needs. Losing a rep over one hidden ankle felt wrong when the hip and knee are in plain view. So if those two are still clear and the ankle has not faded too far, the counter keeps the leg in view for up to 3 s.'
+      'At the bottom of a side-on deadlift the far plate can hide the near ankle. If the hip and knee stay clear, the counter keeps the leg in view for up to 3 s.'
     const longer = [
       'At the bottom of a side-on deadlift, the far plate can hide the near ankle. The pose model gets less sure about where it is, and its confidence drops below what the counter normally needs.',
       "Losing a rep over one hidden ankle felt wrong when the hip and knee are in plain view. So if those two are still clear and the ankle hasn't faded too far, the counter keeps the leg in view for up to 3 s.",
