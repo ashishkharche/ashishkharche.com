@@ -1,0 +1,2616 @@
+{
+  "data": {
+    "schema": "tdn.daily-feed.v1",
+    "date": "2026-11-05",
+    "status": "published",
+    "generatedAt": "2026-11-05 03:13:11",
+    "publishAtUtc": "03:00 UTC",
+    "scope": "Among the apps TechDevNotes tracks",
+    "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+    "summary": {
+      "schema": "tdn.stat-answer.v1",
+      "id": "daily_summary:2026-11-05",
+      "kind": "daily_summary",
+      "title": "Today in apps, 5 Nov 2026",
+      "answer": "7 facts passed our checks for 5 Nov 2026.",
+      "table": {
+        "columns": [
+          {
+            "key": "fact",
+            "label": "Fact",
+            "format": "text",
+            "align": "left",
+            "origin": {
+              "kind": "label"
+            }
+          },
+          {
+            "key": "rows",
+            "label": "Entries",
+            "format": "int",
+            "align": "right",
+            "origin": {
+              "kind": "count",
+              "of": "table.total"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "position": 1,
+            "tied": false,
+            "href": "#new-versions",
+            "cells": {
+              "fact": "New versions",
+              "rows": 44
+            },
+            "sources": [
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 396,
+                "recordedAt": "2026-11-04 00:38:16",
+                "runIds": [
+                  396
+                ],
+                "slot": "2026-11-04 00:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 397,
+                "recordedAt": "2026-11-04 12:45:39",
+                "runIds": [
+                  397
+                ],
+                "slot": "2026-11-04 12:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 398,
+                "recordedAt": "2026-11-05 00:42:39",
+                "runIds": [
+                  398
+                ],
+                "slot": "2026-11-05 00:00:00",
+                "absentReason": null
+              }
+            ]
+          },
+          {
+            "position": 2,
+            "tied": false,
+            "href": "#rank-movers-apple-us-top-free",
+            "cells": {
+              "fact": "Biggest moves, US App Store top free",
+              "rows": 22
+            },
+            "sources": [
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 396,
+                "recordedAt": "2026-11-04 00:38:16",
+                "runIds": [
+                  396
+                ],
+                "slot": "2026-11-04 00:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 397,
+                "recordedAt": "2026-11-04 12:45:39",
+                "runIds": [
+                  397
+                ],
+                "slot": "2026-11-04 12:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 398,
+                "recordedAt": "2026-11-05 00:42:39",
+                "runIds": [
+                  398
+                ],
+                "slot": "2026-11-05 00:00:00",
+                "absentReason": null
+              }
+            ]
+          },
+          {
+            "position": 3,
+            "tied": false,
+            "href": "#rank-movers-google-us-top-free",
+            "cells": {
+              "fact": "Biggest moves, US Google Play top free",
+              "rows": 9
+            },
+            "sources": [
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 396,
+                "recordedAt": "2026-11-04 00:38:16",
+                "runIds": [
+                  396
+                ],
+                "slot": "2026-11-04 00:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 397,
+                "recordedAt": "2026-11-04 12:45:39",
+                "runIds": [
+                  397
+                ],
+                "slot": "2026-11-04 12:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 398,
+                "recordedAt": "2026-11-05 00:42:39",
+                "runIds": [
+                  398
+                ],
+                "slot": "2026-11-05 00:00:00",
+                "absentReason": null
+              }
+            ]
+          },
+          {
+            "position": 4,
+            "tied": true,
+            "href": "#top10-entries-apple-us-top-free",
+            "cells": {
+              "fact": "New in the top 10, US App Store top free",
+              "rows": 2
+            },
+            "sources": [
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 396,
+                "recordedAt": "2026-11-04 00:38:16",
+                "runIds": [
+                  396
+                ],
+                "slot": "2026-11-04 00:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 397,
+                "recordedAt": "2026-11-04 12:45:39",
+                "runIds": [
+                  397
+                ],
+                "slot": "2026-11-04 12:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 398,
+                "recordedAt": "2026-11-05 00:42:39",
+                "runIds": [
+                  398
+                ],
+                "slot": "2026-11-05 00:00:00",
+                "absentReason": null
+              }
+            ]
+          },
+          {
+            "position": 4,
+            "tied": true,
+            "href": "#top10-entries-google-us-top-free",
+            "cells": {
+              "fact": "New in the top 10, US Google Play top free",
+              "rows": 2
+            },
+            "sources": [
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 396,
+                "recordedAt": "2026-11-04 00:38:16",
+                "runIds": [
+                  396
+                ],
+                "slot": "2026-11-04 00:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 397,
+                "recordedAt": "2026-11-04 12:45:39",
+                "runIds": [
+                  397
+                ],
+                "slot": "2026-11-04 12:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 398,
+                "recordedAt": "2026-11-05 00:42:39",
+                "runIds": [
+                  398
+                ],
+                "slot": "2026-11-05 00:00:00",
+                "absentReason": null
+              }
+            ]
+          },
+          {
+            "position": 4,
+            "tied": true,
+            "href": "#build-changes",
+            "cells": {
+              "fact": "Size and minimum OS changes",
+              "rows": 2
+            },
+            "sources": [
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 396,
+                "recordedAt": "2026-11-04 00:38:16",
+                "runIds": [
+                  396
+                ],
+                "slot": "2026-11-04 00:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 397,
+                "recordedAt": "2026-11-04 12:45:39",
+                "runIds": [
+                  397
+                ],
+                "slot": "2026-11-04 12:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 398,
+                "recordedAt": "2026-11-05 00:42:39",
+                "runIds": [
+                  398
+                ],
+                "slot": "2026-11-05 00:00:00",
+                "absentReason": null
+              }
+            ]
+          },
+          {
+            "position": 7,
+            "tied": false,
+            "href": "#rating-changes",
+            "cells": {
+              "fact": "Rating changes",
+              "rows": 1
+            },
+            "sources": [
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 396,
+                "recordedAt": "2026-11-04 00:38:16",
+                "runIds": [
+                  396
+                ],
+                "slot": "2026-11-04 00:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 397,
+                "recordedAt": "2026-11-04 12:45:39",
+                "runIds": [
+                  397
+                ],
+                "slot": "2026-11-04 12:00:00",
+                "absentReason": null
+              },
+              {
+                "role": "summary",
+                "table": "collection_runs",
+                "id": 398,
+                "recordedAt": "2026-11-05 00:42:39",
+                "runIds": [
+                  398
+                ],
+                "slot": "2026-11-05 00:00:00",
+                "absentReason": null
+              }
+            ]
+          }
+        ],
+        "total": 7
+      },
+      "context": "Compares the complete 00:00 UTC collection runs on 4 Nov 2026 and 5 Nov 2026, published at 03:00 UTC once both passed our data checks.",
+      "scope": "Among the apps TechDevNotes tracks",
+      "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+      "runs": [
+        {
+          "runId": 396,
+          "role": "previous",
+          "slot": "2026-11-04 00:00:00",
+          "startedAt": "2026-11-04 00:00:13",
+          "finishedAt": "2026-11-04 00:38:16"
+        },
+        {
+          "runId": 397,
+          "role": "window",
+          "slot": "2026-11-04 12:00:00",
+          "startedAt": "2026-11-04 12:06:34",
+          "finishedAt": "2026-11-04 12:45:39"
+        },
+        {
+          "runId": 398,
+          "role": "current",
+          "slot": "2026-11-05 00:00:00",
+          "startedAt": "2026-11-05 00:00:16",
+          "finishedAt": "2026-11-05 00:42:39"
+        }
+      ]
+    },
+    "items": [
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "rank_movers:apple:us:top-free",
+        "kind": "rank_movers",
+        "title": "Biggest moves, US App Store top free",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+        "runs": [
+          {
+            "runId": 398,
+            "role": "current",
+            "slot": "2026-11-05 00:00:00",
+            "startedAt": "2026-11-05 00:00:16",
+            "finishedAt": "2026-11-05 00:42:39"
+          },
+          {
+            "runId": 396,
+            "role": "previous",
+            "slot": "2026-11-04 00:00:00",
+            "startedAt": "2026-11-04 00:00:13",
+            "finishedAt": "2026-11-04 00:38:16"
+          }
+        ],
+        "answer": "Netflix Game Controller made the biggest move in the US App Store top free chart, falling 34 places to #92.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "rankNow",
+              "label": "Rank now",
+              "format": "rank",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "rank"
+              }
+            },
+            {
+              "key": "rankBefore",
+              "label": "Day before",
+              "format": "rank",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "previous",
+                "field": "rank"
+              }
+            },
+            {
+              "key": "change",
+              "label": "Places",
+              "format": "signed_int",
+              "align": "right",
+              "origin": {
+                "kind": "difference",
+                "minuend": "rankBefore",
+                "subtrahend": "rankNow"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/ios/netflix-game-controller/6447582581",
+              "cells": {
+                "app": "Netflix Game Controller",
+                "rankNow": 92,
+                "rankBefore": 58,
+                "change": -34
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 333,
+                  "recordedAt": "2026-11-01 21:10:30",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706195,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676231,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": true,
+              "href": "/apps/ios/snapchat/447188370",
+              "cells": {
+                "app": "Snapchat",
+                "rankNow": 68,
+                "rankBefore": 46,
+                "change": -22
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 99,
+                  "recordedAt": "2026-06-19 04:29:16",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706182,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676224,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": true,
+              "href": "/apps/ios/lyft/529379082",
+              "cells": {
+                "app": "Lyft",
+                "rankNow": 91,
+                "rankBefore": 69,
+                "change": -22
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 301,
+                  "recordedAt": "2026-10-24 21:06:18",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706194,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676237,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 4,
+              "tied": false,
+              "href": "/apps/ios/disney/1446075923",
+              "cells": {
+                "app": "Disney+",
+                "rankNow": 88,
+                "rankBefore": 67,
+                "change": -21
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 65,
+                  "recordedAt": "2026-06-19 04:23:29",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706193,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676235,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 5,
+              "tied": false,
+              "href": "/apps/ios/reelshort/1636235979",
+              "cells": {
+                "app": "ReelShort - Stream Drama & TV",
+                "rankNow": 53,
+                "rankBefore": 36,
+                "change": -17
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 270,
+                  "recordedAt": "2026-10-24 19:45:43",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706174,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676217,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 6,
+              "tied": false,
+              "href": "/apps/ios/youtube/544007664",
+              "cells": {
+                "app": "YouTube",
+                "rankNow": 42,
+                "rankBefore": 27,
+                "change": -15
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 268,
+                  "recordedAt": "2026-10-24 19:43:48",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706166,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676212,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 7,
+              "tied": true,
+              "href": "/apps/ios/reco-social/6742024490",
+              "cells": {
+                "app": "Reco Social",
+                "rankNow": 10,
+                "rankBefore": 23,
+                "change": 13
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 341,
+                  "recordedAt": "2026-11-02 09:06:49",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706142,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676209,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 7,
+              "tied": true,
+              "href": "/apps/ios/instagram/389801252",
+              "cells": {
+                "app": "Instagram",
+                "rankNow": 34,
+                "rankBefore": 21,
+                "change": -13
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 61,
+                  "recordedAt": "2026-06-19 04:23:09",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706161,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676208,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 9,
+              "tied": false,
+              "href": "/apps/ios/uber/368677368",
+              "cells": {
+                "app": "Uber - Rides, Eats, Hotels",
+                "rankNow": 52,
+                "rankBefore": 41,
+                "change": -11
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 259,
+                  "recordedAt": "2026-10-24 19:28:50",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706173,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676221,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 10,
+              "tied": false,
+              "href": "/apps/ios/mychart/382952264",
+              "cells": {
+                "app": "MyChart",
+                "rankNow": 38,
+                "rankBefore": 47,
+                "change": 9
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 347,
+                  "recordedAt": "2026-11-02 22:46:13",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706164,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676225,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 22
+        },
+        "context": "Full-chart ranks, 00:00 UTC run on 5 Nov 2026 vs 4 Nov 2026; apps TechDevNotes does not track are not listed."
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "rank_movers:google:us:top-free",
+        "kind": "rank_movers",
+        "title": "Biggest moves, US Google Play top free",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+        "runs": [
+          {
+            "runId": 398,
+            "role": "current",
+            "slot": "2026-11-05 00:00:00",
+            "startedAt": "2026-11-05 00:00:16",
+            "finishedAt": "2026-11-05 00:42:39"
+          },
+          {
+            "runId": 396,
+            "role": "previous",
+            "slot": "2026-11-04 00:00:00",
+            "startedAt": "2026-11-04 00:00:13",
+            "finishedAt": "2026-11-04 00:38:16"
+          }
+        ],
+        "answer": "Microsoft Teams made the biggest move in the US Google Play top free chart, rising 34 places to #48.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "rankNow",
+              "label": "Rank now",
+              "format": "rank",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "rank"
+              }
+            },
+            {
+              "key": "rankBefore",
+              "label": "Day before",
+              "format": "rank",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "previous",
+                "field": "rank"
+              }
+            },
+            {
+              "key": "change",
+              "label": "Places",
+              "format": "signed_int",
+              "align": "right",
+              "origin": {
+                "kind": "difference",
+                "minuend": "rankBefore",
+                "subtrahend": "rankNow"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/android/microsoft-teams/com.microsoft.teams",
+              "cells": {
+                "app": "Microsoft Teams",
+                "rankNow": 48,
+                "rankBefore": 82,
+                "change": 34
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 172,
+                  "recordedAt": "2026-06-19 04:32:27",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700057,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7670151,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": "/apps/android/microsoft-authenticator/com.azure.authenticator",
+              "cells": {
+                "app": "Microsoft Authenticator",
+                "rankNow": 43,
+                "rankBefore": 65,
+                "change": 22
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 119,
+                  "recordedAt": "2026-06-19 04:31:51",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700055,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7670147,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 3,
+              "tied": true,
+              "href": "/apps/android/shein-shopping-online/com.zzkko",
+              "cells": {
+                "app": "SHEIN-Shopping Online",
+                "rankNow": 74,
+                "rankBefore": 54,
+                "change": -20
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 269,
+                  "recordedAt": "2026-10-24 19:44:21",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700068,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7670143,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 3,
+              "tied": true,
+              "href": "/apps/android/disney/com.disney.disneyplus",
+              "cells": {
+                "app": "Disney+",
+                "rankNow": 89,
+                "rankBefore": 69,
+                "change": -20
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 136,
+                  "recordedAt": "2026-06-19 04:32:04",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700073,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7670148,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 5,
+              "tied": false,
+              "href": "/apps/android/microsoft-word/com.microsoft.office.word",
+              "cells": {
+                "app": "Microsoft Word: Edit Documents",
+                "rankNow": 56,
+                "rankBefore": 73,
+                "change": 17
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 33,
+                  "recordedAt": "2026-05-26 01:06:53",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700061,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7670149,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 6,
+              "tied": false,
+              "href": "/apps/android/netflix/com.netflix.mediaclient",
+              "cells": {
+                "app": "Netflix",
+                "rankNow": 62,
+                "rankBefore": 52,
+                "change": -10
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 173,
+                  "recordedAt": "2026-06-19 04:32:28",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700066,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7670141,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 7,
+              "tied": false,
+              "href": "/apps/android/claude/com.anthropic.claude",
+              "cells": {
+                "app": "Claude by Anthropic",
+                "rankNow": 35,
+                "rankBefore": 26,
+                "change": -9
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 247,
+                  "recordedAt": "2026-10-03 20:37:05",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700053,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7670136,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 8,
+              "tied": false,
+              "href": "/apps/android/tiktok-lite/com.tiktok.lite.go",
+              "cells": {
+                "app": "TikTok Lite - Faster TikTok",
+                "rankNow": 18,
+                "rankBefore": 14,
+                "change": -4
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 346,
+                  "recordedAt": "2026-11-02 19:14:20",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700047,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7670130,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 9,
+              "tied": false,
+              "href": "/apps/android/tiktok/com.zhiliaoapp.musically",
+              "cells": {
+                "app": "TikTok - Videos, Shop & LIVE",
+                "rankNow": 5,
+                "rankBefore": 4,
+                "change": -1
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 211,
+                  "recordedAt": "2026-06-19 04:33:12",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700040,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7670125,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 9
+        },
+        "context": "Full-chart ranks, 00:00 UTC run on 5 Nov 2026 vs 4 Nov 2026; apps TechDevNotes does not track are not listed."
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "top10_entries:apple:us:top-free",
+        "kind": "top10_entries",
+        "title": "New in the top 10, US App Store top free",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+        "runs": [
+          {
+            "runId": 398,
+            "role": "current",
+            "slot": "2026-11-05 00:00:00",
+            "startedAt": "2026-11-05 00:00:16",
+            "finishedAt": "2026-11-05 00:42:39"
+          },
+          {
+            "runId": 396,
+            "role": "previous",
+            "slot": "2026-11-04 00:00:00",
+            "startedAt": "2026-11-04 00:00:13",
+            "finishedAt": "2026-11-04 00:38:16"
+          }
+        ],
+        "answer": "2 apps entered the top 10 of the US App Store top free chart, led by TikTok Pro - Events at #1.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "rankNow",
+              "label": "Rank now",
+              "format": "rank",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "rank"
+              }
+            },
+            {
+              "key": "rankBefore",
+              "label": "Day before",
+              "format": "rank",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "previous",
+                "field": "rank"
+              }
+            },
+            {
+              "key": "firstInRecords",
+              "label": "First in our records",
+              "format": "yes_no",
+              "align": "right",
+              "origin": {
+                "kind": "history",
+                "test": "no_earlier_top10"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/ios/tiktok-pro-events/6741796873",
+              "cells": {
+                "app": "TikTok Pro - Events",
+                "rankNow": 1,
+                "rankBefore": null,
+                "firstInRecords": false
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 234,
+                  "recordedAt": "2026-06-25 02:17:29",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706136,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": null,
+                  "recordedAt": null,
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": "not_in_top_100"
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": "/apps/ios/reco-social/6742024490",
+              "cells": {
+                "app": "Reco Social",
+                "rankNow": 10,
+                "rankBefore": 23,
+                "firstInRecords": true
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 341,
+                  "recordedAt": "2026-11-02 09:06:49",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7706142,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": 7676209,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 2
+        },
+        "context": "A dash means outside the top 100 the day before; \"first in our records\" only covers our US App Store top free data since 3 May 2026, which has gaps."
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "top10_entries:google:us:top-free",
+        "kind": "top10_entries",
+        "title": "New in the top 10, US Google Play top free",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+        "runs": [
+          {
+            "runId": 398,
+            "role": "current",
+            "slot": "2026-11-05 00:00:00",
+            "startedAt": "2026-11-05 00:00:16",
+            "finishedAt": "2026-11-05 00:42:39"
+          },
+          {
+            "runId": 396,
+            "role": "previous",
+            "slot": "2026-11-04 00:00:00",
+            "startedAt": "2026-11-04 00:00:13",
+            "finishedAt": "2026-11-04 00:38:16"
+          }
+        ],
+        "answer": "2 apps entered the top 10 of the US Google Play top free chart, led by TikTok Pro - Events at #3.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "rankNow",
+              "label": "Rank now",
+              "format": "rank",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "rank"
+              }
+            },
+            {
+              "key": "rankBefore",
+              "label": "Day before",
+              "format": "rank",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "previous",
+                "field": "rank"
+              }
+            },
+            {
+              "key": "firstInRecords",
+              "label": "First in our records",
+              "format": "yes_no",
+              "align": "right",
+              "origin": {
+                "kind": "history",
+                "test": "no_earlier_top10"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/android/tiktok-pro/com.ss.android.ugc.tiktok.pro",
+              "cells": {
+                "app": "TikTok Pro - Events",
+                "rankNow": 3,
+                "rankBefore": null,
+                "firstInRecords": false
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 331,
+                  "recordedAt": "2026-11-01 20:27:04",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700038,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": null,
+                  "recordedAt": null,
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": "not_in_top_100"
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": "/apps/android/dealseek/com.dealseekorg.dealseek",
+              "cells": {
+                "app": "DealSeek: Coupons & Discounts",
+                "rankNow": 4,
+                "rankBefore": null,
+                "firstInRecords": false
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 337,
+                  "recordedAt": "2026-11-02 02:49:21",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7700039,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "chart_rankings",
+                  "id": null,
+                  "recordedAt": null,
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": "not_in_top_100"
+                }
+              ]
+            }
+          ],
+          "total": 2
+        },
+        "context": "A dash means outside the top 100 the day before; \"first in our records\" only covers our US Google Play top free data since 11 May 2026, which has gaps."
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "new_versions",
+        "kind": "new_versions",
+        "title": "New versions",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+        "runs": [
+          {
+            "runId": 396,
+            "role": "previous",
+            "slot": "2026-11-04 00:00:00",
+            "startedAt": "2026-11-04 00:00:13",
+            "finishedAt": "2026-11-04 00:38:16"
+          },
+          {
+            "runId": 397,
+            "role": "window",
+            "slot": "2026-11-04 12:00:00",
+            "startedAt": "2026-11-04 12:06:34",
+            "finishedAt": "2026-11-04 12:45:39"
+          },
+          {
+            "runId": 398,
+            "role": "current",
+            "slot": "2026-11-05 00:00:00",
+            "startedAt": "2026-11-05 00:00:16",
+            "finishedAt": "2026-11-05 00:42:39"
+          }
+        ],
+        "answer": "44 new public versions from 44 apps were first seen between the 00:00 UTC runs on 4 Nov 2026 and 5 Nov 2026.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "store",
+              "label": "Store",
+              "format": "store",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "store"
+              }
+            },
+            {
+              "key": "version",
+              "label": "Version",
+              "format": "version",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "version"
+              }
+            },
+            {
+              "key": "previous",
+              "label": "Previous",
+              "format": "version",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "previous",
+                "field": "version"
+              }
+            },
+            {
+              "key": "firstSeen",
+              "label": "First seen",
+              "format": "utc_time",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "first_seen_at"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/ios/canva-ai-photo-video-editor/897446215",
+              "cells": {
+                "app": "Canva AI Photo & Video Editor",
+                "store": "apple",
+                "version": "4.234.0",
+                "previous": "4.233.0",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 272,
+                  "recordedAt": "2026-10-24 19:47:32",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18726,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 16661,
+                  "recordedAt": "2026-10-28 12:11:54",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": "/apps/ios/capcut/1500855883",
+              "cells": {
+                "app": "CapCut: Photo & Video Editor",
+                "store": "apple",
+                "version": "20.0.0",
+                "previous": "19.9.0",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 256,
+                  "recordedAt": "2026-10-24 19:20:40",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18727,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 16416,
+                  "recordedAt": "2026-10-27 12:18:50",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 3,
+              "tied": false,
+              "href": "/apps/ios/dramawave/6670430706",
+              "cells": {
+                "app": "DramaWave - Dramas & Reels",
+                "store": "apple",
+                "version": "2.0.51",
+                "previous": "2.0.41",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 278,
+                  "recordedAt": "2026-10-24 19:57:24",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18739,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 16668,
+                  "recordedAt": "2026-10-28 12:11:54",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 4,
+              "tied": false,
+              "href": "/apps/ios/gemini/6477489729",
+              "cells": {
+                "app": "Google Gemini",
+                "store": "apple",
+                "version": "1.2026.4370401",
+                "previous": "1.2026.4262206",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 4,
+                  "recordedAt": "2026-05-03 23:35:33",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18715,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 17027,
+                  "recordedAt": "2026-10-30 00:18:01",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 5,
+              "tied": false,
+              "href": "/apps/ios/google-home/680819774",
+              "cells": {
+                "app": "Google Home",
+                "store": "apple",
+                "version": "4.37.27",
+                "previous": "4.36.23",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 72,
+                  "recordedAt": "2026-06-19 04:24:48",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18756,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 18263,
+                  "recordedAt": "2026-11-03 00:00:12",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 6,
+              "tied": false,
+              "href": "/apps/ios/gowish/1605170923",
+              "cells": {
+                "app": "GoWish - Your Digital Wishlist",
+                "store": "apple",
+                "version": "9.2.6",
+                "previous": "9.2.5",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 335,
+                  "recordedAt": "2026-11-02 02:01:29",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18761,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 18266,
+                  "recordedAt": "2026-11-03 00:00:12",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 7,
+              "tied": false,
+              "href": "/apps/android/grok-bot/ai.x.grok.bot",
+              "cells": {
+                "app": "Grok Bot",
+                "store": "google",
+                "version": "1.19.1",
+                "previous": "1.19.0",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 246,
+                  "recordedAt": "2026-09-02 11:08:29",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18647,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 17872,
+                  "recordedAt": "2026-11-02 12:00:09",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 8,
+              "tied": false,
+              "href": "/apps/ios/grok-bot/6794501026",
+              "cells": {
+                "app": "Grok Bot",
+                "store": "apple",
+                "version": "1.19.1",
+                "previous": "1.19.0",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 245,
+                  "recordedAt": "2026-08-11 23:55:17",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18717,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 16656,
+                  "recordedAt": "2026-10-28 12:11:54",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 9,
+              "tied": false,
+              "href": "/apps/ios/microsoft-copilot/541164041",
+              "cells": {
+                "app": "Microsoft Copilot",
+                "store": "apple",
+                "version": "2.115.3",
+                "previous": "2.115.2",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 254,
+                  "recordedAt": "2026-10-24 19:15:35",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18782,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 16202,
+                  "recordedAt": "2026-10-26 12:20:57",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 10,
+              "tied": false,
+              "href": "/apps/ios/muse-from-meta/6760173601",
+              "cells": {
+                "app": "Muse from Meta",
+                "store": "apple",
+                "version": "14.2",
+                "previous": "14.1",
+                "firstSeen": "2026-11-04 12:06:34"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 325,
+                  "recordedAt": "2026-10-29 09:48:37",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 18787,
+                  "recordedAt": "2026-11-04 12:06:34",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 17948,
+                  "recordedAt": "2026-11-02 12:00:09",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 44
+        },
+        "context": "Listed in the order our collector first saw them; pre-release and internal builds are never included."
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "build_changes",
+        "kind": "build_changes",
+        "title": "Size and minimum OS changes",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+        "runs": [
+          {
+            "runId": 396,
+            "role": "previous",
+            "slot": "2026-11-04 00:00:00",
+            "startedAt": "2026-11-04 00:00:13",
+            "finishedAt": "2026-11-04 00:38:16"
+          },
+          {
+            "runId": 397,
+            "role": "window",
+            "slot": "2026-11-04 12:00:00",
+            "startedAt": "2026-11-04 12:06:34",
+            "finishedAt": "2026-11-04 12:45:39"
+          },
+          {
+            "runId": 398,
+            "role": "current",
+            "slot": "2026-11-05 00:00:00",
+            "startedAt": "2026-11-05 00:00:16",
+            "finishedAt": "2026-11-05 00:42:39"
+          }
+        ],
+        "answer": "Roku Remote (Official) 14.2.0 had the biggest download size change, from 240.1 MB to 268.4 MB.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "version",
+              "label": "Version",
+              "format": "version",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "version"
+              }
+            },
+            {
+              "key": "sizeNow",
+              "label": "Size",
+              "format": "bytes",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "size_bytes"
+              }
+            },
+            {
+              "key": "sizeBefore",
+              "label": "Size before",
+              "format": "bytes",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "previous",
+                "field": "size_bytes"
+              }
+            },
+            {
+              "key": "sizeChange",
+              "label": "Change",
+              "format": "signed_bytes",
+              "align": "right",
+              "origin": {
+                "kind": "difference",
+                "minuend": "sizeNow",
+                "subtrahend": "sizeBefore"
+              }
+            },
+            {
+              "key": "minOsNow",
+              "label": "Min OS",
+              "format": "os",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "min_os"
+              }
+            },
+            {
+              "key": "minOsBefore",
+              "label": "Min OS before",
+              "format": "os",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "previous",
+                "field": "min_os"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/ios/roku-remote-official/482066631",
+              "cells": {
+                "app": "Roku Remote (Official)",
+                "version": "14.2.0",
+                "sizeNow": 268435456,
+                "sizeBefore": 240123904,
+                "sizeChange": 28311552,
+                "minOsNow": "17.0",
+                "minOsBefore": "16.0"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 342,
+                  "recordedAt": "2026-11-02 09:39:07",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 19038,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 18285,
+                  "recordedAt": "2026-11-03 00:00:12",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": "/apps/ios/waze-navigation-live-traffic/323229106",
+              "cells": {
+                "app": "Waze Navigation & Live Traffic",
+                "version": "5.27.0.0",
+                "sizeNow": 235929600,
+                "sizeBefore": 234881024,
+                "sizeChange": 1048576,
+                "minOsNow": "18.0",
+                "minOsBefore": "16.0"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 292,
+                  "recordedAt": "2026-10-24 20:43:43",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "versions",
+                  "id": 19062,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    397,
+                    398
+                  ],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "versions",
+                  "id": 17105,
+                  "recordedAt": "2026-10-30 00:18:01",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 2
+        },
+        "context": "Compared with each app's previous public version; sizes are App Store download sizes (Google Play does not report one) and count when they move by at least 20 MB and 10%."
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "rating_changes",
+        "kind": "rating_changes",
+        "title": "Rating changes",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+        "runs": [
+          {
+            "runId": 398,
+            "role": "current",
+            "slot": "2026-11-05 00:00:00",
+            "startedAt": "2026-11-05 00:00:16",
+            "finishedAt": "2026-11-05 00:42:39"
+          },
+          {
+            "runId": 396,
+            "role": "previous",
+            "slot": "2026-11-04 00:00:00",
+            "startedAt": "2026-11-04 00:00:13",
+            "finishedAt": "2026-11-04 00:38:16"
+          }
+        ],
+        "answer": "Le Chat by Mistral AI had the biggest average rating change, from 4.50 to 4.57.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "store",
+              "label": "Store",
+              "format": "store",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "store"
+              }
+            },
+            {
+              "key": "ratingNow",
+              "label": "Rating",
+              "format": "rating",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "rating"
+              }
+            },
+            {
+              "key": "ratingBefore",
+              "label": "Day before",
+              "format": "rating",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "previous",
+                "field": "rating"
+              }
+            },
+            {
+              "key": "change",
+              "label": "Change",
+              "format": "signed_rating",
+              "align": "right",
+              "origin": {
+                "kind": "difference",
+                "minuend": "ratingNow",
+                "subtrahend": "ratingBefore"
+              }
+            },
+            {
+              "key": "ratingsNow",
+              "label": "Ratings",
+              "format": "int",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "rating_count"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/android/le-chat/ai.mistral.chat",
+              "cells": {
+                "app": "Le Chat by Mistral AI",
+                "store": "google",
+                "ratingNow": 4.5675673,
+                "ratingBefore": 4.5,
+                "change": 0.067567,
+                "ratingsNow": 48680
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 17,
+                  "recordedAt": "2026-05-22 00:29:32",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "snapshots",
+                  "id": 22809,
+                  "recordedAt": "2026-11-05 00:00:16",
+                  "runIds": [
+                    398
+                  ],
+                  "slot": "2026-11-05 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "previous",
+                  "table": "snapshots",
+                  "id": 22319,
+                  "recordedAt": "2026-11-04 00:00:13",
+                  "runIds": [
+                    396
+                  ],
+                  "slot": "2026-11-04 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 1
+        },
+        "context": "Ratings come from one storefront (US), not a global average; only apps with at least 50 ratings on both days and a change of 0.05 or more are listed."
+      }
+    ],
+    "gate": {
+      "currentSlot": "2026-11-05 00:00:00",
+      "previousSlot": "2026-11-04 00:00:00",
+      "currentRunIds": [
+        398
+      ],
+      "previousRunIds": [
+        396
+      ],
+      "windowRunIds": [
+        397
+      ],
+      "notes": []
+    },
+    "stats": {
+      "appsConsidered": 263,
+      "excludedApps": 0,
+      "dedupedRows": 0,
+      "skipped": {
+        "version_without_previous": 37,
+        "version_at_tracking_start": 7
+      }
+    }
+  },
+  "meta": {
+    "date": "2026-11-05",
+    "status": "published",
+    "schema": "tdn.daily-feed.v1",
+    "count": 7
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "data": {
+    "schema": "tdn.feed-metrics.v1",
+    "date": "2026-11-05",
+    "slot": "2026-11-05 00:00:00",
+    "scope": "Among the apps TechDevNotes tracks",
+    "freshness": "data from the 00:00 UTC run, 5 Nov 2026",
+    "filters": {
+      "store": "apple",
+      "genre": null,
+      "kind": null
+    },
+    "genres": {
+      "apple": [],
+      "google": []
+    },
+    "items": [],
+    "skipped": [
+      {
+        "kind": "size_percentiles",
+        "store": "apple",
+        "reason": "149 of 149 apps have no store facts stored for the run"
+      },
+      {
+        "kind": "min_os_distribution",
+        "store": "apple",
+        "reason": "149 of 149 apps have no store facts stored for the run"
+      },
+      {
+        "kind": "min_os_newest",
+        "store": "apple",
+        "reason": "149 of 149 apps have no store facts stored for the run"
+      },
+      {
+        "kind": "chart_release_dates",
+        "store": "apple",
+        "reason": "149 of 149 apps have no store facts stored for the run"
+      }
+    ]
+  },
+  "meta": {
+    "date": "2026-11-05",
+    "schema": "tdn.feed-metrics.v1",
+    "count": 0,
+    "skipped": 4
+  }
+}
