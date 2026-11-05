@@ -24,6 +24,7 @@ import {
   type TdnClient,
   type TechStackRow,
 } from './tdn.ts'
+import { FeedDataError, mapChartReleaseDates, mapSizePercentiles, mapTop10Returns, type FeedMapped } from './feed.ts'
 
 export type Kind = 'headline' | 'leaderboard' | 'head-to-head' | 'bump' | 'dumbbell'
 
@@ -832,6 +833,32 @@ export function mapSdkKinds(rankingsBody: unknown, detailBody: unknown, app: Ran
   }
 }
 
+function fromFeed(templateId: string, mapped: FeedMapped): LiveChart {
+  return {
+    templateId,
+    model: mapped.model as Model,
+    text: { ...mapped.text, source: mapped.source },
+    dataTime: mapped.dataTime,
+    numbers: mapped.numbers,
+    coverage: mapped.coverage,
+  }
+}
+
+function loadFeed(
+  mapper: (body: unknown) => FeedMapped,
+  load: (client: TdnClient) => Promise<unknown>,
+  id: string,
+): LiveTemplate['load'] {
+  return async (client) => {
+    try {
+      return fromFeed(id, mapper(await load(client)))
+    } catch (error) {
+      if (error instanceof FeedDataError) throw new NoDataError(error.message)
+      throw error
+    }
+  }
+}
+
 // Templates -------------------------------------------------------------------------------------------------------
 
 const chartsSource = 'public App Store chart data'
@@ -1371,6 +1398,41 @@ export const liveTemplates: LiveTemplate[] = [
       const [apple, google] = await Promise.all([getRankings(client), getRankings(client, true)])
       return finish('widest-gap', bothStores, mapWidestGap(apple, google))
     },
+  },
+  {
+    id: 'feed-size-percentiles',
+    about: 'Live · US App Store, download size percentiles',
+    kind: 'headline',
+    name: 'How large are tracked App Store downloads?',
+    field: 'daily-feed/metrics size_percentiles: mark, size_bytes, app, version',
+    requests: 1,
+    load: loadFeed(
+      mapSizePercentiles,
+      (client) => client.get('daily-feed-metrics', { store: 'apple', kind: 'size_percentiles' }),
+      'feed-size-percentiles',
+    ),
+  },
+  {
+    id: 'feed-release-dates',
+    about: 'Live · US App Store, chart release dates',
+    kind: 'leaderboard',
+    name: 'Which tracked apps on the US App Store top free chart are newest?',
+    field: 'daily-feed/metrics chart_release_dates: released_on (date), rank',
+    requests: 1,
+    load: loadFeed(
+      mapChartReleaseDates,
+      (client) => client.get('daily-feed-metrics', { store: 'apple', kind: 'chart_release_dates' }),
+      'feed-release-dates',
+    ),
+  },
+  {
+    id: 'feed-top10-returns',
+    about: 'Live · US App Store, top 10 returns',
+    kind: 'leaderboard',
+    name: 'Which tracked apps returned to the US App Store top 10?',
+    field: 'daily-feed top10_returns: rankNow, lastTop10 (date), rankThen',
+    requests: 1,
+    load: loadFeed(mapTop10Returns, (client) => client.get('daily-feed'), 'feed-top10-returns'),
   },
 ]
 

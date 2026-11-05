@@ -2,13 +2,14 @@
 // shapes, including the parts the API reference leaves out (movers mixes stores, tech-stack counts can be over 300).
 import { describe, expect, test } from 'vitest'
 import saved from '../fixtures/tdn/live-2026-11-01.json' with { type: 'json' }
-import { fixtureKey } from '../fixtures/tdn/index'
+import { fixtureKey, fixtures } from '../fixtures/tdn/index'
 import { createTdnClient } from '~/lib/charts/tdn'
 import { liveFootnote, liveTemplates, validateLive, type LiveChart } from '~/lib/charts/live'
 
 const answers = saved as Record<string, unknown>
 const savedFetch = async (url: string) => {
-  const body = answers[fixtureKey(url)]
+  const key = fixtureKey(url)
+  const body = answers[key] ?? fixtures[key]
   return body === undefined
     ? { ok: false, status: 404, json: async () => ({ error: 'not saved', code: 'not_found' }) }
     : { ok: true, status: 200, json: async () => structuredClone(body) }

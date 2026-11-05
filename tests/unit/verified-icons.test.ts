@@ -3,7 +3,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import saved from '../fixtures/tdn/live-2026-11-01.json' with { type: 'json' }
-import { fixtureKey } from '../fixtures/tdn/index'
+import { fixtureKey, fixtures } from '../fixtures/tdn/index'
 import { filterRows, type ChartConfig } from '~/lib/charts/config'
 import { parseCsv } from '~/lib/charts/csv'
 import { drawLive } from '~/lib/charts/kinds'
@@ -17,7 +17,12 @@ const APPLE = 'rankings?chart=top-free&country=us&limit=200&store=apple'
 function client(change?: (key: string, body: unknown) => unknown) {
   const fetcher = async (url: string) => {
     const key = fixtureKey(url)
-    let body = answers[key] === undefined ? undefined : structuredClone(answers[key])
+    let body =
+      answers[key] !== undefined
+        ? structuredClone(answers[key])
+        : fixtures[key] !== undefined
+          ? structuredClone(fixtures[key])
+          : undefined
     if (body !== undefined && change) body = change(key, body)
     return body === undefined
       ? { ok: false, status: 404, json: async () => ({ error: 'not saved', code: 'not_found' }) }

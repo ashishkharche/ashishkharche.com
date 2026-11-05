@@ -36,7 +36,18 @@ describe('readDailyFeed', () => {
           status: 'published',
           scope: 'Among the apps TechDevNotes tracks',
           freshness: 'data from the 00:00 UTC run, 5 Nov 2026',
-          items: [null, { kind: 'x' }, { schema: 'tdn.stat-answer.v1', id: 'a', kind: 'k', title: 'T', answer: 'A.', table: { columns: [], rows: [], total: 0 } }],
+          items: [
+            null,
+            { kind: 'x' },
+            {
+              schema: 'tdn.stat-answer.v1',
+              id: 'a',
+              kind: 'k',
+              title: 'T',
+              answer: 'A.',
+              table: { columns: [], rows: [], total: 0 },
+            },
+          ],
         },
       })?.items,
     ).toHaveLength(1)

@@ -4366,5 +4366,410 @@
     "count": 35,
     "total": 35,
     "nextCursor": null
+  },
+  "daily-feed-metrics?kind=size_percentiles&store=apple": {
+    "data": {
+      "schema": "tdn.feed-metrics.v1",
+      "date": "2026-11-06",
+      "slot": "2026-11-06 00:00:00",
+      "scope": "Among the apps TechDevNotes tracks",
+      "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+      "filters": {
+        "store": "apple",
+        "genre": null,
+        "kind": "size_percentiles"
+      },
+      "genres": {
+        "apple": [
+          {
+            "genre": "Photo & Video",
+            "apps": 40
+          }
+        ],
+        "google": []
+      },
+      "items": [
+        {
+          "schema": "tdn.stat-answer.v1",
+          "id": "size_percentiles:apple:us",
+          "kind": "size_percentiles",
+          "title": "App Store download size percentiles",
+          "answer": "Among the apps TechDevNotes tracks, the largest App Store download is 240.0 MB (Extra 18).",
+          "scope": "Among the apps TechDevNotes tracks",
+          "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+          "context": "Nearest-rank percentiles among sized apps.",
+          "table": {
+            "columns": [
+              {
+                "key": "mark",
+                "label": "Mark",
+                "format": "text",
+                "align": "left"
+              },
+              {
+                "key": "size",
+                "label": "Size",
+                "format": "bytes",
+                "align": "right",
+                "origin": {
+                  "kind": "source",
+                  "role": "current",
+                  "field": "size_bytes"
+                }
+              },
+              {
+                "key": "app",
+                "label": "App",
+                "format": "text",
+                "align": "left",
+                "origin": {
+                  "kind": "source",
+                  "role": "app",
+                  "field": "name"
+                }
+              },
+              {
+                "key": "version",
+                "label": "Version",
+                "format": "version",
+                "align": "left",
+                "origin": {
+                  "kind": "source",
+                  "role": "current",
+                  "field": "version"
+                }
+              }
+            ],
+            "rows": [
+              {
+                "position": 1,
+                "tied": false,
+                "href": "/apps/ios/extra-18/1001",
+                "cells": {
+                  "mark": "Largest",
+                  "size": 240000000,
+                  "app": "Extra 18",
+                  "version": "1.0"
+                },
+                "sources": []
+              },
+              {
+                "position": 2,
+                "tied": false,
+                "href": "/apps/ios/p90/1002",
+                "cells": {
+                  "mark": "90th percentile",
+                  "size": 180000000,
+                  "app": "P90 App",
+                  "version": "2.0"
+                },
+                "sources": []
+              },
+              {
+                "position": 3,
+                "tied": false,
+                "href": "/apps/ios/p75/1003",
+                "cells": {
+                  "mark": "75th percentile",
+                  "size": 120000000,
+                  "app": "P75 App",
+                  "version": "1.1"
+                },
+                "sources": []
+              },
+              {
+                "position": 4,
+                "tied": false,
+                "href": "/apps/ios/median/1004",
+                "cells": {
+                  "mark": "Median",
+                  "size": 80000000,
+                  "app": "Median App",
+                  "version": "3.0"
+                },
+                "sources": []
+              },
+              {
+                "position": 5,
+                "tied": false,
+                "href": "/apps/ios/p25/1005",
+                "cells": {
+                  "mark": "25th percentile",
+                  "size": 40000000,
+                  "app": "P25 App",
+                  "version": "1.0"
+                },
+                "sources": []
+              },
+              {
+                "position": 6,
+                "tied": false,
+                "href": "/apps/ios/p10/1006",
+                "cells": {
+                  "mark": "10th percentile",
+                  "size": 20000000,
+                  "app": "P10 App",
+                  "version": "1.0"
+                },
+                "sources": []
+              }
+            ],
+            "total": 6
+          },
+          "runs": []
+        }
+      ],
+      "skipped": []
+    },
+    "meta": {
+      "date": "2026-11-06",
+      "schema": "tdn.feed-metrics.v1",
+      "count": 1,
+      "skipped": 0
+    }
+  },
+  "daily-feed-metrics?kind=chart_release_dates&store=apple": {
+    "data": {
+      "schema": "tdn.feed-metrics.v1",
+      "date": "2026-11-06",
+      "slot": "2026-11-06 00:00:00",
+      "scope": "Among the apps TechDevNotes tracks",
+      "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+      "filters": {
+        "store": "apple",
+        "genre": null,
+        "kind": "chart_release_dates"
+      },
+      "genres": {
+        "apple": [
+          {
+            "genre": "Photo & Video",
+            "apps": 40
+          }
+        ],
+        "google": []
+      },
+      "items": [
+        {
+          "schema": "tdn.stat-answer.v1",
+          "id": "chart_release_dates:apple:us:top-free",
+          "kind": "chart_release_dates",
+          "title": "Newest tracked apps in the US App Store top free chart",
+          "answer": "Among the apps TechDevNotes tracks, Echo Photos is the newest on the US App Store top free chart, released on 1 Oct 2026.",
+          "scope": "Among the apps TechDevNotes tracks",
+          "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+          "context": "Original release dates from store facts.",
+          "table": {
+            "columns": [
+              {
+                "key": "app",
+                "label": "App",
+                "format": "text",
+                "align": "left",
+                "origin": {
+                  "kind": "source",
+                  "role": "app",
+                  "field": "name"
+                }
+              },
+              {
+                "key": "released",
+                "label": "Released",
+                "format": "date",
+                "align": "right",
+                "origin": {
+                  "kind": "source",
+                  "role": "current",
+                  "field": "released_on"
+                }
+              },
+              {
+                "key": "rankNow",
+                "label": "Rank now",
+                "format": "rank",
+                "align": "right",
+                "origin": {
+                  "kind": "source",
+                  "role": "current",
+                  "field": "rank"
+                }
+              }
+            ],
+            "rows": [
+              {
+                "position": 1,
+                "tied": false,
+                "href": "/apps/ios/echo-photos/2001",
+                "cells": {
+                  "app": "Echo Photos",
+                  "released": "2026-10-01",
+                  "rankNow": 9
+                },
+                "sources": [
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 1,
+                    "recordedAt": "2026-11-06 00:00:00",
+                    "runIds": [1],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              },
+              {
+                "position": 2,
+                "tied": false,
+                "href": "/apps/ios/old-notes/2002",
+                "cells": {
+                  "app": "Old Notes",
+                  "released": "2025-01-15",
+                  "rankNow": 3
+                },
+                "sources": []
+              }
+            ],
+            "total": 2
+          },
+          "runs": []
+        }
+      ],
+      "skipped": []
+    },
+    "meta": {
+      "date": "2026-11-06",
+      "schema": "tdn.feed-metrics.v1",
+      "count": 1,
+      "skipped": 0
+    }
+  },
+  "daily-feed?": {
+    "data": {
+      "schema": "tdn.daily-feed.v1",
+      "date": "2026-11-06",
+      "status": "published",
+      "generatedAt": "2026-11-06 03:10:00",
+      "publishAtUtc": "03:00 UTC",
+      "scope": "Among the apps TechDevNotes tracks",
+      "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+      "summary": {
+        "schema": "tdn.stat-answer.v1",
+        "id": "daily_summary:2026-11-06",
+        "kind": "daily_summary",
+        "title": "Today in apps, 6 Nov 2026",
+        "answer": "1 fact passed our checks for 6 Nov 2026.",
+        "table": {
+          "columns": [],
+          "rows": [],
+          "total": 0
+        }
+      },
+      "items": [
+        {
+          "schema": "tdn.stat-answer.v1",
+          "id": "top10_returns:apple:us:top-free",
+          "kind": "top10_returns",
+          "title": "Back in the top 10, US App Store top free",
+          "answer": "Among the apps TechDevNotes tracks, Delta Chat is back in the US App Store top 10 at #7, last there on 1 Nov 2026.",
+          "scope": "Among the apps TechDevNotes tracks",
+          "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+          "context": "Last top-10 day from prior complete runs.",
+          "table": {
+            "columns": [
+              {
+                "key": "app",
+                "label": "App",
+                "format": "text",
+                "align": "left",
+                "origin": {
+                  "kind": "source",
+                  "role": "app",
+                  "field": "name"
+                }
+              },
+              {
+                "key": "rankNow",
+                "label": "Rank now",
+                "format": "rank",
+                "align": "right",
+                "origin": {
+                  "kind": "source",
+                  "role": "current",
+                  "field": "rank"
+                }
+              },
+              {
+                "key": "lastTop10",
+                "label": "Last in top 10",
+                "format": "date",
+                "align": "right",
+                "origin": {
+                  "kind": "source",
+                  "role": "history",
+                  "field": "slot"
+                }
+              },
+              {
+                "key": "rankThen",
+                "label": "Rank then",
+                "format": "rank",
+                "align": "right",
+                "origin": {
+                  "kind": "source",
+                  "role": "history",
+                  "field": "rank"
+                }
+              }
+            ],
+            "rows": [
+              {
+                "position": 1,
+                "tied": false,
+                "href": "/apps/ios/delta-chat/3001",
+                "cells": {
+                  "app": "Delta Chat",
+                  "rankNow": 7,
+                  "lastTop10": "2026-11-01 00:00:00",
+                  "rankThen": 4
+                },
+                "sources": [
+                  {
+                    "role": "history",
+                    "table": "chart_rankings",
+                    "id": 9,
+                    "recordedAt": "2026-11-01 00:00:00",
+                    "runIds": [9],
+                    "slot": "2026-11-01 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              }
+            ],
+            "total": 1
+          },
+          "runs": []
+        }
+      ],
+      "gate": {
+        "currentSlot": "2026-11-06 00:00:00",
+        "previousSlot": "2026-11-05 00:00:00",
+        "currentRunIds": [1],
+        "previousRunIds": [2],
+        "windowRunIds": [],
+        "notes": []
+      },
+      "stats": {
+        "appsConsidered": 10,
+        "excludedApps": 0,
+        "dedupedRows": 0,
+        "skipped": {}
+      }
+    },
+    "meta": {
+      "date": "2026-11-06",
+      "status": "published",
+      "schema": "tdn.daily-feed.v1",
+      "count": 1
+    }
   }
 }

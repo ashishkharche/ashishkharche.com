@@ -801,8 +801,10 @@ export function readFeedMetrics(body: unknown): FeedMetrics | undefined {
   const scope = str(data.scope)
   const freshness = str(data.freshness)
   if (!date || !slot || !schema || !scope || !freshness) return undefined
-  const filtersRaw = data.filters && typeof data.filters === 'object' && !Array.isArray(data.filters) ? (data.filters as Raw) : {}
-  const genresRaw = data.genres && typeof data.genres === 'object' && !Array.isArray(data.genres) ? (data.genres as Raw) : {}
+  const filtersRaw =
+    data.filters && typeof data.filters === 'object' && !Array.isArray(data.filters) ? (data.filters as Raw) : {}
+  const genresRaw =
+    data.genres && typeof data.genres === 'object' && !Array.isArray(data.genres) ? (data.genres as Raw) : {}
   const readGenreList = (raw: unknown): Array<{ genre: string; apps: number }> => {
     const out: Array<{ genre: string; apps: number }> = []
     for (const g of Array.isArray(raw) ? raw : []) {

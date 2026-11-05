@@ -84,9 +84,7 @@ describe('allowlist', () => {
       search: '?store=apple',
       units: 1,
     })
-    expect(
-      q('endpoint=daily-feed-metrics&store=apple&kind=chart_release_dates&genre=Productivity'),
-    ).toMatchObject({
+    expect(q('endpoint=daily-feed-metrics&store=apple&kind=chart_release_dates&genre=Productivity')).toMatchObject({
       ok: true,
       path: '/daily-feed/metrics',
       search: '?genre=Productivity&kind=chart_release_dates&store=apple',
