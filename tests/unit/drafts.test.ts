@@ -43,7 +43,7 @@ describe('the private drafts board', () => {
   it('shows one version of each post, with real images', () => {
     const ids = draftPosts.map((p) => p.id)
     expect(new Set(ids).size).toBe(ids.length)
-    expect(ids).toHaveLength(34)
+    expect(ids).toHaveLength(41)
     // Dropped as duplicates in the 3 Nov audit (source files kept).
     expect(ids).not.toContain('wd-b2-1')
     expect(ids).not.toContain('wd-b2-5')
@@ -51,8 +51,12 @@ describe('the private drafts board', () => {
       for (const img of post.images) expect(existsSync(join('public', img.src)), img.src).toBe(true)
       // A post with no image either waits for media or is text only on purpose (D2, D3 since the 3 Nov cross-check).
       if (post.status === 'waiting') expect(post.images, post.id).toHaveLength(0)
+      // An AI coding tools idea that still needs a check gets its media once the check is done.
       if (post.images.length === 0)
-        expect(post.status === 'waiting' || post.media.join() === 'text', post.id).toBe(true)
+        expect(
+          post.status === 'waiting' || post.status === 'needs-check' || post.media.join() === 'text',
+          post.id,
+        ).toBe(true)
       expect(post.length).toBe(lengthOf(post.chars))
     }
   })
@@ -147,6 +151,54 @@ describe('the Data posts (StatMuse-style tech and app stats)', () => {
   })
 })
 
+describe('the AI coding tools ideas', () => {
+  const ai = draftPosts.filter((p) => p.topics.includes('ai-tools'))
+
+  it('has ai-1 to ai-7 in rank order, each with a title, text, media plan and status', () => {
+    expect(ai.map((p) => p.id)).toEqual(['ai-1', 'ai-2', 'ai-3', 'ai-4', 'ai-5', 'ai-6', 'ai-7'])
+    expect(ai.map((p) => p.rank)).toEqual([1, 2, 3, 4, 5, 6, 7])
+    expect(statuses['needs-check']).toBe('Needs check')
+    expect(Object.fromEntries(ai.map((p) => [p.id, p.status]))).toEqual({
+      'ai-1': 'waiting',
+      'ai-2': 'needs-check',
+      'ai-3': 'waiting',
+      'ai-4': 'needs-check',
+      'ai-5': 'needs-check',
+      'ai-6': 'ready',
+      'ai-7': 'waiting',
+    })
+    for (const post of ai) {
+      expect(post.primary, post.id).toBe('ai-tools')
+      expect(post.title, post.id).not.toBe('')
+      expect(post.mediaPlan, post.id).not.toBe('')
+      expect(post.freshUntil, post.id).not.toBe('')
+      expect(post.firstCommentSources, post.id).not.toBe('')
+      expect(post.images, post.id).toHaveLength(0)
+      expect(post.text, post.id).not.toMatch(/https?:\/\/|Sources|^#/m)
+      expect(post.length).toBe(lengthOf(post.chars))
+    }
+    // Newest first keeps the ranks together and in order, at the top of the board.
+    const newest = arrange(draftPosts, parseFilters('')).flatMap((s) => s.posts.map((p) => p.id))
+    expect(newest.slice(0, 7)).toEqual(ai.map((p) => p.id))
+  })
+
+  it('flags the Grok posts and leads idea 1 with the fact', () => {
+    expect(ai.filter((p) => p.caution).map((p) => p.id)).toEqual(['ai-4', 'ai-5'])
+    expect(ai[0]?.text).toMatch(/^Five AI coding CLIs, unpacked from their Linux builds\./)
+    expect(ai[0]?.text).not.toMatch(/\bI unpacked\b/)
+  })
+
+  it('cites public sources only and names nothing from the private repo', () => {
+    const all = JSON.stringify(ai)
+    expect(all).not.toMatch(/manager-production|github\.com\/androiddevnotes/i)
+    for (const post of ai)
+      for (const url of (post.firstCommentSources ?? '').match(/https:\/\/\S+/g) ?? [])
+        expect(url, post.id).toMatch(
+          /^https:\/\/(github\.com\/google-gemini\/gemini-cli\/|www\.npmjs\.com\/package\/|code\.claude\.com\/docs\/|developers\.googleblog\.com\/)/,
+        )
+  })
+})
+
 describe('drafts filters', () => {
   it('round-trips through the query string', () => {
     const f = parseFilters(
@@ -210,19 +262,19 @@ describe('drafts filters', () => {
     expect(parseFilters('?status=checked').status).toEqual([])
     // After the 3 Nov audit pass and its re-check, every post not waiting for media is Ready; no cross-check status is left.
     // The Data posts (not Workout Director posts, so no WD cross-check) have their own status, Data check.
-    expect(Object.keys(statuses).sort()).toEqual(['data-check', 'ready', 'waiting'])
+    expect(Object.keys(statuses).sort()).toEqual(['data-check', 'needs-check', 'ready', 'waiting'])
     expect(parseFilters('?status=checking').status).toEqual([])
     const ready = draftPosts.filter((p) => matches(p, parseFilters('?status=ready')))
-    expect(ready).toHaveLength(25)
+    expect(ready).toHaveLength(26)
     expect(ready.map((p) => p.id)).not.toContain('wd-b2-3')
     for (const post of draftPosts) expect(post.version, post.id).not.toMatch(/awaiting/)
     const waiting = draftPosts.filter((p) => matches(p, parseFilters('?status=waiting')))
-    expect(waiting.map((p) => p.id).sort()).toEqual(['wd-b2-3'])
+    expect(waiting.map((p) => p.id).sort()).toEqual(['ai-1', 'ai-3', 'ai-7', 'wd-b2-3'])
     expect(draftPosts.filter((p) => matches(p, parseFilters('?q=app_update_required'))).map((p) => p.id)).toEqual([
       'wd-b2-2',
     ])
     const grouped = arrange(draftPosts, parseFilters('?sort=topic'))
-    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(34)
+    expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(41)
     const newest = arrange(draftPosts, none)[0]?.posts ?? []
     expect((newest[0]?.updated ?? '') >= (newest.at(-1)?.updated ?? '')).toBe(true)
   })

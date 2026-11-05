@@ -37,8 +37,9 @@ test('filters, search and sort update the list and the URL', async ({ page }) =>
   await page.waitForLoadState('networkidle')
   await page.getByRole('button', { name: /^Waiting for media/ }).click()
   await expect(page).toHaveURL(/\?status=waiting$/)
-  await expect(page.locator('[data-draft]')).toHaveCount(1)
-  await expect(page.getByRole('status')).toHaveText(`Showing 1 of ${draftPosts.length} posts.`)
+  const waiting = draftPosts.filter((p) => p.status === 'waiting').length
+  await expect(page.locator('[data-draft]')).toHaveCount(waiting)
+  await expect(page.getByRole('status')).toHaveText(`Showing ${waiting} of ${draftPosts.length} posts.`)
   await page.getByRole('button', { name: 'Clear filters' }).click()
   await page.getByLabel('Search', { exact: true }).fill('app_update_required')
   await expect(page.locator('[data-draft]')).toHaveCount(1)
@@ -152,4 +153,20 @@ test('each image has a full quality PNG download, and the goblet credit is a cap
   }
   await expect(page.locator('#wd-b2-4 [data-caption]')).toHaveText(/Taco Fleur, Wikimedia Commons, CC BY-SA 4\.0\./)
   await expect(page.locator('[data-paste="wd-b2-4"]')).not.toContainText('Taco Fleur')
+})
+
+test('the AI coding tools section lists the ranked ideas and links to each card', async ({ page }) => {
+  await page.goto(`${draftsPath}#ai-coding-tools`)
+  const section = page.locator('#ai-coding-tools')
+  await expect(section.getByRole('heading', { level: 2, name: 'AI coding tools: ranked ideas' })).toBeVisible()
+  await expect(section.locator('[data-ai-ranked] li')).toHaveCount(7)
+  await expect(section.locator('[data-ai-dont-post] li')).toHaveCount(6)
+  await expect(section.locator('[data-ai-later] li')).toHaveCount(2)
+  await expect(page.locator('[data-caution]')).toHaveCount(2)
+  await expect(page.locator('[data-media-plan]')).toHaveCount(7)
+  await section.getByRole('link', { name: 'Gemini CLI’s README drops the free tier' }).click()
+  await expect(page).toHaveURL(/#ai-6$/)
+  await expect(page.locator('#ai-6')).toBeInViewport()
+  await page.goto(`${draftsPath}?topic=coach`)
+  await expect(page.locator('#ai-coding-tools')).toHaveCount(0)
 })

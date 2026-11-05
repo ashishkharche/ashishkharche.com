@@ -8,6 +8,7 @@ import { wdBatch5 } from '~/content/linkedinWdBatch5'
 import { wdBatch6 } from '~/content/linkedinWdBatch6'
 import { auditTexts, voiceRewritten } from '~/content/linkedinAudit'
 import { dataBatch1, type DataPost } from '~/content/linkedinData'
+import { aiIdeas, type AiIdea } from '~/content/linkedinAiTools'
 
 /**
  * The private drafts board: one current version of each LinkedIn draft, with what the filters need.
@@ -32,6 +33,8 @@ export const topics = {
   charts: 'App Store charts',
   /** StatMuse-style tech and app stats (not Workout Director posts). */
   data: 'Data',
+  /** Ranked post ideas about AI coding CLIs (5 Nov 2026), not Workout Director posts. */
+  'ai-tools': 'AI coding tools',
 } as const
 export type Topic = keyof typeof topics
 export const topicOrder = Object.keys(topics) as Topic[]
@@ -50,11 +53,14 @@ export type Length = keyof typeof lengths
  * Ready to post means cross-checked by WD Engineering and WD Marketing (3 Nov); every WD post not waiting for media is.
  * Data check is for the Data posts, which are not Workout Director posts, so that cross-check does not apply: their
  * least-sure items and stale numbers are checked before posting.
+ * The AI coding tools ideas use Ready to post once their public facts are checked and nothing else is needed,
+ * Waiting for media when only the media is missing, and Needs check while a claim still needs a public source.
  */
 export const statuses = {
   ready: 'Ready to post',
   waiting: 'Waiting for media',
   'data-check': 'Data check',
+  'needs-check': 'Needs check',
 } as const
 export type Status = keyof typeof statuses
 
@@ -96,6 +102,16 @@ export interface DraftPost {
   freshUntil?: string
   /** What the draft's author is least sure of, checked before posting (Data posts). */
   leastSure?: string[]
+  /** AI coding tools ideas: rank in the section, 1 first. */
+  rank?: number
+  /** AI coding tools ideas: the media to make, shown on the card. */
+  mediaPlan?: string
+  /** AI coding tools ideas: what was confirmed against public sources. */
+  publicChecks?: string[]
+  /** AI coding tools ideas: what is still open before posting. */
+  checks?: string[]
+  /** A flag shown on the card, such as a post that touches Grok internals. */
+  caution?: string
   sources: string[]
   /** Review notes: what this version replaces, overlaps with other posts, what is still open. */
   notes: string[]
@@ -798,5 +814,61 @@ function fromData(d: DataPost): DraftPost {
 }
 const data = dataBatch1.map(fromData)
 
+/** Anchor of the AI coding tools section on the board. */
+export const aiSectionId = 'ai-coding-tools'
+
+/**
+ * AI coding tools (5 Nov 2026): ranked post ideas from linkedinAiTools.ts. They share one updated time, so newest first
+ * keeps them in rank order (ties keep board order). Sources are public only and go in the first comment.
+ */
+function fromAi(idea: AiIdea): DraftPost {
+  const chars = [...idea.text].length
+  return {
+    id: `ai-${idea.rank}`,
+    title: idea.title,
+    series: `AI coding tools, rank ${idea.rank}`,
+    version: 'ideas 5 Nov',
+    updated: '2026-11-05T01:30:00Z',
+    updatedLabel: '5 Nov 2026, 01:30 GMT',
+    topics: ['ai-tools'],
+    primary: 'ai-tools',
+    media: idea.media,
+    status: idea.status,
+    chars,
+    length: lengthOf(chars),
+    text: idea.text,
+    images: [],
+    concept: `Ranked idea ${idea.rank} of ${aiIdeas.length} in AI coding tools`,
+    mediaNote: idea.mediaPlan,
+    firstCommentSources: idea.firstComment,
+    freshUntil: idea.freshUntil,
+    rank: idea.rank,
+    mediaPlan: idea.mediaPlan,
+    publicChecks: idea.publicChecks,
+    checks: idea.checks,
+    ...(idea.caution ? { caution: idea.caution } : {}),
+    sources: [
+      'Ranked idea list from Ashish (5 Nov 2026), written up in the StatMuse voice; figures as given.',
+      ...idea.publicChecks.map((c) => `Public check, 5 Nov: ${c}`),
+    ],
+    notes: [
+      'New 5 Nov 2026: AI coding tools, ranked ideas. Not a Workout Director post, so the WD cross-check does not apply.',
+      ...idea.checks.map((c) => `Still to check: ${c}`),
+      ...(idea.notes ?? []),
+    ],
+  }
+}
+const ai = [...aiIdeas].sort((a, b) => a.rank - b.rank).map(fromAi)
+
 /** Every post on the board, in the order they were written. */
-export const draftPosts: DraftPost[] = [...fromV11, ...sampleA, ...b2, ...b3Ordered, ...b4, ...b5, ...b6, ...data]
+export const draftPosts: DraftPost[] = [
+  ...fromV11,
+  ...sampleA,
+  ...b2,
+  ...b3Ordered,
+  ...b4,
+  ...b5,
+  ...b6,
+  ...data,
+  ...ai,
+]

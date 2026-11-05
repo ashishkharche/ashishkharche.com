@@ -3,7 +3,17 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { NotFound } from '~/components/NotFound'
 import { CardFrame, CardNotes, FeedCard, ImageOrder, type Device } from '~/components/LinkedInCard'
-import { draftPosts, draftsSlug, lengths, mediaTypes, statuses, topics, type DraftPost } from '~/content/drafts'
+import {
+  aiSectionId,
+  draftPosts,
+  draftsSlug,
+  lengths,
+  mediaTypes,
+  statuses,
+  topics,
+  type DraftPost,
+} from '~/content/drafts'
+import { aiDontPost, aiLater } from '~/content/linkedinAiTools'
 import {
   arrange,
   counts,
@@ -187,11 +197,7 @@ function Board() {
                         {p.title}
                       </a>{' '}
                       <span {...stylex.props(styles.count)}>
-                        {p.status === 'waiting'
-                          ? 'waiting for media, '
-                          : p.status === 'data-check'
-                            ? 'data check, '
-                            : ''}
+                        {p.status === 'ready' ? '' : `${statuses[p.status].toLowerCase()}, `}
                         {p.chars.toLocaleString('en-GB')} chars
                       </span>
                     </li>
@@ -201,6 +207,8 @@ function Board() {
             ))
           )}
         </nav>
+
+        {!filtered || f.topic.includes('ai-tools') ? <AiSection /> : null}
 
         {sections.map((section) => (
           <section key={section.heading} aria-labelledby={`h-${slug(section.heading)}`} {...stylex.props(styles.list)}>
@@ -339,6 +347,56 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
 
 const noop = () => () => {}
 
+const aiPosts = draftPosts.filter((p) => p.rank !== undefined).sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
+
+/**
+ * The AI coding tools section: the ideas in rank order with their status, what never goes in these posts, and the
+ * lower-priority items that are not cards yet. The cards themselves are in the list below, like every other post.
+ */
+function AiSection() {
+  return (
+    <section id={aiSectionId} aria-labelledby={`${aiSectionId}-title`} {...stylex.props(styles.aiSection)}>
+      <h2 id={`${aiSectionId}-title`} {...stylex.props(styles.h2)}>
+        AI coding tools: ranked ideas
+      </h2>
+      <p {...stylex.props(styles.meta)}>
+        Ranked post ideas, 5 Nov 2026. Sources are public only and go in the first comment. Cards below.
+      </p>
+      <ol {...stylex.props(styles.ul)} data-ai-ranked>
+        {aiPosts.map((p) => (
+          <li key={p.id}>
+            <a href={`#${p.id}`} {...stylex.props(ui.link)}>
+              {p.title}
+            </a>{' '}
+            <span {...stylex.props(styles.count)}>
+              · {statuses[p.status]}
+              {p.caution ? ', Grok caution' : ''}
+            </span>
+          </li>
+        ))}
+      </ol>
+      <div {...stylex.props(styles.dontPost)} data-ai-dont-post>
+        <h3 {...stylex.props(styles.h4)}>Don&apos;t post</h3>
+        <ul {...stylex.props(styles.ul)}>
+          {aiDontPost.map((d) => (
+            <li key={d}>{d}</li>
+          ))}
+        </ul>
+      </div>
+      <div data-ai-later>
+        <h3 {...stylex.props(styles.h4)}>Later</h3>
+        <ul {...stylex.props(styles.ul)}>
+          {aiLater.map((l) => (
+            <li key={l.title}>
+              <strong>{l.title}:</strong> {l.text} {l.check}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
 /**
  * For the Data posts: how long the numbers stay current, what to check before posting, and the sources to post as
  * the first comment (never part of the post text or of Copy for LinkedIn).
@@ -347,6 +405,36 @@ function DataNotes({ post }: { post: DraftPost }) {
   if (!post.freshUntil && !post.firstCommentSources && !post.leastSure?.length) return null
   return (
     <div {...stylex.props(styles.dataNotes)} data-data-notes={post.id}>
+      {post.caution ? (
+        <p {...stylex.props(styles.dataLine, styles.caution)} data-caution={post.id}>
+          <strong>Caution:</strong> {post.caution}
+        </p>
+      ) : null}
+      {post.mediaPlan ? (
+        <p {...stylex.props(styles.dataLine)} data-media-plan={post.id}>
+          <strong>Media plan:</strong> {post.mediaPlan}
+        </p>
+      ) : null}
+      {post.checks?.length ? (
+        <>
+          <h4 {...stylex.props(styles.h4)}>Check before posting</h4>
+          <ul {...stylex.props(styles.ul)} data-checks={post.id}>
+            {post.checks.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+      {post.publicChecks?.length ? (
+        <>
+          <h4 {...stylex.props(styles.h4)}>Checked against public sources (5 Nov)</h4>
+          <ul {...stylex.props(styles.ul)} data-public-checks={post.id}>
+            {post.publicChecks.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </>
+      ) : null}
       {post.freshUntil ? (
         <p {...stylex.props(styles.dataLine)} data-fresh-until={post.id}>
           <strong>Fresh until:</strong> {post.freshUntil.replace(/^Fresh until /, '')}
@@ -658,6 +746,30 @@ const styles = stylex.create({
     overflowWrap: 'anywhere',
   },
   dataLine: { margin: 0 },
+  caution: {
+    paddingBlock: '0.4rem',
+    paddingInline: '0.65rem',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.diagramEdge,
+    borderRadius: '6px',
+  },
+  aiSection: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr)',
+    gap: '0.6rem',
+    maxWidth: '50rem',
+    fontSize: type.meta,
+    lineHeight: 1.55,
+    paddingBlock: '1.25rem',
+    paddingInline: '1.25rem',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.line,
+    borderRadius: '8px',
+    scrollMarginTop: '1rem',
+  },
+  dontPost: { display: 'grid', gap: '0.35rem' },
   paste: {
     margin: 0,
     paddingBlock: '0.8rem',
