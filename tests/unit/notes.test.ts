@@ -71,3 +71,84 @@ describe('noteListSummary', () => {
     expect(noteListSummary({ listLabel: 'Part 1', description: 'Something else. More.' })).toBe('Something else.')
   })
 })
+
+const noteFiles = ['content/notes/workout-director-1.mdx', 'content/notes/workout-director-2.mdx'] as const
+
+/** Prose of a note MDX file: frontmatter and body with fenced code removed. */
+function noteProse(path: string): string {
+  return readFileSync(path, 'utf8').replace(/```[\s\S]*?```/g, '\n')
+}
+
+/**
+ * Clause-joining ", and " / ", or " in the Workout Director notes that are not
+ * Oxford list commas. Mirrored from the drafts voice tests.
+ */
+const noteOxfordAllowlist = [
+  ', and 3D "world" landmarks i',
+  ', and MediaPipe has a switch',
+  ', and MediaPipe’s Pose Landm',
+  ', and a barbell row is not r',
+  ', and a few behaviours aroun',
+  ', and a pole vector says whi',
+  ', and a setup check before t',
+  ', and always if the user men',
+  ', and at first a single move',
+  ', and changes to the counter',
+  ', and compared with the refe',
+  ', and corrective shape keys ',
+  ', and counting keeps going f',
+  ', and each function is bundl',
+  ', and each line set picks so',
+  ', and every rep would depend',
+  ', and ids written with under',
+  ', and it does not go into th',
+  ', and it has not been adopte',
+  ', and it is given the last f',
+  ', and it tries again about a',
+  ', and its data is in Postgre',
+  ', and its render still faile',
+  ', and later reps are judged ',
+  ', and only the measurements ',
+  ', and secondary muscles get ',
+  ', and so is talking with you',
+  ', and spec variants can be s',
+  ', and the 2D joint angles ar',
+  ', and the cut is pushed in b',
+  ', and the model can only req',
+  ', and the reply is spoken.\n\n',
+  ', and they rarely have a mat',
+  ', and use photos only to mea',
+  ', and which data goes over t',
+  ', or runs below 12 frames a ',
+  ', or the hips are already up',
+  ', or when the set ends with ',
+] as const
+
+describe('note voice: apostrophes, Oxford commas and banned words', () => {
+  it('uses a curly apostrophe inside words, never a straight one', () => {
+    const straight = /[A-Za-z]'[A-Za-z]/
+    for (const path of noteFiles) {
+      expect(noteProse(path), path).not.toMatch(straight)
+    }
+  })
+
+  it('has no Oxford comma before the final and/or in a list', () => {
+    const oxford = /, (and|or) /g
+    for (const path of noteFiles) {
+      const text = noteProse(path)
+      for (const match of text.matchAll(oxford)) {
+        const at = match.index ?? -1
+        expect(at, path).toBeGreaterThanOrEqual(0)
+        const from = text.slice(at)
+        const allowed = noteOxfordAllowlist.some((prefix) => from.startsWith(prefix))
+        expect(allowed, `${path}: ${JSON.stringify(from.slice(0, 60))}`).toBe(true)
+      }
+    }
+  })
+
+  it('never says alongside', () => {
+    for (const path of noteFiles) {
+      expect(noteProse(path), path).not.toMatch(/alongside/i)
+    }
+  })
+})
