@@ -9,6 +9,7 @@ import { wdBatch6 } from '~/content/linkedinWdBatch6'
 import { auditTexts, voiceRewritten } from '~/content/linkedinAudit'
 import { dataBatch1, type DataPost } from '~/content/linkedinData'
 import { aiIdeas, type AiIdea } from '~/content/linkedinAiTools'
+import { compactTexts, compactWithheld } from '~/content/linkedinCompact'
 
 /**
  * The private drafts board: one current version of each LinkedIn draft, with what the filters need.
@@ -90,6 +91,8 @@ export interface DraftPost {
   chars: number
   length: Length
   text: string
+  /** The previous detailed paste text, kept as a secondary Longer version on the card. */
+  longerText?: string
   /** Set when the card shows a note in place of the real text. */
   textNote?: string
   images: DraftImage[]
@@ -309,6 +312,26 @@ const auditChanges: Record<string, string> = {
     'Audit: opening "I wanted my app to say why today\'s numbers are what they are." replaced with "A number on its own doesn\'t tell you much, so the targets on the Today screen come with one plain line explaining them."',
   'wd-b6-2': 'Audit: "My app\'s exercise search" became "The exercise search".',
   'wd-b6-3': 'Audit: "My app\'s Today screen" became "The Today screen".',
+}
+
+/**
+ * Swap in the compact LinkedIn paste text and keep the detailed body as longerText.
+ * Withheld cards (sample-a) keep their placeholder and get no longerText swap.
+ */
+function applyCompact<T extends { id: string; text: string; chars: number; length: Length; textNote?: string }>(
+  post: T,
+): T & { longerText?: string } {
+  if (compactWithheld.has(post.id) || post.textNote) return post
+  const compact = compactTexts[post.id]
+  if (!compact) throw new Error(`No compact text for ${post.id}`)
+  const chars = [...compact].length
+  return {
+    ...post,
+    longerText: post.text,
+    text: compact,
+    chars,
+    length: lengthOf(chars),
+  }
 }
 
 function withPng(img: LiImage): DraftImage {
@@ -871,4 +894,4 @@ export const draftPosts: DraftPost[] = [
   ...b6,
   ...data,
   ...ai,
-]
+].map(applyCompact)

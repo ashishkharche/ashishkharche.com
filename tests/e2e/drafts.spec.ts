@@ -101,17 +101,33 @@ test('Copy for LinkedIn puts the post text on the clipboard with blank lines bet
   })
   expect(clip.types).toEqual(expect.arrayContaining(['text/plain', 'text/html']))
   expect(clip.plain).toBe(post.text)
-  expect(clip.plain).toContain('at least 15°,\u0020the start line')
-  expect(clip.plain.split('\n\n')).toHaveLength(3)
+  expect(clip.plain).toContain('at least 15°')
+  expect(clip.plain.split('\n\n')).toHaveLength(1)
   expect(clip.plain).not.toMatch(/Pexels|BlazePose\./)
-  // One <p> per paragraph and no empty spacer paragraphs, so LinkedIn shows one blank line per gap.
-  expect(clip.html).toContain('</p><p>')
   expect(clip.html).not.toContain('<p><br></p>')
-  expect(clip.html.match(/<p>/g)).toHaveLength(3)
+  expect(clip.html.match(/<p>/g)).toHaveLength(1)
   expect(clip.html).toContain('15°')
-  expect(clip.html).toContain('code')
+  expect(post.longerText).toContain('at least 15°')
   // The message clears after about 2 s.
   await expect(status).toHaveText('', { timeout: 4000 })
+})
+
+test('Copy longer version pastes the detailed text', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  const post = draftPosts.find((p) => p.id === 'wd-b3-1')
+  if (!post?.longerText) throw new Error('wd-b3-1 longerText is missing')
+  await page.goto(draftsPath)
+  await page.waitForLoadState('networkidle')
+  const card = page.locator('#wd-b3-1')
+  await card.locator('[data-longer] summary').click()
+  await card.locator('[data-copy-longer]').click()
+  await expect(card.locator('[data-copy-longer-status]')).toHaveText('Copied')
+  const plain = await page.evaluate(async () => {
+    const [item] = await navigator.clipboard.read()
+    if (!item) return ''
+    return await (await item.getType('text/plain')).text()
+  })
+  expect(plain).toBe(post.longerText)
 })
 
 test('every post with real text has a Copy for LinkedIn button, and the card shows the gaps', async ({ page }) => {
@@ -120,19 +136,16 @@ test('every post with real text has a Copy for LinkedIn button, and the card sho
   const withText = draftPosts.filter((p) => !p.textNote)
   await expect(page.getByRole('button', { name: /^Copy for LinkedIn/ })).toHaveCount(withText.length)
   const text = page.locator('[data-li-text="wd-b3-1-desktop"]')
-  await expect(text.locator('p')).toHaveCount(3)
-  expect(
-    await text
-      .locator('p')
-      .nth(1)
-      .evaluate((el) => getComputedStyle(el).marginTop),
-  ).toBe('21px')
+  await expect(text.locator('p')).toHaveCount(1)
   expect(
     await text
       .locator('p')
       .first()
       .evaluate((el) => getComputedStyle(el).whiteSpace),
   ).toBe('pre-wrap')
+  await expect(page.locator('[data-longer]')).toHaveCount(draftPosts.filter((p) => p.longerText).length)
+  await page.locator('#wd-b3-1 [data-longer] summary').click()
+  await expect(page.locator('#wd-b3-1 [data-copy-longer]')).toBeVisible()
 })
 
 test('each image has a full quality PNG download, and the goblet credit is a caption only', async ({

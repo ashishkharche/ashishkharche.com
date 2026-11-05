@@ -75,6 +75,7 @@ export function matches(post: DraftPost, f: Filters): boolean {
       post.series,
       post.version,
       post.text,
+      post.longerText ?? '',
       post.concept ?? '',
       post.firstCommentSources ?? '',
       ...post.sources,

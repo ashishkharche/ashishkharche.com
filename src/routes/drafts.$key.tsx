@@ -292,7 +292,20 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
       {post.textNote ? (
         <p {...stylex.props(styles.meta)}>{post.textNote} No copy button: the text on this page is not the post.</p>
       ) : (
-        <CopyButton post={post} />
+        <>
+          <CopyButton post={post} />
+          {post.longerText ? (
+            <details {...stylex.props(styles.details)} data-longer={post.id}>
+              <summary {...stylex.props(styles.summary, ui.focusRing)}>Longer version</summary>
+              <div {...stylex.props(styles.detailsBody)}>
+                <pre tabIndex={0} {...stylex.props(styles.paste, ui.focusRing)} data-longer-paste={post.id}>
+                  {post.longerText}
+                </pre>
+                <CopyButton post={post} text={post.longerText} label="Copy longer version" />
+              </div>
+            </details>
+          ) : null}
+        </>
       )}
       <DataNotes post={post} />
       <details {...stylex.props(styles.details)} data-review={post.id}>
@@ -329,10 +342,18 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
               <strong>Link for the first comment:</strong> {post.firstComment}
             </p>
           ) : null}
-          <h4 {...stylex.props(styles.h4)}>{post.textNote ? 'Text (not shown)' : 'Exact text to paste'}</h4>
+          <h4 {...stylex.props(styles.h4)}>{post.textNote ? 'Text (not shown)' : 'Compact text to paste'}</h4>
           <pre tabIndex={0} {...stylex.props(styles.paste, ui.focusRing)} data-paste={post.id}>
             {post.text}
           </pre>
+          {post.longerText ? (
+            <>
+              <h4 {...stylex.props(styles.h4)}>Longer version</h4>
+              <pre tabIndex={0} {...stylex.props(styles.paste, ui.focusRing)} data-paste-longer={post.id}>
+                {post.longerText}
+              </pre>
+            </>
+          ) : null}
           <h4 {...stylex.props(styles.h4)}>Sources (internal, not in the post)</h4>
           <ul {...stylex.props(styles.ul)}>
             {post.sources.map((src) => (
@@ -498,7 +519,7 @@ function ImageDownloads({ post }: { post: DraftPost }) {
 }
 
 /**
- * Copies the post's canonical text (post.text, credit lines included, review notes left out) in the form LinkedIn's
+ * Copies the post's compact paste text by default (post.text), or another string such as the longer version in the form LinkedIn's
  * composer keeps blank lines from (see src/lib/linkedinCopy.ts). Shown once the page has hydrated.
  */
 function CopyButton({
@@ -538,7 +559,11 @@ function CopyButton({
         <button
           type="button"
           onClick={copy}
-          {...(label === 'Copy for LinkedIn' ? { 'data-copy-linkedin': post.id } : { 'data-copy-comment': post.id })}
+          {...(label === 'Copy for LinkedIn'
+            ? { 'data-copy-linkedin': post.id }
+            : label === 'Copy longer version'
+              ? { 'data-copy-longer': post.id }
+              : { 'data-copy-comment': post.id })}
           {...stylex.props(styles.copyButton, ui.focusRing)}
         >
           {label}
@@ -547,7 +572,11 @@ function CopyButton({
       ) : null}
       <span
         aria-live="polite"
-        {...(label === 'Copy for LinkedIn' ? { 'data-copy-status': post.id } : { 'data-copy-comment-status': post.id })}
+        {...(label === 'Copy for LinkedIn'
+          ? { 'data-copy-status': post.id }
+          : label === 'Copy longer version'
+            ? { 'data-copy-longer-status': post.id }
+            : { 'data-copy-comment-status': post.id })}
         {...stylex.props(styles.copyStatus)}
       >
         {message}

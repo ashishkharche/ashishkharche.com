@@ -45,19 +45,23 @@ describe('Copy for LinkedIn', () => {
     }
   })
 
-  it('copies wd-b3-2 as its audit text (audit-2026-11-03)', () => {
+  it('copies wd-b3-2 compact text, and keeps the audit text as the longer version', () => {
     const post = draftPosts.find((p) => p.id === 'wd-b3-2')
-    const paras = [
+    const compact =
+      'At the bottom of a side-on deadlift, the far plate can hide the near ankle and drop pose confidence below what the counter normally needs. Losing a rep over one hidden ankle felt wrong when the hip and knee are in plain view. So if those two are still clear and the ankle has not faded too far, the counter keeps the leg in view for up to 3 s.'
+    const longer = [
       'At the bottom of a side-on deadlift, the far plate can hide the near ankle. The pose model gets less sure about where it is, and its confidence drops below what the counter normally needs.',
       "Losing a rep over one hidden ankle felt wrong when the hip and knee are in plain view. So if those two are still clear and the ankle hasn't faded too far, the counter keeps the leg in view for up to 3 s.",
       'In the clip in the image, you can see the ankle dim at the bottom of the lift while the counter keeps going.',
     ]
-    expect(linkedinPlain(post?.text ?? '')).toBe(paras.join('\n\n'))
-    expect(linkedinHtml(post?.text ?? '')).toBe(paras.map((p) => `<p>${escapeHtml(p)}</p>`).join(''))
+    expect(linkedinPlain(post?.text ?? '')).toBe(compact)
+    expect(linkedinHtml(post?.text ?? '')).toBe(`<p>${escapeHtml(compact)}</p>`)
+    expect(post?.longerText).toBe(longer.join('\n\n'))
   })
 
-  it('copies the batch 4 posts with their paragraphs and no credit lines', () => {
-    const expected = { 'wd-b4-p1': 5, 'wd-b4-fig1': 3, 'wd-b4-tech1': 3 }
+  it('copies the batch 4 compact posts with their paragraphs and no credit lines', () => {
+    const expected = { 'wd-b4-p1': 1, 'wd-b4-fig1': 1, 'wd-b4-tech1': 1 }
+    const longerParas = { 'wd-b4-p1': 5, 'wd-b4-fig1': 3, 'wd-b4-tech1': 3 }
     for (const [id, n] of Object.entries(expected)) {
       const post = draftPosts.find((p) => p.id === id)
       if (!post) throw new Error(`${id} is missing`)
@@ -66,6 +70,7 @@ describe('Copy for LinkedIn', () => {
       expect(plain.split('\n\n'), id).toHaveLength(n)
       expect(linkedinHtml(post.text).match(/<p>/g), id).toHaveLength(n)
       expect(linkedinHtml(post.text), id).not.toContain('<p><br></p>')
+      expect(post.longerText?.split('\n\n'), id).toHaveLength(longerParas[id as keyof typeof longerParas])
     }
     const p1 = draftPosts.find((p) => p.id === 'wd-b4-p1')
     expect(p1?.text).not.toMatch(/Aliaksei Masiukevich|\/ Pexels/)

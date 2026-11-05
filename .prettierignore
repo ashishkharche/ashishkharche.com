@@ -9,3 +9,4 @@ playwright-report
 content/**/*.mdx
 public/lab/charts/snapshot.json
 public/lab/charts/icons/index.json
+.vitest

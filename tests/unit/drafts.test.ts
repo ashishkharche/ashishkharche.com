@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { draftPosts, draftsImagesPath, draftsPath, draftsSlug, lengthOf, statuses } from '~/content/drafts'
+import { compactTexts, compactWithheld } from '~/content/linkedinCompact'
 import { sitemapPaths } from '~/content/site'
 import { arrange, filtersToSearch, matches, parseFilters } from '~/lib/drafts'
 
@@ -139,7 +140,8 @@ describe('the Data posts (StatMuse-style tech and app stats)', () => {
       expect(post.firstCommentSources, post.id).toMatch(/https:\/\//)
       expect(post.text, post.id).not.toMatch(/https?:\/\/|Sources|Least sure|^#/m)
       expect(post.text, post.id).not.toContain(post.firstCommentSources ?? '')
-      expect(post.text.split('\n\n').length, post.id).toBeGreaterThan(3)
+      expect(post.text.split('\n\n').length, post.id).toBe(1)
+      expect(post.longerText?.split('\n\n').length ?? 0, post.id).toBeGreaterThan(3)
     }
   })
 
@@ -184,8 +186,9 @@ describe('the AI coding tools ideas', () => {
 
   it('flags the Grok posts and leads idea 1 with the fact', () => {
     expect(ai.filter((p) => p.caution).map((p) => p.id)).toEqual(['ai-4', 'ai-5'])
-    expect(ai[0]?.text).toMatch(/^Five AI coding CLIs, unpacked from their Linux builds\./)
+    expect(ai[0]?.text).toMatch(/^Five AI coding CLIs unpacked\./)
     expect(ai[0]?.text).not.toMatch(/\bI unpacked\b/)
+    expect(ai[0]?.longerText).toMatch(/^Five AI coding CLIs, unpacked from their Linux builds\./)
   })
 
   it('cites public sources only and names nothing from the private repo', () => {
@@ -277,5 +280,29 @@ describe('drafts filters', () => {
     expect(grouped.reduce((n, g) => n + g.posts.length, 0)).toBe(41)
     const newest = arrange(draftPosts, none)[0]?.posts ?? []
     expect((newest[0]?.updated ?? '') >= (newest.at(-1)?.updated ?? '')).toBe(true)
+  })
+})
+
+describe('compact LinkedIn paste text', () => {
+  it('every post with real text uses a compact paste body and keeps the longer version', () => {
+    for (const post of draftPosts) {
+      if (post.textNote || compactWithheld.has(post.id)) {
+        expect(post.longerText, post.id).toBeUndefined()
+        continue
+      }
+      expect(compactTexts[post.id], post.id).toBe(post.text)
+      expect(post.longerText, post.id).toBeTruthy()
+      expect(post.longerText, post.id).not.toBe(post.text)
+      expect(post.chars, post.id).toBe([...post.text].length)
+      expect(post.length, post.id).toBe(lengthOf(post.chars))
+      expect(post.text, post.id).not.toMatch(/alongside/i)
+      // Compact is one short body; batch 6 keeps a separate "Free on the App Store." line.
+      expect(post.text.split('\n\n').length, post.id).toBeLessThanOrEqual(2)
+    }
+  })
+
+  it('covers every board id except withheld placeholders', () => {
+    const ids = draftPosts.filter((p) => !p.textNote && !compactWithheld.has(p.id)).map((p) => p.id)
+    expect(Object.keys(compactTexts).sort()).toEqual([...ids].sort())
   })
 })

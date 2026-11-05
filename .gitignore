@@ -9,3 +9,4 @@ reports/lighthouse/*.html
 *.log
 .DS_Store
 screenshots
+.vitest
