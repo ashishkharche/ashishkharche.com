@@ -7,14 +7,14 @@ export const wdBatch6: WdBatchPost[] = [
     n: 1,
     length: 'Short',
     concept:
-      "Today's targets come with one plain line saying why, worked out from your logged sessions (more after a full session, the same after a hard or sore one, the last full session after an unfinished one, lighter week, new 8-week block)",
+      'Today’s targets come with one plain line saying why, worked out from your logged sessions (more after a full session, the same after a hard or sore one, the last full session after an unfinished one, lighter week, new 8-week block)',
     media: 'Text only',
     images: [],
     sources: [
       'Cross-check: /workspace/wd-share/crosscheck/eng-verdicts-batch6-2026-11-03.md (OK, checked at 1.0.99 build 7c9209a0) and marketing-verdicts-batch6-2026-11-03.md (FIX applied: split paragraph, fixed rules wording).',
       'wd-batch-6-product/README.md, 01 table: CoachReason.swift 5-8, 10-31, 41-63, 171-181, 202-203; EffortAndFeeling.swift 6-9, 114-141 (main f653d418).',
     ],
-    text: "I wanted my app to say why today's numbers are what they are. So the targets on the Today screen come with one plain line explaining them.\n\nIf you finished all your sets last time, it says so and asks for a bit more, like one more rep or one more set. If the last session was hard, or you started it sore, the target stays the same.\n\nIf you didn't finish, it aims for your last full session. A lighter week and a new 8-week block get their own line too.\n\nThe line is worked out from your logged sessions with fixed rules, so it only says what the data shows. When there's nothing true to say, it says nothing.\n\nFree on the App Store.",
+    text: 'I wanted my app to say why today’s numbers are what they are. So the targets on the Today screen come with one plain line explaining them.\n\nIf you finished all your sets last time, it says so and asks for a bit more, like one more rep or one more set. If the last session was hard, or you started it sore, the target stays the same.\n\nIf you didn’t finish, it aims for your last full session. A lighter week and a new 8-week block get their own line too.\n\nThe line is worked out from your logged sessions with fixed rules, so it only says what the data shows. When there’s nothing true to say, it says nothing.\n\nFree on the App Store.',
     chars: 633,
   },
   {
@@ -41,7 +41,7 @@ export const wdBatch6: WdBatchPost[] = [
       'Cross-check: eng-verdicts-batch6-2026-11-03.md (OK) and marketing-verdicts-batch6-2026-11-03.md (FIX applied: lying triceps extension example, stiffleg line, image logo); press-up example dropped (shown title not confirmed).',
       'wd-batch-6-product/README.md, 02 table: ExerciseSearch.swift 5-7, 10, 30-45, 88-89 (main f653d418); App Store release note "Exercise search now finds common names, like RDL and Skull Crusher."',
     ],
-    text: 'In the gym it\'s an RDL, not a Romanian deadlift. My app\'s exercise search didn\'t know most of those names, so searching for what people actually call a move could come up empty.\n\nNow search knows the other names too. RDL finds the Romanian deadlift, and lying triceps extension finds the skull crusher. When a result came from one of those names, it says so underneath, like "Matches: RDL", so you can see why it turned up.\n\nCase, accents, spaces and hyphens don\'t matter, so "stiffleg" and "stiff-leg" are the same search. A short search won\'t match inside a word, though, so "rdl" doesn\'t pull up anything with "hurdle" in it.\n\nFree on the App Store.',
+    text: 'In the gym it’s an RDL, not a Romanian deadlift. My app’s exercise search didn’t know most of those names, so searching for what people actually call a move could come up empty.\n\nNow search knows the other names too. RDL finds the Romanian deadlift, and lying triceps extension finds the skull crusher. When a result came from one of those names, it says so underneath, like "Matches: RDL", so you can see why it turned up.\n\nCase, accents, spaces and hyphens don’t matter, so "stiffleg" and "stiff-leg" are the same search. A short search won’t match inside a word, though, so "rdl" doesn’t pull up anything with "hurdle" in it.\n\nFree on the App Store.',
     chars: 652,
   },
   {
@@ -55,7 +55,7 @@ export const wdBatch6: WdBatchPost[] = [
       'Cross-check: eng-verdicts-batch6-2026-11-03.md (FIX applied: same muscles and body limits, not "a safe one"; FitMyDay.swift 192-204 @7c9209a0) and marketing-verdicts-batch6-2026-11-03.md (OK; optional sentence 2 tweak taken).',
       'wd-batch-6-product/README.md, 03 table: FitMyDaySheet.swift 5-7, 34-46, 65, 105-106, 165 (main f653d418).',
     ],
-    text: "A plan is only useful until the day doesn't go to plan. My app's Today screen has Fit my day for that.\n\nYou pick how long you've got, 15, 30 or 45 minutes, say you're tired or have no equipment, or swap a move you can't do for one that works the same muscles and keeps clear of any body limits you've set. It shows the change as it makes it, like \"45 → 25 min · 6 → 4 moves\", and marks every move it changed.\n\nIt's for today only. Nothing becomes a setting, and tomorrow starts from your plan again.\n\nFree on the App Store.",
+    text: 'A plan is only useful until the day doesn’t go to plan. My app’s Today screen has Fit my day for that.\n\nYou pick how long you’ve got, 15, 30 or 45 minutes, say you’re tired or have no equipment or swap a move you can’t do for one that works the same muscles and keeps clear of any body limits you’ve set. It shows the change as it makes it, like "45 → 25 min · 6 → 4 moves", and marks every move it changed.\n\nIt’s for today only. Nothing becomes a setting, and tomorrow starts from your plan again.\n\nFree on the App Store.',
     chars: 523,
   },
 ]

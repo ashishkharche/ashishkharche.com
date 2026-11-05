@@ -2,7 +2,7 @@
  * Compact LinkedIn paste text for every drafts-board card (5 Nov 2026).
  * Plain X-style notes: one line naming the thing, optional second short fact line.
  * No colon-led lists, stacked stats, wrap-ups or commentary.
- * Facts come only from that card's longer detailed text. The detailed text stays on the
+ * Facts come only from that card’s longer detailed text. The detailed text stays on the
  * card as longerText; this file is what Copy for LinkedIn pastes.
  */
 export const compactTexts: Record<string, string> = {
@@ -10,7 +10,7 @@ export const compactTexts: Record<string, string> = {
 
   d2: 'BlazePose Full hit 79% of joints close on 156 COCO photos, Lite 72%. The app ships Full; Heavy would add 21 MB and run about 3x slower.',
 
-  d3: "Nothing counts until the joints are seen for half a second. A rep then has to cover most of the gap between its lines, and can't be rushed or stacked on the last one.",
+  d3: 'Nothing counts until the joints are seen for half a second. A rep then has to cover most of the gap between its lines, and can’t be rushed or stacked on the last one.',
 
   // sample-a keeps its withheld placeholder; no compact body is shipped on the site.
 
@@ -54,7 +54,7 @@ export const compactTexts: Record<string, string> = {
     'Pose tracking runs on the iPhone as BlazePose Full from the app bundle. It tries the GPU, then the CPU, then Apple Vision.',
 
   'wd-b5-1':
-    "A public plank clip labelled 9 seconds gets 2 on Workout Director's clock. The clock only runs while shoulder, hip and ankle stay near a 150° line within 40° of horizontal.",
+    'A public plank clip labelled 9 seconds gets 2 on Workout Director’s clock. The clock only runs while shoulder, hip and ankle stay near a 150° line within 40° of horizontal.',
 
   'wd-b5-2':
     'On a kettlebell push-up clip the raw elbow angle dipped past the bottom line 8 times; with a 3-frame median, 2-frame hold and blur check it was 3.',
@@ -66,19 +66,19 @@ export const compactTexts: Record<string, string> = {
     'The Kotlin counter test replays 140 saved iOS frame outputs and must match them. 110 are synthetic; the pin is still the iOS counter as of 23 October.',
 
   'wd-b5-5':
-    'The counter runs the camera at 30 fps, drops to 15 when the phone is seriously hot or on Low Power Mode, and stops camera counting at critical.',
+    'The counter runs the camera at 30 fps, drops to 15 when the phone is seriously hot or on Low Power Mode and stops camera counting at critical.',
 
   'wd-b5-6':
     'On the emulator, pose GPU setup succeeded then failed on frame one with GL_INVALID_ENUM. The fix switches to CPU after a failed frame.',
 
   'wd-b6-1':
-    "Today's targets come with one line from logged sessions: finish last time and it asks for a bit more; hard or sore keeps the same target.\n\nFree on the App Store.",
+    'Today’s targets come with one line from logged sessions: finish last time and it asks for a bit more; hard or sore keeps the same target.\n\nFree on the App Store.',
 
   'wd-b6-2':
     'Exercise search matches gym names like RDL to Romanian deadlift, and labels when a hit came from another name.\n\nFree on the App Store.',
 
   'wd-b6-3':
-    'Fit my day lets you pick 15, 30 or 45 minutes, mark tired or no equipment, or swap a move, for today only.\n\nFree on the App Store.',
+    'Fit my day lets you pick 15, 30 or 45 minutes, mark tired or no equipment or swap a move, for today only.\n\nFree on the App Store.',
 
   'data-1':
     'Four of the US top 10 free apps on 4 Nov were AI assistants: Muse 2, ChatGPT 4, Claude 7, Gemini 9. The UK top 10 had ChatGPT at 3 and Claude at 5.',
@@ -96,7 +96,7 @@ export const compactTexts: Record<string, string> = {
     'react-native npm downloads went from 4.6M to 20.5M in a year (4.5x). Expo grew 6.3x and Capacitor 8.6x over the same stretch.',
 
   'data-6':
-    "Swift use rises with experience in this year's Stack Overflow survey, 5.1% at 1-5 years to 6.6% at 16+. Kotlin, Java and Dart all fall.",
+    'Swift use rises with experience in this year’s Stack Overflow survey, 5.1% at 1-5 years to 6.6% at 16+. Kotlin, Java and Dart all fall.',
 
   'data-7':
     'Three of the four lowest-rated apps in the UK top 50 free Health & Fitness chart are gym apps: Better UK 1.56, JD Gyms 1.63, ClubRight 2.22. PureGym is No. 1 at 4.73.',
@@ -105,22 +105,21 @@ export const compactTexts: Record<string, string> = {
     'Four of the five smallest apps in the UK top 100 free are government apps, from the NHS App at 14 MB to GOV.UK One Login at 48 MB. The median app there is 257 MB.',
 
   'ai-1':
-    "Codex and Grok Build ship as static Rust binaries, Claude Code as a single Bun-compiled executable, Gemini CLI as one bundle, and Cursor agent as a 20.6 MB thin client with its prompt on Cursor's servers.",
+    'Codex and Grok Build ship as static Rust binaries, Claude Code as a single Bun-compiled executable, Gemini CLI as one bundle and Cursor agent as a 20.6 MB thin client with its prompt on Cursor’s servers.',
 
   'ai-2':
     'Codex, Claude Code and Gemini CLI all have a plan mode. Codex splits sandbox and approval policies; Claude Code lists six permission modes; Gemini CLI has four approval modes.',
 
   'ai-3':
-    "Gemini CLI's public source names 105 telemetry events and metrics, including loops, edit correction, fallbacks, ui.flicker.count and overage_menu_shown.",
+    'Gemini CLI’s public source names 105 telemetry events and metrics, including loops, edit correction, fallbacks, ui.flicker.count and overage_menu_shown.',
 
   'ai-4':
-    "Grok Build's binary has compat.claude, compat.codex and compat.cursor, plus /import-claude and /migrate-workflow. A name in a binary isn't proof it has shipped.",
+    'Grok Build’s binary has compat.claude, compat.codex and compat.cursor, plus /import-claude and /migrate-workflow.',
 
-  'ai-5':
-    'On 22 Jul 2026 a tracker saw ENABLE_IMAGINE_VIDEO_AUDIO_TOGGLE on grok.com and then missed the launch. The fix was to track UI controls, not only flags.',
+  'ai-5': 'On 22 Jul 2026 a tracker saw ENABLE_IMAGINE_VIDEO_AUDIO_TOGGLE on grok.com and then missed the launch.',
 
   'ai-6':
-    "Gemini CLI's README says free individual access and Google AI Pro / Ultra moved to Antigravity CLI on 18 June 2026. The 60/min and 1,000/day free-tier lines came out on 16 October.",
+    'Gemini CLI’s README says free individual access and Google AI Pro / Ultra moved to Antigravity CLI on 18 June 2026. The 60/min and 1,000/day free-tier lines came out on 16 October.',
 
   'ai-7':
     'About 40 product surfaces are watched for $0.41 a day. On 3 Nov the model only wrote the summary: 55 calls and 146k input tokens.',
@@ -132,14 +131,80 @@ export const compactWithheld = new Set(['sample-a'])
 /** Phrases that make compact text sound like a wrap-up; unit tests reject them. */
 export const compactBannedPhrases = [
   'interesting part',
-  "what's interesting",
+  'what’s interesting',
   'the real story',
-  "here's the thing",
+  'here’s the thing',
   'same idea',
   'none of this',
   'the takeaway',
   'the lesson',
   'it turns out',
-  "that's the point",
+  'that’s the point',
   'game-changer',
+] as const
+
+/**
+ * Clause-joining ", and " / ", or " that are not Oxford list commas.
+ * The unit test fails on /, (and|or) / unless the match starts with one of these.
+ */
+/**
+ * Clause-joining ", and " / ", or " that are not Oxford list commas.
+ * The unit test fails on /, (and|or) / unless the match starts with one of these.
+ */
+/**
+ * Clause-joining ", and " / ", or " that are not Oxford list commas.
+ * The unit test fails on /, (and|or) / unless the match starts with one of these.
+ */
+export const oxfordCommaAllowlist = [
+  ', and 110 of them are synthe',
+  ', and 75 of the 100 still su',
+  ', and 86% of iPhones from th',
+  ', and Blender’s Freestyle re',
+  ', and Meta has very big apps',
+  ', and TikTok is 1,080 MB.',
+  ', and a camera workout needs',
+  ', and a rep still has to cov',
+  ', and all three are Microsof',
+  ', and any other request from',
+  ', and can’t be rushed or sta',
+  ', and can’t land right on to',
+  ', and check whether anyone o',
+  ', and checks for blur, where',
+  ', and coming back up past th',
+  ', and decide who speaks next',
+  ', and each rep it leaves out',
+  ', and folds older chat past ',
+  ', and in the same week of 20',
+  ', and it moves by the hour.',
+  ', and its confidence drops b',
+  ', and its edit tool is calle',
+  ', and its joint angles becom',
+  ', and labels when a hit came',
+  ', and lying triceps extensio',
+  ', and marks every move it ch',
+  ', and misleading in a headli',
+  ', and one that finishes less',
+  ', and only then what changes',
+  ', and other counter changes ',
+  ', and part of that is the cl',
+  ', and pose detection just di',
+  ', and rep 4 was still rising',
+  ', and right now that’s 119.',
+  ', and so is a brief moment w',
+  ', and so is maintaining the ',
+  ', and someone measures it.',
+  ', and that’s a rep.',
+  ', and that’s the more intere',
+  ', and the bot closes it 7 da',
+  ', and the elbow angle the co',
+  ', and the other’s is closer ',
+  ', and the repo’s test pins t',
+  ', and the screen says "Coach',
+  ', and the tracker missed it.',
+  ', and tomorrow starts from y',
+  ', and who you ask, moves thi',
+  ', or Low Power Mode is on, i',
+  ', or runs too slowly, that s',
+  ', or to get updates without ',
+  ', or you started it sore, th',
 ] as const

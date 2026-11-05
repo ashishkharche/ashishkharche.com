@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { draftPosts, draftsImagesPath, draftsPath, draftsSlug, lengthOf, statuses } from '~/content/drafts'
-import { compactBannedPhrases, compactTexts, compactWithheld } from '~/content/linkedinCompact'
+import { compactBannedPhrases, compactTexts, compactWithheld, oxfordCommaAllowlist } from '~/content/linkedinCompact'
 import { sitemapPaths } from '~/content/site'
 import { arrange, filtersToSearch, matches, parseFilters } from '~/lib/drafts'
 
@@ -312,6 +312,39 @@ describe('compact LinkedIn paste text', () => {
       const lower = post.text.toLowerCase()
       for (const phrase of compactBannedPhrases) {
         expect(lower.includes(phrase), `${post.id} contains "${phrase}"`).toBe(false)
+      }
+    }
+  })
+})
+
+describe('post voice: apostrophes and Oxford commas', () => {
+  const bodies = (): { id: string; kind: string; text: string }[] => {
+    const out: { id: string; kind: string; text: string }[] = []
+    for (const [id, text] of Object.entries(compactTexts)) out.push({ id, kind: 'compact', text })
+    for (const post of draftPosts) {
+      if (post.textNote || compactWithheld.has(post.id)) continue
+      out.push({ id: post.id, kind: 'compact-paste', text: post.text })
+      if (post.longerText) out.push({ id: post.id, kind: 'longer', text: post.longerText })
+    }
+    return out
+  }
+
+  it('uses a curly apostrophe inside words, never a straight one', () => {
+    const straight = /[A-Za-z]'[A-Za-z]/
+    for (const { id, kind, text } of bodies()) {
+      expect(text, `${kind} ${id}`).not.toMatch(straight)
+    }
+  })
+
+  it('has no Oxford comma before the final and/or in a list', () => {
+    const oxford = /, (and|or) /g
+    for (const { id, kind, text } of bodies()) {
+      for (const match of text.matchAll(oxford)) {
+        const at = match.index ?? -1
+        expect(at, `${kind} ${id}`).toBeGreaterThanOrEqual(0)
+        const from = text.slice(at)
+        const allowed = oxfordCommaAllowlist.some((prefix) => from.startsWith(prefix))
+        expect(allowed, `${kind} ${id}: ${JSON.stringify(from.slice(0, 60))}`).toBe(true)
       }
     }
   })

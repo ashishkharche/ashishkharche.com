@@ -105,7 +105,7 @@ export const aiIdeas: AiIdea[] = [
       'Claude Code has one list of permission modes: default, acceptEdits, plan, auto, dontAsk, bypassPermissions.',
       'Gemini CLI has four approval modes: default, auto_edit, plan, yolo.',
       'The tool lists differ just as much. Codex has 8 tools and edits files with apply_patch. Claude Code has 24, with Edit and MultiEdit. Gemini CLI has 23, and its edit tool is called replace.',
-      'Same idea in all three: read first, ask before writing, and one switch that stops the asking. Before handing one your repo, check what its default mode can do without asking.',
+      'Same idea in all three: read first, ask before writing and one switch that stops the asking. Before handing one your repo, check what its default mode can do without asking.',
     ),
     mediaPlan:
       'A comparison table: one row per CLI, columns for plan mode, permission or approval modes, tool count and the edit tool.',
@@ -169,7 +169,6 @@ export const aiIdeas: AiIdea[] = [
       'Grok Build can bring in another agent’s setup.',
       'Its build has compat.claude, compat.codex and compat.cursor settings covering agents, hooks, MCP servers, rules and skills, plus two commands: /import-claude and /migrate-workflow.',
       'That fits a wider shift. AGENTS.md, skills and MCP are turning into shared formats, so the cost of switching agents keeps falling. A setup built for one tool works more and more in the next.',
-      'One caveat: a name in a binary isn’t proof the feature is turned on. Until it shows up in docs or release notes, treat it as being built, not shipped.',
     ),
     mediaPlan: 'Text only, or a simple three-in, one-out diagram (Claude Code, Codex, Cursor setups into Grok Build).',
     media: ['text'],
@@ -191,7 +190,6 @@ export const aiIdeas: AiIdea[] = [
       'A flag’s name isn’t the feature.',
       'On 22 Jul 2026 a product tracker picked up a new flag on grok.com: ENABLE_IMAGINE_VIDEO_AUDIO_TOGGLE. Then the feature launched, and the tracker missed it. Five reasons.',
       '1. The flag was one line in a noisy diff.\n2. A flag’s name isn’t its value. The tracker saw that the flag existed, not whether it was on.\n3. The label wasn’t in the i18n map, so there was no user-facing text to match.\n4. The release notes were silent.\n5. Live per-user values weren’t recorded, on purpose, for privacy.',
-      'The fix was to track the UI controls themselves, not just the flags behind them.',
       'Flags tell you what’s being built. Controls tell you what shipped.',
     ),
     mediaPlan:
@@ -244,7 +242,7 @@ export const aiIdeas: AiIdea[] = [
       'Every snapshot goes into an immutable store, so any two days can be compared.',
       'The diffs are plain diffs. No model decides what changed.',
       'The model only writes the summary. On 3 Nov that was 55 calls and 146k input tokens.',
-      'Here’s how to build one: get extraction stable first, keep every snapshot, and bring the model in only once you know what changed.',
+      'Here’s how to build one: get extraction stable first, keep every snapshot and bring the model in only once you know what changed.',
     ),
     mediaPlan: 'A pipeline diagram: extract, snapshot store, diff, summary, with the model only on the last step.',
     media: ['diagram'],

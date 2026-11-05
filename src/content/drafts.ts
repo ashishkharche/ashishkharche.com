@@ -103,7 +103,7 @@ export interface DraftPost {
   firstCommentSources?: string
   /** How long the numbers in the post stay current. */
   freshUntil?: string
-  /** What the draft's author is least sure of, checked before posting (Data posts). */
+  /** What the draft’s author is least sure of, checked before posting (Data posts). */
   leastSure?: string[]
   /** AI coding tools ideas: rank in the section, 1 first. */
   rank?: number
@@ -158,7 +158,7 @@ const crossChecked = new Set([
 ])
 /**
  * Taken off the board in the 3 Nov audit as duplicates (their source files stay; see audit-2026-11-03/CHANGES.md):
- * wd-b2-1 repeats wd-b3-5 (the coach's gap and per-set cap), wd-b2-5 repeats wd-b3-2 (the hidden ankle hold).
+ * wd-b2-1 repeats wd-b3-5 (the coach’s gap and per-set cap), wd-b2-5 repeats wd-b3-2 (the hidden ankle hold).
  */
 const dropped = new Set(['wd-b2-1', 'wd-b2-5'])
 /**
@@ -170,7 +170,7 @@ const voiceNote =
 const auditNote =
   'Changed in the 3 Nov audit pass (text from linkedin-samples/personal/audit-2026-11-03/, see its CHANGES.md) and cross-checked again by WD Engineering and WD Marketing, 3 Nov 23:28 GMT (wd-share/crosscheck/eng-verdicts-audit-2026-11-03.md and marketing-verdicts-audit-2026-11-03.md), with their fixes applied.'
 const checkedNote = 'Cross-checked by WD Engineering and WD Marketing, 3 Nov; see revised-2026-11-03/CHANGES.md.'
-/** Every post's text was replaced on 3 Nov 19:57 GMT by its human-voice rewrite. */
+/** Every post’s text was replaced on 3 Nov 19:57 GMT by its human-voice rewrite. */
 const humanNote =
   'Text replaced 3 Nov 19:57 GMT with the human-voice rewrite (linkedin-samples/personal/human-2026-11-03/, with the WD Engineering and WD Marketing fixes and the Eng rulings; see its CHANGES.md). Older notes below describe earlier versions.'
 
@@ -193,7 +193,7 @@ const creditsNote =
 /**
  * Full quality PNG copies of the page images, the files to upload to LinkedIn (the page shows smaller WebP copies).
  * They live in public/drafts/<slug>/img/, under the /drafts/ X-Robots-Tag noindex rule and out of the sitemap.
- * Each is the lossless original named in the image's upload path, copied byte for byte.
+ * Each is the lossless original named in the image’s upload path, copied byte for byte.
  */
 export const draftsImagesPath = `${draftsPath}img/`
 const pngNames: Record<string, string> = {
@@ -235,7 +235,7 @@ export interface DraftImage extends LiImage {
 }
 
 /**
- * 3 Nov audit re-renders (/workspace/drafts-audit/rerender.py, which runs WD Marketing's make_batch4.py unchanged and
+ * 3 Nov audit re-renders (/workspace/drafts-audit/rerender.py, which runs WD Marketing’s make_batch4.py unchanged and
  * only skips the footer text): the wd-b2-4 figures without the "form gates" line, and wd-b3-1 without the joint list.
  * Pixel diffs against the previous files touch only those footer rows.
  */
@@ -629,7 +629,7 @@ const batchExtra: Record<string, Extra> = {
     ],
   },
   'wd-b6-1': {
-    title: "Today's target comes with a reason",
+    title: 'Today’s target comes with a reason',
     series: 'WD batch 6 (product), post 1',
     version: 'batch 6, audit 3 Nov, cross-checked',
     ...nov3('23:34'),
@@ -640,7 +640,7 @@ const batchExtra: Record<string, Extra> = {
     ],
   },
   'wd-b6-2': {
-    title: "Search by the name you'd use in the gym",
+    title: 'Search by the name you’d use in the gym',
     series: 'WD batch 6 (product), post 2',
     version: 'batch 6, audit 3 Nov, cross-checked',
     ...nov3('23:34'),
@@ -746,7 +746,7 @@ function fromBatch(post: WdBatchPost): DraftPost {
 }
 
 const liteVsFull =
-  "I wanted to know what the bigger pose model actually buys on real lifts, so I ran the same deadlift reps through the same counter with BlazePose Full and with Lite.\n\nOn the MyDeadlift clips, Full found 115 of 191 barbell deadlift reps and Lite found 106. Neither counted more reps than a clip actually had.\n\nBoth numbers look low, and part of that is the clips themselves: they're single reps joined end to end, with a cut between each one.\n\nI measured this on the counter build after the deadlift fix and haven't re-run it since, so treat it as a snapshot."
+  'I wanted to know what the bigger pose model actually buys on real lifts, so I ran the same deadlift reps through the same counter with BlazePose Full and with Lite.\n\nOn the MyDeadlift clips, Full found 115 of 191 barbell deadlift reps and Lite found 106. Neither counted more reps than a clip actually had.\n\nBoth numbers look low, and part of that is the clips themselves: they’re single reps joined end to end, with a cut between each one.\n\nI measured this on the counter build after the deadlift fix and haven’t re-run it since, so treat it as a snapshot.'
 
 /** Batch 3 post 3: two image options approved by Ashish (3 Nov), the sharp Pexels frame first. Text from human-2026-11-03/wd-b3-3.txt. */
 const b3post3 = make({
@@ -795,7 +795,7 @@ const b6 = wdBatch6.map(fromBatch)
 /**
  * Data batch 1 (4 Nov 2026): StatMuse-style tech and app stats from linkedin-samples/personal/statmuse-tech/posts/,
  * generated into linkedinData.ts by /workspace/drafts-data/gen.py. Not Workout Director posts, so the WD Engineering
- * and Marketing cross-check does not apply: they show as Data check, with the draft's least-sure items as notes and
+ * and Marketing cross-check does not apply: they show as Data check, with the draft’s least-sure items as notes and
  * its sources as the first comment, never in the post text.
  */
 function fromData(d: DataPost): DraftPost {

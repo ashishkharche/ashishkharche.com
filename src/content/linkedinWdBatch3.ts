@@ -29,7 +29,7 @@ export const wdBatch3: WdBatchPost[] = [
       'Minimum range max(20, 0.8 x |rest - work|): README.md:8 (Segmenter.swift:461-478, rangeShare).',
       'Not claimed: a count of exercise families (the table is per family; catalog name to family rules are not expanded per exercise, README.md:13), and no fixed adaptive top line value.',
     ],
-    text: "Every rep my app counts comes from one joint angle crossing two lines. For a squat it's the knee, with lines at 155° and 110°. For a push-up it's the elbow.\n\nThose lines start out fixed in code, but people don't all move through the same range. So once you've done one rep of at least 15°, the start line moves to fit you, 12% of your range in from your own highest or lowest angle, depending on the move.\n\nYour range is saved per exercise and widens as you do more reps. I kept the line that finishes a rep from ever getting stricter than the default, and a rep still has to cover at least 20°, so a small twitch can't count.",
+    text: 'Every rep my app counts comes from one joint angle crossing two lines. For a squat it’s the knee, with lines at 155° and 110°. For a push-up it’s the elbow.\n\nThose lines start out fixed in code, but people don’t all move through the same range. So once you’ve done one rep of at least 15°, the start line moves to fit you, 12% of your range in from your own highest or lowest angle, depending on the move.\n\nYour range is saved per exercise and widens as you do more reps. I kept the line that finishes a rep from ever getting stricter than the default, and a rep still has to cover at least 20°, so a small twitch can’t count.',
     chars: 626,
   },
   {
@@ -58,7 +58,7 @@ export const wdBatch3: WdBatchPost[] = [
       'Image line: the 3 held stretches all fall in work phases (3.96-5.60, 15.88-16.48, 21.36-21.68 s) with counter_gate ok, but only 3 of the 4 lifts have one (8.96-12.40 s has none), so the post says "the bottom of the lift", not "each rep". It says the counter stays on, not that the rep is kept: the 4.96 s frame in the image is in the movement refused at 7.48 s (see post 6). Before the rule (main 1808411c) the gate dropped out at 4.96 s and 16.40 s: README.md:13 (no longer in the post).',
       'Credits (taken out of the post text on 3 Nov, Ashish’s call): cottonbro studio / Pexels (Pexels 7674505, "A Woman Lifting A Barbell", Pexels License), MediaPipe BlazePose.',
     ],
-    text: "At the bottom of a side-on deadlift, the far plate can hide the near ankle. The pose model gets less sure about where it is, and its confidence drops below what my counter normally needs.\n\nLosing a rep over one hidden ankle felt wrong when the hip and knee are in plain view. So if those two are still clear and the ankle hasn't faded too far, the counter keeps the leg in view for up to 3 s.\n\nIn the clip in the image, you can see the ankle dim at the bottom of the lift while the counter keeps going.",
+    text: 'At the bottom of a side-on deadlift, the far plate can hide the near ankle. The pose model gets less sure about where it is, and its confidence drops below what my counter normally needs.\n\nLosing a rep over one hidden ankle felt wrong when the hip and knee are in plain view. So if those two are still clear and the ankle hasn’t faded too far, the counter keeps the leg in view for up to 3 s.\n\nIn the clip in the image, you can see the ankle dim at the bottom of the lift while the counter keeps going.',
     chars: 502,
   },
   {
@@ -75,7 +75,7 @@ export const wdBatch3: WdBatchPost[] = [
         h: 1350,
         upload: '/workspace/wd-marketing/linkedin-batch-4/review/04-coach-reconnect-backoff-v3.png',
         name: '04-coach-reconnect-backoff-v3.png',
-        alt: "Coach drops. Counting doesn't. While it retries, the set shows Coach reconnecting · counts still on. A step chart of retry tries over time with no jitter: waits of 1, 2, 4 and 8 s, then 16 s, then 30 s three times; try 9 at 121 s gives up and offers Retry, before the dashed 150 s budget line. Footer: no jitter shown; with the jitter, 8 to 10 retries.",
+        alt: 'Coach drops. Counting doesn’t. While it retries, the set shows Coach reconnecting · counts still on. A step chart of retry tries over time with no jitter: waits of 1, 2, 4 and 8 s, then 16 s, then 30 s three times; try 9 at 121 s gives up and offers Retry, before the dashed 150 s budget line. Footer: no jitter shown; with the jitter, 8 to 10 retries.',
         note: 'WD Marketing review/04-coach-reconnect-backoff-v3.png (linkedin-batch-4): a plain step chart from batch-3 backoff-timeline.csv, no longer the Pele gantt, so the post has no Pele credit. The v3 footer writes the jitter with no space before the percent sign.',
       },
     ],
@@ -87,7 +87,7 @@ export const wdBatch3: WdBatchPost[] = [
       'Assumption from README.md:12: each connection attempt takes 0 s, so real retries are the same or fewer.',
       'No Pele credit: the v3 image is a plain step chart, not a Pele render.',
     ],
-    text: 'When the voice coach loses its connection, counting carries on, and the screen says "Coach reconnecting · counts still on".\n\nIn the background the phone keeps retrying, waiting longer each time: 1 second, then 2, 4, 8 and 16, then 30. Each wait gets a bit of random jitter, and it gives up when the next wait would pass a 150 s budget.\n\nThe image shows those waits without the jitter. With jitter it\'s 8 to 10 retries, and because the time each connection attempt takes also comes out of the 150 s, a slow network gets fewer.',
+    text: 'When the voice coach loses its connection, counting carries on, and the screen says "Coach reconnecting · counts still on".\n\nIn the background the phone keeps retrying, waiting longer each time: 1 second, then 2, 4, 8 and 16, then 30. Each wait gets a bit of random jitter, and it gives up when the next wait would pass a 150 s budget.\n\nThe image shows those waits without the jitter. With jitter it’s 8 to 10 retries, and because the time each connection attempt takes also comes out of the 150 s, a slow network gets fewer.',
     chars: 525,
   },
   {
@@ -117,7 +117,7 @@ export const wdBatch3: WdBatchPost[] = [
       '20 s stall and out-of-view timer: coach-timing-constants.json quiet_seconds_stall_or_out_of_view 20 (README.md:18, LiveCoachPolicy.swift:42-63).',
       'Caveat: from the code; whether the server currently has .liveCoach on was not checked (README.md caveat).',
     ],
-    text: "The voice coach has two limits on the lines it starts on its own, so it doesn't chatter through a set.\n\nOne is a minimum gap between lines, which depends on the coach style and the talk setting. The other is a cap per set on form, stall and out-of-view lines, set by the talk setting.\n\nSome things shouldn't wait for the gap. Pain, a form break and the workout wrap-up skip it, though they still wait for 2.5 s of quiet. A stall or stepping out of view, on the other hand, only gets a line after 20 s.",
+    text: 'The voice coach has two limits on the lines it starts on its own, so it doesn’t chatter through a set.\n\nOne is a minimum gap between lines, which depends on the coach style and the talk setting. The other is a cap per set on form, stall and out-of-view lines, set by the talk setting.\n\nSome things shouldn’t wait for the gap. Pain, a form break and the workout wrap-up skip it, though they still wait for 2.5 s of quiet. A stall or stepping out of view, on the other hand, only gets a line after 20 s.',
     chars: 501,
   },
   {
@@ -147,7 +147,7 @@ export const wdBatch3: WdBatchPost[] = [
       'The post never says 3 reps counted; the count shown is 2.',
       'Credits (taken out of the post text on 3 Nov, Ashish’s call): cottonbro studio / Pexels (Pexels 7674505), MediaPipe BlazePose.',
     ],
-    text: "A single rep on its own is suspicious. It might just be someone bending down to tidy up between sets.\n\nSo for curls, presses, rows, squats and deadlifts, my app holds the first rep for up to 8 seconds and waits for the next one. If it comes, both count. If none comes within 8 seconds, that lone bend is dropped and never counts. (End the set while it's still waiting and it does count, since one heavy rep can be a set.)\n\nIn the clip in the image, rep 1 is refused for a different reason, so rep 2 is the first rep the counter accepts. It waits 5.48 s for rep 3, then both count.",
+    text: 'A single rep on its own is suspicious. It might just be someone bending down to tidy up between sets.\n\nSo for curls, presses, rows, squats and deadlifts, my app holds the first rep for up to 8 seconds and waits for the next one. If it comes, both count. If none comes within 8 seconds, that lone bend is dropped and never counts. (End the set while it’s still waiting and it does count, since one heavy rep can be a set.)\n\nIn the clip in the image, rep 1 is refused for a different reason, so rep 2 is the first rep the counter accepts. It waits 5.48 s for rep 3, then both count.',
     chars: 580,
   },
 ]
