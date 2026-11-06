@@ -71,8 +71,7 @@ function Home() {
                       <span {...stylex.props(styles.years)}>2026</span>
                     </span>
                     <span {...stylex.props(styles.roleTextFeatured)}>
-                      Quality Assurance Engineer · regression and release testing on more than 500 Grok iOS and web
-                      builds.
+                      Quality Assurance Engineer testing more than 500 Grok iOS and web builds before release.
                     </span>
                   </span>
                 </li>
@@ -107,27 +106,27 @@ function Home() {
               </ul>
               <ul role="list" aria-label="Links" {...stylex.props(styles.links)}>
                 <li>
-                  <Link to="/work/" {...stylex.props(ui.link)}>
+                  <Link to="/work/" {...stylex.props(ui.link, ui.plainLink)}>
                     Work history
                   </Link>
                 </li>
                 <li>
-                  <a href={`mailto:${site.email}`} {...stylex.props(ui.link)}>
+                  <a href={`mailto:${site.email}`} {...stylex.props(ui.link, ui.plainLink)}>
                     Email
                   </a>
                 </li>
                 <li>
-                  <a href={site.linkedin} {...stylex.props(ui.link)}>
+                  <a href={site.linkedin} {...stylex.props(ui.link, ui.plainLink)}>
                     LinkedIn
                   </a>
                 </li>
                 <li>
-                  <a href={site.github} {...stylex.props(ui.link)}>
+                  <a href={site.github} {...stylex.props(ui.link, ui.plainLink)}>
                     GitHub
                   </a>
                 </li>
                 <li>
-                  <a href={site.x} rel="me noopener" {...stylex.props(ui.link)}>
+                  <a href={site.x} rel="me noopener" {...stylex.props(ui.link, ui.plainLink)}>
                     X
                   </a>
                 </li>
@@ -264,17 +263,12 @@ const styles = stylex.create({
     display: 'grid',
     rowGap: '1.1rem',
   },
-  // SpaceX leads the list in a soft panel so it reads first and heavier than the rows below.
+  // SpaceX leads the list; a slightly wider logo box fits the wide mark, with no tinted panel.
   roleFeatured: {
     display: 'grid',
     gridTemplateColumns: '2.5rem minmax(0, 1fr)',
     columnGap: '0.85rem',
     alignItems: 'start',
-    paddingBlock: '0.7rem',
-    paddingInline: '0.75rem',
-    marginInline: '-0.75rem',
-    borderRadius: '0.75rem',
-    backgroundColor: colors.panel,
   },
   // Every other logo sits in the same box, as tall as the company name's line, so each
   // mark is centred on its name and the names share one left edge.

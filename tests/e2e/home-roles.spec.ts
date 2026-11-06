@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-// SpaceX leads in a featured panel; Paythru and Maestro share one logo-box size under it.
+// SpaceX leads with a wider logo box; Paythru and Maestro share one logo-box size under it.
 for (const viewport of [
   { width: 1280, height: 800 },
   { width: 390, height: 844 },
