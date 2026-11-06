@@ -162,26 +162,37 @@ const ICON_TIMEOUT_MS = 8000
 const iconManifest = manifestLoader()
 
 /** One image from our own origin, or null when it does not load in time. */
-function loadImageFrom(src: string): Promise<Icon | null> {
-  return new Promise<Icon | null>((resolve) => {
-    const image = new Image()
-    const timer = setTimeout(() => done(false), ICON_TIMEOUT_MS)
-    function done(ok: boolean) {
-      clearTimeout(timer)
-      image.onload = image.onerror = null
-      resolve(ok && image.naturalWidth > 0 ? { image, width: image.naturalWidth, height: image.naturalHeight } : null)
-    }
-    image.decoding = 'async'
-    // decode() can reject in some browsers for an image that has loaded fine (WebKit), so loaded is enough.
-    image.onload = () => {
-      image.decode().then(
-        () => done(true),
-        () => done(true),
-      )
-    }
-    image.onerror = () => done(false)
-    image.src = src
-  })
+async function loadImageFrom(src: string): Promise<Icon | null> {
+  // Fetch first so a missing or failed icon never becomes an <img> request (those show as console 404s).
+  // Only a 200 body is turned into a data URL for the image element; anything else is the neutral tile.
+  try {
+    const res = await fetch(src, { signal: AbortSignal.timeout(ICON_TIMEOUT_MS) })
+    if (!res.ok) return null
+    const blob = await res.blob()
+    if (!blob.size || (blob.type && !blob.type.startsWith('image/'))) return null
+    const dataUrl = await readAsDataUrl(blob)
+    return await new Promise<Icon | null>((resolve) => {
+      const image = new Image()
+      const timer = setTimeout(() => done(false), ICON_TIMEOUT_MS)
+      function done(ok: boolean) {
+        clearTimeout(timer)
+        image.onload = image.onerror = null
+        resolve(ok && image.naturalWidth > 0 ? { image, width: image.naturalWidth, height: image.naturalHeight } : null)
+      }
+      image.decoding = 'async'
+      // decode() can reject in some browsers for an image that has loaded fine (WebKit), so loaded is enough.
+      image.onload = () => {
+        image.decode().then(
+          () => done(true),
+          () => done(true),
+        )
+      }
+      image.onerror = () => done(false)
+      image.src = dataUrl
+    })
+  } catch {
+    return null
+  }
 }
 
 /**

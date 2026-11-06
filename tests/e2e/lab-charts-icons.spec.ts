@@ -41,9 +41,13 @@ test.describe('chart icons and labels on every template', () => {
 
   test('icons come from our own origin, and the page may not load images from anywhere else', async ({ page }) => {
     const requested = await mockLive(page)
+    // Icons are fetched (not loaded as <img>), then drawn from a data URL so a miss never shows as a console 404.
     const icons: string[] = []
     page.on('request', (r) => {
-      if (r.resourceType() === 'image') icons.push(new URL(r.url()).pathname)
+      const path = new URL(r.url()).pathname
+      if (r.resourceType() === 'image' || path.startsWith('/api/icon/') || path.startsWith('/lab/charts/icons/')) {
+        icons.push(path)
+      }
     })
     await page.goto('/lab/charts/?template=most-sdks')
     await expect(page.locator('canvas[data-rendered^="most-sdks:"]')).toBeVisible()

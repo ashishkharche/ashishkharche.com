@@ -1,7 +1,8 @@
 # Deploying
 
-The site builds to plain static files in `dist/client`, plus one Vercel function, `api/tdn.ts` (the chart builder's live
-data proxy, see below). Two ways to put it on the Vercel project `ashishkharche` (domain ashishkharche.com):
+The site builds to plain static files in `dist/client`, plus two Vercel functions for the chart builder: `api/tdn.ts`
+(live data proxy) and `api/icon.ts` (same-origin app icons). Two ways to put it on the Vercel project `ashishkharche`
+(domain ashishkharche.com):
 
 ## Before either option
 
@@ -25,11 +26,11 @@ Requires Node 22.18 or newer (the scripts are TypeScript run directly by Node) a
 
 ## Option A: static upload (what the current site uses)
 
-Upload the contents of `dist/client` as they are, plus `api/tdn.ts`, with no build step on Vercel.
+Upload the contents of `dist/client` as they are, plus `api/tdn.ts` and `api/icon.ts`, with no build step on Vercel.
 
 1. `pnpm build && pnpm deploy:manifest`. This writes `dist/deploy-manifest.json`: every file under `dist/client` with its path,
-   SHA-1 and size (about 70 files, 1.7 MB), and `api/tdn.ts` as `api/tdn.ts` at the root of the upload, next to
-   `vercel.json`. (`pnpm deploy:manifest --static-only` leaves the function out.)
+   SHA-1 and size (about 70 files, 1.7 MB), and `api/tdn.ts` and `api/icon.ts` at the root of the upload, next to
+   `vercel.json`. (`pnpm deploy:manifest --static-only` leaves the functions out.)
 2. Upload each file through the Vercel REST API (`POST /v2/files`), sending the file's bytes with its SHA-1 in the
    `x-vercel-digest` header and its size as the content length. Files Vercel already has are skipped by digest.
 3. Create a deployment through the Vercel REST API (`POST /v13/deployments`) for project `ashishkharche`, scoped to the
@@ -38,12 +39,12 @@ Upload the contents of `dist/client` as they are, plus `api/tdn.ts`, with no bui
    - `projectSettings`: `{ "framework": null, "buildCommand": "", "installCommand": "", "outputDirectory": null }`.
      The empty build and install commands tell Vercel to skip both steps and serve the files exactly as uploaded. Leaving
      them as `null` makes Vercel fall back to the project's framework setting and run `vite build`, which fails because
-     the upload has no source. With the build step skipped, Vercel still builds `api/tdn.ts` as a Node.js function
-     (it has no imports, so it needs no `package.json` or install). Do not set `framework`, `rootDirectory` or
+     the upload has no source. With the build step skipped, Vercel still builds `api/tdn.ts` and `api/icon.ts` as Node.js
+     functions (neither has imports, so they need no `package.json` or install). Do not set `framework`, `rootDirectory` or
      `outputDirectory` to anything else, and do not add a `functions` block: the defaults (Node.js runtime from the
      project's Node.js version, default region and duration) are what it was tested with.
    - `target`: `production` (or leave it out for a preview first).
-4. Check the preview URL, including `/api/tdn` (see the checks at the end), then promote or alias it as usual.
+4. Check the preview URL, including `/api/tdn` and `/api/icon` (see the checks at the end), then promote or alias it as usual.
 
 `dist/client/vercel.json` is part of the upload and carries the headers (security headers, `frame-ancestors`, long caching for
 fonts and hashed JS/CSS) and `"trailingSlash": true`, which redirects `/work` to `/work/`. `404.html` is served for unknown paths.
@@ -97,10 +98,24 @@ data: `/api/tdn?endpoint=rankings&store=apple&country=us&limit=5`.
 - The page's CSP keeps `connect-src 'self'`, which already allows `/api/tdn`. On `/lab/charts/` only, `img-src` also
   allows the App Store and Google Play icon hosts (`chartIconHosts` in `src/lib/csp.ts`).
 
+## The chart builder’s app icon route (`api/icon.ts`)
+
+`api/icon.ts` is a Vercel function that fetches an app icon from Apple’s or Google’s image CDN and returns it from this
+origin, so the chart canvas stays exportable and visitors never load those hosts. The page first uses icons baked into
+`/lab/charts/icons/`; this route covers any live icon URL that is not baked yet.
+
+- GET and HEAD only; exactly one query parameter `u`, which must be an https URL on `is1-ssl.mzstatic.com`…
+  `is9-ssl.mzstatic.com` or `play-lh.googleusercontent.com` (no user, password, port or hash). Anything else is 400 and
+  nothing is fetched.
+- Static upload (Option A): `pnpm deploy:manifest` includes `api/icon.ts` next to `api/tdn.ts`. Leaving it out makes
+  `/api/icon/` answer Vercel’s NOT_FOUND 404 and the chart builder’s console fills with failed icon loads.
+- GitHub builds (Option B): Vercel deploys `api/` from the repository root on its own.
+
 ## After deploying
 
 - Open `/`, `/work/`, `/projects/workout-director/`, `/notes/workout-director-1/` and a made-up URL (should show the 404 page).
 - Open `/api/tdn?endpoint=rankings&limit=5` (200, `Cache-Control: public, max-age=60`, `x-vercel-cache: HIT` on a repeat, no `RateLimit-*` headers,
   `meta.recordedAt` in the body) and `/api/tdn?endpoint=nope` (400).
+- Open `/api/icon/?u=` with an allowed App Store icon URL (200 image) and `/api/icon/` with no `u` (400, not a Vercel NOT_FOUND).
 - Check the browser console for Content-Security-Policy errors (there should be none).
 - Run Lighthouse against the live URL if anything about images or scripts changed.
