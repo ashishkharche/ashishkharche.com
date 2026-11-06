@@ -251,6 +251,24 @@ export const ENDPOINTS: Record<string, Endpoint> = {
     cache: 'slow',
     units: 2,
   },
+  // Daily feed (published facts among tracked apps) and its metrics companion. Both cost 1 unit.
+  'daily-feed': {
+    path: '/daily-feed',
+    params: { date: day },
+    cache: 'hourly',
+    units: 1,
+  },
+  'daily-feed-metrics': {
+    path: '/daily-feed/metrics',
+    params: {
+      date: day,
+      store,
+      genre: pattern(/^[A-Za-z0-9][\x20-\x7E]{0,59}$/, 'a store genre, up to 60 characters'),
+      kind: oneOf('size_percentiles', 'min_os_distribution', 'min_os_newest', 'chart_release_dates'),
+    },
+    cache: 'hourly',
+    units: 1,
+  },
 }
 
 export type Checked =

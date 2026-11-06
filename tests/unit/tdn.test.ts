@@ -71,6 +71,25 @@ describe('allowlist', () => {
     expect(q('endpoint=sdk-adoption&sdk=Firebase&limit=20')).toMatchObject({ path: '/sdk-adoption', units: 2 })
     expect(q('endpoint=apps&limit=500')).toMatchObject({ path: '/apps', cache: CACHE.slow, units: 1 })
     expect(q('endpoint=apps&limit=501')).toMatchObject({ ok: false, status: 400 })
+    expect(q('endpoint=daily-feed')).toMatchObject({ ok: true, path: '/daily-feed', cache: CACHE.hourly, units: 1 })
+    expect(q('endpoint=daily-feed&date=2026-11-05')).toMatchObject({
+      ok: true,
+      path: '/daily-feed',
+      search: '?date=2026-11-05',
+    })
+    expect(q('endpoint=daily-feed&date=05-11-2026')).toMatchObject({ ok: false, status: 400 })
+    expect(q('endpoint=daily-feed-metrics&store=apple')).toMatchObject({
+      ok: true,
+      path: '/daily-feed/metrics',
+      search: '?store=apple',
+      units: 1,
+    })
+    expect(q('endpoint=daily-feed-metrics&store=apple&kind=chart_release_dates&genre=Productivity')).toMatchObject({
+      ok: true,
+      path: '/daily-feed/metrics',
+      search: '?genre=Productivity&kind=chart_release_dates&store=apple',
+    })
+    expect(q('endpoint=daily-feed-metrics&kind=nope')).toMatchObject({ ok: false, status: 400 })
   })
 
   it('refuses unknown endpoints and paths that are not on the list', () => {

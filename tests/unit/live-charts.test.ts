@@ -238,8 +238,8 @@ describe('kind mappers', () => {
 })
 
 describe('live templates', () => {
-  it('has 19 live templates across the 5 kinds, each within 5 requests', () => {
-    expect(liveTemplates).toHaveLength(19)
+  it('has 22 live templates across the 5 kinds, each within 5 requests', () => {
+    expect(liveTemplates).toHaveLength(22)
     expect(new Set(liveTemplates.map((t) => t.kind))).toEqual(
       new Set(['headline', 'leaderboard', 'head-to-head', 'bump', 'dumbbell']),
     )
@@ -303,6 +303,8 @@ describe('live templates', () => {
             rankings: { status: 503, body: { error: 'x', code: 'not_configured' } },
             movers: { status: 503, body: { error: 'x', code: 'not_configured' } },
             'tech-stack': { status: 503, body: { error: 'x', code: 'not_configured' } },
+            'daily-feed': { status: 503, body: { error: 'x', code: 'not_configured' } },
+            'daily-feed-metrics': { status: 503, body: { error: 'x', code: 'not_configured' } },
           }),
         )
         await expect(template.load(client, {})).rejects.toBeInstanceOf(TdnError)

@@ -345,7 +345,13 @@ function spark(kit: Kit, sp: Extract<Extract<Model, { kind: 'headline' }>['suppo
     })
 }
 
-function bars(kit: Kit, list: Array<{ label: string; value: number }>, box: Box) {
+/** Label above a bar: prefer an explicit display string, else integers as-is and floats to 1 decimal. */
+function barValueLabel(b: { value: number; display?: string }): string {
+  if (b.display !== undefined) return b.display
+  return Number.isInteger(b.value) ? String(b.value) : b.value.toFixed(1)
+}
+
+function bars(kit: Kit, list: Array<{ label: string; value: number; display?: string }>, box: Box) {
   const { ctx, s } = kit
   const max = Math.max(1, ...list.map((b) => b.value))
   const gap = 32 * s
@@ -359,7 +365,7 @@ function bars(kit: Kit, list: Array<{ label: string; value: number }>, box: Box)
     const h = (b.value / max) * (plotBottom - plotTop)
     ctx.fillStyle = i === 0 ? BAR : BAR_SOFT
     ctx.fillRect(x, plotBottom - h, w, Math.max(h, 2 * s))
-    kit.text(String(b.value), x + w / 2, plotBottom - h - 10 * s, {
+    kit.text(barValueLabel(b), x + w / 2, plotBottom - h - 10 * s, {
       size: kit.size('body'),
       weight: 500,
       color: palette.text,
@@ -411,21 +417,53 @@ function iconBars(kit: Kit, list: Array<{ app: AppRef; label: string; value: num
 
 // Ranked list ---------------------------------------------------------------------------------------------------------
 
+/**
+ * Width reserved for the right-hand display column so a bar never runs into the date/value text.
+ * Exported for overlap tests.
+ */
+export function leaderboardDisplayWidth(
+  displays: string[],
+  measure: (text: string) => number,
+  minWidth: number,
+  pad: number,
+): number {
+  const widest = displays.reduce((w, d) => Math.max(w, measure(d)), 0)
+  return Math.max(minWidth, widest) + pad
+}
+
 function leaderboard(kit: Kit, m: Extract<Model, { kind: 'leaderboard' }>, box: Box) {
   const { ctx, s } = kit
   const n = m.rows.length
-  const rowH = Math.min((box.bottom - box.top) / Math.max(n, 5), 110 * s)
+  const showBars = m.showBars !== false
+  const labelH = showBars && m.barLabel ? kit.size('meta') * 2 : 0
+  const plotTop = box.top + labelH
+  const rowH = Math.min((box.bottom - plotTop) / Math.max(n, 5), 110 * s)
   const max = Math.max(...m.rows.map((r) => r.value), 1)
   const nameSize = kit.size('body')
   // The icon column is there when any row has an icon; a row without one gets a plain circle, so names line up.
   const iconSize = m.rows.some((r) => kit.has(r.app)) ? rowH * 0.66 : 0
   const rankW = 56 * s
   const nameW = (box.right - box.left) * 0.4
-  const valueW = 120 * s
+  const gapBeforeDisplay = 16 * s
+  const valueW = leaderboardDisplayWidth(
+    m.rows.map((r) => r.display),
+    (text) => kit.width(text, nameSize, 500),
+    120 * s,
+    gapBeforeDisplay,
+  )
   const barLeft = box.left + rankW + iconSize + 20 * s + nameW
   const barRight = box.right - valueW
+  if (showBars && m.barLabel) {
+    kit.text(m.barLabel, Math.max(barLeft, barRight), plotTop - kit.size('meta') * 0.6, {
+      size: kit.size('meta'),
+      weight: 400,
+      color: palette.tick,
+      ha: 'right',
+      va: 'bottom',
+    })
+  }
   m.rows.forEach((r, i) => {
-    const cy = box.top + rowH * (i + 0.5)
+    const cy = plotTop + rowH * (i + 0.5)
     kit.text(String(i + 1), box.left + rankW - 20 * s, cy, {
       size: nameSize,
       weight: 500,
@@ -452,8 +490,11 @@ function leaderboard(kit: Kit, m: Extract<Model, { kind: 'leaderboard' }>, box: 
         va: 'center',
       })
     }
-    const len = (r.value / max) * (barRight - barLeft - 24 * s)
-    bar(ctx, barLeft, barLeft + len, cy, Math.max(10 * s, rowH * 0.28), i === 0 ? BAR : '#8a8a8a')
+    if (showBars && barRight > barLeft + 8 * s) {
+      const span = Math.max(0, barRight - barLeft - gapBeforeDisplay)
+      const len = (r.value / max) * span
+      bar(ctx, barLeft, barLeft + len, cy, Math.max(10 * s, rowH * 0.28), i === 0 ? BAR : '#8a8a8a')
+    }
     kit.text(r.display, box.right, cy, {
       size: nameSize,
       weight: 500,

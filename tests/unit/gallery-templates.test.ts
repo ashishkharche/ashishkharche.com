@@ -24,7 +24,8 @@ import {
 const dataIds = JSON.parse(readFileSync('public/lab/charts/data/index.json', 'utf8')) as string[]
 const answers = saved as Record<string, unknown>
 const savedFetch = async (url: string) => {
-  const body = answers[fixtureKey(url)]
+  const key = fixtureKey(url)
+  const body = answers[key] ?? fixtures[key]
   return body === undefined
     ? { ok: false, status: 404, json: async () => ({ error: 'not saved', code: 'not_found' }) }
     : { ok: true, status: 200, json: async () => structuredClone(body) }

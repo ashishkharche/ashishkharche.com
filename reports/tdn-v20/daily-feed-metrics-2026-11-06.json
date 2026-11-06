@@ -1,0 +1,4016 @@
+{
+  "data": {
+    "schema": "tdn.feed-metrics.v1",
+    "date": "2026-11-06",
+    "slot": "2026-11-06 00:00:00",
+    "scope": "Among the apps TechDevNotes tracks",
+    "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+    "filters": {
+      "store": null,
+      "genre": null,
+      "kind": null
+    },
+    "genres": {
+      "apple": [
+        {
+          "genre": "Productivity",
+          "apps": 28
+        },
+        {
+          "genre": "Social Networking",
+          "apps": 23
+        },
+        {
+          "genre": "Entertainment",
+          "apps": 22
+        },
+        {
+          "genre": "Photo & Video",
+          "apps": 13
+        },
+        {
+          "genre": "Shopping",
+          "apps": 12
+        },
+        {
+          "genre": "Music",
+          "apps": 9
+        },
+        {
+          "genre": "Utilities",
+          "apps": 9
+        },
+        {
+          "genre": "Lifestyle",
+          "apps": 6
+        },
+        {
+          "genre": "News",
+          "apps": 6
+        },
+        {
+          "genre": "Travel",
+          "apps": 6
+        },
+        {
+          "genre": "Business",
+          "apps": 4
+        },
+        {
+          "genre": "Food & Drink",
+          "apps": 3
+        },
+        {
+          "genre": "Health & Fitness",
+          "apps": 3
+        },
+        {
+          "genre": "Sports",
+          "apps": 3
+        },
+        {
+          "genre": "Education",
+          "apps": 2
+        },
+        {
+          "genre": "Navigation",
+          "apps": 2
+        },
+        {
+          "genre": "Book",
+          "apps": 1
+        },
+        {
+          "genre": "Developer Tools",
+          "apps": 1
+        },
+        {
+          "genre": "Graphics & Design",
+          "apps": 1
+        },
+        {
+          "genre": "Medical",
+          "apps": 1
+        },
+        {
+          "genre": "Reference",
+          "apps": 1
+        }
+      ],
+      "google": [
+        {
+          "genre": "Productivity",
+          "apps": 23
+        },
+        {
+          "genre": "Entertainment",
+          "apps": 13
+        },
+        {
+          "genre": "Communication",
+          "apps": 11
+        },
+        {
+          "genre": "Shopping",
+          "apps": 9
+        },
+        {
+          "genre": "Social",
+          "apps": 9
+        },
+        {
+          "genre": "Music & Audio",
+          "apps": 8
+        },
+        {
+          "genre": "Tools",
+          "apps": 8
+        },
+        {
+          "genre": "Travel & Local",
+          "apps": 8
+        },
+        {
+          "genre": "Food & Drink",
+          "apps": 7
+        },
+        {
+          "genre": "Business",
+          "apps": 4
+        },
+        {
+          "genre": "Education",
+          "apps": 3
+        },
+        {
+          "genre": "News & Magazines",
+          "apps": 3
+        },
+        {
+          "genre": "Lifestyle",
+          "apps": 2
+        },
+        {
+          "genre": "Photography",
+          "apps": 2
+        },
+        {
+          "genre": "Sports",
+          "apps": 2
+        },
+        {
+          "genre": "Video Players & Editors",
+          "apps": 2
+        },
+        {
+          "genre": "Art & Design",
+          "apps": 1
+        },
+        {
+          "genre": "Books & Reference",
+          "apps": 1
+        },
+        {
+          "genre": "Casual",
+          "apps": 1
+        },
+        {
+          "genre": "Maps & Navigation",
+          "apps": 1
+        }
+      ]
+    },
+    "items": [
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "size_percentiles:apple:us",
+        "kind": "size_percentiles",
+        "title": "App download sizes, US App Store",
+        "answer": "The median download size among 156 tracked App Store apps is 261.1 MB, from NBA: Live Games & Scores 120746.",
+        "table": {
+          "columns": [
+            {
+              "key": "mark",
+              "label": "Percentile",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "label"
+              }
+            },
+            {
+              "key": "size",
+              "label": "Size",
+              "format": "bytes",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "size_bytes"
+              }
+            },
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "version",
+              "label": "Version",
+              "format": "version",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "version"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/ios/tesla/582007913",
+              "cells": {
+                "mark": "Largest",
+                "size": 1088421888,
+                "app": "Tesla",
+                "version": "4.62.3"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 224,
+                  "recordedAt": "2026-06-21 23:16:49",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 515,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": "/apps/ios/microsoft-teams/1113153706",
+              "cells": {
+                "mark": "90th percentile",
+                "size": 559939584,
+                "app": "Microsoft Teams",
+                "version": "8.19.3"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 293,
+                  "recordedAt": "2026-10-24 20:49:44",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 469,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 3,
+              "tied": false,
+              "href": "/apps/ios/uber/368677368",
+              "cells": {
+                "mark": "75th percentile",
+                "size": 438304768,
+                "app": "Uber - Rides, Eats, Hotels",
+                "version": "3.746.10001"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 259,
+                  "recordedAt": "2026-10-24 19:28:50",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 524,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 4,
+              "tied": false,
+              "href": "/apps/ios/nba/484672289",
+              "cells": {
+                "mark": "Median",
+                "size": 261095424,
+                "app": "NBA: Live Games & Scores",
+                "version": "120746"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 86,
+                  "recordedAt": "2026-06-19 04:27:42",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 473,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 5,
+              "tied": false,
+              "href": "/apps/ios/wayshot-aesthetic-photo-editor/6749303003",
+              "cells": {
+                "mark": "25th percentile",
+                "size": 169869312,
+                "app": "WayShot:Aesthetic Photo Editor",
+                "version": "2.14.0"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 345,
+                  "recordedAt": "2026-11-02 18:28:51",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 527,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 6,
+              "tied": false,
+              "href": "/apps/ios/mastodon/1571998974",
+              "cells": {
+                "mark": "10th percentile",
+                "size": 115343360,
+                "app": "Mastodon",
+                "version": "2026.07"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 105,
+                  "recordedAt": "2026-06-19 04:30:17",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 463,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 6
+        },
+        "context": "Nearest-rank percentiles of each app's current public version as the US App Store reported it in this run, so every value is a real app's size and nothing is interpolated; Google Play does not report a download size.",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+        "runs": [
+          {
+            "runId": 400,
+            "role": "current",
+            "slot": "2026-11-06 00:00:00",
+            "startedAt": "2026-11-06 00:00:06",
+            "finishedAt": "2026-11-06 00:41:24"
+          }
+        ]
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "min_os_distribution:apple:us",
+        "kind": "min_os_distribution",
+        "title": "Minimum iOS versions, US App Store",
+        "answer": "The most common minimum iOS among 156 tracked App Store apps is iOS 18, set by 44 of them.",
+        "table": {
+          "columns": [
+            {
+              "key": "minOs",
+              "label": "Minimum OS",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "label"
+              }
+            },
+            {
+              "key": "apps",
+              "label": "Apps",
+              "format": "int",
+              "align": "right",
+              "origin": {
+                "kind": "count",
+                "of": "app_store_facts.min_os"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "iOS 18",
+                "apps": 44
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 397,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 389,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 390,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 415,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 418,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 420,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 423,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 429,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 432,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 391,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 437,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 439,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 442,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 445,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 393,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 453,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 458,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 459,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 460,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 463,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 465,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 467,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 471,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 472,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 473,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 475,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 476,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 477,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 478,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 480,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 481,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 484,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 485,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 491,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 504,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 541,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 510,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 512,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 516,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 524,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 525,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 527,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 528,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 533,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "iOS 15",
+                "apps": 36
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 396,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 404,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 405,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 407,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 409,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 413,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 419,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 424,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 444,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 451,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 454,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 455,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 464,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 468,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 486,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 494,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 498,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 499,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 500,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 505,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 506,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 507,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 508,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 513,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 514,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 518,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 519,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 520,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 526,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 529,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 531,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 532,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 395,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 536,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 537,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 538,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 3,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "iOS 16",
+                "apps": 34
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 398,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 402,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 403,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 406,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 412,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 416,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 417,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 422,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 436,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 443,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 446,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 447,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 448,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 450,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 452,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 540,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 456,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 479,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 482,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 483,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 488,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 489,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 490,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 493,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 495,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 496,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 497,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 509,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 394,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 511,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 517,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 521,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 523,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 542,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 4,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "iOS 17",
+                "apps": 33
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 399,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 401,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 410,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 411,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 414,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 421,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 425,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 426,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 427,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 428,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 430,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 431,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 433,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 434,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 435,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 543,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 438,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 440,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 441,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 392,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 449,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 461,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 462,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 469,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 492,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 501,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 502,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 503,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 515,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 522,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 530,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 534,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 535,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 5,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "iOS 26",
+                "apps": 5
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 400,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 408,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 466,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 470,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 474,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 6,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "iOS 13",
+                "apps": 2
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 487,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 539,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 7,
+              "tied": true,
+              "href": null,
+              "cells": {
+                "minOs": "iOS 14",
+                "apps": 1
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 457,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 7,
+              "tied": true,
+              "href": null,
+              "cells": {
+                "minOs": "iOS 10",
+                "apps": 1
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 388,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 8
+        },
+        "context": "Grouped by the major version of each app's minimum iOS (16.0 and 16.4 both count as iOS 16), for each app's current public version on the US storefront in this run.",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+        "runs": [
+          {
+            "runId": 400,
+            "role": "current",
+            "slot": "2026-11-06 00:00:00",
+            "startedAt": "2026-11-06 00:00:06",
+            "finishedAt": "2026-11-06 00:41:24"
+          }
+        ]
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "min_os_newest:apple:us",
+        "kind": "min_os_newest",
+        "title": "Apps that need iOS 26 or later, US App Store",
+        "answer": "Only 5 of the 156 tracked App Store apps need iOS 26 or later.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "minOs",
+              "label": "Minimum OS",
+              "format": "os",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "min_os"
+              }
+            },
+            {
+              "key": "version",
+              "label": "Version",
+              "format": "version",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "version"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": true,
+              "href": "/apps/ios/audible/379693831",
+              "cells": {
+                "app": "Audible: Audiobooks & Podcasts",
+                "minOs": "26.0",
+                "version": "4.81.1"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 59,
+                  "recordedAt": "2026-06-19 04:23:02",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 400,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 1,
+              "tied": true,
+              "href": "/apps/ios/claude-duet/6803276000",
+              "cells": {
+                "app": "Claude Duet by Anthropic",
+                "minOs": "26.0",
+                "version": "1.261107.0"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 327,
+                  "recordedAt": "2026-10-29 09:48:37",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 408,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 1,
+              "tied": true,
+              "href": "/apps/ios/microsoft-copilot/541164041",
+              "cells": {
+                "app": "Microsoft Copilot",
+                "minOs": "26.0",
+                "version": "2.115.3"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 254,
+                  "recordedAt": "2026-10-24 19:15:35",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 466,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 1,
+              "tied": true,
+              "href": "/apps/ios/microsoft-word/586447913",
+              "cells": {
+                "app": "Microsoft Word",
+                "minOs": "26.0",
+                "version": "2.115.2"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 349,
+                  "recordedAt": "2026-11-03 01:52:58",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 470,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 1,
+              "tied": true,
+              "href": "/apps/ios/netflix/363590051",
+              "cells": {
+                "app": "Netflix",
+                "minOs": "26.0",
+                "version": "26.4.0"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 87,
+                  "recordedAt": "2026-06-19 04:27:49",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 474,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 5
+        },
+        "context": "Minimum OS of each app's current public version on the US storefront in this run; no tracked app needs a newer major version.",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+        "runs": [
+          {
+            "runId": 400,
+            "role": "current",
+            "slot": "2026-11-06 00:00:00",
+            "startedAt": "2026-11-06 00:00:06",
+            "finishedAt": "2026-11-06 00:41:24"
+          }
+        ]
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "chart_release_dates:apple:us:top-free",
+        "kind": "chart_release_dates",
+        "title": "Newest tracked apps in the US App Store top free chart",
+        "answer": "Muse from Meta, first released on 8 Sep 2026, is the newest of the 64 tracked apps in the US App Store top free chart.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "released",
+              "label": "First released",
+              "format": "date",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "released_on"
+              }
+            },
+            {
+              "key": "rankNow",
+              "label": "Rank now",
+              "format": "rank",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "rank"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/ios/muse-from-meta/6760173601",
+              "cells": {
+                "app": "Muse from Meta",
+                "released": "2026-09-08",
+                "rankNow": 2
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 325,
+                  "recordedAt": "2026-10-29 09:48:37",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 471,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736619,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": "/apps/ios/grok-bot/6794501026",
+              "cells": {
+                "app": "Grok Bot",
+                "released": "2026-08-11",
+                "rankNow": 81
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 245,
+                  "recordedAt": "2026-08-11 23:55:17",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 393,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736670,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 3,
+              "tied": false,
+              "href": "/apps/ios/tiktok-pro-events/6741796873",
+              "cells": {
+                "app": "TikTok Pro - Events",
+                "released": "2026-06-03",
+                "rankNow": 1
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 234,
+                  "recordedAt": "2026-06-25 02:17:29",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 519,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736618,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 4,
+              "tied": false,
+              "href": "/apps/ios/instants-an-instagram-app/6756442328",
+              "cells": {
+                "app": "Instants \u2013 an Instagram app",
+                "released": "2026-05-12",
+                "rankNow": 33
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 362,
+                  "recordedAt": "2026-11-05 16:48:31",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 540,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736645,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 5,
+              "tied": false,
+              "href": "/apps/ios/dealseek/6745274862",
+              "cells": {
+                "app": "DealSeek: Coupons & Discounts",
+                "released": "2025-06-19",
+                "rankNow": 53
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 343,
+                  "recordedAt": "2026-11-02 14:31:53",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 412,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736656,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 6,
+              "tied": false,
+              "href": "/apps/ios/edits/6738967378",
+              "cells": {
+                "app": "Edits: Video Editor",
+                "released": "2025-04-22",
+                "rankNow": 72
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 263,
+                  "recordedAt": "2026-10-24 19:34:06",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 422,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736666,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 7,
+              "tied": false,
+              "href": "/apps/ios/reco-social/6742024490",
+              "cells": {
+                "app": "Reco Social",
+                "released": "2025-03-12",
+                "rankNow": 7
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 341,
+                  "recordedAt": "2026-11-02 09:06:49",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 496,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736624,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 8,
+              "tied": false,
+              "href": "/apps/ios/grok/6670324846",
+              "cells": {
+                "app": "Grok - AI Chat & Video",
+                "released": "2025-01-08",
+                "rankNow": 40
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 1,
+                  "recordedAt": "2026-05-03 17:32:54",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 392,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736649,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 9,
+              "tied": false,
+              "href": "/apps/ios/gemini/6477489729",
+              "cells": {
+                "app": "Google Gemini",
+                "released": "2024-11-13",
+                "rankNow": 11
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 4,
+                  "recordedAt": "2026-05-03 23:35:33",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 391,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736626,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 10,
+              "tied": false,
+              "href": "/apps/ios/dramawave/6670430706",
+              "cells": {
+                "app": "DramaWave - Dramas & Reels",
+                "released": "2024-09-23",
+                "rankNow": 36
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 278,
+                  "recordedAt": "2026-10-24 19:57:24",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 419,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "chart_rankings",
+                  "id": 7736647,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 64
+        },
+        "context": "Ordered by the original release date the US App Store lists, read in this run for every ranked tracked app; apps TechDevNotes does not track are not listed.",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+        "runs": [
+          {
+            "runId": 400,
+            "role": "current",
+            "slot": "2026-11-06 00:00:00",
+            "startedAt": "2026-11-06 00:00:06",
+            "finishedAt": "2026-11-06 00:41:24"
+          }
+        ]
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "min_os_distribution:google:us",
+        "kind": "min_os_distribution",
+        "title": "Minimum Android versions, US Google Play",
+        "answer": "The most common minimum Android among 69 tracked Google Play apps is Android 7, set by 21 of them.",
+        "table": {
+          "columns": [
+            {
+              "key": "minOs",
+              "label": "Minimum OS",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "label"
+              }
+            },
+            {
+              "key": "apps",
+              "label": "Apps",
+              "format": "int",
+              "align": "right",
+              "origin": {
+                "kind": "count",
+                "of": "app_store_facts.min_os"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "Android 7",
+                "apps": 21
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 276,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 280,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 281,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 284,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 288,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 270,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 292,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 293,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 295,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 296,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 349,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 301,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 306,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 311,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 314,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 316,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 325,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 326,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 329,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 334,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 341,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "Android 8",
+                "apps": 12
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 279,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 285,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 290,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 271,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 291,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 302,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 304,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 305,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 313,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 319,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 327,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 336,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 3,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "Android 10",
+                "apps": 11
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 282,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 303,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 307,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 309,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 310,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 312,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 315,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 318,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 324,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 328,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 331,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 4,
+              "tied": true,
+              "href": null,
+              "cells": {
+                "minOs": "Android 9",
+                "apps": 9
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 287,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 289,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 298,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 299,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 272,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 273,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 274,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 275,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 387,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 4,
+              "tied": true,
+              "href": null,
+              "cells": {
+                "minOs": "Android 6",
+                "apps": 9
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 283,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 286,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 294,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 297,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 332,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 333,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 335,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 337,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 340,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 6,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "Android 5",
+                "apps": 3
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 277,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 330,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 339,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 7,
+              "tied": false,
+              "href": null,
+              "cells": {
+                "minOs": "Android 11",
+                "apps": 2
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 300,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 308,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 8,
+              "tied": true,
+              "href": null,
+              "cells": {
+                "minOs": "Android 12",
+                "apps": 1
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 278,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 8,
+              "tied": true,
+              "href": null,
+              "cells": {
+                "minOs": "Android 4",
+                "apps": 1
+              },
+              "sources": [
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 320,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 9
+        },
+        "context": "Grouped by the major version in Google Play's \"requires Android\" field (\"8.0 and up\" counts as Android 8), for each app's current public version on the US storefront in this run.",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+        "runs": [
+          {
+            "runId": 400,
+            "role": "current",
+            "slot": "2026-11-06 00:00:00",
+            "startedAt": "2026-11-06 00:00:06",
+            "finishedAt": "2026-11-06 00:41:24"
+          }
+        ]
+      },
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "min_os_newest:google:us",
+        "kind": "min_os_newest",
+        "title": "Apps that need Android 12 or later, US Google Play",
+        "answer": "Only 1 of the 69 tracked Google Play apps needs Android 12 or later: Amazon Shopping.",
+        "table": {
+          "columns": [
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "minOs",
+              "label": "Minimum OS",
+              "format": "os",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "min_os"
+              }
+            },
+            {
+              "key": "version",
+              "label": "Version",
+              "format": "version",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "version"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/android/amazon-shopping/com.amazon.mShop.android.shopping",
+              "cells": {
+                "app": "Amazon Shopping",
+                "minOs": "12",
+                "version": "32.19.0.100"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 115,
+                  "recordedAt": "2026-06-19 04:31:50",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 278,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 1
+        },
+        "context": "Minimum OS of each app's current public version on the US storefront in this run; no tracked app needs a newer major version.",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+        "runs": [
+          {
+            "runId": 400,
+            "role": "current",
+            "slot": "2026-11-06 00:00:00",
+            "startedAt": "2026-11-06 00:00:06",
+            "finishedAt": "2026-11-06 00:41:24"
+          }
+        ]
+      }
+    ],
+    "skipped": [
+      {
+        "kind": "chart_release_dates",
+        "store": "google",
+        "reason": "1 ranked apps have no release date in this run"
+      }
+    ]
+  },
+  "meta": {
+    "date": "2026-11-06",
+    "schema": "tdn.feed-metrics.v1",
+    "count": 6,
+    "skipped": 1
+  }
+}

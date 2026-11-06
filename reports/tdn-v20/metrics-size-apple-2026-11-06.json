@@ -1,0 +1,459 @@
+{
+  "data": {
+    "schema": "tdn.feed-metrics.v1",
+    "date": "2026-11-06",
+    "slot": "2026-11-06 00:00:00",
+    "scope": "Among the apps TechDevNotes tracks",
+    "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+    "filters": {
+      "store": "apple",
+      "genre": null,
+      "kind": "size_percentiles"
+    },
+    "genres": {
+      "apple": [
+        {
+          "genre": "Productivity",
+          "apps": 28
+        },
+        {
+          "genre": "Social Networking",
+          "apps": 23
+        },
+        {
+          "genre": "Entertainment",
+          "apps": 22
+        },
+        {
+          "genre": "Photo & Video",
+          "apps": 13
+        },
+        {
+          "genre": "Shopping",
+          "apps": 12
+        },
+        {
+          "genre": "Music",
+          "apps": 9
+        },
+        {
+          "genre": "Utilities",
+          "apps": 9
+        },
+        {
+          "genre": "Lifestyle",
+          "apps": 6
+        },
+        {
+          "genre": "News",
+          "apps": 6
+        },
+        {
+          "genre": "Travel",
+          "apps": 6
+        },
+        {
+          "genre": "Business",
+          "apps": 4
+        },
+        {
+          "genre": "Food & Drink",
+          "apps": 3
+        },
+        {
+          "genre": "Health & Fitness",
+          "apps": 3
+        },
+        {
+          "genre": "Sports",
+          "apps": 3
+        },
+        {
+          "genre": "Education",
+          "apps": 2
+        },
+        {
+          "genre": "Navigation",
+          "apps": 2
+        },
+        {
+          "genre": "Book",
+          "apps": 1
+        },
+        {
+          "genre": "Developer Tools",
+          "apps": 1
+        },
+        {
+          "genre": "Graphics & Design",
+          "apps": 1
+        },
+        {
+          "genre": "Medical",
+          "apps": 1
+        },
+        {
+          "genre": "Reference",
+          "apps": 1
+        }
+      ],
+      "google": [
+        {
+          "genre": "Productivity",
+          "apps": 23
+        },
+        {
+          "genre": "Entertainment",
+          "apps": 13
+        },
+        {
+          "genre": "Communication",
+          "apps": 11
+        },
+        {
+          "genre": "Shopping",
+          "apps": 9
+        },
+        {
+          "genre": "Social",
+          "apps": 9
+        },
+        {
+          "genre": "Music & Audio",
+          "apps": 8
+        },
+        {
+          "genre": "Tools",
+          "apps": 8
+        },
+        {
+          "genre": "Travel & Local",
+          "apps": 8
+        },
+        {
+          "genre": "Food & Drink",
+          "apps": 7
+        },
+        {
+          "genre": "Business",
+          "apps": 4
+        },
+        {
+          "genre": "Education",
+          "apps": 3
+        },
+        {
+          "genre": "News & Magazines",
+          "apps": 3
+        },
+        {
+          "genre": "Lifestyle",
+          "apps": 2
+        },
+        {
+          "genre": "Photography",
+          "apps": 2
+        },
+        {
+          "genre": "Sports",
+          "apps": 2
+        },
+        {
+          "genre": "Video Players & Editors",
+          "apps": 2
+        },
+        {
+          "genre": "Art & Design",
+          "apps": 1
+        },
+        {
+          "genre": "Books & Reference",
+          "apps": 1
+        },
+        {
+          "genre": "Casual",
+          "apps": 1
+        },
+        {
+          "genre": "Maps & Navigation",
+          "apps": 1
+        }
+      ]
+    },
+    "items": [
+      {
+        "schema": "tdn.stat-answer.v1",
+        "id": "size_percentiles:apple:us",
+        "kind": "size_percentiles",
+        "title": "App download sizes, US App Store",
+        "answer": "The median download size among 156 tracked App Store apps is 261.1 MB, from NBA: Live Games & Scores 120746.",
+        "table": {
+          "columns": [
+            {
+              "key": "mark",
+              "label": "Percentile",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "label"
+              }
+            },
+            {
+              "key": "size",
+              "label": "Size",
+              "format": "bytes",
+              "align": "right",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "size_bytes"
+              }
+            },
+            {
+              "key": "app",
+              "label": "App",
+              "format": "text",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "app",
+                "field": "name"
+              }
+            },
+            {
+              "key": "version",
+              "label": "Version",
+              "format": "version",
+              "align": "left",
+              "origin": {
+                "kind": "source",
+                "role": "current",
+                "field": "version"
+              }
+            }
+          ],
+          "rows": [
+            {
+              "position": 1,
+              "tied": false,
+              "href": "/apps/ios/tesla/582007913",
+              "cells": {
+                "mark": "Largest",
+                "size": 1088421888,
+                "app": "Tesla",
+                "version": "4.62.3"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 224,
+                  "recordedAt": "2026-06-21 23:16:49",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 515,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "tied": false,
+              "href": "/apps/ios/microsoft-teams/1113153706",
+              "cells": {
+                "mark": "90th percentile",
+                "size": 559939584,
+                "app": "Microsoft Teams",
+                "version": "8.19.3"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 293,
+                  "recordedAt": "2026-10-24 20:49:44",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 469,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 3,
+              "tied": false,
+              "href": "/apps/ios/uber/368677368",
+              "cells": {
+                "mark": "75th percentile",
+                "size": 438304768,
+                "app": "Uber - Rides, Eats, Hotels",
+                "version": "3.746.10001"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 259,
+                  "recordedAt": "2026-10-24 19:28:50",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 524,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 4,
+              "tied": false,
+              "href": "/apps/ios/nba/484672289",
+              "cells": {
+                "mark": "Median",
+                "size": 261095424,
+                "app": "NBA: Live Games & Scores",
+                "version": "120746"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 86,
+                  "recordedAt": "2026-06-19 04:27:42",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 473,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 5,
+              "tied": false,
+              "href": "/apps/ios/wayshot-aesthetic-photo-editor/6749303003",
+              "cells": {
+                "mark": "25th percentile",
+                "size": 169869312,
+                "app": "WayShot:Aesthetic Photo Editor",
+                "version": "2.14.0"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 345,
+                  "recordedAt": "2026-11-02 18:28:51",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 527,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            },
+            {
+              "position": 6,
+              "tied": false,
+              "href": "/apps/ios/mastodon/1571998974",
+              "cells": {
+                "mark": "10th percentile",
+                "size": 115343360,
+                "app": "Mastodon",
+                "version": "2026.07"
+              },
+              "sources": [
+                {
+                  "role": "app",
+                  "table": "tracked_apps",
+                  "id": 105,
+                  "recordedAt": "2026-06-19 04:30:17",
+                  "runIds": [],
+                  "slot": null,
+                  "absentReason": null
+                },
+                {
+                  "role": "current",
+                  "table": "app_store_facts",
+                  "id": 463,
+                  "recordedAt": "2026-11-06 00:00:06",
+                  "runIds": [
+                    400
+                  ],
+                  "slot": "2026-11-06 00:00:00",
+                  "absentReason": null
+                }
+              ]
+            }
+          ],
+          "total": 6
+        },
+        "context": "Nearest-rank percentiles of each app's current public version as the US App Store reported it in this run, so every value is a real app's size and nothing is interpolated; Google Play does not report a download size.",
+        "scope": "Among the apps TechDevNotes tracks",
+        "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+        "runs": [
+          {
+            "runId": 400,
+            "role": "current",
+            "slot": "2026-11-06 00:00:00",
+            "startedAt": "2026-11-06 00:00:06",
+            "finishedAt": "2026-11-06 00:41:24"
+          }
+        ]
+      }
+    ],
+    "skipped": []
+  },
+  "meta": {
+    "date": "2026-11-06",
+    "schema": "tdn.feed-metrics.v1",
+    "count": 1,
+    "skipped": 0
+  }
+}

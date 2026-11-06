@@ -244,9 +244,13 @@ function describeLive(chart: LiveChart, text: ChartText): string {
   const m = chart.model
   const detail =
     m.kind === 'headline'
-      ? `${m.answer}${m.unit ? ` ${m.unit}` : ''}. ${m.sentence}`
+      ? `${m.answer}${m.unit ? ` ${m.unit}` : ''}. ${m.sentence}${
+          m.support?.type === 'bars'
+            ? ` Bars: ${m.support.bars.map((b) => `${b.label} ${b.display ?? (Number.isInteger(b.value) ? String(b.value) : b.value.toFixed(1))}`).join(', ')}.`
+            : ''
+        }`
       : m.kind === 'leaderboard'
-        ? m.rows.map((r, i) => `${i + 1}. ${r.app.name}, ${r.display}`).join('; ')
+        ? `${m.barLabel ? `${m.barLabel}. ` : ''}${m.rows.map((r, i) => `${i + 1}. ${r.app.name}, ${r.display}`).join('; ')}`
         : m.kind === 'head-to-head'
           ? m.metrics
               .map((x) => `${x.label}: ${m.apps[0].name} ${x.display[0]}, ${m.apps[1].name} ${x.display[1]}`)

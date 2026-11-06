@@ -29,6 +29,8 @@
  *   tech-stack/{id}   data: sdkCount, sdkListIsFloor, version, capturedAt, techStack.sdks[]: category, label, items[]
  *   apps              apps[]: id, store, name, developer, category, iconUrl, active; total (top level, no data or
  *                     meta wrapper; data[], appId, appName and meta.total are read too)
+ *   daily-feed        data: schema tdn.daily-feed.v1, date, status, scope, freshness, summary, items[] (stat-answer)
+ *   daily-feed/metrics data: schema tdn.feed-metrics.v1, date, slot, filters, genres, items[], skipped[]
  *
  * Data times ("2026-11-02 00:18:08") are UTC without a zone. Icons are URLs on Apple's isN-ssl.mzstatic.com or
  * Google's play-lh.googleusercontent.com; an app may have none, and the charts are drawn without it.
@@ -45,6 +47,8 @@ export type Endpoint =
   | 'tech-stack'
   | 'tech-stack-app'
   | 'sdk-adoption'
+  | 'daily-feed'
+  | 'daily-feed-metrics'
 
 export type Params = Record<string, string | number | undefined>
 
@@ -639,4 +643,211 @@ export function readApps(body: unknown): { rows: AppRow[]; total?: number } {
   }
   const total = num(top?.total) ?? num(metaOf(body).total)
   return total === undefined ? { rows } : { rows, total }
+}
+
+// Daily feed (schema v20) -------------------------------------------------------------------------------------------
+
+/** One cell value in a stat-answer table row. */
+export type StatCell = string | number | boolean | null
+
+/** A column on a stat-answer table. Origins and formats follow tdn.stat-answer.v1. */
+export interface StatColumn {
+  key: string
+  label: string
+  format: string
+  align?: string
+  origin?: unknown
+}
+
+export interface StatRow {
+  position: number
+  tied: boolean
+  href: string | null
+  cells: Record<string, StatCell>
+  sources: unknown[]
+}
+
+/** A tdn.stat-answer.v1 block (summary or feed item). */
+export interface StatAnswer {
+  schema: string
+  id: string
+  kind: string
+  title: string
+  answer: string
+  scope?: string
+  freshness?: string
+  context?: string
+  table: { columns: StatColumn[]; rows: StatRow[]; total: number }
+}
+
+export interface DailyFeed {
+  schema: string
+  date: string
+  status: string
+  scope: string
+  freshness: string
+  generatedAt?: string
+  publishAtUtc?: string
+  summary?: StatAnswer
+  items: StatAnswer[]
+}
+
+export interface FeedMetricsSkipped {
+  kind: string
+  store?: string | null
+  genre?: string | null
+  reason: string
+}
+
+export interface FeedMetrics {
+  schema: string
+  date: string
+  slot: string
+  scope: string
+  freshness: string
+  filters: { store: string | null; genre: string | null; kind: string | null }
+  genres: { apple: Array<{ genre: string; apps: number }>; google: Array<{ genre: string; apps: number }> }
+  items: StatAnswer[]
+  skipped: FeedMetricsSkipped[]
+}
+
+function readStatAnswer(raw: unknown): StatAnswer | undefined {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined
+  const r = raw as Raw
+  const kind = str(r.kind)
+  const id = str(r.id)
+  const title = str(r.title)
+  const answer = str(r.answer)
+  const tableRaw = r.table && typeof r.table === 'object' && !Array.isArray(r.table) ? (r.table as Raw) : undefined
+  if (!kind || !id || !title || !answer || !tableRaw) return undefined
+  const columns: StatColumn[] = []
+  for (const c of Array.isArray(tableRaw.columns) ? tableRaw.columns : []) {
+    if (!c || typeof c !== 'object') continue
+    const col = c as Raw
+    const key = str(col.key)
+    const label = str(col.label)
+    const format = str(col.format)
+    if (!key || !label || !format) continue
+    columns.push({ key, label, format, align: str(col.align), origin: col.origin })
+  }
+  const rows: StatRow[] = []
+  for (const row of Array.isArray(tableRaw.rows) ? tableRaw.rows : []) {
+    if (!row || typeof row !== 'object') continue
+    const rr = row as Raw
+    const position = num(rr.position)
+    if (position === undefined) continue
+    const cellsRaw = rr.cells && typeof rr.cells === 'object' && !Array.isArray(rr.cells) ? (rr.cells as Raw) : {}
+    const cells: Record<string, StatCell> = {}
+    for (const [k, v] of Object.entries(cellsRaw)) {
+      if (v === null || typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') cells[k] = v
+    }
+    rows.push({
+      position,
+      tied: rr.tied === true,
+      href: rr.href === null ? null : (str(rr.href) ?? null),
+      cells,
+      sources: Array.isArray(rr.sources) ? rr.sources : [],
+    })
+  }
+  const total = num(tableRaw.total) ?? rows.length
+  return {
+    schema: str(r.schema) ?? 'tdn.stat-answer.v1',
+    id,
+    kind,
+    title,
+    answer,
+    scope: str(r.scope),
+    freshness: str(r.freshness),
+    context: str(r.context),
+    table: { columns, rows, total },
+  }
+}
+
+/** Reads GET /daily-feed. A skipped day (status skipped, no items) still returns the envelope. */
+export function readDailyFeed(body: unknown): DailyFeed | undefined {
+  const data = objectOf(body)
+  if (!data) return undefined
+  const date = str(data.date)
+  const status = str(data.status)
+  const schema = str(data.schema)
+  const scope = str(data.scope)
+  const freshness = str(data.freshness)
+  if (!date || !status || !schema || !scope || !freshness) return undefined
+  const items: StatAnswer[] = []
+  for (const item of Array.isArray(data.items) ? data.items : []) {
+    const read = readStatAnswer(item)
+    if (read) items.push(read)
+  }
+  return {
+    schema,
+    date,
+    status,
+    scope,
+    freshness,
+    generatedAt: str(data.generatedAt),
+    publishAtUtc: str(data.publishAtUtc),
+    summary: readStatAnswer(data.summary),
+    items,
+  }
+}
+
+/** Reads GET /daily-feed/metrics, including empty items with skipped reasons. */
+export function readFeedMetrics(body: unknown): FeedMetrics | undefined {
+  const data = objectOf(body)
+  if (!data) return undefined
+  const date = str(data.date)
+  const slot = str(data.slot)
+  const schema = str(data.schema)
+  const scope = str(data.scope)
+  const freshness = str(data.freshness)
+  if (!date || !slot || !schema || !scope || !freshness) return undefined
+  const filtersRaw =
+    data.filters && typeof data.filters === 'object' && !Array.isArray(data.filters) ? (data.filters as Raw) : {}
+  const genresRaw =
+    data.genres && typeof data.genres === 'object' && !Array.isArray(data.genres) ? (data.genres as Raw) : {}
+  const readGenreList = (raw: unknown): Array<{ genre: string; apps: number }> => {
+    const out: Array<{ genre: string; apps: number }> = []
+    for (const g of Array.isArray(raw) ? raw : []) {
+      if (!g || typeof g !== 'object') continue
+      const gg = g as Raw
+      const genre = str(gg.genre)
+      const apps = num(gg.apps)
+      if (genre && apps !== undefined) out.push({ genre, apps })
+    }
+    return out
+  }
+  const items: StatAnswer[] = []
+  for (const item of Array.isArray(data.items) ? data.items : []) {
+    const read = readStatAnswer(item)
+    if (read) items.push(read)
+  }
+  const skipped: FeedMetricsSkipped[] = []
+  for (const s of Array.isArray(data.skipped) ? data.skipped : []) {
+    if (!s || typeof s !== 'object') continue
+    const ss = s as Raw
+    const kind = str(ss.kind)
+    const reason = str(ss.reason)
+    if (!kind || !reason) continue
+    skipped.push({
+      kind,
+      store: ss.store === null ? null : (str(ss.store) ?? null),
+      genre: ss.genre === null ? null : (str(ss.genre) ?? null),
+      reason,
+    })
+  }
+  return {
+    schema,
+    date,
+    slot,
+    scope,
+    freshness,
+    filters: {
+      store: filtersRaw.store === null ? null : (str(filtersRaw.store) ?? null),
+      genre: filtersRaw.genre === null ? null : (str(filtersRaw.genre) ?? null),
+      kind: filtersRaw.kind === null ? null : (str(filtersRaw.kind) ?? null),
+    },
+    genres: { apple: readGenreList(genresRaw.apple), google: readGenreList(genresRaw.google) },
+    items,
+    skipped,
+  }
 }
