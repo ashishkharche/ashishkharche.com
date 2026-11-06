@@ -278,7 +278,7 @@ describe('top10_returns', () => {
     expect(absent.empty).toBe(true)
     if (absent.model.kind !== 'headline') throw new Error('kind')
     expect(absent.model.sentence).toBe(NO_DATA_SENTENCE)
-    expect(absent.coverage).toMatch(/left out when empty|No top10_returns/)
+    expect(absent.coverage).toMatch(/No top10_returns|left out when empty|omits the kind when empty/)
 
     const skipped = mapTop10Returns(feedEnvelope([], 'skipped'))
     expect(skipped.empty).toBe(true)
@@ -327,5 +327,130 @@ describe('live templates load from fixtures', () => {
     expect(validateLive(chart)).toEqual([])
     expect(liveFootnote(chart).join(' ')).toContain(FEED_SCOPE)
     expect(chart.coverage).toMatch(/\d|Skipped|No /)
+  })
+})
+
+describe('edge cases from live 2026-11-06 shapes', () => {
+  it('published feed without top10_returns stays empty (real day shape)', () => {
+    const mapped = mapTop10Returns(
+      feedEnvelope(
+        [
+          {
+            schema: 'tdn.stat-answer.v1',
+            id: 'rank_movers:apple:us:top-free',
+            kind: 'rank_movers',
+            title: 'Biggest moves',
+            answer: 'X moved.',
+            table: { columns: [], rows: [], total: 0 },
+          },
+        ],
+        'published',
+      ),
+    )
+    expect(mapped.empty).toBe(true)
+    if (mapped.model.kind !== 'headline') throw new Error('kind')
+    expect(mapped.model.sentence).toBe(NO_DATA_SENTENCE)
+    expect(mapped.model.answer).toBe('None')
+    expect(mapped.coverage).toMatch(/omits the kind when empty|No top10_returns/)
+    expect(validateLive(asChart('feed-top10-returns', mapped))).toEqual([])
+  })
+
+  it('release-date coverage names an API page when total exceeds rows', () => {
+    const rows = Array.from({ length: 10 }, (_, i) => ({
+      app: `App ${i}`,
+      released: `2026-0${(i % 9) + 1}-01`,
+      rankNow: i + 1,
+    }))
+    // Force total > rows.length via a hand-built envelope
+    const body = metricsEnvelope(
+      [
+        {
+          ...releaseItem(rows),
+          table: {
+            columns: [
+              { key: 'app', label: 'App', format: 'text' },
+              { key: 'released', label: 'Released', format: 'date' },
+              { key: 'rankNow', label: 'Rank now', format: 'rank' },
+            ],
+            rows: rows.map((cells, i) => ({
+              position: i + 1,
+              tied: false,
+              href: `/apps/ios/x/${i}`,
+              cells,
+              sources: [],
+            })),
+            total: 64,
+          },
+        },
+      ],
+      [],
+      'chart_release_dates',
+    )
+    const mapped = mapChartReleaseDates(body)
+    expect(mapped.empty).toBe(false)
+    expect(mapped.coverage).toMatch(/10 of 64/)
+    expect(mapped.coverage).toMatch(/API page/)
+  })
+
+  it('size rows missing mark or size are dropped; all-bad becomes empty', () => {
+    const mapped = mapSizePercentiles(
+      metricsEnvelope([
+        sizeItem([
+          { mark: 'Largest', size: -1, app: 'Neg', version: '1' },
+          { mark: '', size: 1_000_000, app: 'Blank', version: '1' },
+          { mark: 'Median', size: undefined, app: 'NoSize', version: '1' },
+        ]),
+      ]),
+    )
+    expect(mapped.empty).toBe(true)
+  })
+
+  it('readers tolerate column origin metadata on live size cells', () => {
+    const body = metricsEnvelope([
+      {
+        ...sizeItem([{ mark: 'Largest', size: 1088421888, app: 'Tesla', version: '4.62.3' }]),
+        table: {
+          columns: [
+            { key: 'mark', label: 'Percentile', format: 'text', align: 'left', origin: { kind: 'label' } },
+            {
+              key: 'size',
+              label: 'Size',
+              format: 'bytes',
+              align: 'right',
+              origin: { kind: 'source', role: 'current', field: 'size_bytes' },
+            },
+            {
+              key: 'app',
+              label: 'App',
+              format: 'text',
+              align: 'left',
+              origin: { kind: 'source', role: 'app', field: 'name' },
+            },
+            {
+              key: 'version',
+              label: 'Version',
+              format: 'version',
+              align: 'left',
+              origin: { kind: 'source', role: 'current', field: 'version' },
+            },
+          ],
+          rows: [
+            {
+              position: 1,
+              tied: false,
+              href: '/apps/ios/tesla/1',
+              cells: { mark: 'Largest', size: 1088421888, app: 'Tesla', version: '4.62.3' },
+              sources: [],
+            },
+          ],
+          total: 6,
+        },
+      },
+    ])
+    const mapped = mapSizePercentiles(body)
+    expect(mapped.empty).toBe(false)
+    if (mapped.model.kind !== 'headline') throw new Error('kind')
+    expect(mapped.model.sentence).toContain('1088.4 MB')
+    expect(mapped.model.sentence).toContain('Tesla')
   })
 })

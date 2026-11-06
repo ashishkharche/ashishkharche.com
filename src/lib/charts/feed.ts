@@ -318,7 +318,10 @@ export function mapChartReleaseDates(body: unknown): FeedMapped {
     source,
     dataTime: formatDataTime(time),
     numbers,
-    coverage: `${rows.length} apps with release dates from feed metrics for ${metrics.date}.`,
+    coverage:
+      item.table.total > rows.length
+        ? `${rows.length} of ${item.table.total} apps with release dates from feed metrics for ${metrics.date} (API page).`
+        : `${rows.length} apps with release dates from feed metrics for ${metrics.date}.`,
     empty: false,
   }
 }
@@ -346,13 +349,17 @@ export function mapTop10Returns(body: unknown): FeedMapped {
   }
 
   const item = findItem(feed.items, 'top10_returns', 'apple:us:top-free')
+  // TDN leaves top10_returns out of a published day when nobody returned; never invent rows.
   if (!item || item.table.rows.length === 0) {
     return emptyState({
       title,
       subtitle,
       source: FEED_SOURCE,
       time,
-      coverage: 'No top10_returns item for this day (left out when empty).',
+      coverage:
+        feed.status === 'published'
+          ? `No top10_returns item on the published feed for ${feed.date} (TDN omits the kind when empty).`
+          : 'No top10_returns item for this day (left out when empty).',
       line2,
       line3,
     })

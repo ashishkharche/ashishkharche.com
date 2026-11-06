@@ -4382,29 +4382,190 @@
       "genres": {
         "apple": [
           {
+            "genre": "Productivity",
+            "apps": 28
+          },
+          {
+            "genre": "Social Networking",
+            "apps": 23
+          },
+          {
+            "genre": "Entertainment",
+            "apps": 22
+          },
+          {
             "genre": "Photo & Video",
-            "apps": 40
+            "apps": 13
+          },
+          {
+            "genre": "Shopping",
+            "apps": 12
+          },
+          {
+            "genre": "Music",
+            "apps": 9
+          },
+          {
+            "genre": "Utilities",
+            "apps": 9
+          },
+          {
+            "genre": "Lifestyle",
+            "apps": 6
+          },
+          {
+            "genre": "News",
+            "apps": 6
+          },
+          {
+            "genre": "Travel",
+            "apps": 6
+          },
+          {
+            "genre": "Business",
+            "apps": 4
+          },
+          {
+            "genre": "Food & Drink",
+            "apps": 3
+          },
+          {
+            "genre": "Health & Fitness",
+            "apps": 3
+          },
+          {
+            "genre": "Sports",
+            "apps": 3
+          },
+          {
+            "genre": "Education",
+            "apps": 2
+          },
+          {
+            "genre": "Navigation",
+            "apps": 2
+          },
+          {
+            "genre": "Book",
+            "apps": 1
+          },
+          {
+            "genre": "Developer Tools",
+            "apps": 1
+          },
+          {
+            "genre": "Graphics & Design",
+            "apps": 1
+          },
+          {
+            "genre": "Medical",
+            "apps": 1
+          },
+          {
+            "genre": "Reference",
+            "apps": 1
           }
         ],
-        "google": []
+        "google": [
+          {
+            "genre": "Productivity",
+            "apps": 23
+          },
+          {
+            "genre": "Entertainment",
+            "apps": 13
+          },
+          {
+            "genre": "Communication",
+            "apps": 11
+          },
+          {
+            "genre": "Shopping",
+            "apps": 9
+          },
+          {
+            "genre": "Social",
+            "apps": 9
+          },
+          {
+            "genre": "Music & Audio",
+            "apps": 8
+          },
+          {
+            "genre": "Tools",
+            "apps": 8
+          },
+          {
+            "genre": "Travel & Local",
+            "apps": 8
+          },
+          {
+            "genre": "Food & Drink",
+            "apps": 7
+          },
+          {
+            "genre": "Business",
+            "apps": 4
+          },
+          {
+            "genre": "Education",
+            "apps": 3
+          },
+          {
+            "genre": "News & Magazines",
+            "apps": 3
+          },
+          {
+            "genre": "Lifestyle",
+            "apps": 2
+          },
+          {
+            "genre": "Photography",
+            "apps": 2
+          },
+          {
+            "genre": "Sports",
+            "apps": 2
+          },
+          {
+            "genre": "Video Players & Editors",
+            "apps": 2
+          },
+          {
+            "genre": "Art & Design",
+            "apps": 1
+          },
+          {
+            "genre": "Books & Reference",
+            "apps": 1
+          },
+          {
+            "genre": "Casual",
+            "apps": 1
+          },
+          {
+            "genre": "Maps & Navigation",
+            "apps": 1
+          }
+        ]
       },
       "items": [
         {
           "schema": "tdn.stat-answer.v1",
           "id": "size_percentiles:apple:us",
           "kind": "size_percentiles",
-          "title": "App Store download size percentiles",
-          "answer": "Among the apps TechDevNotes tracks, the largest App Store download is 240.0 MB (Extra 18).",
-          "scope": "Among the apps TechDevNotes tracks",
-          "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
-          "context": "Nearest-rank percentiles among sized apps.",
+          "title": "App download sizes, US App Store",
+          "answer": "The median download size among 156 tracked App Store apps is 261.1 MB, from NBA: Live Games & Scores 120746.",
           "table": {
             "columns": [
               {
                 "key": "mark",
-                "label": "Mark",
+                "label": "Percentile",
                 "format": "text",
-                "align": "left"
+                "align": "left",
+                "origin": {
+                  "kind": "label"
+                }
               },
               {
                 "key": "size",
@@ -4444,79 +4605,204 @@
               {
                 "position": 1,
                 "tied": false,
-                "href": "/apps/ios/extra-18/1001",
+                "href": "/apps/ios/tesla/582007913",
                 "cells": {
                   "mark": "Largest",
-                  "size": 240000000,
-                  "app": "Extra 18",
-                  "version": "1.0"
+                  "size": 1088421888,
+                  "app": "Tesla",
+                  "version": "4.62.3"
                 },
-                "sources": []
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 224,
+                    "recordedAt": "2026-06-21 23:16:49",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 515,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
               },
               {
                 "position": 2,
                 "tied": false,
-                "href": "/apps/ios/p90/1002",
+                "href": "/apps/ios/microsoft-teams/1113153706",
                 "cells": {
                   "mark": "90th percentile",
-                  "size": 180000000,
-                  "app": "P90 App",
-                  "version": "2.0"
+                  "size": 559939584,
+                  "app": "Microsoft Teams",
+                  "version": "8.19.3"
                 },
-                "sources": []
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 293,
+                    "recordedAt": "2026-10-24 20:49:44",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 469,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
               },
               {
                 "position": 3,
                 "tied": false,
-                "href": "/apps/ios/p75/1003",
+                "href": "/apps/ios/uber/368677368",
                 "cells": {
                   "mark": "75th percentile",
-                  "size": 120000000,
-                  "app": "P75 App",
-                  "version": "1.1"
+                  "size": 438304768,
+                  "app": "Uber - Rides, Eats, Hotels",
+                  "version": "3.746.10001"
                 },
-                "sources": []
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 259,
+                    "recordedAt": "2026-10-24 19:28:50",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 524,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
               },
               {
                 "position": 4,
                 "tied": false,
-                "href": "/apps/ios/median/1004",
+                "href": "/apps/ios/nba/484672289",
                 "cells": {
                   "mark": "Median",
-                  "size": 80000000,
-                  "app": "Median App",
-                  "version": "3.0"
+                  "size": 261095424,
+                  "app": "NBA: Live Games & Scores",
+                  "version": "120746"
                 },
-                "sources": []
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 86,
+                    "recordedAt": "2026-06-19 04:27:42",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 473,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
               },
               {
                 "position": 5,
                 "tied": false,
-                "href": "/apps/ios/p25/1005",
+                "href": "/apps/ios/wayshot-aesthetic-photo-editor/6749303003",
                 "cells": {
                   "mark": "25th percentile",
-                  "size": 40000000,
-                  "app": "P25 App",
-                  "version": "1.0"
+                  "size": 169869312,
+                  "app": "WayShot:Aesthetic Photo Editor",
+                  "version": "2.14.0"
                 },
-                "sources": []
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 345,
+                    "recordedAt": "2026-11-02 18:28:51",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 527,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
               },
               {
                 "position": 6,
                 "tied": false,
-                "href": "/apps/ios/p10/1006",
+                "href": "/apps/ios/mastodon/1571998974",
                 "cells": {
                   "mark": "10th percentile",
-                  "size": 20000000,
-                  "app": "P10 App",
-                  "version": "1.0"
+                  "size": 115343360,
+                  "app": "Mastodon",
+                  "version": "2026.07"
                 },
-                "sources": []
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 105,
+                    "recordedAt": "2026-06-19 04:30:17",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 463,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
               }
             ],
             "total": 6
           },
-          "runs": []
+          "context": "Nearest-rank percentiles of each app's current public version as the US App Store reported it in this run, so every value is a real app's size and nothing is interpolated; Google Play does not report a download size.",
+          "scope": "Among the apps TechDevNotes tracks",
+          "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+          "runs": [
+            {
+              "runId": 400,
+              "role": "current",
+              "slot": "2026-11-06 00:00:00",
+              "startedAt": "2026-11-06 00:00:06",
+              "finishedAt": "2026-11-06 00:41:24"
+            }
+          ]
         }
       ],
       "skipped": []
@@ -4543,11 +4829,172 @@
       "genres": {
         "apple": [
           {
+            "genre": "Productivity",
+            "apps": 28
+          },
+          {
+            "genre": "Social Networking",
+            "apps": 23
+          },
+          {
+            "genre": "Entertainment",
+            "apps": 22
+          },
+          {
             "genre": "Photo & Video",
-            "apps": 40
+            "apps": 13
+          },
+          {
+            "genre": "Shopping",
+            "apps": 12
+          },
+          {
+            "genre": "Music",
+            "apps": 9
+          },
+          {
+            "genre": "Utilities",
+            "apps": 9
+          },
+          {
+            "genre": "Lifestyle",
+            "apps": 6
+          },
+          {
+            "genre": "News",
+            "apps": 6
+          },
+          {
+            "genre": "Travel",
+            "apps": 6
+          },
+          {
+            "genre": "Business",
+            "apps": 4
+          },
+          {
+            "genre": "Food & Drink",
+            "apps": 3
+          },
+          {
+            "genre": "Health & Fitness",
+            "apps": 3
+          },
+          {
+            "genre": "Sports",
+            "apps": 3
+          },
+          {
+            "genre": "Education",
+            "apps": 2
+          },
+          {
+            "genre": "Navigation",
+            "apps": 2
+          },
+          {
+            "genre": "Book",
+            "apps": 1
+          },
+          {
+            "genre": "Developer Tools",
+            "apps": 1
+          },
+          {
+            "genre": "Graphics & Design",
+            "apps": 1
+          },
+          {
+            "genre": "Medical",
+            "apps": 1
+          },
+          {
+            "genre": "Reference",
+            "apps": 1
           }
         ],
-        "google": []
+        "google": [
+          {
+            "genre": "Productivity",
+            "apps": 23
+          },
+          {
+            "genre": "Entertainment",
+            "apps": 13
+          },
+          {
+            "genre": "Communication",
+            "apps": 11
+          },
+          {
+            "genre": "Shopping",
+            "apps": 9
+          },
+          {
+            "genre": "Social",
+            "apps": 9
+          },
+          {
+            "genre": "Music & Audio",
+            "apps": 8
+          },
+          {
+            "genre": "Tools",
+            "apps": 8
+          },
+          {
+            "genre": "Travel & Local",
+            "apps": 8
+          },
+          {
+            "genre": "Food & Drink",
+            "apps": 7
+          },
+          {
+            "genre": "Business",
+            "apps": 4
+          },
+          {
+            "genre": "Education",
+            "apps": 3
+          },
+          {
+            "genre": "News & Magazines",
+            "apps": 3
+          },
+          {
+            "genre": "Lifestyle",
+            "apps": 2
+          },
+          {
+            "genre": "Photography",
+            "apps": 2
+          },
+          {
+            "genre": "Sports",
+            "apps": 2
+          },
+          {
+            "genre": "Video Players & Editors",
+            "apps": 2
+          },
+          {
+            "genre": "Art & Design",
+            "apps": 1
+          },
+          {
+            "genre": "Books & Reference",
+            "apps": 1
+          },
+          {
+            "genre": "Casual",
+            "apps": 1
+          },
+          {
+            "genre": "Maps & Navigation",
+            "apps": 1
+          }
+        ]
       },
       "items": [
         {
@@ -4555,10 +5002,7 @@
           "id": "chart_release_dates:apple:us:top-free",
           "kind": "chart_release_dates",
           "title": "Newest tracked apps in the US App Store top free chart",
-          "answer": "Among the apps TechDevNotes tracks, Echo Photos is the newest on the US App Store top free chart, released on 1 Oct 2026.",
-          "scope": "Among the apps TechDevNotes tracks",
-          "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
-          "context": "Original release dates from store facts.",
+          "answer": "Muse from Meta, first released on 8 Sep 2026, is the newest of the 64 tracked apps in the US App Store top free chart.",
           "table": {
             "columns": [
               {
@@ -4574,7 +5018,7 @@
               },
               {
                 "key": "released",
-                "label": "Released",
+                "label": "First released",
                 "format": "date",
                 "align": "right",
                 "origin": {
@@ -4599,19 +5043,37 @@
               {
                 "position": 1,
                 "tied": false,
-                "href": "/apps/ios/echo-photos/2001",
+                "href": "/apps/ios/muse-from-meta/6760173601",
                 "cells": {
-                  "app": "Echo Photos",
-                  "released": "2026-10-01",
-                  "rankNow": 9
+                  "app": "Muse from Meta",
+                  "released": "2026-09-08",
+                  "rankNow": 2
                 },
                 "sources": [
                   {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 325,
+                    "recordedAt": "2026-10-29 09:48:37",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
                     "role": "current",
                     "table": "app_store_facts",
-                    "id": 1,
-                    "recordedAt": "2026-11-06 00:00:00",
-                    "runIds": [1],
+                    "id": 471,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736619,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
                     "slot": "2026-11-06 00:00:00",
                     "absentReason": null
                   }
@@ -4620,18 +5082,369 @@
               {
                 "position": 2,
                 "tied": false,
-                "href": "/apps/ios/old-notes/2002",
+                "href": "/apps/ios/grok-bot/6794501026",
                 "cells": {
-                  "app": "Old Notes",
-                  "released": "2025-01-15",
-                  "rankNow": 3
+                  "app": "Grok Bot",
+                  "released": "2026-08-11",
+                  "rankNow": 81
                 },
-                "sources": []
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 245,
+                    "recordedAt": "2026-08-11 23:55:17",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 393,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736670,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              },
+              {
+                "position": 3,
+                "tied": false,
+                "href": "/apps/ios/tiktok-pro-events/6741796873",
+                "cells": {
+                  "app": "TikTok Pro - Events",
+                  "released": "2026-06-03",
+                  "rankNow": 1
+                },
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 234,
+                    "recordedAt": "2026-06-25 02:17:29",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 519,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736618,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              },
+              {
+                "position": 4,
+                "tied": false,
+                "href": "/apps/ios/instants-an-instagram-app/6756442328",
+                "cells": {
+                  "app": "Instants \u2013 an Instagram app",
+                  "released": "2026-05-12",
+                  "rankNow": 33
+                },
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 362,
+                    "recordedAt": "2026-11-05 16:48:31",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 540,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736645,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              },
+              {
+                "position": 5,
+                "tied": false,
+                "href": "/apps/ios/dealseek/6745274862",
+                "cells": {
+                  "app": "DealSeek: Coupons & Discounts",
+                  "released": "2025-06-19",
+                  "rankNow": 53
+                },
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 343,
+                    "recordedAt": "2026-11-02 14:31:53",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 412,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736656,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              },
+              {
+                "position": 6,
+                "tied": false,
+                "href": "/apps/ios/edits/6738967378",
+                "cells": {
+                  "app": "Edits: Video Editor",
+                  "released": "2025-04-22",
+                  "rankNow": 72
+                },
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 263,
+                    "recordedAt": "2026-10-24 19:34:06",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 422,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736666,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              },
+              {
+                "position": 7,
+                "tied": false,
+                "href": "/apps/ios/reco-social/6742024490",
+                "cells": {
+                  "app": "Reco Social",
+                  "released": "2025-03-12",
+                  "rankNow": 7
+                },
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 341,
+                    "recordedAt": "2026-11-02 09:06:49",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 496,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736624,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              },
+              {
+                "position": 8,
+                "tied": false,
+                "href": "/apps/ios/grok/6670324846",
+                "cells": {
+                  "app": "Grok - AI Chat & Video",
+                  "released": "2025-01-08",
+                  "rankNow": 40
+                },
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 1,
+                    "recordedAt": "2026-05-03 17:32:54",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 392,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736649,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              },
+              {
+                "position": 9,
+                "tied": false,
+                "href": "/apps/ios/gemini/6477489729",
+                "cells": {
+                  "app": "Google Gemini",
+                  "released": "2024-11-13",
+                  "rankNow": 11
+                },
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 4,
+                    "recordedAt": "2026-05-03 23:35:33",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 391,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736626,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
+              },
+              {
+                "position": 10,
+                "tied": false,
+                "href": "/apps/ios/dramawave/6670430706",
+                "cells": {
+                  "app": "DramaWave - Dramas & Reels",
+                  "released": "2024-09-23",
+                  "rankNow": 36
+                },
+                "sources": [
+                  {
+                    "role": "app",
+                    "table": "tracked_apps",
+                    "id": 278,
+                    "recordedAt": "2026-10-24 19:57:24",
+                    "runIds": [],
+                    "slot": null,
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "app_store_facts",
+                    "id": 419,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  },
+                  {
+                    "role": "current",
+                    "table": "chart_rankings",
+                    "id": 7736647,
+                    "recordedAt": "2026-11-06 00:00:06",
+                    "runIds": [400],
+                    "slot": "2026-11-06 00:00:00",
+                    "absentReason": null
+                  }
+                ]
               }
             ],
-            "total": 2
+            "total": 64
           },
-          "runs": []
+          "context": "Ordered by the original release date the US App Store lists, read in this run for every ranked tracked app; apps TechDevNotes does not track are not listed.",
+          "scope": "Among the apps TechDevNotes tracks",
+          "freshness": "data from the 00:00 UTC run, 6 Nov 2026",
+          "runs": [
+            {
+              "runId": 400,
+              "role": "current",
+              "slot": "2026-11-06 00:00:00",
+              "startedAt": "2026-11-06 00:00:06",
+              "finishedAt": "2026-11-06 00:41:24"
+            }
+          ]
         }
       ],
       "skipped": []

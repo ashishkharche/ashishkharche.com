@@ -1404,7 +1404,7 @@ export const liveTemplates: LiveTemplate[] = [
     about: 'Live · US App Store, download size percentiles',
     kind: 'headline',
     name: 'How large are tracked App Store downloads?',
-    field: 'daily-feed/metrics size_percentiles: mark, size_bytes, app, version',
+    field: 'daily-feed/metrics size_percentiles: mark, size, app, version',
     requests: 1,
     load: loadFeed(
       mapSizePercentiles,
@@ -1417,7 +1417,7 @@ export const liveTemplates: LiveTemplate[] = [
     about: 'Live · US App Store, chart release dates',
     kind: 'leaderboard',
     name: 'Which tracked apps on the US App Store top free chart are newest?',
-    field: 'daily-feed/metrics chart_release_dates: released_on (date), rank',
+    field: 'daily-feed/metrics chart_release_dates: released (date), rankNow',
     requests: 1,
     load: loadFeed(
       mapChartReleaseDates,
