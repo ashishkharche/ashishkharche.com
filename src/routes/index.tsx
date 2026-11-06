@@ -60,6 +60,21 @@ function Home() {
 
             <div {...stylex.props(styles.facts)}>
               <ul role="list" aria-label="Roles" {...stylex.props(styles.roles)}>
+                <li {...stylex.props(styles.roleFeatured)}>
+                  {/* The SpaceXSI mark is wide and thin, so it gets more width to look the same weight. */}
+                  <span {...stylex.props(styles.logoBoxFeatured)}>
+                    <Logo name="spacexsi" size={28} />
+                  </span>
+                  <span>
+                    <span {...stylex.props(styles.roleHeadFeatured)}>
+                      <span {...stylex.props(styles.roleNameFeatured)}>SpaceX Super Intelligence</span>
+                      <span {...stylex.props(styles.years)}>2026</span>
+                    </span>
+                    <span {...stylex.props(styles.roleTextFeatured)}>
+                      Quality Assurance Engineer testing more than 500 Grok iOS and web builds before release.
+                    </span>
+                  </span>
+                </li>
                 <li {...stylex.props(styles.role)}>
                   <span {...stylex.props(styles.logoBox)}>
                     <Logo name="paythru" size={22} />
@@ -75,41 +90,43 @@ function Home() {
                   </span>
                 </li>
                 <li {...stylex.props(styles.role)}>
-                  {/* The SpaceXSI mark is wide and thin, so it gets more width to look the same weight. */}
                   <span {...stylex.props(styles.logoBox)}>
-                    <Logo name="spacexsi" size={24} />
+                    <Logo name="maestro" size={22} />
                   </span>
                   <span>
                     <span {...stylex.props(styles.roleHead)}>
-                      <span {...stylex.props(styles.roleName)}>SpaceX Super Intelligence</span>
+                      <span {...stylex.props(styles.roleName)}>Maestro</span>
+                      <span {...stylex.props(styles.years)}>2023 to 2024</span>
                     </span>
-                    <span {...stylex.props(styles.roleText)}>QA on more than 500 Grok iOS and web builds.</span>
+                    <span {...stylex.props(styles.roleText)}>
+                      Contract developer; test suites for Maestro Cloud and Studio and 14 blog posts.
+                    </span>
                   </span>
                 </li>
               </ul>
               <ul role="list" aria-label="Links" {...stylex.props(styles.links)}>
                 <li>
-                  <Link to="/work/" {...stylex.props(ui.link)}>
+                  <Link to="/work/" {...stylex.props(ui.link, ui.plainLink)}>
                     Work history
                   </Link>
                 </li>
                 <li>
-                  <a href={`mailto:${site.email}`} {...stylex.props(ui.link)}>
+                  <a href={`mailto:${site.email}`} {...stylex.props(ui.link, ui.plainLink)}>
                     Email
                   </a>
                 </li>
                 <li>
-                  <a href={site.linkedin} {...stylex.props(ui.link)}>
+                  <a href={site.linkedin} {...stylex.props(ui.link, ui.plainLink)}>
                     LinkedIn
                   </a>
                 </li>
                 <li>
-                  <a href={site.github} {...stylex.props(ui.link)}>
+                  <a href={site.github} {...stylex.props(ui.link, ui.plainLink)}>
                     GitHub
                   </a>
                 </li>
                 <li>
-                  <a href={site.x} rel="me noopener" {...stylex.props(ui.link)}>
+                  <a href={site.x} rel="me noopener" {...stylex.props(ui.link, ui.plainLink)}>
                     X
                   </a>
                 </li>
@@ -246,13 +263,28 @@ const styles = stylex.create({
     display: 'grid',
     rowGap: '1.1rem',
   },
-  // Every logo sits in the same box, as tall as the company name's line, so each
+  // SpaceX leads the list; a slightly wider logo box fits the wide mark, with no tinted panel.
+  roleFeatured: {
+    display: 'grid',
+    gridTemplateColumns: '2.5rem minmax(0, 1fr)',
+    columnGap: '0.85rem',
+    alignItems: 'start',
+  },
+  // Every other logo sits in the same box, as tall as the company name's line, so each
   // mark is centred on its name and the names share one left edge.
   role: {
     display: 'grid',
     gridTemplateColumns: '2rem minmax(0, 1fr)',
     columnGap: '0.85rem',
     alignItems: 'start',
+  },
+  logoBoxFeatured: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '2.5rem',
+    height: '1.5rem',
+    overflow: 'hidden',
   },
   logoBox: {
     display: 'flex',
@@ -269,11 +301,33 @@ const styles = stylex.create({
     columnGap: '0.7rem',
     lineHeight: '1.5rem',
   },
+  roleHeadFeatured: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'baseline',
+    columnGap: '0.7rem',
+    lineHeight: '1.5rem',
+  },
   roleName: { fontWeight: weights.medium },
+  roleNameFeatured: {
+    fontFamily: fonts.serif,
+    fontSize: type.body,
+    lineHeight: '1.5rem',
+    letterSpacing: '-0.01em',
+    fontWeight: weights.medium,
+  },
   years: { fontSize: type.meta, fontVariantNumeric: 'tabular-nums', color: colors.muted },
   roleText: {
     display: 'block',
     marginTop: '0.1rem',
+    fontSize: type.meta,
+    lineHeight: 1.5,
+    color: colors.muted,
+    textWrap: 'pretty',
+  },
+  roleTextFeatured: {
+    display: 'block',
+    marginTop: '0.15rem',
     fontSize: type.meta,
     lineHeight: 1.5,
     color: colors.muted,

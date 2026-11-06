@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-// Each company logo sits in the same box, centred on its company name, with the names on one left edge.
+// SpaceX leads with a wider logo box; Paythru and Maestro share one logo-box size under it.
 for (const viewport of [
   { width: 1280, height: 800 },
   { width: 390, height: 844 },
@@ -23,11 +23,12 @@ for (const viewport of [
         }
       }),
     )
-    expect(rows).toHaveLength(2)
-    const [first, second] = rows
-    if (!first || !second) throw new Error('expected two roles')
+    expect(rows).toHaveLength(3)
+    const [featured, first, second] = rows
+    if (!featured || !first || !second) throw new Error('expected three roles')
     expect(first.box.width).toBe(second.box.width)
     expect(first.box.height).toBe(second.box.height)
+    expect(featured.box.width).toBeGreaterThan(first.box.width)
     expect(Math.abs(first.box.x - second.box.x) < 1 || viewport.width > 760).toBe(true)
     if (Math.abs(first.name.y - second.name.y) > 1) expect(Math.abs(first.name.x - second.name.x)).toBeLessThan(1)
     for (const row of rows) {
