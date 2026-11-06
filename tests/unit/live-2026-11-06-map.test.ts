@@ -34,6 +34,15 @@ describe('live 2026-11-06 payloads', () => {
     expect(m.model.answer).toBe('1088.4')
     expect(m.model.unit).toBe('MB')
     expect(m.model.sentence).toContain('Tesla')
+    expect(m.model.support?.type).toBe('bars')
+    if (m.model.support?.type === 'bars') {
+      expect(m.model.support.bars[0]?.display).toBe('1088.4')
+      expect(m.model.support.bars.every((b) => b.display === b.value.toFixed(1))).toBe(true)
+    }
+    // Full API names collected from the size table (TDN summary truncated Uber/WayShot earlier).
+    const apps = size.data.items[0].table.rows.map((r: { cells: { app: string } }) => r.cells.app)
+    expect(apps).toContain('Uber - Rides, Eats, Hotels')
+    expect(apps).toContain('WayShot:Aesthetic Photo Editor')
     expect(validateLive(asChart('feed-size-percentiles', m))).toEqual([])
   })
   it('chart_release_dates maps live numbers; table may be a page of total', () => {
@@ -42,8 +51,11 @@ describe('live 2026-11-06 payloads', () => {
     if (m.model.kind !== 'leaderboard') throw new Error('kind')
     expect(m.model.rows[0]?.app.name).toBe('Muse from Meta')
     expect(m.model.rows[0]?.display).toBe('8 Sep 2026')
+    expect(m.model.rows[0]?.value).toBe(59)
     expect(m.model.rows).toHaveLength(10)
-    expect(m.coverage).toMatch(/10 of 64/)
+    expect(m.model.barLabel).toBe('Days since release')
+    expect(m.text.subtitle).toMatch(/Newest 10 of 64/)
+    expect(m.coverage).toMatch(/Newest 10 of 64/)
     expect(validateLive(asChart('feed-release-dates', m))).toEqual([])
   })
   it('top10_returns absent on published day is honest empty, never invented', () => {

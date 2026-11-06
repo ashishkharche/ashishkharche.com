@@ -32,13 +32,15 @@ export type FeedMapped = {
         unit?: string
         sentence: string
         support?:
-          | { type: 'bars'; label: string; bars: Array<{ label: string; value: number }> }
+          | { type: 'bars'; label: string; bars: Array<{ label: string; value: number; display?: string }> }
           | { type: 'icon-bars'; label: string; bars: Array<{ app: FeedApp; label: string; value: number }> }
         others: Array<{ app: FeedApp; note: string }>
       }
     | {
         kind: 'leaderboard'
         rows: Array<{ app: FeedApp; value: number; display: string; detail?: string }>
+        showBars?: boolean
+        barLabel?: string
       }
   text: { title: string; subtitle: string; footnote: [string, string, string] }
   source: string
@@ -52,6 +54,20 @@ export type FeedMapped = {
 /** Bytes as "240.1 MB" (decimal megabytes), matching TDN's own wording. */
 export function formatBytesMb(bytes: number): string {
   return `${(bytes / 1e6).toFixed(1)} MB`
+}
+
+/** Decimal megabytes to one place, matching the headline answer (e.g. "1088.4"). */
+export function formatMbNumber(bytes: number): string {
+  return (bytes / 1e6).toFixed(1)
+}
+
+/** Whole UTC calendar days from `fromDay` to `toDay` (YYYY-MM-DD), or null when either is not a day. */
+export function daysBetweenUtc(fromDay: string, toDay: string): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fromDay) || !/^\d{4}-\d{2}-\d{2}$/.test(toDay)) return null
+  const a = Date.parse(`${fromDay}T00:00:00Z`)
+  const b = Date.parse(`${toDay}T00:00:00Z`)
+  if (Number.isNaN(a) || Number.isNaN(b)) return null
+  return Math.max(0, Math.round((b - a) / 86_400_000))
 }
 
 /**
@@ -184,7 +200,7 @@ export function mapSizePercentiles(body: unknown): FeedMapped {
     })
   }
 
-  const bars: Array<{ label: string; value: number }> = []
+  const bars: Array<{ label: string; value: number; display?: string }> = []
   const numbers = collect(formatDataTime(time))
   let largest: { mb: string; app: string } | null = null
   for (const row of item.table.rows) {
@@ -193,8 +209,9 @@ export function mapSizePercentiles(body: unknown): FeedMapped {
     const app = cellStr(row.cells, 'app')
     if (!mark || size === null || size < 0) continue
     const mbLabel = formatBytesMb(size)
-    bars.push({ label: mark, value: size / 1e6 })
-    for (const n of collect(mark, mbLabel, app, cellStr(row.cells, 'version'), size / 1e6)) numbers.add(n)
+    const mbNum = formatMbNumber(size)
+    bars.push({ label: mark, value: size / 1e6, display: mbNum })
+    for (const n of collect(mark, mbLabel, mbNum, app, cellStr(row.cells, 'version'))) numbers.add(n)
     if (mark === 'Largest') largest = { mb: mbLabel, app: app ?? 'an app' }
   }
   if (!bars.length || !largest) {
@@ -258,7 +275,7 @@ export function mapChartReleaseDates(body: unknown): FeedMapped {
     })
   }
 
-  type Row = { app: FeedApp; released: string; releasedLabel: string; rankNow: number }
+  type Row = { app: FeedApp; released: string; releasedLabel: string; rankNow: number; daysSince: number }
   const rows: Row[] = []
   for (const row of item.table.rows) {
     const appName = cellStr(row.cells, 'app')
@@ -267,7 +284,9 @@ export function mapChartReleaseDates(body: unknown): FeedMapped {
     if (!appName || !released || rankNow === null || rankNow < 1) continue
     const releasedLabel = formatUtcDate(released)
     if (!releasedLabel) continue
-    rows.push({ app: appFromRow(row.cells, row.href, store), released, releasedLabel, rankNow })
+    const daysSince = daysBetweenUtc(released, metrics.date)
+    if (daysSince === null) continue
+    rows.push({ app: appFromRow(row.cells, row.href, store), released, releasedLabel, rankNow, daysSince })
   }
   if (!rows.length) {
     return emptyState({
@@ -300,28 +319,36 @@ export function mapChartReleaseDates(body: unknown): FeedMapped {
     ...rows.map((r) => collect(r.releasedLabel, r.rankNow, r.app.name, r.released)),
   )
 
+  const shown = rows.length
+  const total = item.table.total
+  const caption = `${sentence} Newest ${shown} of ${total}.`
+  for (const n of collect(shown, total, caption)) numbers.add(n)
+  for (const r of rows) for (const n of collect(r.daysSince)) numbers.add(n)
+
   return {
     model: {
       kind: 'leaderboard',
+      showBars: true,
+      barLabel: 'Days since release',
       rows: rows.map((r) => ({
         app: r.app,
-        value: r.rankNow,
+        value: r.daysSince,
         display: r.releasedLabel,
         detail: `#${r.rankNow}`,
       })),
     },
     text: {
       title,
-      subtitle: sentence,
+      subtitle: caption,
       footnote: foot(source, line2, line3),
     },
     source,
     dataTime: formatDataTime(time),
     numbers,
     coverage:
-      item.table.total > rows.length
-        ? `${rows.length} of ${item.table.total} apps with release dates from feed metrics for ${metrics.date} (API page).`
-        : `${rows.length} apps with release dates from feed metrics for ${metrics.date}.`,
+      total > shown
+        ? `Newest ${shown} of ${total} apps with release dates from feed metrics for ${metrics.date} (API page).`
+        : `Newest ${shown} of ${total} apps with release dates from feed metrics for ${metrics.date}.`,
     empty: false,
   }
 }

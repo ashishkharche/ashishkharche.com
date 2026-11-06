@@ -2,13 +2,17 @@ import { describe, expect, it } from 'vitest'
 import {
   FEED_SCOPE,
   NO_DATA_SENTENCE,
+  daysBetweenUtc,
   formatBytesMb,
+  formatMbNumber,
   formatUtcDate,
   mapChartReleaseDates,
   mapSizePercentiles,
   mapTop10Returns,
 } from '~/lib/charts/feed'
+import { drawLive, leaderboardDisplayWidth } from '~/lib/charts/kinds'
 import { liveFootnote, liveTemplates, validateLive, type LiveChart } from '~/lib/charts/live'
+import type { Ctx } from '~/lib/charts/render'
 import { createTdnClient } from '~/lib/charts/tdn'
 import { fixtureFetch } from '../fixtures/tdn/index.ts'
 
@@ -50,7 +54,7 @@ function sizeItem(rows: Array<Record<string, unknown>>) {
   }
 }
 
-function releaseItem(rows: Array<Record<string, unknown>>) {
+function releaseItem(rows: Array<Record<string, unknown>>, total?: number) {
   return {
     schema: 'tdn.stat-answer.v1',
     id: 'chart_release_dates:apple:us:top-free',
@@ -65,7 +69,7 @@ function releaseItem(rows: Array<Record<string, unknown>>) {
         { key: 'rankNow', label: 'Rank now', format: 'rank' },
       ],
       rows: rows.map((cells, i) => ({ position: i + 1, tied: false, href: `/apps/ios/x/${i}`, cells, sources: [] })),
-      total: rows.length,
+      total: total ?? rows.length,
     },
   }
 }
@@ -125,6 +129,18 @@ describe('format helpers', () => {
     expect(formatBytesMb(268_435_456)).toBe('268.4 MB')
   })
 
+  it('formats MB numbers to 1 decimal for bar labels', () => {
+    expect(formatMbNumber(1_088_421_888)).toBe('1088.4')
+    expect(formatMbNumber(559_939_584)).toBe('559.9')
+    expect(formatMbNumber(240_000_000)).toBe('240.0')
+  })
+
+  it('counts whole UTC days between calendar days', () => {
+    expect(daysBetweenUtc('2026-09-08', '2026-11-06')).toBe(59)
+    expect(daysBetweenUtc('2026-08-11', '2026-11-06')).toBe(87)
+    expect(daysBetweenUtc('not-a-day', '2026-11-06')).toBeNull()
+  })
+
   it('formats slot and ISO dates as UTC calendar days without shifting', () => {
     // A London evening must not move the UTC calendar day backwards.
     expect(formatUtcDate('2026-11-01 00:00:00')).toBe('1 Nov 2026')
@@ -153,7 +169,38 @@ describe('size_percentiles', () => {
     expect(mapped.model.sentence).toContain('240.0 MB')
     expect(mapped.model.sentence).toContain('Extra 18')
     expect(mapped.model.sentence).toContain(FEED_SCOPE)
+    expect(mapped.model.support?.type).toBe('bars')
+    if (mapped.model.support?.type === 'bars') {
+      expect(mapped.model.support.bars.map((b) => b.display)).toEqual(['240.0', '80.0'])
+      expect(mapped.model.support.bars.every((b) => !String(b.display).includes('240.000'))).toBe(true)
+    }
     expect(validateLive(asChart('feed-size-percentiles', mapped))).toEqual([])
+  })
+
+  it('keeps full API app names (no truncation)', () => {
+    const mapped = mapSizePercentiles(
+      metricsEnvelope([
+        sizeItem([
+          { mark: 'Largest', size: 1_088_421_888, app: 'Tesla', version: '4.47.5' },
+          { mark: '75th percentile', size: 438_304_768, app: 'Uber - Rides, Eats, Hotels', version: '3.746.10001' },
+          { mark: '25th percentile', size: 169_869_312, app: 'WayShot:Aesthetic Photo Editor', version: '2.14.0' },
+        ]),
+      ]),
+    )
+    if (mapped.model.kind !== 'headline') throw new Error('kind')
+    expect(mapped.model.sentence).toContain('Tesla')
+    expect([...mapped.numbers].join(' ')).not.toContain('1088.421888')
+    // Marks are labels; full names stay on the sentence/app when that row is Largest.
+    expect(mapped.numbers.has('1088.4')).toBe(true)
+    // Re-read apps from a dedicated pass: sentence + collected app tokens keep the full strings.
+    const again = mapSizePercentiles(
+      metricsEnvelope([
+        sizeItem([{ mark: 'Largest', size: 10_000_000, app: 'Uber - Rides, Eats, Hotels', version: '1' }]),
+      ]),
+    )
+    if (again.model.kind !== 'headline') throw new Error('kind')
+    expect(again.model.sentence).toContain('Uber - Rides, Eats, Hotels')
+    expect(again.model.app.name).toBe('Uber - Rides, Eats, Hotels')
   })
 
   it('empty items and skipped reasons become No data for this day yet', () => {
@@ -201,10 +248,13 @@ describe('chart_release_dates', () => {
     const mapped = mapChartReleaseDates(
       metricsEnvelope(
         [
-          releaseItem([
-            { app: 'Echo Photos', released: '2026-10-01', rankNow: 9 },
-            { app: 'Old Notes', released: '2025-01-15', rankNow: 3 },
-          ]),
+          releaseItem(
+            [
+              { app: 'Echo Photos', released: '2026-10-01', rankNow: 9 },
+              { app: 'Old Notes', released: '2025-01-15', rankNow: 3 },
+            ],
+            64,
+          ),
         ],
         [],
         'chart_release_dates',
@@ -215,7 +265,14 @@ describe('chart_release_dates', () => {
     if (mapped.model.kind !== 'leaderboard') throw new Error('kind')
     expect(mapped.model.rows[0]?.app.name).toBe('Echo Photos')
     expect(mapped.model.rows[0]?.display).toBe('1 Oct 2026')
+    // Bars encode days since release (metrics.date), never chart rank.
+    expect(mapped.model.rows[0]?.value).toBe(daysBetweenUtc('2026-10-01', '2026-11-06'))
+    expect(mapped.model.rows[0]?.value).not.toBe(9)
+    expect(mapped.model.rows[1]?.value).toBe(daysBetweenUtc('2025-01-15', '2026-11-06'))
+    expect(mapped.model.barLabel).toBe('Days since release')
     expect(mapped.text.subtitle).toContain('1 Oct 2026')
+    expect(mapped.text.subtitle).toMatch(/Newest 2 of 64/)
+    expect(mapped.coverage).toMatch(/Newest 2 of 64/)
     expect(validateLive(asChart('feed-release-dates', mapped))).toEqual([])
   })
 
@@ -452,5 +509,118 @@ describe('edge cases from live 2026-11-06 shapes', () => {
     if (mapped.model.kind !== 'headline') throw new Error('kind')
     expect(mapped.model.sentence).toContain('1088.4 MB')
     expect(mapped.model.sentence).toContain('Tesla')
+  })
+})
+
+function fakeDrawCtx(): Ctx & { texts: string[]; lineEnds: number[] } {
+  const texts: string[] = []
+  const lineEnds: number[] = []
+  let font = '10px x'
+  let pathX = 0
+  const target = {
+    texts,
+    lineEnds,
+    get font() {
+      return font
+    },
+    set font(value: string) {
+      font = value
+    },
+    measureText(text: string) {
+      const size = Number(/(\d+(\.\d+)?)px/.exec(font)?.[1] ?? 10)
+      return {
+        width: text.length * size * 0.55,
+        actualBoundingBoxLeft: 0,
+        actualBoundingBoxRight: text.length * size * 0.55,
+        actualBoundingBoxAscent: size * 0.7,
+        actualBoundingBoxDescent: size * 0.2,
+      }
+    },
+    fillText(text: string) {
+      texts.push(text)
+    },
+    moveTo(x: number) {
+      pathX = x
+    },
+    lineTo(x: number) {
+      lineEnds.push(Math.max(pathX, x))
+      pathX = x
+    },
+  }
+  return new Proxy(target, {
+    get(t, key) {
+      if (key in t) return Reflect.get(t, key)
+      return () => undefined
+    },
+    set(_t, key, value) {
+      if (key === 'font') font = value as string
+      return true
+    },
+  }) as unknown as Ctx & { texts: string[]; lineEnds: number[] }
+}
+
+describe('feed chart drawing', () => {
+  it('size bar labels are 1-decimal MB, never raw floats', () => {
+    const mapped = mapSizePercentiles(
+      metricsEnvelope([
+        sizeItem([
+          { mark: 'Largest', size: 1_088_421_888, app: 'Tesla', version: '4.47.5' },
+          { mark: 'Median', size: 559_939_584, app: 'Other', version: '1' },
+        ]),
+      ]),
+    )
+    const chart = asChart('feed-size-percentiles', mapped)
+    const ctx = fakeDrawCtx()
+    drawLive(ctx, chart, chart.text, { width: 1800, height: 1390 })
+    expect(ctx.texts).toContain('1088.4')
+    expect(ctx.texts).toContain('559.9')
+    expect(ctx.texts.some((x) => x.includes('1088.421888'))).toBe(false)
+    expect(ctx.texts.some((x) => x.includes('559.939584'))).toBe(false)
+  })
+
+  it('leaderboard display width leaves a gap so bars cannot cover the date', () => {
+    const measure = (text: string) => text.length * 8
+    const displays = ['11 Aug 2026', '8 Sep 2026', '3 Jun 2026']
+    const valueW = leaderboardDisplayWidth(displays, measure, 120, 16)
+    expect(valueW).toBeGreaterThanOrEqual(measure('11 Aug 2026') + 16)
+    // Synthetic chart: long date labels + large bar values must still keep bar ends left of the display column.
+    const mapped = mapChartReleaseDates(
+      metricsEnvelope(
+        [
+          releaseItem(
+            [
+              { app: 'Muse from Meta', released: '2026-09-08', rankNow: 1 },
+              { app: 'Grok Bot', released: '2026-08-11', rankNow: 81 },
+            ],
+            64,
+          ),
+        ],
+        [],
+        'chart_release_dates',
+      ),
+    )
+    const chart = asChart('feed-release-dates', mapped)
+    const ctx = fakeDrawCtx()
+    drawLive(ctx, chart, chart.text, { width: 1800, height: 1390 })
+    expect(ctx.texts).toContain('Days since release')
+    expect(ctx.texts).toContain('11 Aug 2026')
+    expect(ctx.texts.some((x) => /Newest 2 of 64/.test(x))).toBe(true)
+    // Every stroked bar end must sit left of the right padding reserved for the widest date.
+    const nameSizeApprox = 28
+    const reserved = leaderboardDisplayWidth(
+      mapped.model.kind === 'leaderboard' ? mapped.model.rows.map((r) => r.display) : [],
+      (text) => text.length * nameSizeApprox * 0.55,
+      120,
+      16,
+    )
+    const boxRight = 1800 - 64 // layout pad roughly; bars must end before display column
+    for (const end of ctx.lineEnds) {
+      expect(end).toBeLessThan(boxRight)
+    }
+    // Rank must not be the bar value: Grok Bot rank 81 would dominate length; days-since does not equal 81.
+    if (mapped.model.kind === 'leaderboard') {
+      expect(mapped.model.rows.find((r) => r.app.name === 'Grok Bot')?.value).not.toBe(81)
+    }
+    expect(reserved).toBeGreaterThan(120)
   })
 })

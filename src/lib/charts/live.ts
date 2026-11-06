@@ -55,7 +55,7 @@ export interface HeadlineModel {
   /** The supporting chart, or none when the data cannot draw one (a line needs two points). */
   support?:
     | { type: 'spark'; label: string; days: string[]; values: Array<number | null>; invert: boolean }
-    | { type: 'bars'; label: string; bars: Array<{ label: string; value: number }> }
+    | { type: 'bars'; label: string; bars: Array<{ label: string; value: number; display?: string }> }
     | { type: 'icon-bars'; label: string; bars: Array<{ app: AppRef; label: string; value: number }> }
   /** Other apps shown under the answer, with a short note each ("#2"). */
   others: Array<{ app: AppRef; note: string }>
@@ -64,6 +64,10 @@ export interface HeadlineModel {
 export interface LeaderboardModel {
   kind: 'leaderboard'
   rows: Array<{ app: AppRef; value: number; display: string; detail?: string }>
+  /** When false, rows are a plain ranked list with no horizontal bars. Default true. */
+  showBars?: boolean
+  /** Short label above the bar column when bars are shown (e.g. "Days since release"). */
+  barLabel?: string
 }
 
 export interface HeadToHeadModel {
