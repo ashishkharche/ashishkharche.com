@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-// SpaceX leads with a wider logo box; Paythru and Maestro share one logo-box size under it.
+// All three role rows share one layout: same classes, logo-box width and text indent. SpaceX is first only.
 for (const viewport of [
   { width: 1280, height: 800 },
   { width: 390, height: 844 },
@@ -16,19 +16,32 @@ for (const viewport of [
           return { x, y, width, height }
         }
         const shown = Array.from(li.querySelectorAll('img')).find((img) => getComputedStyle(img).display !== 'none')
+        const box = li.firstElementChild
+        const textCol = li.children[1]
+        const name = li.querySelector('span > span > span')
         return {
-          box: rect(li.firstElementChild),
+          liClass: li.className,
+          boxClass: box?.className ?? '',
+          box: rect(box),
           logo: rect(shown),
-          name: rect(li.querySelector('span > span > span')),
+          name: rect(name),
+          textX: textCol ? textCol.getBoundingClientRect().x : 0,
         }
       }),
     )
     expect(rows).toHaveLength(3)
-    const [featured, first, second] = rows
-    if (!featured || !first || !second) throw new Error('expected three roles')
+    const [first, second, third] = rows
+    if (!first || !second || !third) throw new Error('expected three roles')
+    expect(first.liClass).toBe(second.liClass)
+    expect(second.liClass).toBe(third.liClass)
+    expect(first.boxClass).toBe(second.boxClass)
+    expect(second.boxClass).toBe(third.boxClass)
     expect(first.box.width).toBe(second.box.width)
+    expect(second.box.width).toBe(third.box.width)
     expect(first.box.height).toBe(second.box.height)
-    expect(featured.box.width).toBeGreaterThan(first.box.width)
+    expect(second.box.height).toBe(third.box.height)
+    expect(Math.abs(first.textX - second.textX)).toBeLessThan(1)
+    expect(Math.abs(second.textX - third.textX)).toBeLessThan(1)
     expect(Math.abs(first.box.x - second.box.x) < 1 || viewport.width > 760).toBe(true)
     if (Math.abs(first.name.y - second.name.y) > 1) expect(Math.abs(first.name.x - second.name.x)).toBeLessThan(1)
     for (const row of rows) {
