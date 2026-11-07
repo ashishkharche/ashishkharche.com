@@ -4,12 +4,10 @@ import { colors } from './tokens.stylex'
 /**
  * Drawn lines, in the ink of the footer drawing. Boxes and pills are pen
  * strokes from small SVGs used as border images on a `::before` layer; rules
- * are pen lines used as masks; devices are CSS outlines bent by the `sk-pen`
- * filter (see SketchDefs). Nothing here fills a box: every shape is an outline
- * on the paper.
+ * are pen lines used as masks. Nothing here fills a box: every shape is an
+ * outline on the paper. Nothing here is drawn on or round a picture: photos and
+ * app screens are shown as they are.
  */
-const PEN = 'url(#sk-pen)'
-const PEN_2 = 'url(#sk-pen-2)'
 
 const drawnBase = {
   content: '""',
@@ -91,60 +89,4 @@ export const sk = stylex.create({
   },
   /** Pictures and logos in the pen's one colour: grey on the paper, nothing coloured. */
   mono: { filter: 'grayscale(1)' },
-})
-
-const corners = (radius: string) =>
-  ({
-    borderTopLeftRadius: radius,
-    borderTopRightRadius: radius,
-    borderBottomLeftRadius: radius,
-    borderBottomRightRadius: radius,
-  }) as const
-
-const deviceOutline = {
-  content: '""',
-  position: 'absolute',
-  inset: 0,
-  borderWidth: '1.5px',
-  borderStyle: 'solid',
-  borderColor: colors.inkStrong,
-  filter: PEN,
-  pointerEvents: 'none',
-} as const
-
-/**
- * Devices drawn as line art, like the phone at the end of the footer drawing:
- * an outline with rounded corners round the screen, a speaker slot at the top
- * of a phone. Padding in percent of the width keeps the bezel in proportion.
- */
-export const device = stylex.create({
-  // The device is cut from the paper (the page colour, not a panel), so a phone in front hides the one behind.
-  phone: {
-    position: 'relative',
-    display: 'block',
-    backgroundColor: colors.bg,
-    ...corners('17% 8%'),
-    paddingTop: '9%',
-    paddingBottom: '9%',
-    paddingInline: '4.5%',
-    '::before': { ...deviceOutline, ...corners('17% 8%') },
-    '::after': {
-      ...deviceOutline,
-      top: '2.6%',
-      bottom: 'auto',
-      left: '39%',
-      right: '39%',
-      height: '1.3%',
-      borderRadius: '999px',
-      filter: PEN_2,
-    },
-  },
-  ipad: {
-    position: 'relative',
-    display: 'block',
-    backgroundColor: colors.bg,
-    ...corners('7% 9.5%'),
-    padding: '4%',
-    '::before': { ...deviceOutline, ...corners('7% 9.5%') },
-  },
 })

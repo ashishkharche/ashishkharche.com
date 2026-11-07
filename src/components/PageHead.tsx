@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { ReactNode } from 'react'
 import { colors, fonts, type, weights } from '~/styles/tokens.stylex'
 
-export function PageHead({ title, lead, icon }: { title: string; lead?: ReactNode; icon?: ReactNode }) {
+export function PageHead({ title, lead, icon }: { title: ReactNode; lead?: ReactNode; icon?: ReactNode }) {
   return (
     <header>
       {icon ? <div {...stylex.props(styles.icon)}>{icon}</div> : null}

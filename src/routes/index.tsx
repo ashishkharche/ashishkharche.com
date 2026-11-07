@@ -4,10 +4,11 @@ import { Logo } from '~/components/Logo'
 import { Main } from '~/components/Main'
 import { NoteList } from '~/components/NoteList'
 import { ProjectCard } from '~/components/ProjectCard'
-import { Arrow, Figure, Leg } from '~/components/Scene'
-import { PhonePairTaped } from '~/components/Screens'
+import { Figure, Leg } from '~/components/Scene'
+import { PhonePair } from '~/components/Screens'
 import { SectionHead } from '~/components/SectionHead'
 import { SketchArrow } from '~/components/SketchArrow'
+import { WdWordmark } from '~/components/WdWordmark'
 import { kaloCard, workoutDirectorCard, workoutDirectorLinks } from '~/content/projects'
 import { noteListSummary, notes } from '~/content/notes'
 import type { ScreenId } from '~/content/workoutDirectorScreens'
@@ -16,7 +17,6 @@ import { formatShortDate } from '~/lib/dates'
 import { seo } from '~/lib/seo'
 import { homeJsonLd, jsonLdScript } from '~/lib/structuredData'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
-import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 // Two different moves: the push-up count in front of a deadlift. Neither is on the Selected work card below, so no
@@ -33,8 +33,17 @@ const homeSeo = seo({
 export const Route = createFileRoute('/')({
   head: () => ({
     meta: homeSeo.meta,
-    // React preloads the front phone itself (it has fetchPriority="high").
-    links: homeSeo.links,
+    // React preloads the front phone itself (it has fetchPriority="high"). The name's face is only used here.
+    links: [
+      ...homeSeo.links,
+      {
+        rel: 'preload',
+        href: '/assets/fonts/InterDisplay-SemiBold-Latin.woff2',
+        as: 'font',
+        type: 'font/woff2',
+        crossOrigin: 'anonymous',
+      },
+    ],
     scripts: [jsonLdScript(homeJsonLd)],
   }),
   component: Home,
@@ -51,8 +60,8 @@ function Home() {
     <Main>
       {/*
         One drawn line runs down the whole page, like the ground of the footer drawing. The first screen is one
-        scene on it: the name and a line about the work on the left, a figure walking in and the two phones taped
-        onto the page standing on the ground, with an arrow from the app's name to its screens.
+        scene on it: the name and a line about the work on the left, a figure walking in, and two app screens on the
+        right, shown as they are, a little above the line so no drawing touches them.
       */}
       <Leg from="edge" labelledBy="intro-title" xstyle={styles.heroLeg}>
         <div {...stylex.props(styles.hero)}>
@@ -68,12 +77,11 @@ function Home() {
             </p>
 
             <div aria-labelledby="wd-title" role="group" {...stylex.props(styles.app)}>
-              <Arrow shape="long" xstyle={styles.appArrow} />
               <div {...stylex.props(styles.appHead)}>
                 <Logo name="workoutDirector" size={40} />
                 <div>
                   <p id="wd-title" {...stylex.props(styles.appName)}>
-                    Workout Director
+                    <WdWordmark xstyle={styles.wordmark} />
                   </p>
                   <p {...stylex.props(styles.appText)}>AI guidance through your workout.</p>
                 </div>
@@ -93,7 +101,14 @@ function Home() {
             </div>
           </div>
           <Figure name="walk" xstyle={styles.walker} />
-          <PhonePairTaped phones={heroPhones} label="Workout Director app screens" priority xstyle={styles.phones} />
+          {/* The footage credit is left out on the home page (the libraries ask for it but do not require it). */}
+          <PhonePair
+            phones={heroPhones}
+            label="Workout Director app screens"
+            priority
+            credit={false}
+            xstyle={styles.phones}
+          />
         </div>
       </Leg>
 
@@ -102,7 +117,7 @@ function Home() {
         <ul role="list" aria-label="Roles" {...stylex.props(styles.roles)}>
           {roles.map((role) => (
             <li key={role.name} {...stylex.props(styles.role)}>
-              <span {...stylex.props(sk.box, styles.logoBox)}>
+              <span {...stylex.props(styles.logoBox)}>
                 <Logo name={role.logo} size={role.logoSize} />
               </span>
               <span {...stylex.props(styles.roleCopy)}>
@@ -276,11 +291,12 @@ const styles = stylex.create({
   title: {
     marginTop: { default: '1.25rem', [breakpoints.phone]: '1rem' },
     marginLeft: { default: '-0.05em', [breakpoints.phone]: 0 },
-    fontFamily: fonts.serif,
+    // In the lettering of the AK wordmark in the header: Inter, solid, at the wordmark's weight.
+    fontFamily: fonts.brand,
     fontSize: type.display,
-    fontWeight: weights.display,
-    lineHeight: 0.98,
-    letterSpacing: '-0.02em',
+    fontWeight: weights.brand,
+    lineHeight: 1,
+    letterSpacing: '-0.035em',
     whiteSpace: { default: 'nowrap', [breakpoints.phone]: 'normal' },
   },
   lead: {
@@ -296,21 +312,10 @@ const styles = stylex.create({
     rowGap: '1.25rem',
     paddingBottom: { default: '3.5rem', [breakpoints.tablet]: 0 },
   },
-  // From the app's name, over the walking figure, to its screens.
-  appArrow: {
-    left: '17rem',
-    top: '-4.25rem',
-    width: 'clamp(22rem, 37vw, 34rem)',
-    height: '4rem',
-  },
   appHead: { display: 'flex', alignItems: 'center', gap: '1rem' },
-  appName: {
-    display: 'block',
-    fontFamily: fonts.serif,
-    fontSize: type.lead,
-    fontWeight: weights.display,
-    lineHeight: 1.2,
-  },
+  appName: { display: 'block', lineHeight: 0 },
+  // The brand lettering, two lines, about as tall as the app icon beside it.
+  wordmark: { height: '2.6rem' },
   appText: { marginTop: '0.25rem', fontSize: type.meta, lineHeight: 1.5, color: colors.muted },
   appLinks: {
     display: 'flex',
@@ -351,8 +356,8 @@ const styles = stylex.create({
     width: '100%',
     maxWidth: { default: '25.5rem', [breakpoints.tablet]: '21rem' },
     justifySelf: { default: 'end', [breakpoints.tablet]: 'center' },
-    // The footage credit hangs under the ground line, so the phones themselves stand on it.
-    marginBottom: { default: 0, [breakpoints.tablet]: '1rem' },
+    // Clear of the ground line: the screens never touch a drawing.
+    marginBottom: { default: '2rem', [breakpoints.tablet]: '0.5rem' },
   },
   rolesLeg: {
     paddingTop: SECTION,
@@ -439,7 +444,8 @@ const styles = stylex.create({
     marginTop: { default: '-3rem', [breakpoints.tablet]: '2.5rem' },
     paddingBottom: '2rem',
   },
-  workLeg: { paddingTop: SECTION, paddingBottom: '1rem' },
+  // Room under the screens, so they stand clear of the line.
+  workLeg: { paddingTop: SECTION, paddingBottom: '2.5rem' },
   workScene: { marginTop: { default: '4rem', [breakpoints.tablet]: '2.5rem' } },
   kaloLeg: { paddingTop: { default: 'clamp(6rem, 12vh, 9rem)', [breakpoints.tablet]: '5rem' } },
   // Kalo has no screens to show, so it stands on the line like a stake, on the right where the line comes down.

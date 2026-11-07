@@ -10,6 +10,7 @@ import { PageHead } from '~/components/PageHead'
 import { Muted, Prose, mdxComponents } from '~/components/Prose'
 import { DeviceStage, ScreenRail, Shots } from '~/components/Screens'
 import { StackList } from '~/components/StackList'
+import { WdWordmark } from '~/components/WdWordmark'
 import { workoutDirectorCard, workoutDirectorHero, workoutDirectorStackGroups } from '~/content/projects'
 import { links } from '~/content/site'
 import { stagePreload } from '~/content/workoutDirectorScreens'
@@ -53,15 +54,15 @@ function WorkoutDirector() {
           ← Projects
         </Link>
         <PageHead
-          title="Workout Director"
+          title={<WdWordmark xstyle={styles.wordmark} />}
           lead={workoutDirectorCard.summary}
           icon={<Logo name="workoutDirector" size={40} />}
         />
         <DeviceStage
           {...workoutDirectorHero}
-          size="hero"
           priority
           label="Workout Director App Store screens on iPad and iPhone"
+          xstyle={styles.stage}
         />
       </div>
       {/* The details row and the stack get the wider column so each item fits on one or two lines. */}
@@ -100,6 +101,9 @@ function WorkoutDirector() {
 }
 
 const styles = stylex.create({
+  stage: { marginTop: { default: '3rem', '@media (max-width: 760px)': '2.25rem' } },
+  // The brand lettering at about the height of two lines of the title.
+  wordmark: { height: { default: '6.5rem', '@media (max-width: 560px)': '4.25rem' } },
   back: {
     display: 'inline-block',
     marginBottom: '1.75rem',

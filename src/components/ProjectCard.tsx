@@ -3,10 +3,11 @@ import { Link } from '@tanstack/react-router'
 import { useId } from 'react'
 import { Logo } from './Logo'
 import { SketchArrow } from './SketchArrow'
-import { DevicesTaped, DeviceStage } from './Screens'
+import { DeviceStage } from './Screens'
+import { WdWordmark } from './WdWordmark'
 import { screenshotSrc, screenshotSrcSet, type ProjectCard as Card } from '~/content/projects'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
-import { device, sk } from '~/styles/sketch'
+import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 interface Props {
@@ -24,7 +25,7 @@ interface Props {
 /**
  * A project shown as its screenshots, large on the page, with the title and
  * summary underneath: either three phone screens in a row or, for a project
- * with a stage, an iPad and two iPhones layered on a soft panel. A project
+ * with a stage, an iPad and two iPhones side by side, each shown as it is. A project
  * with neither shows only its title and summary. Projects after the first get
  * a thin rule above.
  */
@@ -34,7 +35,8 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
   const linkProps = stylex.props(styles.link)
   const label = (
     <>
-      {card.title} <SketchArrow dir={card.external ? 'out' : 'right'} xstyle={styles.arrow} />
+      {card.logo === 'workoutDirector' ? <WdWordmark xstyle={styles.wordmark} /> : card.title}{' '}
+      <SketchArrow dir={card.external ? 'out' : 'right'} xstyle={styles.arrow} />
     </>
   )
   return (
@@ -50,7 +52,8 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
         <div
           {...stylex.props(styles.sceneMedia, scene === 'devicesLeft' ? styles.sceneMediaLeft : styles.sceneMediaRight)}
         >
-          <DevicesTaped ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} />
+          {/* On the home page the footage credit is left out. */}
+          <DeviceStage ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} credit={false} />
         </div>
       ) : card.stage ? (
         <DeviceStage ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} />
@@ -64,7 +67,7 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
           )}
         >
           {(card.shots ?? []).map((shot, index) => (
-            <span key={shot.name} {...stylex.props(device.phone, styles.phone)}>
+            <span key={shot.name} {...stylex.props(styles.phone)}>
               <img
                 src={screenshotSrc(shot.name)}
                 srcSet={screenshotSrcSet(shot.name)}
@@ -243,6 +246,8 @@ const styles = stylex.create({
       inset: 0,
     },
   },
+  // The Workout Director wordmark, two lines of lettering about as tall as two lines of the title.
+  wordmark: { height: '1.5em', marginBottom: '0.1em' },
   // The arrows are drawn, not set in the display face.
   arrow: { width: '0.8em', height: '0.8em', verticalAlign: '-0.02em' },
   meta: { marginTop: '0.4rem', fontSize: type.meta, color: colors.muted },

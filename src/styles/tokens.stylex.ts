@@ -130,6 +130,8 @@ export const fonts = stylex.defineConsts({
   mono: '"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
   // Display headings, set light (weights.display) to match the thin lines of the drawings.
   serif: '"Newsreader", "Newsreader Fallback", ui-serif, Georgia, serif',
+  // The name on the home page, in the lettering of the AK wordmark: solid, weight 550.
+  brand: '"Inter Display", "Inter Display Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
 })
 
 const PHONE = '@media (max-width: 560px)'
@@ -139,15 +141,16 @@ const PHONE = '@media (max-width: 560px)'
  * 18px on wider screens (17px on phones) at a generous line height, held to
  * about 62 characters a line (layout.column). Headings are in the light display
  * face at large sizes, so their thin strokes sit with the line drawings. Every
- * text size on the home page is one of these five: two families (display and
- * text) and three weights (light display, regular and medium text).
+ * text size on the home page is one of these five: three families (the name in
+ * the AK wordmark's face, display and text) and four weights (the name's 550,
+ * light display, regular and medium text).
  */
 export const type = stylex.defineVars({
   // Dates, captions, credits, nav, footer, tags.
   meta: { default: '0.875rem', [PHONE]: '0.8125rem' },
   // Running text, links and the role names.
   body: { default: '1.125rem', [PHONE]: '1.0625rem' },
-  // The intro, note titles and the Workout Director name.
+  // The intro and note titles.
   lead: { default: '1.4375rem', [PHONE]: '1.25rem' },
   // Section and project titles.
   title: { default: '3rem', [PHONE]: '2rem' },
@@ -160,6 +163,7 @@ export const weights = stylex.defineConsts({
   regular: '400',
   medium: '500',
   display: '300',
+  brand: '550',
 })
 
 export const layout = stylex.defineConsts({

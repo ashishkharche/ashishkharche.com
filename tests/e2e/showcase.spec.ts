@@ -33,7 +33,7 @@ test('the intro panel shows two described screens that the Selected work card do
   for (const src of cardScreens) expect(heroScreens).not.toContain(stem(src))
 })
 
-test('on a wide screen the panel stands on the ground line at the right of the intro', async ({ page }) => {
+test('on a wide screen the panel stands clear of the ground line at the right of the intro', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
   const intro = page.locator('section[aria-labelledby="intro-title"]')
@@ -44,8 +44,11 @@ test('on a wide screen the panel stands on the ground line at the right of the i
   // To the right of the name and of the Workout Director links.
   expect(stage.x).toBeGreaterThan(name.x + name.width)
   expect(stage.x).toBeGreaterThan(store.x + store.width)
-  // Standing on the ground line: the bottom of the scene, with the whole first scene in the first screen.
-  expect(Math.abs(stage.y + stage.height - (scene.y + scene.height))).toBeLessThanOrEqual(2)
+  // Just above the ground line (the bottom of the scene) without touching it, with the whole first scene in the
+  // first screen. The line is drawn 8px either side of the scene's bottom edge.
+  const gap = scene.y + scene.height - (stage.y + stage.height)
+  expect(gap).toBeGreaterThanOrEqual(16)
+  expect(gap).toBeLessThanOrEqual(48)
   expect(scene.y + scene.height).toBeLessThanOrEqual(900)
   // The front phone sits inside the panel.
   const front = await box(panel(page).locator('img').nth(1))

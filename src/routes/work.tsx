@@ -56,7 +56,7 @@ function Work() {
                 <div>
                   <h3 {...stylex.props(ui.h3, styles.org)}>
                     {role.logo ? (
-                      <span {...stylex.props(sk.box, styles.mark)}>
+                      <span {...stylex.props(styles.mark)}>
                         <Logo name={role.logo} size={32} />
                       </span>
                     ) : null}

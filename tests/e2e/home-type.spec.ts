@@ -1,14 +1,14 @@
 import { expect, test } from '@playwright/test'
 
-// The home page keeps to one small type scale: five sizes, two families and three
-// weights (the light display weight and two text weights) (see src/styles/tokens.stylex.ts). This reads every visible piece of
+// The home page keeps to one small type scale: five sizes, three families and four
+// weights (the name in the AK wordmark's face and weight, the light display weight and two text weights) (see src/styles/tokens.stylex.ts). This reads every visible piece of
 // text and checks the computed styles, in light and dark.
 for (const colorScheme of ['light', 'dark'] as const) {
   for (const viewport of [
     { width: 1440, height: 900 },
     { width: 390, height: 844 },
   ]) {
-    test(`at ${viewport.width} wide in ${colorScheme} the home page uses five sizes, two families and three weights`, async ({
+    test(`at ${viewport.width} wide in ${colorScheme} the home page uses five sizes, three families and four weights`, async ({
       page,
     }) => {
       await page.emulateMedia({ colorScheme })
@@ -32,8 +32,8 @@ for (const colorScheme of ['light', 'dark'] as const) {
         return { sizes: [...sizes], families: [...families].sort(), weights: [...weights].sort() }
       })
       expect(used.sizes.length, used.sizes.join(' ')).toBeLessThanOrEqual(5)
-      expect(used.families).toEqual(['Newsreader', 'Source Sans 3'])
-      expect(used.weights).toEqual(['300', '400', '500'])
+      expect(used.families).toEqual(['Inter Display', 'Newsreader', 'Source Sans 3'])
+      expect(used.weights).toEqual(['300', '400', '500', '550'])
     })
   }
 }

@@ -8,6 +8,9 @@
   thin lines of the drawings; Geist Mono for code. Newsreader keeps its optical size axis and
   weights 300 to 400, Source Sans 3 weights 400 to 500. All are Latin subsets under the SIL Open
   Font License (public/assets/fonts/OFL-*.txt and Geist-OFL.txt).
+  The name at the top of the home page is set in Inter, the face the AK wordmark in the header was drawn
+  from (its letters match Inter at about weight 550): one static instance at that weight and the display
+  optical size, cut to basic Latin and curly quotes.
   The fallback faces are local fonts scaled to each web font's metrics, so the swap from
   fallback to web font barely moves the text.
 */
@@ -39,6 +42,21 @@
   size-adjust: 92.54%;
   ascent-override: 110.65%;
   descent-override: 43.22%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Inter Display';
+  src: url('/assets/fonts/InterDisplay-SemiBold-Latin.woff2') format('woff2');
+  font-weight: 550;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter Display Fallback';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica');
+  size-adjust: 101.95%;
+  ascent-override: 95.02%;
+  descent-override: 23.66%;
   line-gap-override: 0%;
 }
 @font-face {

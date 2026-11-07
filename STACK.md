@@ -47,12 +47,14 @@ it does not use Base UI's `NavigationMenu`. There is no dialog or tooltip on the
 screenshot rows and the gallery. A small Vite plugin (`plugins/content.ts`) lets list pages import only a note's frontmatter
 (`note.mdx?frontmatter`), so the notes index does not ship note bodies.
 
-**Fonts.** Body text is Geist, headings are Geist Serif and code is Geist Mono, all from the `geist` 1.9 package and under the
-SIL Open Font License (the licence is in `public/assets/fonts/Geist-OFL.txt`). Each is cut down to a Latin subset and served from
-`public/assets/fonts` (no font CDN, so `font-src 'self'` holds). Geist and Geist Mono keep their weight axis from 400 to 700; Geist Serif
-has one weight, so headings set in it use 400. Geist and Geist Serif are preloaded because both are above the fold on every page. Local
-fallback faces scaled to Geist's metrics (`size-adjust` and the ascent and descent overrides in `src/styles/global.css`) keep the swap
-from moving text.
+**Fonts.** Body text is Source Sans 3 (400 to 500), headings are Newsreader (300 to 400, with its optical size axis) and code is
+Geist Mono. The name at the top of the home page is Inter Display at weight 550, the face the AK wordmark in the header is drawn from;
+it is a static instance cut to basic Latin and curly quotes and preloaded on the home page only. All are under the SIL Open Font
+License (`public/assets/fonts/OFL-*.txt` and `Geist-OFL.txt`), cut down to Latin and served from `public/assets/fonts` (no font CDN,
+so `font-src 'self'` holds). Geist and Geist Serif stay for the charts and the link preview images. The Workout Director name is the
+outlined lettering from the brand lockup (`src/components/WdWordmark.tsx`), not a font: its font file is not licensed for the web.
+Local fallback faces scaled to each font's metrics (`size-adjust` and the ascent and descent overrides in `src/styles/global.css`)
+keep the swap from moving text.
 
 **Pele.** The same plugin turns `import diagram from './x.mmd'` into a build-time Pele render. The output is cleaned the same way as on
 the previous site (root `style` removed, `rx` attributes instead of inline styles, `role="img"` and a `<title>`), and its colours come

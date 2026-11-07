@@ -7,9 +7,7 @@ import * as stylex from '@stylexjs/stylex'
 export function Brand({ style }: { style?: stylex.StyleXStyles }) {
   return (
     <svg viewBox="0 0 194.21 21" aria-hidden="true" focusable="false" {...stylex.props(styles.svg, style)}>
-      {/* The AK mark drawn as an outline, the way the footer drawing draws it. */}
       <path
-        {...stylex.props(styles.mark)}
         transform="translate(-4.912 -6.300) scale(0.7000)"
         d="M31 9.52 31.28 9 23.32 9 7.02 39 14.98 39 24 22.4 24 39 31 39 31 26.38 32.28 25.02 39.11 39 46.89 39 37.4 19.55 47.3 9 37.7 9 31 16.15Z"
       />
@@ -24,11 +22,5 @@ const styles = stylex.create({
     height: '20px',
     width: 'auto',
     fill: 'currentColor',
-  },
-  mark: {
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.6,
-    strokeLinejoin: 'round',
   },
 })

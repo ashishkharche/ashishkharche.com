@@ -15,9 +15,7 @@ import {
   type StageSpec,
 } from '~/content/workoutDirectorScreens'
 import { breakpoints, colors, type, weights } from '~/styles/tokens.stylex'
-import { device as drawn } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
-import { Tape } from './Scene'
 
 interface PictureProps {
   id: ScreenId
@@ -37,73 +35,59 @@ export function FootageCredit({ ids, xstyle }: { ids: readonly ScreenId[]; xstyl
 }
 
 /**
- * One App Store screen, inside a phone or iPad drawn in the pen's line: AVIF where the browser takes it, WebP
- * otherwise, at the size it is shown.
+ * One App Store screen as it is, with only rounded corners: AVIF where the browser takes it, WebP otherwise, at the
+ * size it is shown. No frame, filter or tilt.
  */
 export function ScreenPicture({ id, device, sizes, alt, eager = false, priority = false, xstyle }: PictureProps) {
   const { width, height } = deviceSize[device]
   return (
-    <span {...stylex.props(device === 'ipad' ? drawn.ipad : drawn.phone)}>
-      <picture {...stylex.props(styles.picture)}>
-        <source type="image/avif" srcSet={screenSrcSet(id, device, 'avif')} sizes={sizes} />
-        <img
-          src={screenPath(id, device, screenWidths[device][0], 'webp')}
-          srcSet={screenSrcSet(id, device, 'webp')}
-          sizes={sizes}
-          width={width}
-          height={height}
-          alt={alt ?? screen(id).alt}
-          loading={eager || priority ? 'eager' : 'lazy'}
-          fetchPriority={priority ? 'high' : 'auto'}
-          decoding="async"
-          {...stylex.props(styles.img, device === 'ipad' ? styles.ipad : styles.iphone, xstyle)}
-        />
-      </picture>
-    </span>
+    <picture {...stylex.props(styles.picture)}>
+      <source type="image/avif" srcSet={screenSrcSet(id, device, 'avif')} sizes={sizes} />
+      <img
+        src={screenPath(id, device, screenWidths[device][0], 'webp')}
+        srcSet={screenSrcSet(id, device, 'webp')}
+        sizes={sizes}
+        width={width}
+        height={height}
+        alt={alt ?? screen(id).alt}
+        loading={eager || priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
+        decoding="async"
+        {...stylex.props(styles.img, device === 'ipad' ? styles.ipad : styles.iphone, xstyle)}
+      />
+    </picture>
   )
 }
 
 interface StageProps extends StageSpec {
-  /** `hero` at the top of the case study, `card` in a project card. */
-  size?: 'hero' | 'card'
   /** Load straight away, for a stage at the top of the page. */
   priority?: boolean
   label?: string
+  /** Show the stock footage credit under the screens (left out on the home page). */
+  credit?: boolean
+  xstyle?: stylex.StyleXStyles
 }
 
 /**
- * The iPad screen with two iPhone screens in front of it, on a soft panel. The
- * layers drift apart a little as the page scrolls, where the browser supports
- * scroll-driven animation and motion is not reduced. Without that, or without
- * JavaScript, it is the same picture standing still.
+ * The iPad screen and two iPhone screens side by side, bottoms level, each picture whole and straight on the page.
+ * On phones the second iPhone is left out so the others keep a readable size.
  */
-export function DeviceStage({ ipad, phones, size = 'card', priority = false, label }: StageProps) {
-  const hero = size === 'hero'
+export function DeviceStage({ ipad, phones, priority = false, label, credit = true, xstyle }: StageProps) {
   return (
-    <>
-      <div
-        role={label ? 'group' : undefined}
-        aria-label={label}
-        {...stylex.props(styles.stage, hero ? styles.stageHero : styles.stageCard)}
-      >
-        <div {...stylex.props(styles.layer, styles.ipadLayer, styles.driftFar)}>
-          <ScreenPicture id={ipad} device="ipad" sizes={stageSizes.ipad} priority={priority} xstyle={styles.lifted} />
+    <div {...stylex.props(styles.wrap, xstyle)}>
+      <div role={label ? 'group' : undefined} aria-label={label} {...stylex.props(styles.devices)}>
+        <div {...stylex.props(styles.devIpad)}>
+          <ScreenPicture id={ipad} device="ipad" sizes={stageSizes.ipad} priority={priority} />
         </div>
-        <div {...stylex.props(styles.layer, styles.phoneA, styles.driftNear)}>
-          <ScreenPicture
-            id={phones[0]}
-            device="iphone"
-            sizes={stageSizes.iphone}
-            eager={priority}
-            xstyle={styles.lifted}
-          />
+        <div {...stylex.props(styles.devPhone)}>
+          <ScreenPicture id={phones[0]} device="iphone" sizes={stageSizes.iphone} eager={priority} />
         </div>
-        <div {...stylex.props(styles.layer, styles.phoneB, styles.driftMid)}>
-          <ScreenPicture id={phones[1]} device="iphone" sizes={stageSizes.iphone} xstyle={styles.lifted} />
+        <div {...stylex.props(styles.devPhone, styles.devPhoneLast)}>
+          <ScreenPicture id={phones[1]} device="iphone" sizes={stageSizes.iphone} />
         </div>
       </div>
-      <FootageCredit ids={[ipad, ...phones]} />
-    </>
+      {credit ? <FootageCredit ids={[ipad, ...phones]} /> : null}
+    </div>
   )
 }
 
@@ -112,126 +96,24 @@ interface PairProps {
   phones: readonly [ScreenId, ScreenId]
   label: string
   priority?: boolean
+  credit?: boolean
+  xstyle?: stylex.StyleXStyles
 }
 
-/**
- * Two iPhone screens on the same soft panel as the project cards, one in front
- * of the other. Used at the top of the home page with screens that the
- * Selected work card does not show. The footage credit follows only if one of
- * the screens has a camera view.
- */
-export function PhonePairStage({ phones, label, priority = false }: PairProps) {
-  const sizes = '(max-width: 760px) 40vw, 230px'
+/** Two iPhone screens side by side, bottoms level, straight on the page. */
+export function PhonePair({ phones, label, priority = false, credit = true, xstyle }: PairProps) {
+  const sizes = '(max-width: 560px) 44vw, (max-width: 1100px) 22vw, 250px'
   return (
-    <div {...stylex.props(styles.pairWrap)}>
-      <div role="group" aria-label={label} {...stylex.props(styles.stage, styles.pairStage)}>
-        <div {...stylex.props(styles.layer, styles.pairBack, styles.driftMid)}>
-          <ScreenPicture id={phones[1]} device="iphone" sizes={sizes} eager={priority} xstyle={styles.lifted} />
-        </div>
-        <div {...stylex.props(styles.layer, styles.pairFront, styles.driftNear)}>
-          <ScreenPicture id={phones[0]} device="iphone" sizes={sizes} priority={priority} xstyle={styles.lifted} />
-        </div>
-      </div>
-      <FootageCredit ids={phones} xstyle={styles.pairCredit} />
-    </div>
-  )
-}
-
-/**
- * The same two phones standing side by side on a ground line, the way the phone
- * stands at the end of the footer drawing: their bottoms on one line, the one in
- * front overlapping the one behind. No panel. The credit, if any, sits under the line.
- */
-export function PhonePairGround({
-  phones,
-  label,
-  priority = false,
-  xstyle,
-}: PairProps & { xstyle?: stylex.StyleXStyles }) {
-  const sizes = '(max-width: 560px) 46vw, (max-width: 1100px) 22vw, 250px'
-  return (
-    <div {...stylex.props(styles.groundWrap, xstyle)}>
-      <div role="group" aria-label={label} {...stylex.props(styles.groundPair)}>
-        <div {...stylex.props(styles.groundBack)}>
-          <ScreenPicture id={phones[1]} device="iphone" sizes={sizes} eager={priority} />
-        </div>
-        <div {...stylex.props(styles.groundFront)}>
+    <div {...stylex.props(styles.wrap, xstyle)}>
+      <div role="group" aria-label={label} {...stylex.props(styles.pair)}>
+        <div {...stylex.props(styles.pairPhone)}>
           <ScreenPicture id={phones[0]} device="iphone" sizes={sizes} priority={priority} />
         </div>
-      </div>
-      <FootageCredit ids={phones} xstyle={styles.groundCredit} />
-    </div>
-  )
-}
-
-/** An iPad and two iPhones standing on a ground line: the iPad at the back, the phones in front of its right edge. */
-export function DevicesGround({ ipad, phones, priority = false }: StageSpec & { priority?: boolean }) {
-  return (
-    <div {...stylex.props(styles.groundWrap)}>
-      <div {...stylex.props(styles.groundDevices)}>
-        <div {...stylex.props(styles.groundIpad)}>
-          <ScreenPicture id={ipad} device="ipad" sizes={stageSizes.ipad} priority={priority} />
-        </div>
-        <div {...stylex.props(styles.groundPhoneA)}>
-          <ScreenPicture id={phones[0]} device="iphone" sizes={stageSizes.iphone} eager={priority} />
-        </div>
-        <div {...stylex.props(styles.groundPhoneB)}>
-          <ScreenPicture id={phones[1]} device="iphone" sizes={stageSizes.iphone} />
-        </div>
-      </div>
-      <FootageCredit ids={[ipad, ...phones]} xstyle={styles.groundCredit} />
-    </div>
-  )
-}
-
-/**
- * The two phones taped into the sketchbook: each at a slight angle, a strip of tape over its top, the
- * one in front overlapping the one behind. The pictures are the real screens. No panel.
- */
-export function PhonePairTaped({
-  phones,
-  label,
-  priority = false,
-  xstyle,
-}: PairProps & { xstyle?: stylex.StyleXStyles }) {
-  const sizes = '(max-width: 560px) 46vw, (max-width: 1100px) 24vw, 270px'
-  return (
-    <div {...stylex.props(styles.tapedWrap, xstyle)}>
-      <div role="group" aria-label={label} {...stylex.props(styles.tapedPair)}>
-        <div {...stylex.props(styles.tapedBack)}>
+        <div {...stylex.props(styles.pairPhone)}>
           <ScreenPicture id={phones[1]} device="iphone" sizes={sizes} eager={priority} />
-          <Tape alt xstyle={styles.tapeTop} />
-        </div>
-        <div {...stylex.props(styles.tapedFront)}>
-          <ScreenPicture id={phones[0]} device="iphone" sizes={sizes} priority={priority} />
-          <Tape xstyle={styles.tapeTopLeft} />
         </div>
       </div>
-      <FootageCredit ids={phones} xstyle={styles.tapedCreditHang} />
-    </div>
-  )
-}
-
-/** An iPad and two iPhones taped in: the iPad at a slight angle, the phones overlapping its lower right corner. */
-export function DevicesTaped({ ipad, phones, priority = false }: StageSpec & { priority?: boolean }) {
-  return (
-    <div {...stylex.props(styles.tapedWrap)}>
-      <div {...stylex.props(styles.tapedDevices)}>
-        <div {...stylex.props(styles.tapedIpad)}>
-          <ScreenPicture id={ipad} device="ipad" sizes={stageSizes.ipad} priority={priority} />
-          <Tape xstyle={styles.tapeTopLeft} />
-          <Tape alt xstyle={styles.tapeTopRight} />
-        </div>
-        <div {...stylex.props(styles.tapedPhoneA)}>
-          <ScreenPicture id={phones[0]} device="iphone" sizes={stageSizes.iphone} eager={priority} />
-          <Tape alt xstyle={styles.tapeTop} />
-        </div>
-        <div {...stylex.props(styles.tapedPhoneB)}>
-          <ScreenPicture id={phones[1]} device="iphone" sizes={stageSizes.iphone} />
-          <Tape xstyle={styles.tapeTop} />
-        </div>
-      </div>
-      <FootageCredit ids={[ipad, ...phones]} xstyle={styles.tapedCredit} />
+      {credit ? <FootageCredit ids={phones} /> : null}
     </div>
   )
 }
@@ -385,80 +267,19 @@ function Arrow({ flip = false }: { flip?: boolean }) {
 // global.css switches every animation off when reduced motion is asked for.
 const SCROLL_DRIVEN = '@supports (animation-timeline: view())'
 
-const driftFar = stylex.keyframes({
-  from: { transform: 'translateY(3%)' },
-  to: { transform: 'translateY(-3%)' },
-})
-const driftNear = stylex.keyframes({
-  from: { transform: 'translateY(9%)' },
-  to: { transform: 'translateY(-6%)' },
-})
-const driftMid = stylex.keyframes({
-  from: { transform: 'translateY(6%)' },
-  to: { transform: 'translateY(-4%)' },
-})
 const settle = stylex.keyframes({
   from: { opacity: 0.55, transform: 'scale(0.94)' },
   to: { opacity: 1, transform: 'none' },
 })
 
-// A view() timeline runs while the element crosses the viewport (the default range, cover).
-const onScroll = {
-  animationTimingFunction: 'linear',
-  animationFillMode: 'both',
-  animationTimeline: { default: null, [SCROLL_DRIVEN]: 'view()' },
-} as const
-
 const styles = stylex.create({
-  tapedWrap: { position: 'relative', minWidth: 0 },
-  tapedPair: { display: 'flex', alignItems: 'flex-start', justifyContent: 'center' },
-  tapedFront: {
-    position: 'relative',
-    zIndex: 1,
-    order: 1,
-    width: '47%',
-    flex: 'none',
-    marginTop: '9%',
-    transform: 'rotate(-2.5deg)',
-  },
-  tapedBack: {
-    position: 'relative',
-    order: 2,
-    width: '47%',
-    flex: 'none',
-    marginLeft: '-7%',
-    transform: 'rotate(3deg)',
-  },
-  tapedDevices: { position: 'relative', paddingBottom: '12%' },
-  tapedIpad: { position: 'relative', width: '78%', transform: 'rotate(-1.5deg)' },
-  tapedPhoneA: {
-    position: 'absolute',
-    zIndex: 1,
-    right: '15%',
-    bottom: 0,
-    width: '25%',
-    transform: 'rotate(2.5deg)',
-  },
-  tapedPhoneB: {
-    position: 'absolute',
-    zIndex: 2,
-    right: 0,
-    bottom: '6%',
-    width: '25%',
-    transform: 'rotate(-3deg)',
-  },
-  tapeTop: { top: '-0.7rem', left: '50%', translate: '-50% 0', rotate: '-4deg' },
-  tapeTopLeft: { top: '-0.4rem', left: '-1.5rem', rotate: '-38deg' },
-  tapeTopRight: { top: '-0.4rem', right: '-1.5rem', rotate: '36deg' },
-  tapedCredit: { marginTop: '1.25rem' },
-  // Under the ground line the phones stand on, so the phones themselves meet the line.
-  tapedCreditHang: {
-    position: { default: 'absolute', '@media (max-width: 760px)': 'static' },
-    top: '100%',
-    left: 0,
-    right: 0,
-    marginTop: '1.25rem',
-  },
+  wrap: { position: 'relative', minWidth: 0 },
+  pair: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '6%' },
+  pairPhone: { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 0 },
+  devices: { display: 'flex', alignItems: 'flex-end', gap: { default: '3%', [breakpoints.phone]: '4%' } },
+  devIpad: { flexGrow: 0, flexShrink: 0, flexBasis: { default: '56%', [breakpoints.phone]: '62%' }, minWidth: 0 },
+  devPhone: { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 0 },
+  devPhoneLast: { display: { default: 'block', [breakpoints.phone]: 'none' } },
   picture: { display: 'contents' },
   img: { display: 'block', width: '100%', height: 'auto' },
   // Rounded to match the corners of the App Store panels.
@@ -474,96 +295,8 @@ const styles = stylex.create({
     borderBottomLeftRadius: '4.5% 3.4%',
     borderBottomRightRadius: '4.5% 3.4%',
   },
-  // The drawn device is the edge now, so the screens need no outline or shadow of their own.
+  // No outline or shadow: the screen itself, with its rounded corners.
   edge: {},
-  lifted: {},
-  stage: {
-    position: 'relative',
-    overflow: 'hidden',
-    isolation: 'isolate',
-    // No panel: the devices are drawn straight on the paper, standing on a drawn ground line.
-    '::after': {
-      content: '""',
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: '6px',
-      height: '16px',
-      backgroundColor: colors.ink,
-      maskImage: 'url("/assets/img/sketch/ground.svg")',
-      maskRepeat: 'no-repeat',
-      maskSize: '100% 100%',
-      pointerEvents: 'none',
-    },
-    aspectRatio: { default: '16 / 10', [breakpoints.phone]: '5 / 6' },
-  },
-  stageHero: {
-    marginTop: { default: '3rem', [breakpoints.tablet]: '2.25rem' },
-    borderRadius: { default: '28px', [breakpoints.phone]: '20px' },
-  },
-  stageCard: { borderRadius: { default: '24px', [breakpoints.phone]: '18px' } },
-  layer: { position: 'absolute' },
-  // Positions in percent of the stage, so the picture keeps its shape at any width.
-  ipadLayer: {
-    zIndex: 1,
-    left: { default: '9%', [breakpoints.phone]: '5%' },
-    top: { default: '7%', [breakpoints.phone]: '7%' },
-    width: { default: '42%', [breakpoints.phone]: '64%' },
-  },
-  phoneA: {
-    zIndex: 3,
-    left: { default: '44%', [breakpoints.phone]: '53%' },
-    top: { default: '19%', [breakpoints.phone]: '21%' },
-    width: { default: '21%', [breakpoints.phone]: '42%' },
-  },
-  phoneB: {
-    zIndex: 2,
-    display: { default: 'block', [breakpoints.phone]: 'none' },
-    left: '70%',
-    top: '8%',
-    width: '21%',
-  },
-  // The two-phone panel: taller than wide beside the intro, square on phones.
-  // Beside the intro it takes the height of the text column, so their top and bottom edges line up.
-  pairWrap: {
-    minWidth: 0,
-    alignSelf: { default: 'stretch', [breakpoints.tablet]: 'auto' },
-    display: 'grid',
-    position: 'relative',
-  },
-  // Beside the intro the credit hangs just under the panel, so it does not shorten it.
-  pairCredit: {
-    position: { default: 'absolute', [breakpoints.tablet]: 'static' },
-    top: { default: '100%', [breakpoints.tablet]: 'auto' },
-    left: 0,
-  },
-  pairStage: {
-    // No backdrop: the two phones sit straight on the page, with only their own shadow.
-    overflow: 'visible',
-    backgroundColor: 'transparent',
-    backgroundImage: 'none',
-    borderWidth: 0,
-    borderRadius: 0,
-    boxShadow: 'none',
-    aspectRatio: { default: 'auto', [breakpoints.tablet]: '1 / 1' },
-    minHeight: { default: '30rem', [breakpoints.tablet]: 0 },
-  },
-
-  pairBack: {
-    zIndex: 1,
-    left: { default: '47%', [breakpoints.tablet]: '50%' },
-    top: { default: '8%', [breakpoints.tablet]: '6%' },
-    width: { default: '45%', [breakpoints.tablet]: '38%' },
-  },
-  pairFront: {
-    zIndex: 2,
-    left: { default: '8%', [breakpoints.tablet]: '12%' },
-    top: { default: '21%', [breakpoints.tablet]: '14%' },
-    width: { default: '45%', [breakpoints.tablet]: '38%' },
-  },
-  driftFar: { ...onScroll, animationName: { default: null, [SCROLL_DRIVEN]: driftFar } },
-  driftNear: { ...onScroll, animationName: { default: null, [SCROLL_DRIVEN]: driftNear } },
-  driftMid: { ...onScroll, animationName: { default: null, [SCROLL_DRIVEN]: driftMid } },
   shots: {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
@@ -578,29 +311,6 @@ const styles = stylex.create({
     color: colors.muted,
   },
   railSection: { marginTop: '2rem' },
-  groundWrap: { position: 'relative', minWidth: 0 },
-  groundPair: {
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  groundBack: { width: '46%', flex: 'none', marginBottom: 0, order: 2, marginLeft: '-9%' },
-  groundFront: { width: '46%', flex: 'none', order: 1, position: 'relative', zIndex: 1 },
-  groundDevices: {
-    display: 'flex',
-    alignItems: 'flex-end',
-  },
-  groundIpad: { width: '62%', flex: 'none' },
-  groundPhoneA: { width: '24%', flex: 'none', marginLeft: '-8%', position: 'relative', zIndex: 1 },
-  groundPhoneB: { width: '24%', flex: 'none', marginLeft: '-6%', position: 'relative', zIndex: 2 },
-  // Under the ground line, like a caption under a drawing.
-  groundCredit: {
-    position: 'absolute',
-    top: 'calc(100% + 0.9rem)',
-    left: 0,
-    right: 0,
-    marginTop: 0,
-  },
   credit: {
     marginTop: '0.75rem',
     marginBottom: 0,
