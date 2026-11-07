@@ -138,7 +138,7 @@ export const kaloCard: ProjectCard = {
   href: links.kaloStore,
   external: true,
   summary:
-    'A macro and calorie tracker for iPhone with photo, voice and barcode logging, HealthKit, widgets and a share extension.',
+    'A macro and calorie tracker for iPhone. Log with a photo, your voice or a barcode. It also has HealthKit, widgets and a share extension.',
   meta: 'SwiftUI · App Store',
   logo: 'kalo',
   // No screenshots: Kalo's App Store screens are light, and the site keeps every row of screens in one dark style.

@@ -108,7 +108,7 @@ export const ui = stylex.create({
   h2: {
     fontFamily: fonts.serif,
     fontSize: type.title,
-    fontWeight: weights.regular,
+    fontWeight: weights.display,
     lineHeight: 1.25,
     letterSpacing: '-0.01em',
     textWrap: 'balance',

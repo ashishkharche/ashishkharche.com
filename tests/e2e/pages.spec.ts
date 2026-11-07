@@ -60,7 +60,7 @@ for (const path of ['/no-such-page/', '/no/such/page']) {
     // Hydrated: client-side navigation works from the 404 page.
     await page.getByRole('link', { name: 'Back to the homepage' }).click()
     await expect(page).toHaveURL(/\/$/)
-    await expect(page.locator('h1')).toHaveText("Hi, I'm Ashish.")
+    await expect(page.locator('h1')).toHaveText('Hi, I’m Ashish.')
   })
 }
 

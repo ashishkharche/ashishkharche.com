@@ -49,7 +49,7 @@ function Work() {
               stroke={index % 2 === 0 ? 2 : 1}
               xstyle={legSpace.text}
             >
-              <div {...stylex.props(styles.entry, legSpace.columnWide, index % 2 === 0 && legSpace.toRight)}>
+              <div {...stylex.props(styles.entry, legSpace.columnWide)}>
                 <p {...stylex.props(styles.when)}>
                   {role.when ?? <span {...stylex.props(ui.visuallyHidden)}>No dates</span>}
                 </p>
@@ -70,7 +70,11 @@ function Work() {
                       ) : null}
                     </span>
                   </h3>
-                  <p {...stylex.props(styles.role)}>{role.role}</p>
+                  {(typeof role.role === 'string' ? [role.role] : role.role).map((line) => (
+                    <p key={line} {...stylex.props(styles.role)}>
+                      {line}
+                    </p>
+                  ))}
                   {role.paragraphs.map((text) => (
                     <p key={text.slice(0, 32)} {...stylex.props(styles.para)}>
                       {text}
@@ -158,8 +162,8 @@ const styles = stylex.create({
     height: '2.5rem',
     flex: 'none',
   },
-  role: { color: colors.muted, marginTop: '0.4rem', textWrap: 'pretty' },
-  para: { marginTop: '0.75rem', textWrap: 'pretty' },
+  role: { color: colors.muted, marginTop: { default: '0.5rem', ':nth-child(n+3)': '0.1rem' }, textWrap: 'pretty' },
+  para: { marginTop: '1rem', lineHeight: 1.75, textWrap: 'pretty' },
   skill: {
     display: 'grid',
     gridTemplateColumns: { default: '7rem 1fr', [breakpoints.phone]: '1fr' },

@@ -39,7 +39,7 @@ describe('content rules', () => {
     const { roles } = await import('~/content/work')
     const role = roles.find((r) => r.org.includes('SpaceXSI'))
     expect(role?.when).toBe('Jan 2026 to Oct 2026')
-    expect(role?.role).toBe('Quality Assurance Engineer')
+    expect(role?.role).toBe('Quality Assurance Engineer, 2026')
   })
 
   it.each(sources)('%s never calls any role part-time', (file) => {
@@ -121,8 +121,6 @@ describe('brand rules', () => {
   it('shows the MSc dates and when the Paythru role ended', async () => {
     const { roles } = await import('~/content/work')
     expect(roles.find((r) => r.org.startsWith('Kingston'))?.when).toBe('Sep 2021 to Sep 2022')
-    expect(roles.find((r) => r.org.startsWith('Paythru'))?.paragraphs.join(' ')).toContain(
-      'My role at Paythru ended in October 2026.',
-    )
+    expect(roles.find((r) => r.org.startsWith('Paythru'))?.paragraphs.join(' ')).toContain('My role ended in Oct 2026.')
   })
 })

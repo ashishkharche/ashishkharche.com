@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { useId } from 'react'
 import { Logo } from './Logo'
 import { SketchArrow } from './SketchArrow'
-import { DevicesGround, DeviceStage } from './Screens'
+import { DevicesTaped, DeviceStage } from './Screens'
 import { screenshotSrc, screenshotSrcSet, type ProjectCard as Card } from '~/content/projects'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
 import { device, sk } from '~/styles/sketch'
@@ -43,13 +43,14 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
         stylex.defaultMarker(),
         scene ? styles.scene : [sk.ruleTop, styles.project],
         scene === 'devicesLeft' && styles.sceneLeft,
+        scene && !card.stage && !card.shots?.length && styles.sceneSolo,
       )}
     >
       {card.stage && scene ? (
         <div
           {...stylex.props(styles.sceneMedia, scene === 'devicesLeft' ? styles.sceneMediaLeft : styles.sceneMediaRight)}
         >
-          <DevicesGround ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} />
+          <DevicesTaped ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} />
         </div>
       ) : card.stage ? (
         <DeviceStage ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} />
@@ -85,7 +86,10 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
           styles.body,
           !card.stage && !card.shots?.length && styles.bodyOnly,
           scene && styles.sceneBody,
-          scene && (scene === 'devicesLeft' ? styles.sceneBodyRight : styles.sceneBodyLeft),
+          scene &&
+            (scene === 'devicesLeft' && (card.stage || card.shots?.length)
+              ? styles.sceneBodyRight
+              : styles.sceneBodyLeft),
           scene && !card.stage && !card.shots?.length && styles.post,
         )}
       >
@@ -126,7 +130,7 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
                   </span>
                   <ul role="list" aria-labelledby={`${stackId}-${index}`} {...stylex.props(styles.tags)}>
                     {group.items.map((item) => (
-                      <li key={item} {...stylex.props(sk.box, styles.tag)}>
+                      <li key={item} {...stylex.props(scene ? styles.tagPlain : [sk.box, styles.tag])}>
                         {item}
                       </li>
                     ))}
@@ -159,6 +163,8 @@ const styles = stylex.create({
   sceneLeft: {
     gridTemplateColumns: { default: 'minmax(0, 1.1fr) minmax(0, 1fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
   },
+  // A project with nothing to show stands alone: one column.
+  sceneSolo: { gridTemplateColumns: 'minmax(0, 1fr)' },
   // Words first and devices after them on phones, so the devices stand on the line.
   sceneMedia: { gridRowStart: { default: '1', [breakpoints.tablet]: '2' }, minWidth: 0 },
   sceneMediaLeft: { gridColumnStart: '1' },
@@ -222,7 +228,7 @@ const styles = stylex.create({
   title: {
     fontFamily: fonts.serif,
     fontSize: type.title,
-    fontWeight: weights.regular,
+    fontWeight: weights.display,
     lineHeight: 1.15,
     letterSpacing: '-0.01em',
   },
@@ -237,7 +243,7 @@ const styles = stylex.create({
       inset: 0,
     },
   },
-  // Geist Serif has no diagonal arrow, so the arrows use the body font.
+  // The arrows are drawn, not set in the display face.
   arrow: { width: '0.8em', height: '0.8em', verticalAlign: '-0.02em' },
   meta: { marginTop: '0.4rem', fontSize: type.meta, color: colors.muted },
   // Sit above the card's full-size link so these open their own pages.
@@ -273,5 +279,7 @@ const styles = stylex.create({
     paddingInline: '0.55rem',
     color: colors.text,
   },
-  text: { fontSize: type.body, lineHeight: 1.55, color: colors.muted, maxWidth: '34em' },
+  // In a scene the stack is quiet text with room between the words, not a row of boxes.
+  tagPlain: { fontSize: type.meta, lineHeight: 1.6, color: colors.text, marginRight: '0.6rem' },
+  text: { fontSize: type.body, lineHeight: 1.7, color: colors.muted, maxWidth: '34em', textWrap: 'pretty' },
 })

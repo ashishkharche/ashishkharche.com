@@ -1,18 +1,17 @@
 import * as stylex from '@stylexjs/stylex'
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { Availability } from '~/components/Availability'
 import { Logo } from '~/components/Logo'
 import { Main } from '~/components/Main'
 import { NoteList } from '~/components/NoteList'
 import { ProjectCard } from '~/components/ProjectCard'
-import { Figure, Leg } from '~/components/Scene'
-import { PhonePairGround } from '~/components/Screens'
+import { Arrow, Figure, Leg } from '~/components/Scene'
+import { PhonePairTaped } from '~/components/Screens'
 import { SectionHead } from '~/components/SectionHead'
 import { SketchArrow } from '~/components/SketchArrow'
 import { kaloCard, workoutDirectorCard, workoutDirectorLinks } from '~/content/projects'
 import { noteListSummary, notes } from '~/content/notes'
 import type { ScreenId } from '~/content/workoutDirectorScreens'
-import { site } from '~/content/site'
+import { links, site } from '~/content/site'
 import { formatShortDate } from '~/lib/dates'
 import { seo } from '~/lib/seo'
 import { homeJsonLd, jsonLdScript } from '~/lib/structuredData'
@@ -51,77 +50,42 @@ function Home() {
   return (
     <Main>
       {/*
-        One drawn line runs down the whole page, like the ground of the footer drawing: it starts at the
-        left edge under the intro, turns down at each side and becomes the ground each part stands on.
+        One drawn line runs down the whole page, like the ground of the footer drawing. The first screen is one
+        scene on it: the name and a line about the work on the left, a figure walking in and the two phones taped
+        onto the page standing on the ground, with an arrow from the app's name to its screens.
       */}
       <Leg from="edge" labelledBy="intro-title" xstyle={styles.heroLeg}>
         <div {...stylex.props(styles.hero)}>
-          <div {...stylex.props(styles.intro)}>
-            <p {...stylex.props(styles.kicker)}>Software engineer · {site.city}</p>
+          <div {...stylex.props(styles.head)}>
+            <p {...stylex.props(styles.kicker)}>Software engineer in {site.city}</p>
             <h1 id="intro-title" {...stylex.props(styles.title)}>
-              Hi, I'm Ashish.
+              Hi, I’m Ashish.
             </h1>
+          </div>
+          <div {...stylex.props(styles.intro)}>
             <p {...stylex.props(styles.lead)}>
-              I work on iOS and Android apps, AI features and the AWS backend behind them.
+              I work on iOS and Android apps, AI features and the AWS backends behind them.
             </p>
-            <ul role="list" aria-label="Links" {...stylex.props(styles.links)}>
-              <li>
-                <Link to="/work/" {...stylex.props(ui.link, ui.plainLink)}>
-                  Work history
-                </Link>
-              </li>
-              <li>
-                <a href={`mailto:${site.email}`} {...stylex.props(ui.link, ui.plainLink)}>
-                  Email
-                </a>
-              </li>
-              <li>
-                <a href={site.linkedin} {...stylex.props(ui.link, ui.plainLink)}>
-                  LinkedIn
-                </a>
-              </li>
-              <li>
-                <a href={site.github} {...stylex.props(ui.link, ui.plainLink)}>
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a href={site.x} rel="me noopener" {...stylex.props(ui.link, ui.plainLink)}>
-                  X
-                </a>
-              </li>
-            </ul>
 
             <div aria-labelledby="wd-title" role="group" {...stylex.props(styles.app)}>
+              <Arrow shape="long" xstyle={styles.appArrow} />
               <div {...stylex.props(styles.appHead)}>
-                <Logo name="workoutDirector" size={44} />
+                <Logo name="workoutDirector" size={40} />
                 <div>
                   <p id="wd-title" {...stylex.props(styles.appName)}>
                     Workout Director
                   </p>
-                  <p {...stylex.props(styles.appText)}>AI guidance through your workout. A coach in your corner.</p>
+                  <p {...stylex.props(styles.appText)}>AI guidance through your workout.</p>
                 </div>
               </div>
               <p {...stylex.props(styles.appLinks)}>
-                {workoutDirectorLinks.map((link, index) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    {...stylex.props(
-                      stylex.defaultMarker(),
-                      index === 0 ? sk.pillHeavy : sk.pill,
-                      styles.button,
-                      ui.focusRing,
-                    )}
-                  >
+                {workoutDirectorLinks.map((link) => (
+                  <a key={link.href} href={link.href} {...stylex.props(styles.textLink, ui.focusRing)}>
                     {link.label}
                     <SketchArrow dir="out" xstyle={styles.arrow} />
                   </a>
                 ))}
-                <Link
-                  to="/projects/workout-director/"
-                  {...stylex.props(stylex.defaultMarker(), sk.pill, styles.button, ui.focusRing)}
-                >
+                <Link to="/projects/workout-director/" {...stylex.props(styles.textLink, ui.focusRing)}>
                   Case study
                   <SketchArrow xstyle={styles.arrow} />
                 </Link>
@@ -129,12 +93,12 @@ function Home() {
             </div>
           </div>
           <Figure name="walk" xstyle={styles.walker} />
-          <PhonePairGround phones={heroPhones} label="Workout Director app screens" priority xstyle={styles.phones} />
+          <PhonePairTaped phones={heroPhones} label="Workout Director app screens" priority xstyle={styles.phones} />
         </div>
       </Leg>
 
-      {/* The three roles as figures on the ground, each with its label above it. SpaceX is first only. */}
-      <Leg from="right" as="div" stroke={2} xstyle={styles.rolesLeg}>
+      {/* The three roles, each a figure standing on the ground with its words above it. SpaceX is first only. */}
+      <Leg from="right" as="div" stroke={2} label="Roles" xstyle={styles.rolesLeg}>
         <ul role="list" aria-label="Roles" {...stylex.props(styles.roles)}>
           {roles.map((role) => (
             <li key={role.name} {...stylex.props(styles.role)}>
@@ -152,15 +116,25 @@ function Home() {
             </li>
           ))}
         </ul>
+        <p {...stylex.props(styles.more)}>
+          <Link to="/work/" {...stylex.props(styles.textLink, ui.focusRing)}>
+            Work history
+            <SketchArrow xstyle={styles.arrow} />
+          </Link>
+        </p>
       </Leg>
 
       <section aria-labelledby="sel-title">
         <Leg from="left" as="div" xstyle={styles.workLeg}>
           <SectionHead id="sel-title" title="Selected work" to="/projects/" linkLabel="All projects" />
-          <ProjectCard card={workoutDirectorCard} scene="devicesRight" />
+          <div {...stylex.props(styles.workScene)}>
+            <ProjectCard card={workoutDirectorCard} scene="devicesRight" />
+          </div>
         </Leg>
-        <Leg from="right" as="div" stroke={2} xstyle={styles.workLeg}>
-          <ProjectCard card={kaloCard} scene="devicesLeft" />
+        <Leg from="right" as="div" stroke={2} xstyle={styles.kaloLeg}>
+          <div {...stylex.props(styles.kalo)}>
+            <ProjectCard card={kaloCard} scene="devicesLeft" />
+          </div>
         </Leg>
       </section>
 
@@ -177,12 +151,12 @@ function Home() {
           <h2 id="contact-title" {...stylex.props(ui.h2, styles.contactTitle)}>
             Contact
           </h2>
-          <p>
+          <p {...stylex.props(styles.contactText)}>
             Email me at{' '}
             <a href={`mailto:${site.email}`} {...stylex.props(ui.link)}>
               {site.email}
             </a>
-            . I'm also on{' '}
+            . I’m also on{' '}
             <a href={site.linkedin} {...stylex.props(ui.link)}>
               LinkedIn
             </a>
@@ -196,7 +170,22 @@ function Home() {
             </a>
             .
           </p>
-          <Availability email={false} />
+          <p {...stylex.props(styles.contactText, styles.contactNext)}>
+            I’m based in London. Email is the best way to reach me.
+          </p>
+          <h3 id="cv-title" {...stylex.props(styles.cvTitle)}>
+            Download my CV
+          </h3>
+          <ul role="list" aria-labelledby="cv-title" {...stylex.props(styles.cvs)}>
+            {links.roleCvs.map((cv) => (
+              <li key={cv.href}>
+                <a href={cv.href} type="application/pdf" {...stylex.props(styles.textLink, ui.focusRing)}>
+                  {cv.label} (PDF)
+                  <SketchArrow dir="down" xstyle={styles.arrow} />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </Leg>
     </Main>
@@ -215,7 +204,7 @@ const roles: ReadonlyArray<{
   {
     name: 'SpaceX Super Intelligence',
     years: '2026',
-    text: 'Quality Assurance Engineer testing more than 500 Grok iOS and web builds before release.',
+    text: 'As a Quality Assurance Engineer, I’ve tested more than 500 Grok iOS and web builds before release.',
     // The SpaceXSI mark is wide and thin, so it gets more width to look the same weight.
     logo: 'spacexsi',
     logoSize: 24,
@@ -224,7 +213,7 @@ const roles: ReadonlyArray<{
   {
     name: 'Paythru',
     years: '2022 to 2026',
-    text: 'EV charging apps; releases cut from a few weeks to a few days.',
+    text: 'I worked on EV charging apps and a release process that went from a few weeks to a few days.',
     logo: 'paythru',
     logoSize: 22,
     figure: 'lunge',
@@ -232,128 +221,161 @@ const roles: ReadonlyArray<{
   {
     name: 'Maestro',
     years: '2023 to 2024',
-    text: 'Contract developer; test suites for Maestro Cloud and Studio and 14 blog posts.',
+    text: 'My contract work covered test suites for Maestro Cloud and Studio and 14 blog posts.',
     logo: 'maestro',
     logoSize: 22,
     figure: 'squat',
   },
 ]
 
+// Each part of the page gets about a screen of its own on a laptop: room above, and the scene on its ground.
+const SECTION = { default: 'clamp(7rem, 15vh, 11rem)', [breakpoints.tablet]: '6rem' }
+
 const styles = stylex.create({
-  // The first leg: the intro, a figure walking in and the two phones, all standing on the first stretch of line.
+  // The first screen: the whole scene stands on the first stretch of line, at the bottom of the window.
   heroLeg: {
-    paddingTop: { default: '1.5rem', [breakpoints.tablet]: '0.5rem' },
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    // The ground of the first scene sits a little above the bottom of a laptop window.
+    minHeight: { default: 'calc(100svh - 10.5rem)', [breakpoints.tablet]: 0 },
+    paddingTop: { default: '3rem', [breakpoints.tablet]: '2rem' },
   },
   hero: {
     display: 'grid',
     gridTemplateColumns: {
-      default: 'minmax(0, 1.5fr) auto minmax(0, 0.85fr)',
+      default: 'minmax(0, 1fr) auto minmax(0, 25.5rem)',
       [breakpoints.tablet]: 'minmax(0, 1fr)',
     },
-    alignItems: 'end',
-    columnGap: 'clamp(1.5rem, 3.5vw, 3.5rem)',
-    rowGap: '2.5rem',
+    gridTemplateRows: { default: 'auto 1fr', [breakpoints.tablet]: 'none' },
+    alignItems: 'stretch',
+    columnGap: 'clamp(2rem, 4vw, 4.5rem)',
+    rowGap: { default: '2.5rem', [breakpoints.tablet]: '2.25rem' },
+    paddingBottom: { default: 0, [breakpoints.tablet]: '4rem' },
   },
-  intro: {
+  // The name across the top of the scene, over the words and the walking figure.
+  head: {
+    gridColumnStart: '1',
+    gridColumnEnd: { default: '3', [breakpoints.tablet]: '2' },
     minWidth: 0,
-    paddingBottom: { default: '3rem', [breakpoints.tablet]: 0 },
+  },
+  // The words under the name: the line about the work at the top, the app's name low, on the ground.
+  intro: {
+    gridColumnStart: '1',
+    minWidth: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    rowGap: { default: '3rem', [breakpoints.tablet]: '2.75rem' },
   },
   kicker: {
     fontSize: type.meta,
+    letterSpacing: '0.04em',
     color: colors.muted,
   },
   title: {
-    marginTop: '1rem',
+    marginTop: { default: '1.25rem', [breakpoints.phone]: '1rem' },
+    marginLeft: { default: '-0.05em', [breakpoints.phone]: 0 },
     fontFamily: fonts.serif,
     fontSize: type.display,
-    lineHeight: 1,
-    fontWeight: weights.regular,
-    letterSpacing: '-0.025em',
+    fontWeight: weights.display,
+    lineHeight: 0.98,
+    letterSpacing: '-0.02em',
     whiteSpace: { default: 'nowrap', [breakpoints.phone]: 'normal' },
-    // The name is drawn as an outline, the way the footer drawing draws the AK mark.
-    color: 'transparent',
-    WebkitTextStrokeWidth: '1.25px',
-    WebkitTextStrokeColor: colors.text,
   },
   lead: {
-    marginTop: '1.25rem',
     fontSize: type.lead,
-    lineHeight: 1.45,
+    lineHeight: 1.5,
     maxWidth: '24em',
+    color: colors.muted,
     textWrap: 'pretty',
   },
-  links: {
-    listStyle: 'none',
-    display: 'flex',
-    flexWrap: 'wrap',
-    rowGap: '0.6rem',
-    columnGap: { default: '1.5rem', [breakpoints.phone]: '1.05rem' },
-    marginTop: '1.5rem',
-    fontSize: type.body,
-  },
   app: {
+    position: 'relative',
     display: 'grid',
-    rowGap: '1.1rem',
-    marginTop: '2.25rem',
+    rowGap: '1.25rem',
+    paddingBottom: { default: '3.5rem', [breakpoints.tablet]: 0 },
   },
-  appHead: { display: 'flex', alignItems: 'center', gap: '0.9rem' },
+  // From the app's name, over the walking figure, to its screens.
+  appArrow: {
+    left: '17rem',
+    top: '-4.25rem',
+    width: 'clamp(22rem, 37vw, 34rem)',
+    height: '4rem',
+  },
+  appHead: { display: 'flex', alignItems: 'center', gap: '1rem' },
   appName: {
     display: 'block',
     fontFamily: fonts.serif,
     fontSize: type.lead,
+    fontWeight: weights.display,
     lineHeight: 1.2,
-    letterSpacing: '-0.01em',
   },
-  appText: { marginTop: '0.3rem', fontSize: type.meta, lineHeight: 1.45, color: colors.muted, textWrap: 'pretty' },
-  appLinks: { display: 'flex', flexWrap: 'wrap', gap: { default: '0.6rem', [breakpoints.phone]: '0.5rem' } },
-  button: {
+  appText: { marginTop: '0.25rem', fontSize: type.meta, lineHeight: 1.5, color: colors.muted },
+  appLinks: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    columnGap: { default: '1.75rem', [breakpoints.phone]: '1.25rem' },
+    rowGap: '0.75rem',
+  },
+  // Links that stand on their own: plain words with a drawn arrow, no underline and no box.
+  textLink: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '0.45rem',
-    minHeight: { default: '2.6rem', [breakpoints.phone]: '2.5rem' },
-    paddingInline: { default: '1.05rem', [breakpoints.phone]: '0.85rem' },
-    borderRadius: '999px',
+    gap: '0.4rem',
+    minHeight: '2.75rem',
     color: colors.text,
-    fontSize: type.meta,
+    fontSize: type.body,
     fontWeight: weights.medium,
     textDecorationLine: 'none',
   },
   arrow: {
-    transform: { default: 'none', [stylex.when.ancestor(':hover')]: 'translateX(2px)' },
+    transform: { default: 'none', [stylex.when.ancestor(':hover')]: 'translateX(3px)' },
     transitionProperty: { default: 'transform', [breakpoints.reducedMotion]: 'none' },
     transitionDuration: '0.15s',
   },
   // The walking figure from the footer drawing, between the words and the phones. Not on phones: no room.
   walker: {
     display: { default: 'block', [breakpoints.tablet]: 'none' },
-    height: 'clamp(15rem, 25vw, 22rem)',
+    gridColumnStart: '2',
+    gridRowStart: '2',
+    alignSelf: 'end',
+    height: 'clamp(14rem, 22vw, 19.5rem)',
   },
+  // The phones stand on the ground at the right, as tall as the name and the words together.
   phones: {
+    gridColumnStart: { default: '3', [breakpoints.tablet]: '1' },
+    gridRowStart: { default: '1', [breakpoints.tablet]: 'auto' },
+    gridRowEnd: { default: 'span 2', [breakpoints.tablet]: 'auto' },
+    alignSelf: 'end',
     width: '100%',
-    maxWidth: { default: '27rem', [breakpoints.tablet]: '25rem' },
+    maxWidth: { default: '25.5rem', [breakpoints.tablet]: '21rem' },
     justifySelf: { default: 'end', [breakpoints.tablet]: 'center' },
+    // The footage credit hangs under the ground line, so the phones themselves stand on it.
+    marginBottom: { default: 0, [breakpoints.tablet]: '1rem' },
   },
   rolesLeg: {
-    paddingTop: { default: 'clamp(6rem, 11vw, 9rem)', [breakpoints.phone]: '6rem' },
+    paddingTop: SECTION,
+    paddingBottom: { default: '0', [breakpoints.tablet]: '0' },
   },
   // Figures are drawn at one scale (k times their size in the footer drawing), so they keep their sizes to each other.
   roles: {
-    '--fig-k': { default: 'clamp(0.4px, 0.045vw, 0.62px)', [breakpoints.tablet]: '0.36px' },
+    '--fig-k': { default: 'clamp(0.42px, 0.05vw, 0.66px)', [breakpoints.tablet]: '0.4px' },
     listStyle: 'none',
     display: 'grid',
     gridTemplateColumns: { default: 'repeat(3, minmax(0, 1fr))', [breakpoints.tablet]: 'minmax(0, 1fr)' },
     alignItems: 'stretch',
-    columnGap: 'clamp(2rem, 4.5vw, 4.5rem)',
-    rowGap: '3.5rem',
+    columnGap: 'clamp(3rem, 6vw, 6.5rem)',
+    rowGap: '5rem',
   },
-  // Label above, figure under it on the ground. On phones each role stands on a short ground line of its own.
+  // Words above, figure under them on the ground. On phones each role stands on a short ground line of its own.
   role: {
     position: 'relative',
     display: 'grid',
     gridTemplateColumns: '2.5rem minmax(0, 1fr)',
     gridTemplateRows: 'auto 1fr',
-    columnGap: '0.85rem',
-    rowGap: '1.75rem',
+    columnGap: '1rem',
+    rowGap: { default: '3.5rem', [breakpoints.tablet]: '1.5rem' },
     alignItems: 'start',
     '::after': {
       content: '""',
@@ -364,86 +386,106 @@ const styles = stylex.create({
       bottom: '-8px',
       height: '16px',
       backgroundColor: colors.ink,
-      maskImage: 'url("/assets/img/sketch/ground.svg")',
+      maskImage: 'url("/assets/img/scene/line-h2.svg")',
       maskSize: '100% 100%',
       maskRepeat: 'no-repeat',
       pointerEvents: 'none',
     },
   },
+  // The box is centred on the name's line.
   logoBox: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     width: '2.5rem',
     height: '2.25rem',
-    marginTop: '-0.375rem',
+    marginTop: '-0.25rem',
   },
   roleCopy: { minWidth: 0 },
   roleHead: {
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'baseline',
-    columnGap: '0.7rem',
-    lineHeight: '1.5rem',
+    columnGap: '0.75rem',
+    lineHeight: '1.75rem',
   },
-  roleName: { fontWeight: weights.medium },
+  roleName: { fontSize: type.body, fontWeight: weights.medium },
   years: { fontSize: type.meta, fontVariantNumeric: 'tabular-nums', color: colors.muted },
   roleText: {
     display: 'block',
-    marginTop: '0.1rem',
-    fontSize: type.meta,
-    lineHeight: 1.5,
+    marginTop: '0.6rem',
+    fontSize: type.body,
+    lineHeight: 1.7,
     color: colors.muted,
     textWrap: 'pretty',
-    maxWidth: '24em',
+    maxWidth: '22em',
   },
   roleFigure: {
     gridColumnStart: '1',
     gridColumnEnd: '-1',
     alignSelf: 'end',
     justifySelf: { default: 'start', [breakpoints.tablet]: 'end' },
-    marginLeft: { default: '3.35rem', [breakpoints.tablet]: 0 },
+    marginLeft: { default: '3.5rem', [breakpoints.tablet]: 0 },
     marginRight: { default: 0, [breakpoints.tablet]: '1rem' },
   },
-  workLeg: {
-    paddingTop: { default: 'clamp(6rem, 10vw, 8.5rem)', [breakpoints.phone]: '5.5rem' },
+  // Beside the last figure, above the role (which it overlaps), so it can be pointed at.
+  more: {
+    position: 'relative',
+    zIndex: 1,
+    width: 'fit-content',
+    marginLeft: { default: 'auto', [breakpoints.tablet]: 0 },
+    display: 'flex',
+    justifyContent: { default: 'flex-end', [breakpoints.tablet]: 'flex-start' },
+    marginTop: { default: '-3rem', [breakpoints.tablet]: '2.5rem' },
+    paddingBottom: '2rem',
   },
-  notesLeg: {
-    paddingTop: { default: 'clamp(6rem, 10vw, 8.5rem)', [breakpoints.phone]: '5.5rem' },
+  workLeg: { paddingTop: SECTION, paddingBottom: '1rem' },
+  workScene: { marginTop: { default: '4rem', [breakpoints.tablet]: '2.5rem' } },
+  kaloLeg: { paddingTop: { default: 'clamp(6rem, 12vh, 9rem)', [breakpoints.tablet]: '5rem' } },
+  // Kalo has no screens to show, so it stands on the line like a stake, on the right where the line comes down.
+  kalo: {
+    maxWidth: '32rem',
+    marginLeft: { default: 'auto', [breakpoints.tablet]: 0 },
+    marginRight: { default: '6%', [breakpoints.tablet]: 0 },
   },
-  // The push-up from the footer drawing, flat on the ground at the end of the notes.
-  // The notes, then the push-up flat on the ground at the end of them.
+  notesLeg: { paddingTop: SECTION },
   notes: {
     display: 'grid',
-    gridTemplateColumns: { default: 'minmax(0, 2fr) minmax(0, 1fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    gridTemplateColumns: { default: 'minmax(0, 2.4fr) minmax(0, 1fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
     alignItems: 'end',
-    columnGap: 'clamp(2rem, 4.5vw, 4.5rem)',
-    rowGap: '2rem',
+    columnGap: 'clamp(3rem, 6vw, 6rem)',
+    rowGap: '2.5rem',
+    marginTop: { default: '4rem', [breakpoints.tablet]: '2.5rem' },
   },
   pushup: {
     height: { default: 'clamp(7rem, 11vw, 9.5rem)', [breakpoints.tablet]: '5.5rem' },
     justifySelf: 'end',
   },
   // Contact, where the line runs off the edge into the footer drawing.
-  contactLeg: {
-    paddingTop: { default: 'clamp(6rem, 10vw, 8.5rem)', [breakpoints.phone]: '5.5rem' },
+  contactLeg: { paddingTop: SECTION },
+  contact: { maxWidth: '34rem', paddingBottom: { default: '6rem', [breakpoints.tablet]: '4rem' } },
+  contactTitle: { marginBottom: '1.75rem' },
+  contactText: { fontSize: type.lead, lineHeight: 1.6, textWrap: 'pretty' },
+  contactNext: { marginTop: '1rem', color: colors.muted },
+  cvTitle: {
+    marginTop: '3.5rem',
+    fontSize: type.meta,
+    fontWeight: weights.regular,
+    letterSpacing: '0.04em',
+    color: colors.muted,
   },
-  contact: { maxWidth: '36rem', paddingBottom: '3rem' },
-  contactTitle: { marginBottom: '0.75rem' },
+  cvs: {
+    listStyle: 'none',
+    display: 'grid',
+    gridTemplateColumns: { default: 'repeat(2, max-content)', [breakpoints.phone]: '1fr' },
+    columnGap: '3rem',
+    rowGap: '0.25rem',
+    marginTop: '0.75rem',
+  },
 })
 
 const figureHeight = stylex.create({
-  walk: { height: 'calc(372 * var(--fig-k))' },
   lunge: { height: 'calc(277 * var(--fig-k))' },
   squat: { height: 'calc(266 * var(--fig-k))' },
   curl: { height: 'calc(373 * var(--fig-k))' },
-  // The notes, then the push-up flat on the ground at the end of them.
-  notes: {
-    display: 'grid',
-    gridTemplateColumns: { default: 'minmax(0, 2fr) minmax(0, 1fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
-    alignItems: 'end',
-    columnGap: 'clamp(2rem, 4.5vw, 4.5rem)',
-    rowGap: '2rem',
-  },
-  pushup: { height: 'calc(253 * var(--fig-k))' },
 })

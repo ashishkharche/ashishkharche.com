@@ -4,40 +4,41 @@
 */
 
 /*
-  Geist for body text, Geist Serif for display headings and Geist Mono for
-  code. All three are Latin subsets under the SIL Open Font License
-  (public/assets/fonts/Geist-OFL.txt).
-  The fallback faces are local fonts scaled to Geist's metrics, so the swap
-  from fallback to web font does not move the text.
+  Source Sans 3 for running text and Newsreader for display headings, light and open to sit with the
+  thin lines of the drawings; Geist Mono for code. Newsreader keeps its optical size axis and
+  weights 300 to 400, Source Sans 3 weights 400 to 500. All are Latin subsets under the SIL Open
+  Font License (public/assets/fonts/OFL-*.txt and Geist-OFL.txt).
+  The fallback faces are local fonts scaled to each web font's metrics, so the swap from
+  fallback to web font barely moves the text.
 */
 @font-face {
-  font-family: 'Geist Serif';
-  src: url('/assets/fonts/GeistSerif-Latin.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'Newsreader';
+  src: url('/assets/fonts/Newsreader-Latin.woff2') format('woff2');
+  font-weight: 300 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Geist Serif Fallback';
+  font-family: 'Newsreader Fallback';
   src: local('Times New Roman'), local('Liberation Serif'), local('Times');
-  size-adjust: 114.1%;
-  ascent-override: 88.08%;
-  descent-override: 25.86%;
+  size-adjust: 100.26%;
+  ascent-override: 73.31%;
+  descent-override: 26.43%;
   line-gap-override: 0%;
 }
 @font-face {
-  font-family: 'Geist';
-  src: url('/assets/fonts/Geist-Latin.woff2') format('woff2');
-  font-weight: 400 700;
+  font-family: 'Source Sans 3';
+  src: url('/assets/fonts/SourceSans3-Latin.woff2') format('woff2');
+  font-weight: 400 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Geist Fallback';
+  font-family: 'Source Sans 3 Fallback';
   src: local('Arial'), local('Liberation Sans'), local('Helvetica');
-  size-adjust: 105.32%;
-  ascent-override: 95.43%;
-  descent-override: 28.01%;
+  size-adjust: 92.54%;
+  ascent-override: 110.65%;
+  descent-override: 43.22%;
   line-gap-override: 0%;
 }
 @font-face {

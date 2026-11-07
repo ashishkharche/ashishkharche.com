@@ -620,7 +620,7 @@ const styles = stylex.create({
     fontFamily: fonts.serif,
     fontSize: type.title,
     lineHeight: 1.15,
-    fontWeight: weights.regular,
+    fontWeight: weights.display,
     letterSpacing: '-0.012em',
   },
   lead: { marginTop: '0.75rem', color: colors.muted, maxWidth: '44rem', lineHeight: 1.6 },
@@ -712,7 +712,7 @@ const styles = stylex.create({
   },
   indexLink: { lineHeight: 1.5 },
   list: { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '2.5rem', minWidth: 0 },
-  h2: { fontFamily: fonts.serif, fontWeight: weights.regular, fontSize: type.lead, margin: 0 },
+  h2: { fontFamily: fonts.serif, fontWeight: weights.display, fontSize: type.lead, margin: 0 },
   h3: { fontSize: type.lead, fontWeight: weights.medium, lineHeight: 1.4, margin: 0 },
   h4: { fontSize: type.meta, fontWeight: weights.medium, marginTop: '0.75rem', marginBottom: '0.35rem' },
   post: {

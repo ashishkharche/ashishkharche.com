@@ -27,15 +27,15 @@ export const Route = createRootRoute({
       { rel: 'alternate', type: 'application/atom+xml', title: feedTitle, href: feedPath },
       {
         rel: 'preload',
-        href: '/assets/fonts/Geist-Latin.woff2',
+        href: '/assets/fonts/Newsreader-Latin.woff2',
         as: 'font',
         type: 'font/woff2',
         crossOrigin: 'anonymous',
       },
-      // The serif is only used for headings, and the page title is above the fold.
+      // The display face is only used for headings, and the name is above the fold.
       {
         rel: 'preload',
-        href: '/assets/fonts/GeistSerif-Latin.woff2',
+        href: '/assets/fonts/SourceSans3-Latin.woff2',
         as: 'font',
         type: 'font/woff2',
         crossOrigin: 'anonymous',
@@ -88,7 +88,7 @@ const styles = stylex.create({
     fontFamily: fonts.sans,
     fontWeight: 400,
     fontSize: type.body,
-    lineHeight: 1.65,
+    lineHeight: 1.75,
   },
   skip: {
     position: 'absolute',

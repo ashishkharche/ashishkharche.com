@@ -126,46 +126,47 @@ export const lightTheme = stylex.createTheme(colors, light)
 export const darkTheme = stylex.createTheme(colors, dark)
 
 export const fonts = stylex.defineConsts({
-  sans: 'Geist, "Geist Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
+  sans: '"Source Sans 3", "Source Sans 3 Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
   mono: '"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
-  // Display headings. Geist Serif has one weight, so headings set in it use 400.
-  serif: '"Geist Serif", "Geist Serif Fallback", ui-serif, Georgia, serif',
+  // Display headings, set light (weights.display) to match the thin lines of the drawings.
+  serif: '"Newsreader", "Newsreader Fallback", ui-serif, Georgia, serif',
 })
 
 const PHONE = '@media (max-width: 560px)'
 
 /**
- * The type scale: five sizes on one modular scale (ratio 1.2, the minor third),
- * from a 17px body on wider screens and a 16px body on phones, rounded to whole
- * pixels (14, 17, 20, 35, 72 and 13, 16, 19, 33, 48). Every text size
- * on the home page is one of these, so there are five sizes, two families
- * (Geist and Geist Serif) and two weights (400 and 500). See
- * site-shots/home-hero-v3/b3/TYPE-AUDIT.md for the audit and the sources.
+ * The type scale: five sizes, set for air rather than density. Body text is
+ * 18px on wider screens (17px on phones) at a generous line height, held to
+ * about 62 characters a line (layout.column). Headings are in the light display
+ * face at large sizes, so their thin strokes sit with the line drawings. Every
+ * text size on the home page is one of these five: two families (display and
+ * text) and three weights (light display, regular and medium text).
  */
 export const type = stylex.defineVars({
-  // Dates, captions, credits, nav, footer, role lines, tags: about body / 1.2.
+  // Dates, captions, credits, nav, footer, tags.
   meta: { default: '0.875rem', [PHONE]: '0.8125rem' },
   // Running text, links and the role names.
-  body: { default: '1.0625rem', [PHONE]: '1rem' },
-  // The intro lead, note titles and the Workout Director name: about body x 1.2.
-  lead: { default: '1.25rem', [PHONE]: '1.1875rem' },
-  // Section and project titles: about body x 1.2^4.
-  title: { default: '2.1875rem', [PHONE]: '2.0625rem' },
-  // The name only: about body x 1.2^8 on wide screens, x 1.2^6 on phones.
-  display: { default: '5.25rem', [PHONE]: '3.25rem' },
+  body: { default: '1.125rem', [PHONE]: '1.0625rem' },
+  // The intro, note titles and the Workout Director name.
+  lead: { default: '1.4375rem', [PHONE]: '1.25rem' },
+  // Section and project titles.
+  title: { default: '3rem', [PHONE]: '2rem' },
+  // The name only.
+  display: { default: 'clamp(5rem, 8.4vw, 8.25rem)', [PHONE]: '3.625rem' },
 })
 
-/** The two weights. Geist Serif has one weight, so serif text always uses regular. */
+/** Text weights, and the one weight the display face is set in. */
 export const weights = stylex.defineConsts({
   regular: '400',
   medium: '500',
+  display: '300',
 })
 
 export const layout = stylex.defineConsts({
   // The panorama: the width the home page's scenes are drawn across, and the header and footer with them.
-  wide: '1240px',
-  // About 72 characters of body text per line.
-  column: '36rem',
+  wide: '1200px',
+  // About 62 characters of body text per line.
+  column: '34rem',
   // For pages with a date column beside the text, such as Work, and the case study details row.
   columnWide: '46rem',
   gutter: '2.5rem',

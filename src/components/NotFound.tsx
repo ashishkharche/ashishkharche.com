@@ -24,5 +24,5 @@ export function NotFound() {
 }
 
 const styles = stylex.create({
-  title: { fontFamily: fonts.serif, fontSize: type.title, fontWeight: weights.regular, lineHeight: 1.15 },
+  title: { fontFamily: fonts.serif, fontSize: type.title, fontWeight: weights.display, lineHeight: 1.15 },
 })

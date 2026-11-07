@@ -187,15 +187,15 @@ const figure = stylex.create({
 /** Room in a leg: air above, and a little space between words and the ground they sit on. */
 export const legSpace = stylex.create({
   text: {
-    paddingTop: { default: 'clamp(4.5rem, 8vw, 6.5rem)', [breakpoints.phone]: '4rem' },
-    paddingBottom: { default: '2.75rem', [breakpoints.phone]: '2.25rem' },
+    paddingTop: { default: 'clamp(6rem, 11vw, 9rem)', [breakpoints.phone]: '4.5rem' },
+    paddingBottom: { default: '4rem', [breakpoints.phone]: '3rem' },
   },
   first: {
-    paddingTop: { default: '1.5rem', [breakpoints.phone]: '0.5rem' },
-    paddingBottom: { default: '2.75rem', [breakpoints.phone]: '2.25rem' },
+    paddingTop: { default: 'clamp(4rem, 9vw, 7rem)', [breakpoints.phone]: '2rem' },
+    paddingBottom: { default: '3.5rem', [breakpoints.phone]: '2.5rem' },
   },
   // The words of a leg held to a reading width, on the side the line comes down (so they read from that side).
-  column: { maxWidth: '36rem' },
+  column: { maxWidth: '34rem' },
   columnWide: { maxWidth: '46rem' },
   toRight: { marginLeft: { default: 'auto', [breakpoints.tablet]: 0 } },
   // A page title with a figure from the footer drawing standing on the ground beside it.
@@ -210,4 +210,46 @@ export const legSpace = stylex.create({
     justifySelf: 'end',
     height: { default: 'clamp(9rem, 16vw, 14rem)', [breakpoints.phone]: '6.5rem' },
   },
+})
+
+/** A drawn arrow from one thing to another. Decorative: what it points at is said in words nearby. */
+export function Arrow({ shape, xstyle }: { shape: 'over' | 'under' | 'down' | 'long'; xstyle?: stylex.StyleXStyles }) {
+  return <span aria-hidden="true" {...stylex.props(drawn.arrow, arrows[shape], xstyle)} />
+}
+
+/** A strip of tape drawn over the edge of a picture, as if it were taped onto the page. */
+export function Tape({ xstyle, alt = false }: { xstyle?: stylex.StyleXStyles; alt?: boolean }) {
+  return <span aria-hidden="true" {...stylex.props(drawn.tape, alt && drawn.tape2, xstyle)} />
+}
+
+const drawn = stylex.create({
+  arrow: {
+    position: 'absolute',
+    display: { default: 'block', [breakpoints.tablet]: 'none' },
+    width: '240px',
+    height: '120px',
+    backgroundColor: colors.inkStrong,
+    maskRepeat: 'no-repeat',
+    maskSize: '100% 100%',
+    pointerEvents: 'none',
+  },
+  tape: {
+    position: 'absolute',
+    zIndex: 3,
+    width: '5.5rem',
+    height: '1.75rem',
+    backgroundColor: colors.inkStrong,
+    maskImage: 'url("/assets/img/scene/tape-1.svg")',
+    maskRepeat: 'no-repeat',
+    maskSize: '100% 100%',
+    pointerEvents: 'none',
+  },
+  tape2: { maskImage: 'url("/assets/img/scene/tape-2.svg")' },
+})
+
+const arrows = stylex.create({
+  over: { maskImage: 'url("/assets/img/scene/arrow-over.svg")' },
+  under: { maskImage: 'url("/assets/img/scene/arrow-under.svg")' },
+  down: { maskImage: 'url("/assets/img/scene/arrow-down.svg")' },
+  long: { maskImage: 'url("/assets/img/scene/arrow-long.svg")' },
 })

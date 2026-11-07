@@ -127,7 +127,7 @@ const styles = stylex.create({
       inset: 0,
     },
   },
-  // Geist Serif has no arrows and the arrow should not be underlined, so it is its own inline block.
+  // The display face has no arrows and the arrow should not be underlined, so it is its own inline block.
   arrow: {
     display: 'inline-block',
     marginLeft: '0.35em',

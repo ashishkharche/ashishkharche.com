@@ -17,6 +17,7 @@ import {
 import { breakpoints, colors, type, weights } from '~/styles/tokens.stylex'
 import { device as drawn } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
+import { Tape } from './Scene'
 
 interface PictureProps {
   id: ScreenId
@@ -179,6 +180,58 @@ export function DevicesGround({ ipad, phones, priority = false }: StageSpec & { 
         </div>
       </div>
       <FootageCredit ids={[ipad, ...phones]} xstyle={styles.groundCredit} />
+    </div>
+  )
+}
+
+/**
+ * The two phones taped into the sketchbook: each at a slight angle, a strip of tape over its top, the
+ * one in front overlapping the one behind. The pictures are the real screens. No panel.
+ */
+export function PhonePairTaped({
+  phones,
+  label,
+  priority = false,
+  xstyle,
+}: PairProps & { xstyle?: stylex.StyleXStyles }) {
+  const sizes = '(max-width: 560px) 46vw, (max-width: 1100px) 24vw, 270px'
+  return (
+    <div {...stylex.props(styles.tapedWrap, xstyle)}>
+      <div role="group" aria-label={label} {...stylex.props(styles.tapedPair)}>
+        <div {...stylex.props(styles.tapedBack)}>
+          <ScreenPicture id={phones[1]} device="iphone" sizes={sizes} eager={priority} />
+          <Tape alt xstyle={styles.tapeTop} />
+        </div>
+        <div {...stylex.props(styles.tapedFront)}>
+          <ScreenPicture id={phones[0]} device="iphone" sizes={sizes} priority={priority} />
+          <Tape xstyle={styles.tapeTopLeft} />
+        </div>
+      </div>
+      <FootageCredit ids={phones} xstyle={styles.tapedCreditHang} />
+    </div>
+  )
+}
+
+/** An iPad and two iPhones taped in: the iPad at a slight angle, the phones overlapping its lower right corner. */
+export function DevicesTaped({ ipad, phones, priority = false }: StageSpec & { priority?: boolean }) {
+  return (
+    <div {...stylex.props(styles.tapedWrap)}>
+      <div {...stylex.props(styles.tapedDevices)}>
+        <div {...stylex.props(styles.tapedIpad)}>
+          <ScreenPicture id={ipad} device="ipad" sizes={stageSizes.ipad} priority={priority} />
+          <Tape xstyle={styles.tapeTopLeft} />
+          <Tape alt xstyle={styles.tapeTopRight} />
+        </div>
+        <div {...stylex.props(styles.tapedPhoneA)}>
+          <ScreenPicture id={phones[0]} device="iphone" sizes={stageSizes.iphone} eager={priority} />
+          <Tape alt xstyle={styles.tapeTop} />
+        </div>
+        <div {...stylex.props(styles.tapedPhoneB)}>
+          <ScreenPicture id={phones[1]} device="iphone" sizes={stageSizes.iphone} />
+          <Tape xstyle={styles.tapeTop} />
+        </div>
+      </div>
+      <FootageCredit ids={[ipad, ...phones]} xstyle={styles.tapedCredit} />
     </div>
   )
 }
@@ -357,6 +410,55 @@ const onScroll = {
 } as const
 
 const styles = stylex.create({
+  tapedWrap: { position: 'relative', minWidth: 0 },
+  tapedPair: { display: 'flex', alignItems: 'flex-start', justifyContent: 'center' },
+  tapedFront: {
+    position: 'relative',
+    zIndex: 1,
+    order: 1,
+    width: '47%',
+    flex: 'none',
+    marginTop: '9%',
+    transform: 'rotate(-2.5deg)',
+  },
+  tapedBack: {
+    position: 'relative',
+    order: 2,
+    width: '47%',
+    flex: 'none',
+    marginLeft: '-7%',
+    transform: 'rotate(3deg)',
+  },
+  tapedDevices: { position: 'relative', paddingBottom: '12%' },
+  tapedIpad: { position: 'relative', width: '78%', transform: 'rotate(-1.5deg)' },
+  tapedPhoneA: {
+    position: 'absolute',
+    zIndex: 1,
+    right: '15%',
+    bottom: 0,
+    width: '25%',
+    transform: 'rotate(2.5deg)',
+  },
+  tapedPhoneB: {
+    position: 'absolute',
+    zIndex: 2,
+    right: 0,
+    bottom: '6%',
+    width: '25%',
+    transform: 'rotate(-3deg)',
+  },
+  tapeTop: { top: '-0.7rem', left: '50%', translate: '-50% 0', rotate: '-4deg' },
+  tapeTopLeft: { top: '-0.4rem', left: '-1.5rem', rotate: '-38deg' },
+  tapeTopRight: { top: '-0.4rem', right: '-1.5rem', rotate: '36deg' },
+  tapedCredit: { marginTop: '1.25rem' },
+  // Under the ground line the phones stand on, so the phones themselves meet the line.
+  tapedCreditHang: {
+    position: { default: 'absolute', '@media (max-width: 760px)': 'static' },
+    top: '100%',
+    left: 0,
+    right: 0,
+    marginTop: '1.25rem',
+  },
   picture: { display: 'contents' },
   img: { display: 'block', width: '100%', height: 'auto' },
   // Rounded to match the corners of the App Store panels.

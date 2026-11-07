@@ -19,7 +19,7 @@ const styles = stylex.create({
     fontSize: type.title,
     lineHeight: 1.15,
     textWrap: 'balance',
-    fontWeight: weights.regular,
+    fontWeight: weights.display,
     letterSpacing: '-0.012em',
   },
   lead: {
