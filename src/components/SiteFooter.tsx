@@ -34,6 +34,35 @@ export function SiteFooter() {
           </li>
         </ul>
       </div>
+      <div {...stylex.props(ui.wrap, styles.credits)}>
+        <p>
+          Video:{' '}
+          <a
+            href="https://commons.wikimedia.org/wiki/File:Kettlebell_crush_grip_push-up.webm"
+            {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}
+          >
+            Taco fleur / Wikimedia Commons
+          </a>
+          ,{' '}
+          <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/"
+            {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}
+          >
+            CC BY-SA 4.0
+          </a>
+          . Cropped; pose overlay, interface composition and chart added. Adapted images: CC BY-SA 4.0.
+        </p>
+        <p>
+          Video:{' '}
+          <a
+            href="https://www.pexels.com/video/a-woman-lifting-a-barbell-7674505/"
+            {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}
+          >
+            cottonbro studio / Pexels (7674505)
+          </a>
+          .
+        </p>
+      </div>
       {/*
         Line art across the full width: the AK mark, Workout Director exercise
         figures mid-movement and the WD mark on a phone. Decorative, so it has no alt text.
@@ -81,6 +110,7 @@ const styles = stylex.create({
     paddingTop: '2rem',
     paddingBottom: '2.5rem',
   },
+  credits: { fontSize: type.meta, lineHeight: 1.5, paddingBottom: '2rem' },
   list: {
     listStyle: 'none',
     display: 'flex',

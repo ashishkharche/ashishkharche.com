@@ -171,10 +171,10 @@ export const layout = stylex.defineConsts({
 })
 
 export const breakpoints = stylex.defineConsts({
-  tablet: '@media (max-width: 760px)',
+  tablet: '@media (max-width: 1100px)',
   phone: '@media (max-width: 560px)',
   // Below this the hero screens become a sideways scroller instead of three in a row.
   narrow: '@media (max-width: 640px)',
-  desktop: '@media (min-width: 761px)',
+  desktop: '@media (min-width: 1101px)',
   reducedMotion: '@media (prefers-reduced-motion: reduce)',
 })

@@ -4,21 +4,16 @@ import { Logo } from '~/components/Logo'
 import { Main } from '~/components/Main'
 import { NoteList } from '~/components/NoteList'
 import { ProjectCard } from '~/components/ProjectCard'
-import { PhonePair } from '~/components/Screens'
+import { PhoneArtwork } from '~/components/PhoneArtwork'
 import { WdWordmark } from '~/components/WdWordmark'
 import { kaloCard, workoutDirectorCard, workoutDirectorLinks } from '~/content/projects'
 import { noteListSummary, notes } from '~/content/notes'
-import type { ScreenId } from '~/content/workoutDirectorScreens'
 import { links, site } from '~/content/site'
 import { formatShortDate } from '~/lib/dates'
 import { seo } from '~/lib/seo'
 import { homeJsonLd, jsonLdScript } from '~/lib/structuredData'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
-
-// Two different moves: the push-up count in front of a deadlift. Neither is on the Selected work card below, so no
-// image is shown twice on the page (tests/e2e/home-unique-images.spec.ts).
-const heroPhones: readonly [ScreenId, ScreenId] = ['pushup-mixkit', 'deadlift-pexels']
 
 const homeSeo = seo({
   path: '/',
@@ -92,11 +87,10 @@ function Home() {
               </p>
             </div>
           </div>
-          <PhonePair
-            phones={heroPhones}
+          <PhoneArtwork
+            phones={['slick-v5-minimal-clean', 'deadlift-pexels']}
             label="Workout Director app screens"
             priority
-            credit={false}
             xstyle={styles.phones}
           />
         </section>
@@ -274,6 +268,7 @@ const styles = stylex.create({
     fontSize: type.meta,
     color: colors.text,
     textDecorationLine: 'none',
+    whiteSpace: 'nowrap',
   },
   sectionIndex: {
     display: 'flex',

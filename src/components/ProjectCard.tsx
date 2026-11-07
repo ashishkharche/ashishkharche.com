@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { useId } from 'react'
 import { Logo } from './Logo'
 import { SketchArrow } from './SketchArrow'
-import { DeviceStage } from './Screens'
+import { PhoneArtwork } from './PhoneArtwork'
 import { WdWordmark } from './WdWordmark'
 import { screenshotSrc, screenshotSrcSet, type ProjectCard as Card } from '~/content/projects'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
@@ -32,7 +32,7 @@ interface Props {
 export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene }: Props) {
   const Heading = headingLevel
   const stackId = useId()
-  const linkProps = stylex.props(styles.link)
+  const linkProps = stylex.props(styles.link, ui.focusRing)
   const label = (
     <>
       {card.logo === 'workoutDirector' ? <WdWordmark xstyle={styles.wordmark} /> : card.title}{' '}
@@ -52,11 +52,11 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
         <div
           {...stylex.props(styles.sceneMedia, scene === 'devicesLeft' ? styles.sceneMediaLeft : styles.sceneMediaRight)}
         >
-          {/* On the home page the footage credit is left out. */}
-          <DeviceStage ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} credit={false} />
+          {/* Artwork attribution is consolidated in the site footer. */}
+          <PhoneArtwork phones={['pushup-balanced']} priority={priority} label="Workout Director screens" />
         </div>
       ) : card.stage ? (
-        <DeviceStage ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} />
+        <PhoneArtwork phones={['pushup-balanced']} priority={priority} label="Workout Director screens" />
       ) : card.shots?.length ? (
         <div
           {...stylex.props(
@@ -237,7 +237,7 @@ const styles = stylex.create({
   },
   link: {
     color: { default: colors.text, [stylex.when.ancestor(':hover')]: colors.accent },
-    textDecorationLine: { default: 'none', ':focus-visible': 'underline' },
+    textDecorationLine: 'none',
     textUnderlineOffset: '0.2em',
     outline: 'none',
     '::after': {
@@ -262,7 +262,7 @@ const styles = stylex.create({
     marginTop: '1rem',
     fontSize: type.body,
   },
-  outLink: { position: 'relative', zIndex: 1 },
+  outLink: { position: 'relative', zIndex: 1, whiteSpace: 'nowrap' },
   // The stack as small outlined tags in the meta size, one row per group.
   stack: { display: 'grid', rowGap: '0.6rem', marginTop: '1.4rem' },
   stackRow: {

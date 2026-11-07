@@ -34,7 +34,7 @@ function About() {
         <PageHead title="About" />
         <div {...stylex.props(ui.mt2)}>
           <Prose>
-            <Lead>I'm Ashish Kharche, a software engineer living in London.</Lead>
+            <Lead>I’m Ashish Kharche, a software engineer living in London.</Lead>
             <P>
               I studied for an MSc in Software Engineering at <Logo name="kingston" size={20} inline />
               Kingston University, then spent four years at <Logo name="paythru" size={20} inline />
@@ -51,7 +51,7 @@ function About() {
               builds, Grok Bot and Grok Build before release.
             </P>
             <P>
-              Alongside that, I develop and release two iPhone apps, <Logo name="workoutDirector" size={20} inline />
+              I also develop and release two iPhone apps, <Logo name="workoutDirector" size={20} inline />
               Workout Director and <Logo name="kalo" size={20} inline />
               Kalo. Both are published on the App Store by Shelgaon Ltd.
             </P>
@@ -61,7 +61,7 @@ function About() {
               <a href={`mailto:${site.email}`} {...stylex.props(ui.link)}>
                 {site.email}
               </a>
-              . I'm also on{' '}
+              . I’m also on{' '}
               <a href={site.linkedin} {...stylex.props(ui.link)}>
                 LinkedIn
               </a>

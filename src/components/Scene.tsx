@@ -202,7 +202,7 @@ export const legSpace = stylex.create({
   // A page title with a figure from the footer drawing standing on the ground beside it.
   headScene: {
     display: 'grid',
-    gridTemplateColumns: { default: 'minmax(0, 46rem) 1fr', [breakpoints.tablet]: 'minmax(0, 1fr) auto' },
+    gridTemplateColumns: { default: 'minmax(0, 46rem) 1fr', [breakpoints.tablet]: 'minmax(0, 1fr)' },
     alignItems: 'end',
     columnGap: '2rem',
   },

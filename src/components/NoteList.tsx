@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
 import { breakpoints, colors, type, weights } from '~/styles/tokens.stylex'
 import { SketchArrow } from './SketchArrow'
+import { PhoneArtwork } from './PhoneArtwork'
 
 export interface NoteItem {
   title: string
@@ -45,6 +46,14 @@ export function NoteList({
             posts === 'column' && styles.postColumn,
           )}
         >
+          {item.href === '/notes/workout-director-1/' || item.href === '/notes/workout-director-2/' ? (
+            <div data-note-banner {...stylex.props(styles.banner)}>
+              <PhoneArtwork
+                phones={[item.href === '/notes/workout-director-1/' ? 'pushup-balanced' : 'slick-v5-advanced-clean']}
+                compact
+              />
+            </div>
+          ) : null}
           <h3 {...stylex.props(styles.title)}>
             {item.href === undefined ? (
               <span {...stylex.props(styles.muted)}>{item.title}</span>
@@ -66,6 +75,7 @@ export function NoteList({
 }
 
 const styles = stylex.create({
+  banner: { height: '11rem', marginBottom: '0.75rem' },
   list: {
     listStyle: 'none',
     display: 'grid',

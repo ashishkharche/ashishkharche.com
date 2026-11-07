@@ -21,15 +21,15 @@ test('the intro panel shows two described screens that the Selected work card do
   await expect(images).toHaveCount(2)
   const heroScreens = []
   for (const img of await images.all()) {
-    expect(await img.getAttribute('src')).toContain('/assets/img/wd/iphone/')
+    expect(await img.getAttribute('src')).toMatch(/\/assets\/(phones\/|img\/wd\/iphone\/deadlift-pexels-)/)
     expect((await img.getAttribute('alt'))?.length).toBeGreaterThan(10)
     heroScreens.push(stem(await img.getAttribute('src')))
   }
   const card = page.locator('article').filter({ hasText: 'Workout Director' }).first()
   const cardScreens = await card
-    .locator('img[src*="/assets/img/wd/"]')
+    .locator('img[src*="/assets/phones/"]')
     .evaluateAll((imgs) => imgs.map((img) => img.getAttribute('src')))
-  expect(cardScreens).toHaveLength(3)
+  expect(cardScreens).toHaveLength(1)
   for (const src of cardScreens) expect(heroScreens).not.toContain(stem(src))
 })
 

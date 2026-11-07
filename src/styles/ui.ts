@@ -51,29 +51,22 @@ export const ui = stylex.create({
     },
   },
   /**
-   * A link in running text: underlined by hand, a pen line under the words in the footer drawing's ink
-   * that follows each line of a wrapped link. Hovering darkens the words.
+   * A link in running text. Links are never underlined: the words are set in the heavier of the two weights,
+   * and hovering fades them a little.
    */
   link: {
-    color: { default: colors.text, ':hover': colors.accent },
-    textDecorationLine: 'underline',
-    textUnderlineOffset: '0.2em',
-    textDecorationThickness: '1px',
-    backgroundImage: 'none',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '100% 0.45em',
-    backgroundPosition: '0 100%',
-    paddingBottom: '0.16em',
-    boxDecorationBreak: 'clone',
+    color: colors.text,
+    fontWeight: weights.brand,
+    textDecorationLine: 'none',
+    opacity: { default: 1, ':hover': 0.7 },
     ...focusRing,
   },
   quietLink: {
-    color: { default: colors.muted, ':hover': colors.accent },
+    color: colors.muted,
+    fontWeight: weights.regular,
   },
   plainLink: {
-    textDecorationLine: 'none',
-    backgroundImage: 'none',
-    paddingBottom: 0,
+    fontWeight: weights.regular,
   },
   focusRing,
   muted: { color: colors.muted },

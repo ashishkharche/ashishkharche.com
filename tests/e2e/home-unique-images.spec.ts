@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test'
 
-// Every image on the home page is a different picture: no screen, photo or
+// Primary images on the home page are different pictures. Small note banners
+// intentionally reuse the relevant product artwork rather than adding more imagery.
+// Apart from those banners: no screen, photo or
 // figure is shown twice, at any width or in any format. Logos (/assets/logos/)
 // are marks, not pictures, and the Workout Director icon heads both the intro
 // and its Selected work card, so they are left out. Copies of one image
@@ -21,7 +23,7 @@ for (const viewport of [
     // Every candidate a <picture> or <img> could load, not only the one the browser picked.
     const sources = await page.evaluate(() => {
       const images = [...document.querySelectorAll('img')].filter(
-        (img) => !(img.getAttribute('src') ?? '').startsWith('/assets/logos/'),
+        (img) => !(img.getAttribute('src') ?? '').startsWith('/assets/logos/') && !img.closest('[data-note-banner]'),
       )
       return images.map((img) => {
         const picture = img.closest('picture')

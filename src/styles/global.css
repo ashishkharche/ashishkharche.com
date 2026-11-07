@@ -102,6 +102,10 @@
   ol {
     padding: 0;
   }
+  /* Links are never underlined anywhere on the site. */
+  a {
+    text-decoration: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
