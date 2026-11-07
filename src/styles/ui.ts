@@ -45,7 +45,8 @@ export const ui = stylex.create({
    */
   wide: {
     width: {
-      default: `min(100vw - 2 * ${layout.sceneInset}, ${layout.wide})`,
+      default: `calc(min(100vw - 2 * ${layout.sceneInset}, ${layout.wide}) * 0.83)`,
+      [breakpoints.tablet]: `min(100vw - 2 * ${layout.sceneInset}, ${layout.wide})`,
       [breakpoints.phone]: 'calc(100vw - 3rem)',
     },
   },
@@ -55,8 +56,10 @@ export const ui = stylex.create({
    */
   link: {
     color: { default: colors.text, ':hover': colors.accent },
-    textDecorationLine: 'none',
-    backgroundImage: colors.inkUnderline,
+    textDecorationLine: 'underline',
+    textUnderlineOffset: '0.2em',
+    textDecorationThickness: '1px',
+    backgroundImage: 'none',
     backgroundRepeat: 'no-repeat',
     backgroundSize: '100% 0.45em',
     backgroundPosition: '0 100%',
@@ -68,6 +71,7 @@ export const ui = stylex.create({
     color: { default: colors.muted, ':hover': colors.accent },
   },
   plainLink: {
+    textDecorationLine: 'none',
     backgroundImage: 'none',
     paddingBottom: 0,
   },

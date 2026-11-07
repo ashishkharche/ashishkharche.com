@@ -54,7 +54,7 @@ function NotePage() {
                 <SketchArrow dir="left" /> Notes
               </Link>
               <p {...stylex.props(styles.meta)}>
-                <time dateTime={note.date}>{formatLongDate(note.date)}</time> · {note.series}, part {note.part}
+                <time dateTime={note.date}>{formatLongDate(note.date)}</time>, {note.series}, part {note.part}
               </p>
               <h1 id="post-title" {...stylex.props(styles.title)}>
                 {note.title}

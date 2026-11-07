@@ -209,7 +209,7 @@ pre.code code {
   font-style: italic;
 }
 .tok-bold {
-  font-weight: 500;
+  font-weight: 400;
 }
 .tok-underline {
   text-decoration: underline;
@@ -222,4 +222,31 @@ pre.code code {
 */
 svg.pele :is(rect, path, line, polyline, polygon, ellipse, circle) {
   filter: url(#sk-pen);
+}
+
+/* Native inline text and generated diagrams participate in the same type scale. */
+svg.pele :is(text, tspan) {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+}
+sub,
+sup,
+small {
+  font-size: 16px;
+}
+b,
+strong {
+  font-weight: 400;
+}
+
+@layer reset {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: inherit;
+    font-weight: 400;
+  }
 }

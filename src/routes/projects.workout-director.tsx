@@ -78,7 +78,7 @@ function WorkoutDirector() {
                   <a href={links.workoutDirectorStore} {...stylex.props(ui.link)}>
                     App Store
                   </a>{' '}
-                  ·{' '}
+                  ,{' '}
                   <a href={links.workoutDirectorSite} {...stylex.props(ui.link)}>
                     workoutdirector.com
                   </a>

@@ -1149,7 +1149,7 @@ const googleSource = 'public Google Play chart data'
 export const liveTemplates: LiveTemplate[] = [
   {
     id: 'us-number-one',
-    about: 'Live · US App Store, Top Free',
+    about: 'Live, US App Store, Top Free',
     kind: 'headline',
     name: 'Which tracked app ranks highest on the US Top Free chart?',
     field: 'rankings rank, rank-history points (US, 30 days)',
@@ -1158,7 +1158,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'google-number-one',
-    about: 'Live · US Google Play, Top Free',
+    about: 'Live, US Google Play, Top Free',
     kind: 'headline',
     name: 'Which tracked app ranks highest on the US Google Play chart?',
     field: 'rankings rank (Google, APPLICATION), rank-history points',
@@ -1167,7 +1167,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'grossing-number-one',
-    about: 'Live · US App Store, Top Grossing',
+    about: 'Live, US App Store, Top Grossing',
     kind: 'headline',
     name: 'Which tracked app ranks highest on the US Top Grossing chart?',
     field: 'rankings rank (top-grossing), rank-history points',
@@ -1176,7 +1176,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'uk-number-one',
-    about: 'Live · UK App Store, Top Free',
+    about: 'Live, UK App Store, Top Free',
     kind: 'headline',
     name: 'Which tracked app ranks highest on the UK Top Free chart?',
     field: 'rankings rank (gb), rank-history points (gb)',
@@ -1185,7 +1185,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'chatgpt-countries',
-    about: 'Live · App Store, all countries',
+    about: 'Live, App Store, all countries',
     kind: 'headline',
     name: 'In how many countries is ChatGPT on the Top Free chart?',
     field: 'app rankings per country, recordedAt within 36 hours',
@@ -1194,7 +1194,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'claude-countries',
-    about: 'Live · App Store, all countries',
+    about: 'Live, App Store, all countries',
     kind: 'headline',
     name: 'In how many countries is Claude on the Top Free chart?',
     field: 'app rankings per country, recordedAt within 36 hours',
@@ -1203,7 +1203,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'chatgpt-sdk-kinds',
-    about: 'Live · Analyzed iOS build',
+    about: 'Live, Analyzed iOS build',
     kind: 'headline',
     name: 'What kinds of SDKs does the ChatGPT iOS app ship?',
     field: 'tech-stack detail: techStack.sdks by category, sdkListIsFloor',
@@ -1217,7 +1217,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'us-climbers',
-    about: 'Live · US App Store, latest update',
+    about: 'Live, US App Store, latest update',
     kind: 'leaderboard',
     name: 'Who climbed most on the US Top Free chart since the last update?',
     field: 'movers change, matched to rankings rank',
@@ -1227,7 +1227,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'google-climbers',
-    about: 'Live · US Google Play, latest update',
+    about: 'Live, US Google Play, latest update',
     kind: 'leaderboard',
     name: 'Who climbed most on the US Google Play chart since the last update?',
     field: 'movers change (Google rows), matched to rankings rank',
@@ -1237,7 +1237,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'most-sdks',
-    about: 'Live · Analyzed iOS builds',
+    about: 'Live, Analyzed iOS builds',
     kind: 'leaderboard',
     name: 'Which iOS app builds ship the most SDKs?',
     field: 'tech-stack sdkCount (iOS only, a floor)',
@@ -1247,7 +1247,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'most-sdks-android',
-    about: 'Live · Analyzed Android builds',
+    about: 'Live, Analyzed Android builds',
     kind: 'leaderboard',
     name: 'Which Android app builds ship the most SDKs?',
     field: 'tech-stack sdkCount (Android only)',
@@ -1257,7 +1257,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'chatgpt-vs-gemini',
-    about: 'Live · US App Store and builds',
+    about: 'Live, US App Store and builds',
     kind: 'head-to-head',
     name: 'How do ChatGPT and Gemini compare? Pick any two apps.',
     field: 'compare rating and versions, rankings, app rankings, tech-stack sdkCount (iOS)',
@@ -1292,7 +1292,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'ai-rank-30-days',
-    about: 'Live · App Store or Google Play, US or UK, 30 days',
+    about: 'Live, App Store or Google Play, US or UK, 30 days',
     kind: 'bump',
     name: 'How have the top AI apps ranked over 30 days?',
     field: 'rank-history points (picked store and country, 30 days)',
@@ -1316,7 +1316,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'ios-vs-android',
-    about: 'Live · US App Store and Google Play',
+    about: 'Live, US App Store and Google Play',
     kind: 'dumbbell',
     name: 'Do the top US apps rank the same on iOS and Android?',
     field: 'rankings rank on both stores, matched by name',
@@ -1329,7 +1329,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'chatgpt-number-one-countries',
-    about: 'Live · App Store Top Free, every country',
+    about: 'Live, App Store Top Free, every country',
     kind: 'headline',
     name: 'In how many countries is ChatGPT #1?',
     field: 'app rankings rank per country (rank 1 count), recordedAt within 36 hours',
@@ -1343,7 +1343,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'chatgpt-grossing-runs',
-    about: 'Live · US App Store Top Grossing, 30 days',
+    about: 'Live, US App Store Top Grossing, 30 days',
     kind: 'headline',
     name: 'How often is ChatGPT #1 on US Top Grossing?',
     field: 'rank-history points (US, Top Grossing, 30 days): rank 1 count of runs',
@@ -1357,7 +1357,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'ai-three-countries',
-    about: 'Live · App Store Top Free, every country',
+    about: 'Live, App Store Top Free, every country',
     kind: 'headline',
     name: 'ChatGPT, Gemini or Claude: which charts in more countries?',
     field: 'app rankings per country for 3 apps, recordedAt within 36 hours',
@@ -1377,7 +1377,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'most-sdks-headline',
-    about: 'Live · analyzed iOS builds',
+    about: 'Live, analyzed iOS builds',
     kind: 'headline',
     name: 'Which iOS app ships the most SDKs?',
     field: 'tech-stack sdkCount (iOS, a floor) and capturedAt',
@@ -1393,7 +1393,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'widest-gap',
-    about: 'Live · US App Store and Google Play',
+    about: 'Live, US App Store and Google Play',
     kind: 'dumbbell',
     name: 'Which app ranks most differently on iOS and Android?',
     field: 'rankings rank on both stores, matched by name, sorted by gap',
@@ -1405,7 +1405,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'feed-size-percentiles',
-    about: 'Live · US App Store, download size percentiles',
+    about: 'Live, US App Store, download size percentiles',
     kind: 'headline',
     name: 'How large are tracked App Store downloads?',
     field: 'daily-feed/metrics size_percentiles: mark, size, app, version',
@@ -1418,7 +1418,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'feed-release-dates',
-    about: 'Live · US App Store, chart release dates',
+    about: 'Live, US App Store, chart release dates',
     kind: 'leaderboard',
     name: 'Which tracked apps on the US App Store top free chart are newest?',
     field: 'daily-feed/metrics chart_release_dates: released (date), rankNow',
@@ -1431,7 +1431,7 @@ export const liveTemplates: LiveTemplate[] = [
   },
   {
     id: 'feed-top10-returns',
-    about: 'Live · US App Store, top 10 returns',
+    about: 'Live, US App Store, top 10 returns',
     kind: 'leaderboard',
     name: 'Which tracked apps returned to the US App Store top 10?',
     field: 'daily-feed top10_returns: rankNow, lastTop10 (date), rankThen',

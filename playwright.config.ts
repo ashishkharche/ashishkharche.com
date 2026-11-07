@@ -6,6 +6,8 @@ const port = Number(process.env.PW_PORT ?? 4173)
 export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
+  // Shared boxes can cap workers without reducing test coverage.
+  workers: process.env.PW_WORKERS ? Number(process.env.PW_WORKERS) : undefined,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',

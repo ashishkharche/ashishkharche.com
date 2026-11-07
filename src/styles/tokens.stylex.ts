@@ -134,41 +134,31 @@ export const fonts = stylex.defineConsts({
   brand: '"Inter Display", "Inter Display Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
 })
 
-const PHONE = '@media (max-width: 560px)'
+const PHONE = '@media (max-width: 1100px)'
 
-/**
- * The type scale: five sizes, set for air rather than density. Body text is
- * 18px on wider screens (17px on phones) at a generous line height, held to
- * about 62 characters a line (layout.column). Headings are in the light display
- * face at large sizes, so their thin strokes sit with the line drawings. Every
- * text size on the home page is one of these five: three families (the name in
- * the AK wordmark's face, display and text) and four weights (the name's 550,
- * light display, regular and medium text).
+/** Four literal sizes across every viewport: 16, 18, 48 and 96px.
+ * Lead copy uses body size. Phones reuse 48px for display rather than adding a fifth size.
+ * Ordering, spacing and typefaces carry the hierarchy, not extra sizes or weights.
  */
 export const type = stylex.defineVars({
-  // Dates, captions, credits, nav, footer, tags.
-  meta: { default: '0.875rem', [PHONE]: '0.8125rem' },
-  // Running text, links and the role names.
-  body: { default: '1.125rem', [PHONE]: '1.0625rem' },
-  // The intro and note titles.
-  lead: { default: '1.4375rem', [PHONE]: '1.25rem' },
-  // Section and project titles.
-  title: { default: '3rem', [PHONE]: '2rem' },
-  // The name only.
-  display: { default: 'clamp(5rem, 8.4vw, 8.25rem)', [PHONE]: '3.625rem' },
+  meta: '1rem',
+  body: '1.125rem',
+  lead: '1.125rem',
+  title: '3rem',
+  display: { default: '6rem', [PHONE]: '3rem' },
 })
 
 /** Text weights, and the one weight the display face is set in. */
 export const weights = stylex.defineConsts({
   regular: '400',
-  medium: '500',
-  display: '300',
+  medium: '400',
+  display: '400',
   brand: '550',
 })
 
 export const layout = stylex.defineConsts({
   // The panorama: the width the home page's scenes are drawn across, and the header and footer with them.
-  wide: '1200px',
+  wide: '1248px',
   // About 62 characters of body text per line.
   column: '34rem',
   // For pages with a date column beside the text, such as Work, and the case study details row.
@@ -177,7 +167,7 @@ export const layout = stylex.defineConsts({
   // The drawn line down the sides of the page (see Scene.tsx): how far in from the edge it runs.
   sceneX: 'clamp(0.75rem, 2.4vw, 2.25rem)',
   // How far content keeps in from the page edge: clear of that line and its 48px turns. Header, footer and pages share it.
-  sceneInset: 'calc(clamp(0.75rem, 2.4vw, 2.25rem) + 48px + 0.5rem)',
+  sceneInset: '3rem',
 })
 
 export const breakpoints = stylex.defineConsts({

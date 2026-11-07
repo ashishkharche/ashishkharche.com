@@ -166,7 +166,7 @@ export function AboutData({
                           )}
                           <span {...stylex.props(styles.appName)}>
                             {a.name}
-                            {a.developer ? <span {...stylex.props(styles.developer)}> · {a.developer}</span> : null}
+                            {a.developer ? <span {...stylex.props(styles.developer)}>, {a.developer}</span> : null}
                           </span>
                         </li>
                       ))}

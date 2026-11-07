@@ -90,7 +90,7 @@ const styles = stylex.create({
   },
   code: {
     fontFamily: fonts.mono,
-    fontSize: '0.86em',
+    fontSize: '1rem',
     // A drawn outline round the code, no fill behind it.
     position: 'relative',
     '::before': {

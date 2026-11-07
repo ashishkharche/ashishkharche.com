@@ -104,6 +104,7 @@ const styles = stylex.create({
     },
   },
   piece: {
+    display: 'none',
     position: 'absolute',
     backgroundColor: colors.ink,
     maskRepeat: 'no-repeat',
@@ -195,9 +196,9 @@ export const legSpace = stylex.create({
     paddingBottom: { default: '3.5rem', [breakpoints.phone]: '2.5rem' },
   },
   // The words of a leg held to a reading width, on the side the line comes down (so they read from that side).
-  column: { maxWidth: '34rem' },
-  columnWide: { maxWidth: '46rem' },
-  toRight: { marginLeft: { default: 'auto', [breakpoints.tablet]: 0 } },
+  column: { maxWidth: '34rem', marginLeft: { default: '17%', [breakpoints.tablet]: 0 } },
+  columnWide: { maxWidth: '46rem', marginLeft: { default: '17%', [breakpoints.tablet]: 0 } },
+  toRight: { marginLeft: { default: '17%', [breakpoints.tablet]: 0 } },
   // A page title with a figure from the footer drawing standing on the ground beside it.
   headScene: {
     display: 'grid',

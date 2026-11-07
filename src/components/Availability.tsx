@@ -23,23 +23,30 @@ export function Availability({ email = true }: { email?: boolean }) {
         )}
         .
       </p>
-      <p {...stylex.props(ui.mt06)}>
-        CVs (PDF):{' '}
-        {links.roleCvs.map((cv, index) => (
-          <span key={cv.href}>
-            {index > 0 ? ' · ' : null}
-            <a href={cv.href} type="application/pdf" {...stylex.props(ui.link)}>
+      <p {...stylex.props(ui.mt06)}>CVs (PDF):</p>
+      <ul role="list" aria-label="CV downloads" {...stylex.props(styles.downloads)}>
+        {links.roleCvs.map((cv) => (
+          <li key={cv.href}>
+            <a href={cv.href} type="application/pdf" {...stylex.props(ui.link, ui.plainLink, styles.download)}>
               {cv.label}
             </a>
-          </span>
+          </li>
         ))}
-      </p>
+      </ul>
     </div>
   )
 }
 
 const styles = stylex.create({
   // No border: the note sits on the page background like the text around it.
+  downloads: {
+    listStyle: 'none',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    columnGap: '2rem',
+    marginTop: '0.5rem',
+  },
+  download: { display: 'inline-flex', minHeight: '2.75rem', alignItems: 'center' },
   box: { marginTop: '1.5rem' },
   strong: { fontWeight: weights.medium },
 })

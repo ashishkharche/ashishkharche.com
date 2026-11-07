@@ -25,7 +25,7 @@ function Notes() {
   const published: NoteItem[] = notes.map((note) => ({
     title: note.title,
     href: note.path,
-    meta: `${formatShortDate(note.date)} · ${note.listLabel}`,
+    meta: `${formatShortDate(note.date)}, ${note.listLabel}`,
     summary: noteListSummary(note),
   }))
   const coming: NoteItem[] = comingNotes.map((title, index) => ({

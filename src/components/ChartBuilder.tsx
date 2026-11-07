@@ -332,7 +332,7 @@ export function ChartBuilder({
         id: t.id,
         kind: 'scatter' as const,
         name: t.name,
-        about: [t.sample, t.sourceShort, `data file, ${formatDate(t.date)}`].filter(Boolean).join(' · '),
+        about: [t.sample, t.sourceShort, `data file, ${formatDate(t.date)}`].filter(Boolean).join(', '),
         field: scatterNotes[t.id]?.field ?? 'data file',
         pending: scatterNotes[t.id]?.pending,
       })),
@@ -881,7 +881,7 @@ export function ChartBuilder({
                   onChange={(value) => setScale(Number(value))}
                 />
                 <p {...stylex.props(styles.note)}>
-                  PNG {size.width * scale} × {size.height * scale} px · SVG {size.width} × {size.height}
+                  PNG {size.width * scale} × {size.height * scale} px, SVG {size.width} × {size.height}
                 </p>
               </Section>
 
@@ -1067,7 +1067,7 @@ function Gallery({
         </span>
         <span {...stylex.props(styles.cardName)}>{t.name}</span>
         <span id={`${id}-about-${t.id}`} {...stylex.props(styles.cardAbout)}>
-          {t.pending ? `Pending verification · ${t.about}` : t.about}
+          {t.pending ? `Pending verification, ${t.about}` : t.about}
         </span>
       </label>
     )

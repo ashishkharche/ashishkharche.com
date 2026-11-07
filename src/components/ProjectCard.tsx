@@ -118,7 +118,7 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
           {card.links?.length ? (
             <p {...stylex.props(styles.outLinks)}>
               {card.links.map((link) => (
-                <a key={link.href} href={link.href} {...stylex.props(ui.link, styles.outLink)}>
+                <a key={link.href} href={link.href} {...stylex.props(ui.link, ui.plainLink, styles.outLink)}>
                   {link.label} <SketchArrow dir="out" />
                 </a>
               ))}

@@ -50,7 +50,7 @@ function Projects() {
               and app build data, exported as PNG or SVG. Live charts read fresh data on each visit and show when it was
               recorded. Each chart is checked against data rules before download.
             </p>
-            <p {...stylex.props(styles.toolMeta)}>TypeScript · React · Canvas and SVG, drawn in the browser</p>
+            <p {...stylex.props(styles.toolMeta)}>TypeScript, React, Canvas and SVG, drawn in the browser</p>
           </article>
         </section>
       </div>

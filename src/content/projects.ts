@@ -121,7 +121,7 @@ export const workoutDirectorCard: ProjectCard = {
   external: false,
   summary:
     'An iPhone and iPad training app that counts reps with the front camera, on the device, while a voice coach talks you through the workout.',
-  meta: 'iPhone and iPad app · Case study',
+  meta: 'iPhone and iPad app, Case study',
   logo: 'workoutDirector',
   links: workoutDirectorLinks,
   stack: workoutDirectorCardStack,
@@ -139,7 +139,7 @@ export const kaloCard: ProjectCard = {
   external: true,
   summary:
     'A macro and calorie tracker for iPhone. Log with a photo, your voice or a barcode. It also has HealthKit, widgets and a share extension.',
-  meta: 'SwiftUI · App Store',
+  meta: 'SwiftUI, App Store',
   logo: 'kalo',
   // No screenshots: Kalo's App Store screens are light, and the site keeps every row of screens in one dark style.
 }

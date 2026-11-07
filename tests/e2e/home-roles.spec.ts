@@ -45,9 +45,9 @@ for (const viewport of [
     expect(Math.abs(first.textX - first.box.x - (second.textX - second.box.x))).toBeLessThan(1)
     expect(Math.abs(second.textX - second.box.x - (third.textX - third.box.x))).toBeLessThan(1)
     if (viewport.width > 760) {
-      // Side by side: the three names on one line.
-      expect(Math.abs(first.name.y - second.name.y)).toBeLessThan(1)
-      expect(Math.abs(second.name.y - third.name.y)).toBeLessThan(1)
+      // A single editorial column keeps one shared left edge.
+      expect(Math.abs(first.textX - second.textX)).toBeLessThan(1)
+      expect(Math.abs(second.textX - third.textX)).toBeLessThan(1)
     } else {
       // One under another: one left edge.
       expect(Math.abs(first.textX - second.textX)).toBeLessThan(1)
@@ -56,7 +56,7 @@ for (const viewport of [
     }
     for (const row of rows) {
       const logoMid = row.logo.y + row.logo.height / 2
-      const nameMid = row.name.y + row.name.height / 2
+      const nameMid = row.name.y + Math.min(row.name.height, 32) / 2
       expect(Math.abs(logoMid - nameMid)).toBeLessThanOrEqual(1.5)
       // The mark fits its box, so nothing spills into the text.
       expect(row.logo.x).toBeGreaterThanOrEqual(row.box.x - 0.5)

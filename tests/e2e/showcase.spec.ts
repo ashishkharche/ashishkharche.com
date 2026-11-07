@@ -33,24 +33,19 @@ test('the intro panel shows two described screens that the Selected work card do
   for (const src of cardScreens) expect(heroScreens).not.toContain(stem(src))
 })
 
-test('on a wide screen the panel stands clear of the ground line at the right of the intro', async ({ page }) => {
+test('the desktop composition keeps raw screens clear of the type and inside the first fold', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
+  await page.evaluate(() => document.fonts.ready)
   const intro = page.locator('section[aria-labelledby="intro-title"]')
-  const scene = await box(intro.locator(':scope > div').first())
   const name = await box(intro.locator('h1'))
   const store = await box(intro.getByRole('link', { name: 'App Store' }))
   const stage = await box(panel(page))
-  // To the right of the name and of the Workout Director links.
-  expect(stage.x).toBeGreaterThan(name.x + name.width)
-  expect(stage.x).toBeGreaterThan(store.x + store.width)
-  // Just above the ground line (the bottom of the scene) without touching it, with the whole first scene in the
-  // first screen. The line is drawn 8px either side of the scene's bottom edge.
-  const gap = scene.y + scene.height - (stage.y + stage.height)
-  expect(gap).toBeGreaterThanOrEqual(16)
-  expect(gap).toBeLessThanOrEqual(48)
-  expect(scene.y + scene.height).toBeLessThanOrEqual(900)
-  // The front phone sits inside the panel.
+  // The editorial title spans both content columns, with images below and copy opposite.
+  expect(stage.y).toBeGreaterThanOrEqual(name.y + name.height + 32)
+  expect(stage.x).toBeGreaterThan(store.x + store.width + 100)
+  expect(stage.x + stage.width).toBeLessThanOrEqual(1440 - 48)
+  expect(stage.y + stage.height).toBeLessThanOrEqual(900)
   const front = await box(panel(page).locator('img').nth(1))
   expect(front.y + front.height).toBeLessThanOrEqual(stage.y + stage.height + 2)
 })

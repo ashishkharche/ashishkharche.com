@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { gotoHydrated } from './hydration'
 import { draftPosts, draftsPath } from '../../src/content/drafts'
 
 const tags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']
@@ -61,7 +62,7 @@ test('a linked filter opens filtered, and the index jumps to a post', async ({ p
 })
 
 test('the filter chips work from the keyboard', async ({ page }) => {
-  await page.goto(draftsPath)
+  await gotoHydrated(page, draftsPath)
   await page.waitForLoadState('networkidle')
   const chip = page.getByRole('button', { name: /^Trainer chat/ })
   await chip.focus()

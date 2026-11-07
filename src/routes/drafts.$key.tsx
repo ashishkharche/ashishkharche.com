@@ -266,7 +266,7 @@ function PostCard({ post, device }: { post: DraftPost; device: Device }) {
           {post.title}
         </h3>
         <p {...stylex.props(styles.meta)}>
-          {post.series} · {post.version} · updated {post.updatedLabel}
+          {post.series}, {post.version}, updated {post.updatedLabel}
         </p>
         <ul aria-label="Tags" {...stylex.props(styles.tags)}>
           <li {...stylex.props(styles.tag, post.status !== 'ready' && styles.tagWaiting)}>{statuses[post.status]}</li>
@@ -390,7 +390,7 @@ function AiSection() {
               {p.title}
             </a>{' '}
             <span {...stylex.props(styles.count)}>
-              · {statuses[p.status]}
+              , {statuses[p.status]}
               {p.caution ? ', Grok caution' : ''}
             </span>
           </li>
@@ -806,7 +806,7 @@ const styles = stylex.create({
     whiteSpace: 'pre-wrap',
     overflowWrap: 'break-word',
     fontFamily: fonts.mono,
-    fontSize: '0.8rem',
+    fontSize: '1rem',
     lineHeight: 1.55,
     backgroundColor: colors.codeBg,
     borderWidth: 1,

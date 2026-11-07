@@ -9,7 +9,7 @@ export function SiteFooter() {
     <footer {...stylex.props(styles.footer)}>
       <div {...stylex.props(ui.wrap, styles.row)}>
         <p>
-          © {year} {site.name} · {site.city}
+          © {year} {site.name}, {site.city}
         </p>
         <ul role="list" aria-label="Elsewhere" {...stylex.props(styles.list)}>
           <li>
