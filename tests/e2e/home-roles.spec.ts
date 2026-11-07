@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-// All three role rows share one layout: same classes, logo-box width and text indent. SpaceX is first only.
+// All three roles share one layout: same classes, logo-box size and text indent. SpaceX is first only.
+// They stand side by side on one ground line on wide screens (names on one line) and one under another on phones.
 for (const viewport of [
   { width: 1280, height: 800 },
   { width: 390, height: 844 },
@@ -40,10 +41,19 @@ for (const viewport of [
     expect(second.box.width).toBe(third.box.width)
     expect(first.box.height).toBe(second.box.height)
     expect(second.box.height).toBe(third.box.height)
-    expect(Math.abs(first.textX - second.textX)).toBeLessThan(1)
-    expect(Math.abs(second.textX - third.textX)).toBeLessThan(1)
-    expect(Math.abs(first.box.x - second.box.x) < 1 || viewport.width > 760).toBe(true)
-    if (Math.abs(first.name.y - second.name.y) > 1) expect(Math.abs(first.name.x - second.name.x)).toBeLessThan(1)
+    // The same indent from each logo box to its words.
+    expect(Math.abs(first.textX - first.box.x - (second.textX - second.box.x))).toBeLessThan(1)
+    expect(Math.abs(second.textX - second.box.x - (third.textX - third.box.x))).toBeLessThan(1)
+    if (viewport.width > 760) {
+      // Side by side: the three names on one line.
+      expect(Math.abs(first.name.y - second.name.y)).toBeLessThan(1)
+      expect(Math.abs(second.name.y - third.name.y)).toBeLessThan(1)
+    } else {
+      // One under another: one left edge.
+      expect(Math.abs(first.textX - second.textX)).toBeLessThan(1)
+      expect(Math.abs(second.textX - third.textX)).toBeLessThan(1)
+      expect(Math.abs(first.box.x - second.box.x)).toBeLessThan(1)
+    }
     for (const row of rows) {
       const logoMid = row.logo.y + row.logo.height / 2
       const nameMid = row.name.y + row.name.height / 2

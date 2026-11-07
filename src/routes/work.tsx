@@ -5,6 +5,7 @@ import { Logo } from '~/components/Logo'
 import { Main } from '~/components/Main'
 import { PageHead } from '~/components/PageHead'
 import { Rows } from '~/components/Rows'
+import { Figure, Leg, legSpace } from '~/components/Scene'
 import { certificationsNote, maestroArticles, roles, tools, workIntro } from '~/content/work'
 import { seo } from '~/lib/seo'
 import { breakpoints, colors, type } from '~/styles/tokens.stylex'
@@ -25,16 +26,30 @@ export const Route = createFileRoute('/work')({
 function Work() {
   return (
     <Main>
-      <div {...stylex.props(ui.columnWide)}>
-        <PageHead title="Work" lead={workIntro} />
+      <Leg from="edge" as="div" xstyle={legSpace.first}>
+        <div {...stylex.props(legSpace.headScene)}>
+          <div {...stylex.props(legSpace.headText)}>
+            <PageHead title="Work" lead={workIntro} />
+          </div>
+          <Figure name="walk" xstyle={legSpace.headFigure} />
+        </div>
+      </Leg>
 
-        <section aria-labelledby="roles-title" {...stylex.props(ui.section)}>
-          <h2 id="roles-title" {...stylex.props(ui.visuallyHidden)}>
-            Roles
-          </h2>
-          <ol role="list" {...stylex.props(sk.ruleBottom, styles.entries)}>
-            {roles.map((role, index) => (
-              <li key={role.org} {...stylex.props(index > 0 && sk.ruleTop, styles.entry)}>
+      <section aria-labelledby="roles-title">
+        <h2 id="roles-title" {...stylex.props(ui.visuallyHidden)}>
+          Roles
+        </h2>
+        {/* Each role is a stretch of the line, the words on the side it comes down. */}
+        <ol role="list" {...stylex.props(styles.entries)}>
+          {roles.map((role, index) => (
+            <Leg
+              key={role.org}
+              as="li"
+              from={index % 2 === 0 ? 'right' : 'left'}
+              stroke={index % 2 === 0 ? 2 : 1}
+              xstyle={legSpace.text}
+            >
+              <div {...stylex.props(styles.entry, legSpace.columnWide, index % 2 === 0 && legSpace.toRight)}>
                 <p {...stylex.props(styles.when)}>
                   {role.when ?? <span {...stylex.props(ui.visuallyHidden)}>No dates</span>}
                 </p>
@@ -62,21 +77,34 @@ function Work() {
                     </p>
                   ))}
                 </div>
-              </li>
-            ))}
-          </ol>
-          <p {...stylex.props(ui.note)}>{certificationsNote}</p>
-        </section>
+              </div>
+            </Leg>
+          ))}
+        </ol>
+        <Leg as="div" from={roles.length % 2 === 0 ? 'right' : 'left'} xstyle={[legSpace.text, styles.shortLeg]}>
+          <p {...stylex.props(styles.certs, legSpace.columnWide, roles.length % 2 === 0 && legSpace.toRight)}>
+            {certificationsNote}
+          </p>
+        </Leg>
+      </section>
 
-        <section aria-labelledby="writing-title" {...stylex.props(ui.section)}>
+      <Leg
+        from={roles.length % 2 === 0 ? 'left' : 'right'}
+        stroke={2}
+        labelledBy="writing-title"
+        xstyle={legSpace.text}
+      >
+        <div {...stylex.props(legSpace.columnWide, roles.length % 2 !== 0 && legSpace.toRight)}>
           <h2 id="writing-title" {...stylex.props(ui.h2, styles.h2)}>
             Writing for Maestro
           </h2>
           <p {...stylex.props(ui.muted)}>Six of the 14 posts I wrote for the Maestro blog in 2023.</p>
           <Rows spaced rows={maestroArticles.map((a) => ({ title: a.title, href: a.href, date: a.date }))} />
-        </section>
+        </div>
+      </Leg>
 
-        <section aria-labelledby="tools-title" {...stylex.props(ui.section)}>
+      <Leg from={roles.length % 2 === 0 ? 'right' : 'left'} labelledBy="tools-title" xstyle={legSpace.text}>
+        <div {...stylex.props(legSpace.columnWide, roles.length % 2 === 0 && legSpace.toRight)}>
           <h2 id="tools-title" {...stylex.props(ui.h2, styles.h2)}>
             Tools
           </h2>
@@ -88,15 +116,23 @@ function Work() {
               </div>
             ))}
           </dl>
-        </section>
+        </div>
+      </Leg>
 
-        <section aria-labelledby="cv-title" {...stylex.props(ui.section)}>
+      <Leg
+        from={roles.length % 2 === 0 ? 'left' : 'right'}
+        to="edge"
+        stroke={2}
+        labelledBy="cv-title"
+        xstyle={legSpace.text}
+      >
+        <div {...stylex.props(legSpace.columnWide, roles.length % 2 !== 0 && legSpace.toRight)}>
           <h2 id="cv-title" {...stylex.props(ui.h2, styles.h2)}>
             CV
           </h2>
           <Availability />
-        </section>
-      </div>
+        </div>
+      </Leg>
     </Main>
   )
 }
@@ -108,8 +144,9 @@ const styles = stylex.create({
     display: 'grid',
     gridTemplateColumns: { default: '10rem 1fr', [breakpoints.tablet]: '1fr' },
     gap: { default: '1.5rem', [breakpoints.tablet]: '0.2rem' },
-    paddingBlock: '1.75rem',
   },
+  shortLeg: { paddingTop: { default: '3rem', [breakpoints.phone]: '2.5rem' } },
+  certs: { color: colors.muted, fontSize: type.meta },
   when: { color: colors.muted, fontSize: type.meta, paddingTop: '0.1rem', textWrap: 'balance' },
   org: { display: 'flex', alignItems: 'center', gap: '0.75rem' },
   // Each company mark in a drawn box of the same size.

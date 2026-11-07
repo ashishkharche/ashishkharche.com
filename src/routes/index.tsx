@@ -5,7 +5,8 @@ import { Logo } from '~/components/Logo'
 import { Main } from '~/components/Main'
 import { NoteList } from '~/components/NoteList'
 import { ProjectCard } from '~/components/ProjectCard'
-import { PhonePairStage } from '~/components/Screens'
+import { Figure, Leg } from '~/components/Scene'
+import { PhonePairGround } from '~/components/Screens'
 import { SectionHead } from '~/components/SectionHead'
 import { SketchArrow } from '~/components/SketchArrow'
 import { kaloCard, workoutDirectorCard, workoutDirectorLinks } from '~/content/projects'
@@ -49,8 +50,12 @@ function Home() {
   }))
   return (
     <Main>
-      <div {...stylex.props(ui.wrap)}>
-        <section aria-labelledby="intro-title" {...stylex.props(styles.hero)}>
+      {/*
+        One drawn line runs down the whole page, like the ground of the footer drawing: it starts at the
+        left edge under the intro, turns down at each side and becomes the ground each part stands on.
+      */}
+      <Leg from="edge" labelledBy="intro-title" xstyle={styles.heroLeg}>
+        <div {...stylex.props(styles.hero)}>
           <div {...stylex.props(styles.intro)}>
             <p {...stylex.props(styles.kicker)}>Software engineer · {site.city}</p>
             <h1 id="intro-title" {...stylex.props(styles.title)}>
@@ -59,83 +64,35 @@ function Home() {
             <p {...stylex.props(styles.lead)}>
               I work on iOS and Android apps, AI features and the AWS backend behind them.
             </p>
+            <ul role="list" aria-label="Links" {...stylex.props(styles.links)}>
+              <li>
+                <Link to="/work/" {...stylex.props(ui.link, ui.plainLink)}>
+                  Work history
+                </Link>
+              </li>
+              <li>
+                <a href={`mailto:${site.email}`} {...stylex.props(ui.link, ui.plainLink)}>
+                  Email
+                </a>
+              </li>
+              <li>
+                <a href={site.linkedin} {...stylex.props(ui.link, ui.plainLink)}>
+                  LinkedIn
+                </a>
+              </li>
+              <li>
+                <a href={site.github} {...stylex.props(ui.link, ui.plainLink)}>
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a href={site.x} rel="me noopener" {...stylex.props(ui.link, ui.plainLink)}>
+                  X
+                </a>
+              </li>
+            </ul>
 
-            <div {...stylex.props(sk.ruleTop, styles.facts)}>
-              <ul role="list" aria-label="Roles" {...stylex.props(styles.roles)}>
-                <li {...stylex.props(styles.role)}>
-                  {/* The SpaceXSI mark is wide and thin, so it gets more width to look the same weight. */}
-                  <span {...stylex.props(sk.box, styles.logoBox)}>
-                    <Logo name="spacexsi" size={24} />
-                  </span>
-                  <span>
-                    <span {...stylex.props(styles.roleHead)}>
-                      <span {...stylex.props(styles.roleName)}>SpaceX Super Intelligence</span>
-                      <span {...stylex.props(styles.years)}>2026</span>
-                    </span>
-                    <span {...stylex.props(styles.roleText)}>
-                      Quality Assurance Engineer testing more than 500 Grok iOS and web builds before release.
-                    </span>
-                  </span>
-                </li>
-                <li {...stylex.props(styles.role)}>
-                  <span {...stylex.props(sk.box, styles.logoBox)}>
-                    <Logo name="paythru" size={22} />
-                  </span>
-                  <span>
-                    <span {...stylex.props(styles.roleHead)}>
-                      <span {...stylex.props(styles.roleName)}>Paythru</span>
-                      <span {...stylex.props(styles.years)}>2022 to 2026</span>
-                    </span>
-                    <span {...stylex.props(styles.roleText)}>
-                      EV charging apps; releases cut from a few weeks to a few days.
-                    </span>
-                  </span>
-                </li>
-                <li {...stylex.props(styles.role)}>
-                  <span {...stylex.props(sk.box, styles.logoBox)}>
-                    <Logo name="maestro" size={22} />
-                  </span>
-                  <span>
-                    <span {...stylex.props(styles.roleHead)}>
-                      <span {...stylex.props(styles.roleName)}>Maestro</span>
-                      <span {...stylex.props(styles.years)}>2023 to 2024</span>
-                    </span>
-                    <span {...stylex.props(styles.roleText)}>
-                      Contract developer; test suites for Maestro Cloud and Studio and 14 blog posts.
-                    </span>
-                  </span>
-                </li>
-              </ul>
-              <ul role="list" aria-label="Links" {...stylex.props(styles.links)}>
-                <li>
-                  <Link to="/work/" {...stylex.props(ui.link, ui.plainLink)}>
-                    Work history
-                  </Link>
-                </li>
-                <li>
-                  <a href={`mailto:${site.email}`} {...stylex.props(ui.link, ui.plainLink)}>
-                    Email
-                  </a>
-                </li>
-                <li>
-                  <a href={site.linkedin} {...stylex.props(ui.link, ui.plainLink)}>
-                    LinkedIn
-                  </a>
-                </li>
-                <li>
-                  <a href={site.github} {...stylex.props(ui.link, ui.plainLink)}>
-                    GitHub
-                  </a>
-                </li>
-                <li>
-                  <a href={site.x} rel="me noopener" {...stylex.props(ui.link, ui.plainLink)}>
-                    X
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div aria-labelledby="wd-title" role="group" {...stylex.props(sk.ruleTop, styles.app)}>
+            <div aria-labelledby="wd-title" role="group" {...stylex.props(styles.app)}>
               <div {...stylex.props(styles.appHead)}>
                 <Logo name="workoutDirector" size={44} />
                 <div>
@@ -171,70 +128,136 @@ function Home() {
               </p>
             </div>
           </div>
-          <PhonePairStage phones={heroPhones} label="Workout Director app screens" priority />
-        </section>
-
-        <section aria-labelledby="sel-title" {...stylex.props(ui.section)}>
-          <SectionHead id="sel-title" title="Selected work" to="/projects/" linkLabel="All projects" />
-          <div {...stylex.props(styles.grid)}>
-            <ProjectCard card={workoutDirectorCard} />
-            <ProjectCard card={kaloCard} />
-          </div>
-        </section>
-
-        <section aria-labelledby="notes-title" {...stylex.props(ui.section)}>
-          <SectionHead id="notes-title" title="Notes" to="/notes/" linkLabel="All notes" />
-          <div {...stylex.props(styles.notes)}>
-            <NoteList items={latestNotes} />
-          </div>
-        </section>
-
-        <div {...stylex.props(ui.narrow)}>
-          <section aria-labelledby="contact-title" {...stylex.props(ui.section)}>
-            <h2 id="contact-title" {...stylex.props(ui.h2, styles.contactTitle)}>
-              Contact
-            </h2>
-            <p>
-              Email me at{' '}
-              <a href={`mailto:${site.email}`} {...stylex.props(ui.link)}>
-                {site.email}
-              </a>
-              . I'm also on{' '}
-              <a href={site.linkedin} {...stylex.props(ui.link)}>
-                LinkedIn
-              </a>
-              ,{' '}
-              <a href={site.github} {...stylex.props(ui.link)}>
-                GitHub
-              </a>{' '}
-              and{' '}
-              <a href={site.x} rel="me noopener" {...stylex.props(ui.link)}>
-                X
-              </a>
-              .
-            </p>
-            <Availability email={false} />
-          </section>
+          <Figure name="walk" xstyle={styles.walker} />
+          <PhonePairGround phones={heroPhones} label="Workout Director app screens" priority xstyle={styles.phones} />
         </div>
-      </div>
+      </Leg>
+
+      {/* The three roles as figures on the ground, each with its label above it. SpaceX is first only. */}
+      <Leg from="right" as="div" stroke={2} xstyle={styles.rolesLeg}>
+        <ul role="list" aria-label="Roles" {...stylex.props(styles.roles)}>
+          {roles.map((role) => (
+            <li key={role.name} {...stylex.props(styles.role)}>
+              <span {...stylex.props(sk.box, styles.logoBox)}>
+                <Logo name={role.logo} size={role.logoSize} />
+              </span>
+              <span {...stylex.props(styles.roleCopy)}>
+                <span {...stylex.props(styles.roleHead)}>
+                  <span {...stylex.props(styles.roleName)}>{role.name}</span>
+                  <span {...stylex.props(styles.years)}>{role.years}</span>
+                </span>
+                <span {...stylex.props(styles.roleText)}>{role.text}</span>
+              </span>
+              <Figure name={role.figure} xstyle={[styles.roleFigure, figureHeight[role.figure]]} />
+            </li>
+          ))}
+        </ul>
+      </Leg>
+
+      <section aria-labelledby="sel-title">
+        <Leg from="left" as="div" xstyle={styles.workLeg}>
+          <SectionHead id="sel-title" title="Selected work" to="/projects/" linkLabel="All projects" />
+          <ProjectCard card={workoutDirectorCard} scene="devicesRight" />
+        </Leg>
+        <Leg from="right" as="div" stroke={2} xstyle={styles.workLeg}>
+          <ProjectCard card={kaloCard} scene="devicesLeft" />
+        </Leg>
+      </section>
+
+      <Leg from="left" labelledBy="notes-title" xstyle={styles.notesLeg}>
+        <SectionHead id="notes-title" title="Notes" to="/notes/" linkLabel="All notes" />
+        <div {...stylex.props(styles.notes)}>
+          <NoteList items={latestNotes} posts="row" />
+          <Figure name="pushup" xstyle={styles.pushup} />
+        </div>
+      </Leg>
+
+      <Leg from="right" to="edge" stroke={2} labelledBy="contact-title" xstyle={styles.contactLeg}>
+        <div {...stylex.props(styles.contact)}>
+          <h2 id="contact-title" {...stylex.props(ui.h2, styles.contactTitle)}>
+            Contact
+          </h2>
+          <p>
+            Email me at{' '}
+            <a href={`mailto:${site.email}`} {...stylex.props(ui.link)}>
+              {site.email}
+            </a>
+            . I'm also on{' '}
+            <a href={site.linkedin} {...stylex.props(ui.link)}>
+              LinkedIn
+            </a>
+            ,{' '}
+            <a href={site.github} {...stylex.props(ui.link)}>
+              GitHub
+            </a>{' '}
+            and{' '}
+            <a href={site.x} rel="me noopener" {...stylex.props(ui.link)}>
+              X
+            </a>
+            .
+          </p>
+          <Availability email={false} />
+        </div>
+      </Leg>
     </Main>
   )
 }
 
+/** The roles in order, every one set the same way. */
+const roles: ReadonlyArray<{
+  name: string
+  years: string
+  text: string
+  logo: 'spacexsi' | 'paythru' | 'maestro'
+  logoSize: number
+  figure: 'lunge' | 'squat' | 'curl'
+}> = [
+  {
+    name: 'SpaceX Super Intelligence',
+    years: '2026',
+    text: 'Quality Assurance Engineer testing more than 500 Grok iOS and web builds before release.',
+    // The SpaceXSI mark is wide and thin, so it gets more width to look the same weight.
+    logo: 'spacexsi',
+    logoSize: 24,
+    figure: 'curl',
+  },
+  {
+    name: 'Paythru',
+    years: '2022 to 2026',
+    text: 'EV charging apps; releases cut from a few weeks to a few days.',
+    logo: 'paythru',
+    logoSize: 22,
+    figure: 'lunge',
+  },
+  {
+    name: 'Maestro',
+    years: '2023 to 2024',
+    text: 'Contract developer; test suites for Maestro Cloud and Studio and 14 blog posts.',
+    logo: 'maestro',
+    logoSize: 22,
+    figure: 'squat',
+  },
+]
+
 const styles = stylex.create({
-  // Two columns: the intro, roles, links and Workout Director on the left, one
-  // panel of app screens on the right, top and bottom edges lined up. On phones
-  // the panel follows the text, so the App Store link stays in the first screen.
+  // The first leg: the intro, a figure walking in and the two phones, all standing on the first stretch of line.
+  heroLeg: {
+    paddingTop: { default: '1.5rem', [breakpoints.tablet]: '0.5rem' },
+  },
   hero: {
     display: 'grid',
-    gridTemplateColumns: { default: 'minmax(0, 1.08fr) minmax(0, 0.92fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
-    alignItems: 'center',
-    columnGap: '4rem',
+    gridTemplateColumns: {
+      default: 'minmax(0, 1.5fr) auto minmax(0, 0.85fr)',
+      [breakpoints.tablet]: 'minmax(0, 1fr)',
+    },
+    alignItems: 'end',
+    columnGap: 'clamp(1.5rem, 3.5vw, 3.5rem)',
     rowGap: '2.5rem',
-    paddingTop: { default: '1rem', [breakpoints.tablet]: '0.5rem' },
   },
-  intro: { minWidth: 0 },
-  // A small label over the name, in the meta size.
+  intro: {
+    minWidth: 0,
+    paddingBottom: { default: '3rem', [breakpoints.tablet]: 0 },
+  },
   kicker: {
     fontSize: type.meta,
     color: colors.muted,
@@ -246,81 +269,32 @@ const styles = stylex.create({
     lineHeight: 1,
     fontWeight: weights.regular,
     letterSpacing: '-0.025em',
+    whiteSpace: { default: 'nowrap', [breakpoints.phone]: 'normal' },
     // The name is drawn as an outline, the way the footer drawing draws the AK mark.
     color: 'transparent',
     WebkitTextStrokeWidth: '1.25px',
     WebkitTextStrokeColor: colors.text,
   },
   lead: {
-    marginTop: { default: '1.25rem', [breakpoints.phone]: '1.25rem' },
+    marginTop: '1.25rem',
     fontSize: type.lead,
     lineHeight: 1.45,
     maxWidth: '24em',
     textWrap: 'pretty',
   },
-  // The roles, then the links, under one rule.
-  facts: {
-    display: 'grid',
-    rowGap: '1.5rem',
-    marginTop: '2rem',
-    paddingTop: '1.5rem',
-  },
-  roles: {
-    listStyle: 'none',
-    display: 'grid',
-    rowGap: '1.1rem',
-  },
-  // Every logo sits in the same box, as tall as the company name's line, so each
-  // mark is centred on its name and the names share one left edge. SpaceX is first only.
-  role: {
-    display: 'grid',
-    gridTemplateColumns: '2.5rem minmax(0, 1fr)',
-    columnGap: '0.85rem',
-    alignItems: 'start',
-  },
-  // A drawn box round each mark, centred on the name's line.
-  logoBox: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '2.5rem',
-    height: '2.25rem',
-    marginTop: '-0.375rem',
-  },
-  roleHead: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'baseline',
-    columnGap: '0.7rem',
-    lineHeight: '1.5rem',
-  },
-  roleName: { fontWeight: weights.medium },
-  years: { fontSize: type.meta, fontVariantNumeric: 'tabular-nums', color: colors.muted },
-  roleText: {
-    display: 'block',
-    marginTop: '0.1rem',
-    fontSize: type.meta,
-    lineHeight: 1.5,
-    color: colors.muted,
-    textWrap: 'pretty',
-  },
-  // One line of links beside the roles, wrapping if it has to.
   links: {
     listStyle: 'none',
     display: 'flex',
     flexWrap: 'wrap',
-    alignContent: 'start',
     rowGap: '0.6rem',
-    // Narrower gaps on a phone keep all five links on one line.
     columnGap: { default: '1.5rem', [breakpoints.phone]: '1.05rem' },
+    marginTop: '1.5rem',
     fontSize: type.body,
   },
-  // Workout Director under a rule of its own: icon and name, then the three links.
   app: {
     display: 'grid',
     rowGap: '1.1rem',
-    marginTop: '1.75rem',
-    paddingTop: '1.5rem',
+    marginTop: '2.25rem',
   },
   appHead: { display: 'flex', alignItems: 'center', gap: '0.9rem' },
   appName: {
@@ -349,11 +323,127 @@ const styles = stylex.create({
     transitionProperty: { default: 'transform', [breakpoints.reducedMotion]: 'none' },
     transitionDuration: '0.15s',
   },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: { default: '4.5rem', [breakpoints.tablet]: '3rem' },
+  // The walking figure from the footer drawing, between the words and the phones. Not on phones: no room.
+  walker: {
+    display: { default: 'block', [breakpoints.tablet]: 'none' },
+    height: 'clamp(15rem, 25vw, 22rem)',
   },
-  notes: { maxWidth: '780px' },
+  phones: {
+    width: '100%',
+    maxWidth: { default: '27rem', [breakpoints.tablet]: '25rem' },
+    justifySelf: { default: 'end', [breakpoints.tablet]: 'center' },
+  },
+  rolesLeg: {
+    paddingTop: { default: 'clamp(6rem, 11vw, 9rem)', [breakpoints.phone]: '6rem' },
+  },
+  // Figures are drawn at one scale (k times their size in the footer drawing), so they keep their sizes to each other.
+  roles: {
+    '--fig-k': { default: 'clamp(0.4px, 0.045vw, 0.62px)', [breakpoints.tablet]: '0.36px' },
+    listStyle: 'none',
+    display: 'grid',
+    gridTemplateColumns: { default: 'repeat(3, minmax(0, 1fr))', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    alignItems: 'stretch',
+    columnGap: 'clamp(2rem, 4.5vw, 4.5rem)',
+    rowGap: '3.5rem',
+  },
+  // Label above, figure under it on the ground. On phones each role stands on a short ground line of its own.
+  role: {
+    position: 'relative',
+    display: 'grid',
+    gridTemplateColumns: '2.5rem minmax(0, 1fr)',
+    gridTemplateRows: 'auto 1fr',
+    columnGap: '0.85rem',
+    rowGap: '1.75rem',
+    alignItems: 'start',
+    '::after': {
+      content: '""',
+      display: { default: 'none', [breakpoints.tablet]: 'block', ':last-child': 'none' },
+      position: 'absolute',
+      left: '-0.5rem',
+      right: '-0.5rem',
+      bottom: '-8px',
+      height: '16px',
+      backgroundColor: colors.ink,
+      maskImage: 'url("/assets/img/sketch/ground.svg")',
+      maskSize: '100% 100%',
+      maskRepeat: 'no-repeat',
+      pointerEvents: 'none',
+    },
+  },
+  logoBox: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '2.5rem',
+    height: '2.25rem',
+    marginTop: '-0.375rem',
+  },
+  roleCopy: { minWidth: 0 },
+  roleHead: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'baseline',
+    columnGap: '0.7rem',
+    lineHeight: '1.5rem',
+  },
+  roleName: { fontWeight: weights.medium },
+  years: { fontSize: type.meta, fontVariantNumeric: 'tabular-nums', color: colors.muted },
+  roleText: {
+    display: 'block',
+    marginTop: '0.1rem',
+    fontSize: type.meta,
+    lineHeight: 1.5,
+    color: colors.muted,
+    textWrap: 'pretty',
+    maxWidth: '24em',
+  },
+  roleFigure: {
+    gridColumnStart: '1',
+    gridColumnEnd: '-1',
+    alignSelf: 'end',
+    justifySelf: { default: 'start', [breakpoints.tablet]: 'end' },
+    marginLeft: { default: '3.35rem', [breakpoints.tablet]: 0 },
+    marginRight: { default: 0, [breakpoints.tablet]: '1rem' },
+  },
+  workLeg: {
+    paddingTop: { default: 'clamp(6rem, 10vw, 8.5rem)', [breakpoints.phone]: '5.5rem' },
+  },
+  notesLeg: {
+    paddingTop: { default: 'clamp(6rem, 10vw, 8.5rem)', [breakpoints.phone]: '5.5rem' },
+  },
+  // The push-up from the footer drawing, flat on the ground at the end of the notes.
+  // The notes, then the push-up flat on the ground at the end of them.
+  notes: {
+    display: 'grid',
+    gridTemplateColumns: { default: 'minmax(0, 2fr) minmax(0, 1fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    alignItems: 'end',
+    columnGap: 'clamp(2rem, 4.5vw, 4.5rem)',
+    rowGap: '2rem',
+  },
+  pushup: {
+    height: { default: 'clamp(7rem, 11vw, 9.5rem)', [breakpoints.tablet]: '5.5rem' },
+    justifySelf: 'end',
+  },
+  // Contact, where the line runs off the edge into the footer drawing.
+  contactLeg: {
+    paddingTop: { default: 'clamp(6rem, 10vw, 8.5rem)', [breakpoints.phone]: '5.5rem' },
+  },
+  contact: { maxWidth: '36rem', paddingBottom: '3rem' },
   contactTitle: { marginBottom: '0.75rem' },
+})
+
+const figureHeight = stylex.create({
+  walk: { height: 'calc(372 * var(--fig-k))' },
+  lunge: { height: 'calc(277 * var(--fig-k))' },
+  squat: { height: 'calc(266 * var(--fig-k))' },
+  curl: { height: 'calc(373 * var(--fig-k))' },
+  // The notes, then the push-up flat on the ground at the end of them.
+  notes: {
+    display: 'grid',
+    gridTemplateColumns: { default: 'minmax(0, 2fr) minmax(0, 1fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    alignItems: 'end',
+    columnGap: 'clamp(2rem, 4.5vw, 4.5rem)',
+    rowGap: '2rem',
+  },
+  pushup: { height: 'calc(253 * var(--fig-k))' },
 })

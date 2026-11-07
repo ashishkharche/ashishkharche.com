@@ -1,8 +1,8 @@
 import * as stylex from '@stylexjs/stylex'
 import { breakpoints, colors, fonts, layout, type, weights } from './tokens.stylex'
 
-// The left edge of `wrap`: half the gutter on narrow screens, centred in the 1040px width on wide ones.
-const alignedLeft = `max(${layout.gutter} / 2, (100% - ${layout.wide}) / 2)`
+// The left edge of `wrap`: the scene inset on narrow screens, centred in the panorama width on wide ones.
+const alignedLeft = `max(${layout.sceneInset}, (100% - ${layout.wide}) / 2)`
 
 const focusRing = {
   outline: { default: null, ':focus-visible': `2px solid ${colors.accent}` },
@@ -12,7 +12,10 @@ const focusRing = {
 export const ui = stylex.create({
   wrap: {
     // A little more room at the sides on phones.
-    width: { default: `min(100% - ${layout.gutter}, ${layout.wide})`, [breakpoints.phone]: 'calc(100% - 3rem)' },
+    width: {
+      default: `min(100% - 2 * ${layout.sceneInset}, ${layout.wide})`,
+      [breakpoints.phone]: 'calc(100% - 3rem)',
+    },
     marginInline: 'auto',
   },
   /**
@@ -20,12 +23,18 @@ export const ui = stylex.create({
    * text line up on every page; the space they leave is on the right.
    */
   column: {
-    width: { default: `min(100% - ${layout.gutter}, ${layout.column})`, [breakpoints.phone]: 'calc(100% - 3rem)' },
+    width: {
+      default: `min(100% - 2 * ${layout.sceneInset}, ${layout.column})`,
+      [breakpoints.phone]: 'calc(100% - 3rem)',
+    },
     marginLeft: { default: alignedLeft, [breakpoints.phone]: 'auto' },
     marginRight: 'auto',
   },
   columnWide: {
-    width: { default: `min(100% - ${layout.gutter}, ${layout.columnWide})`, [breakpoints.phone]: 'calc(100% - 3rem)' },
+    width: {
+      default: `min(100% - 2 * ${layout.sceneInset}, ${layout.columnWide})`,
+      [breakpoints.phone]: 'calc(100% - 3rem)',
+    },
     marginLeft: { default: alignedLeft, [breakpoints.phone]: 'auto' },
     marginRight: 'auto',
   },
@@ -35,7 +44,10 @@ export const ui = stylex.create({
    * wrap's left edge, so the wide block starts there too and runs to the wrap's right edge.
    */
   wide: {
-    width: { default: `min(100vw - ${layout.gutter}, ${layout.wide})`, [breakpoints.phone]: 'calc(100vw - 3rem)' },
+    width: {
+      default: `min(100vw - 2 * ${layout.sceneInset}, ${layout.wide})`,
+      [breakpoints.phone]: 'calc(100vw - 3rem)',
+    },
   },
   /**
    * A link in running text: underlined by hand, a pen line under the words in the footer drawing's ink

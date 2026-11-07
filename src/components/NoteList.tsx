@@ -19,13 +19,31 @@ export interface NoteItem {
  * the note underlines the title and nudges its arrow; keyboard focus draws a
  * ring around the whole note.
  */
-export function NoteList({ items, compact = false }: { items: NoteItem[]; compact?: boolean }) {
+export function NoteList({
+  items,
+  compact = false,
+  posts,
+}: {
+  items: NoteItem[]
+  compact?: boolean
+  /**
+   * Each note on a drawn post: side by side, each post running down to the ground line under the list (`row`),
+   * or one under another, each post beside its own note (`column`).
+   */
+  posts?: 'row' | 'column'
+}) {
   return (
-    <ul role="list" {...stylex.props(styles.list, compact && styles.listCompact)}>
+    <ul role="list" {...stylex.props(styles.list, compact && styles.listCompact, posts === 'row' && styles.listPosts)}>
       {items.map((item) => (
         <li
           key={item.title}
-          {...stylex.props(stylex.defaultMarker(), styles.item, item.href !== undefined && styles.linked)}
+          {...stylex.props(
+            stylex.defaultMarker(),
+            styles.item,
+            item.href !== undefined && styles.linked,
+            posts && styles.post,
+            posts === 'column' && styles.postColumn,
+          )}
         >
           <h3 {...stylex.props(styles.title)}>
             {item.href === undefined ? (
@@ -54,6 +72,32 @@ const styles = stylex.create({
     rowGap: { default: '2.5rem', [breakpoints.phone]: '2rem' },
   },
   listCompact: { rowGap: '1.25rem' },
+  listPosts: {
+    gridTemplateColumns: { default: 'repeat(auto-fit, minmax(15rem, 1fr))', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    columnGap: 'clamp(1.5rem, 3vw, 3rem)',
+    alignItems: 'end',
+  },
+  postColumn: { paddingBottom: '0.25rem', height: 'auto', '::before': { bottom: 0 } },
+  // A stake in the ground: a drawn upright beside the note, from its title down to the ground line.
+  post: {
+    alignContent: 'start',
+    paddingLeft: '1.5rem',
+    paddingBottom: { default: '2.5rem', [breakpoints.tablet]: '0.5rem' },
+    height: '100%',
+    '::before': {
+      content: '""',
+      position: 'absolute',
+      left: '-7px',
+      top: '0.45rem',
+      bottom: { default: '-1px', [breakpoints.tablet]: '0' },
+      width: '16px',
+      backgroundColor: colors.ink,
+      maskImage: 'url("/assets/img/scene/line-v.svg")',
+      maskSize: '100% 100%',
+      maskRepeat: 'no-repeat',
+      pointerEvents: 'none',
+    },
+  },
   item: {
     position: 'relative',
     display: 'grid',

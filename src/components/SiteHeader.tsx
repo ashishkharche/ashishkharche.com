@@ -3,7 +3,6 @@ import { Link, useLocation } from '@tanstack/react-router'
 import { nav, site } from '~/content/site'
 import { sectionFor } from '~/lib/urls'
 import { breakpoints, colors, type } from '~/styles/tokens.stylex'
-import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 import { Brand } from './Brand'
 import { ThemeToggle } from './ThemeToggle'
@@ -14,7 +13,7 @@ export function SiteHeader() {
   const isHome = pathname === '/'
 
   return (
-    <header {...stylex.props(sk.ruleBottom)}>
+    <header>
       <div {...stylex.props(ui.wrap, styles.row)}>
         <Link to="/" aria-current={isHome ? 'page' : undefined} {...stylex.props(ui.focusRing, styles.home)}>
           <Brand />

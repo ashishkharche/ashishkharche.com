@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { useId } from 'react'
 import { Logo } from './Logo'
 import { SketchArrow } from './SketchArrow'
-import { DeviceStage } from './Screens'
+import { DevicesGround, DeviceStage } from './Screens'
 import { screenshotSrc, screenshotSrcSet, type ProjectCard as Card } from '~/content/projects'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
 import { device, sk } from '~/styles/sketch'
@@ -14,6 +14,11 @@ interface Props {
   headingLevel?: 'h2' | 'h3'
   /** For a project at the top of the page: load its images straight away, without the scroll fade. */
   priority?: boolean
+  /**
+   * On the home page the project is a scene standing on the leg's ground line: its devices stand on the line on
+   * one side and the words sit beside them, on the other.
+   */
+  scene?: 'devicesLeft' | 'devicesRight'
 }
 
 /**
@@ -23,7 +28,7 @@ interface Props {
  * with neither shows only its title and summary. Projects after the first get
  * a thin rule above.
  */
-export function ProjectCard({ card, headingLevel = 'h3', priority = false }: Props) {
+export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene }: Props) {
   const Heading = headingLevel
   const stackId = useId()
   const linkProps = stylex.props(styles.link)
@@ -33,11 +38,30 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false }: Pro
     </>
   )
   return (
-    <article {...stylex.props(stylex.defaultMarker(), sk.ruleTop, styles.project)}>
-      {card.stage ? (
+    <article
+      {...stylex.props(
+        stylex.defaultMarker(),
+        scene ? styles.scene : [sk.ruleTop, styles.project],
+        scene === 'devicesLeft' && styles.sceneLeft,
+      )}
+    >
+      {card.stage && scene ? (
+        <div
+          {...stylex.props(styles.sceneMedia, scene === 'devicesLeft' ? styles.sceneMediaLeft : styles.sceneMediaRight)}
+        >
+          <DevicesGround ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} />
+        </div>
+      ) : card.stage ? (
         <DeviceStage ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} />
       ) : card.shots?.length ? (
-        <div {...stylex.props(styles.media)}>
+        <div
+          {...stylex.props(
+            styles.media,
+            scene && styles.sceneMedia,
+            scene && styles.mediaGround,
+            scene === 'devicesLeft' ? styles.sceneMediaLeft : styles.sceneMediaRight,
+          )}
+        >
           {(card.shots ?? []).map((shot, index) => (
             <span key={shot.name} {...stylex.props(device.phone, styles.phone)}>
               <img
@@ -56,7 +80,15 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false }: Pro
           ))}
         </div>
       ) : null}
-      <div {...stylex.props(styles.body, !card.stage && !card.shots?.length && styles.bodyOnly)}>
+      <div
+        {...stylex.props(
+          styles.body,
+          !card.stage && !card.shots?.length && styles.bodyOnly,
+          scene && styles.sceneBody,
+          scene && (scene === 'devicesLeft' ? styles.sceneBodyRight : styles.sceneBodyLeft),
+          scene && !card.stage && !card.shots?.length && styles.post,
+        )}
+      >
         <div {...stylex.props(styles.head)}>
           <Logo name={card.logo} size={40} />
           <div>
@@ -114,6 +146,52 @@ const styles = stylex.create({
     position: 'relative',
     paddingTop: { default: '4.5rem', ':first-child': 0, [breakpoints.tablet]: '3rem' },
     '::before': { display: { default: 'block', ':first-child': 'none' } },
+  },
+  // A scene on the home page: words on one side, devices standing on the ground on the other.
+  scene: {
+    position: 'relative',
+    display: 'grid',
+    gridTemplateColumns: { default: 'minmax(0, 1fr) minmax(0, 1.25fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    alignItems: 'end',
+    columnGap: 'clamp(2.5rem, 6vw, 6rem)',
+    rowGap: '2.5rem',
+  },
+  sceneLeft: {
+    gridTemplateColumns: { default: 'minmax(0, 1.1fr) minmax(0, 1fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+  },
+  // Words first and devices after them on phones, so the devices stand on the line.
+  sceneMedia: { gridRowStart: { default: '1', [breakpoints.tablet]: '2' }, minWidth: 0 },
+  sceneMediaLeft: { gridColumnStart: '1' },
+  sceneMediaRight: { gridColumnStart: { default: '2', [breakpoints.tablet]: '1' } },
+  sceneBodyLeft: { gridColumnStart: '1' },
+  sceneBodyRight: { gridColumnStart: { default: '2', [breakpoints.tablet]: '1' } },
+  // A project with no screens stands on the line like a stake, the way the notes do.
+  post: {
+    position: 'relative',
+    paddingLeft: '1.5rem',
+    paddingBottom: '2.5rem',
+    '::before': {
+      content: '""',
+      position: 'absolute',
+      left: '-7px',
+      top: '0.6rem',
+      bottom: 0,
+      width: '16px',
+      backgroundColor: colors.ink,
+      maskImage: 'url("/assets/img/scene/line-v.svg")',
+      maskSize: '100% 100%',
+      maskRepeat: 'no-repeat',
+      pointerEvents: 'none',
+    },
+  },
+  // Phone screens standing on the line, bottoms level.
+  mediaGround: { alignItems: 'flex-end', gap: '4%', justifyContent: 'flex-start' },
+  sceneBody: {
+    gridRowStart: '1',
+    gridTemplateColumns: '1fr',
+    alignSelf: { default: 'center', [breakpoints.tablet]: 'auto' },
+    marginTop: 0,
+    rowGap: '1.25rem',
   },
   media: {
     display: 'flex',

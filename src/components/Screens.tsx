@@ -136,6 +136,53 @@ export function PhonePairStage({ phones, label, priority = false }: PairProps) {
   )
 }
 
+/**
+ * The same two phones standing side by side on a ground line, the way the phone
+ * stands at the end of the footer drawing: their bottoms on one line, the one in
+ * front overlapping the one behind. No panel. The credit, if any, sits under the line.
+ */
+export function PhonePairGround({
+  phones,
+  label,
+  priority = false,
+  xstyle,
+}: PairProps & { xstyle?: stylex.StyleXStyles }) {
+  const sizes = '(max-width: 560px) 46vw, (max-width: 1100px) 22vw, 250px'
+  return (
+    <div {...stylex.props(styles.groundWrap, xstyle)}>
+      <div role="group" aria-label={label} {...stylex.props(styles.groundPair)}>
+        <div {...stylex.props(styles.groundBack)}>
+          <ScreenPicture id={phones[1]} device="iphone" sizes={sizes} eager={priority} />
+        </div>
+        <div {...stylex.props(styles.groundFront)}>
+          <ScreenPicture id={phones[0]} device="iphone" sizes={sizes} priority={priority} />
+        </div>
+      </div>
+      <FootageCredit ids={phones} xstyle={styles.groundCredit} />
+    </div>
+  )
+}
+
+/** An iPad and two iPhones standing on a ground line: the iPad at the back, the phones in front of its right edge. */
+export function DevicesGround({ ipad, phones, priority = false }: StageSpec & { priority?: boolean }) {
+  return (
+    <div {...stylex.props(styles.groundWrap)}>
+      <div {...stylex.props(styles.groundDevices)}>
+        <div {...stylex.props(styles.groundIpad)}>
+          <ScreenPicture id={ipad} device="ipad" sizes={stageSizes.ipad} priority={priority} />
+        </div>
+        <div {...stylex.props(styles.groundPhoneA)}>
+          <ScreenPicture id={phones[0]} device="iphone" sizes={stageSizes.iphone} eager={priority} />
+        </div>
+        <div {...stylex.props(styles.groundPhoneB)}>
+          <ScreenPicture id={phones[1]} device="iphone" sizes={stageSizes.iphone} />
+        </div>
+      </div>
+      <FootageCredit ids={[ipad, ...phones]} xstyle={styles.groundCredit} />
+    </div>
+  )
+}
+
 /** Three screens side by side, with a caption, inside the text column. */
 export function Shots({ screens: ids, caption }: { screens: ScreenId[]; caption: string }) {
   return (
@@ -429,6 +476,29 @@ const styles = stylex.create({
     color: colors.muted,
   },
   railSection: { marginTop: '2rem' },
+  groundWrap: { position: 'relative', minWidth: 0 },
+  groundPair: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  groundBack: { width: '46%', flex: 'none', marginBottom: 0, order: 2, marginLeft: '-9%' },
+  groundFront: { width: '46%', flex: 'none', order: 1, position: 'relative', zIndex: 1 },
+  groundDevices: {
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
+  groundIpad: { width: '62%', flex: 'none' },
+  groundPhoneA: { width: '24%', flex: 'none', marginLeft: '-8%', position: 'relative', zIndex: 1 },
+  groundPhoneB: { width: '24%', flex: 'none', marginLeft: '-6%', position: 'relative', zIndex: 2 },
+  // Under the ground line, like a caption under a drawing.
+  groundCredit: {
+    position: 'absolute',
+    top: 'calc(100% + 0.9rem)',
+    left: 0,
+    right: 0,
+    marginTop: 0,
+  },
   credit: {
     marginTop: '0.75rem',
     marginBottom: 0,

@@ -152,7 +152,7 @@ export const type = stylex.defineVars({
   // Section and project titles: about body x 1.2^4.
   title: { default: '2.1875rem', [PHONE]: '2.0625rem' },
   // The name only: about body x 1.2^8 on wide screens, x 1.2^6 on phones.
-  display: { default: '4.5rem', [PHONE]: '3rem' },
+  display: { default: '5.25rem', [PHONE]: '3.25rem' },
 })
 
 /** The two weights. Geist Serif has one weight, so serif text always uses regular. */
@@ -162,12 +162,17 @@ export const weights = stylex.defineConsts({
 })
 
 export const layout = stylex.defineConsts({
-  wide: '1040px',
+  // The panorama: the width the home page's scenes are drawn across, and the header and footer with them.
+  wide: '1240px',
   // About 72 characters of body text per line.
   column: '36rem',
   // For pages with a date column beside the text, such as Work, and the case study details row.
   columnWide: '46rem',
   gutter: '2.5rem',
+  // The drawn line down the sides of the page (see Scene.tsx): how far in from the edge it runs.
+  sceneX: 'clamp(0.75rem, 2.4vw, 2.25rem)',
+  // How far content keeps in from the page edge: clear of that line and its 48px turns. Header, footer and pages share it.
+  sceneInset: 'calc(clamp(0.75rem, 2.4vw, 2.25rem) + 48px + 0.5rem)',
 })
 
 export const breakpoints = stylex.defineConsts({

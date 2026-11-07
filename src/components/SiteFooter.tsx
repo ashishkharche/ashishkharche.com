@@ -1,14 +1,13 @@
 import * as stylex from '@stylexjs/stylex'
 import { site } from '~/content/site'
 import { breakpoints, colors, type } from '~/styles/tokens.stylex'
-import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 export function SiteFooter() {
   const year = new Date().getFullYear()
   return (
     <footer {...stylex.props(styles.footer)}>
-      <div {...stylex.props(ui.wrap, sk.ruleTop, styles.row)}>
+      <div {...stylex.props(ui.wrap, styles.row)}>
         <p>
           © {year} {site.name} · {site.city}
         </p>

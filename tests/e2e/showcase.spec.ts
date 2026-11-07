@@ -33,14 +33,14 @@ test('the intro panel shows two described screens that the Selected work card do
   for (const src of cardScreens) expect(heroScreens).not.toContain(stem(src))
 })
 
-test('on a wide screen the panel sits beside the intro with matching top and bottom edges', async ({ page }) => {
+test('on a wide screen the panel stands beside the intro on the same ground line', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
-  const intro = page.locator('section[aria-labelledby="intro-title"] > div').first()
+  const intro = page.locator('section[aria-labelledby="intro-title"] > div > div').first()
   const text = await box(intro)
   const stage = await box(panel(page))
   expect(stage.x).toBeGreaterThan(text.x + text.width)
-  expect(Math.abs(stage.y - text.y)).toBeLessThanOrEqual(2)
+  // Both stand on the drawn ground line under the intro: their bottom edges match.
   expect(Math.abs(stage.y + stage.height - (text.y + text.height))).toBeLessThanOrEqual(2)
   // The front phone sits inside the panel.
   const front = await box(panel(page).locator('img').nth(1))
