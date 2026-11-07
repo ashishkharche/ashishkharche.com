@@ -1,6 +1,6 @@
 # D1 preview phone artwork, 7 November 2026
 
-Private review only. Not public-cleared. Ashish requested the split-view phones without concept or sample captions. Source exports are unchanged. WebP variants at 240, 480 and 800 pixels wide are resized from Marketing’s exports in `/workspace/wd-portfolio-phone-concepts-2026-11-07/exports/`.
+Private review only. Not public-cleared. Ashish requested the split-view phones without concept or sample captions. WebP variants at 240, 480 and 800 pixels wide are resized from Marketing’s exports in `/workspace/wd-portfolio-phone-concepts-2026-11-07/exports/`. The push-up exports are cropped to the phone body (1181×2558 from 1299×2676) and the corners outside its 158 pixel radius are transparent, so no dark square shows on the page. Those copies are in `exports/transparent/`.
 
 ## Placements
 

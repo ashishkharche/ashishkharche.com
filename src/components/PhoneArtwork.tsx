@@ -43,8 +43,8 @@ export function PhoneArtwork({
             .map((width) => `${path(phone, width)} ${width}w`)
             .join(', ')}
           sizes={compact ? '86px' : '(max-width: 560px) 42vw, 188px'}
-          width={phone === 'deadlift-pexels' ? 1320 : 1299}
-          height={phone === 'deadlift-pexels' ? 2868 : 2676}
+          width={phone === 'deadlift-pexels' ? 1320 : 1181}
+          height={phone === 'deadlift-pexels' ? 2868 : 2558}
           alt={descriptions[phone]}
           loading={priority ? 'eager' : 'lazy'}
           fetchPriority={priority && index === 0 ? 'high' : 'auto'}
