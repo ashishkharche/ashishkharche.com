@@ -72,7 +72,12 @@ const styles = stylex.create({
     marginInline: 'auto',
   },
   phone: { display: 'block', width: '47%', maxWidth: '188px', height: 'auto', objectFit: 'contain' },
-  screen: { borderRadius: '9% / 4.15%' },
+  screen: {
+    borderTopLeftRadius: '9% 4.15%',
+    borderTopRightRadius: '9% 4.15%',
+    borderBottomLeftRadius: '9% 4.15%',
+    borderBottomRightRadius: '9% 4.15%',
+  },
   single: { width: '100%', maxWidth: '164px' },
   compact: { height: '100%', justifyContent: 'flex-start', marginInline: 0 },
   small: { width: 'auto', maxWidth: '100%', height: '100%' },
