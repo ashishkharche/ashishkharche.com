@@ -118,9 +118,12 @@ const deviceOutline = {
  * of a phone. Padding in percent of the width keeps the bezel in proportion.
  */
 export const device = stylex.create({
+  // The device is cut from the paper (the page colour, not a panel), so a phone in front hides the one behind.
   phone: {
     position: 'relative',
     display: 'block',
+    backgroundColor: colors.bg,
+    ...corners('17% 8%'),
     paddingTop: '9%',
     paddingBottom: '9%',
     paddingInline: '4.5%',
@@ -139,6 +142,8 @@ export const device = stylex.create({
   ipad: {
     position: 'relative',
     display: 'block',
+    backgroundColor: colors.bg,
+    ...corners('7% 9.5%'),
     padding: '4%',
     '::before': { ...deviceOutline, ...corners('7% 9.5%') },
   },
