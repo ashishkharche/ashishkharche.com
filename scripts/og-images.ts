@@ -1,7 +1,7 @@
 // Draws the per-page link preview cards (1200 by 630 PNG) into
 // public/assets/og/. Run with `pnpm og-images` after changing a card, and
 // commit the images. Uses the installed Chrome, like the screenshot script.
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { chromium } from '@playwright/test'
@@ -41,21 +41,6 @@ const cards: Card[] = [
     footer: 'ashishkharche.com/projects',
     // One dark Workout Director screen, so the card keeps one tone and the title fits on two lines.
     phones: ['/assets/img/wd/iphone/02-voice-800.webp'],
-  },
-  {
-    src: noteOgImages['workout-director-1'].src,
-    eyebrow: 'Notes · Workout Director, part 1',
-    title: 'Understanding on-device rep counting in Workout Director and what it sends over the network',
-    footer: 'ashishkharche.com/notes',
-    // The note shows the Pexels capture of the Voice screen, so its card does too.
-    phones: ['/assets/img/wd/iphone/02-voice-pexels-800.webp'],
-  },
-  {
-    src: noteOgImages['workout-director-2'].src,
-    eyebrow: 'Notes · Workout Director, part 2',
-    title: "How Workout Director's exercise figures are rendered and checked against pose targets",
-    footer: 'ashishkharche.com/notes',
-    figures: ['/assets/img/wd-figure-goblet-start-light.webp', '/assets/img/wd-figure-goblet-end-light.webp'],
   },
 ]
 
@@ -131,3 +116,11 @@ for (const card of cards) {
 }
 await browser.close()
 await rm(work, { recursive: true, force: true })
+
+// Keep the approved note banners as their link previews rather than redrawing old cards.
+for (const [slug, name] of [
+  ['workout-director-1', 'note-01-counting'],
+  ['workout-director-2', 'note-02-figure-pipeline'],
+] as const) {
+  await copyFile(join(publicDir, 'assets/banners', `${name}-1200x630.png`), join(publicDir, noteOgImages[slug].src))
+}

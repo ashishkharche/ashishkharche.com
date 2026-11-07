@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { useId } from 'react'
 import { Logo } from './Logo'
 import { SketchArrow } from './SketchArrow'
-import { PhoneArtwork } from './PhoneArtwork'
+import { PortfolioBanner } from './NoteBanner'
 import { WdWordmark } from './WdWordmark'
 import { screenshotSrc, screenshotSrcSet, type ProjectCard as Card } from '~/content/projects'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
@@ -53,10 +53,10 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
           {...stylex.props(styles.sceneMedia, scene === 'devicesLeft' ? styles.sceneMediaLeft : styles.sceneMediaRight)}
         >
           {/* Artwork attribution is consolidated in the site footer. */}
-          <PhoneArtwork phones={['pushup-balanced']} priority={priority} label="Workout Director screens" />
+          <PortfolioBanner priority={priority} />
         </div>
       ) : card.stage ? (
-        <PhoneArtwork phones={['pushup-balanced']} priority={priority} label="Workout Director screens" />
+        <PortfolioBanner priority={priority} />
       ) : card.shots?.length ? (
         <div
           {...stylex.props(

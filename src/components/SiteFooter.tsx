@@ -62,6 +62,20 @@ export function SiteFooter() {
           </a>
           .
         </p>
+        <p>
+          Video:{' '}
+          <a
+            href="https://www.pexels.com/video/woman-in-pink-and-gray-sports-gear-exercising-outdoors-2785531/"
+            {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}
+          >
+            cottonbro studio / Pexels (2785531)
+          </a>
+          . Cropped still at 2.36 seconds.{' '}
+          <a href="https://www.pexels.com/license/" {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}>
+            Pexels License
+          </a>
+          .
+        </p>
       </div>
       {/*
         Line art across the full width: the AK mark, Workout Director exercise

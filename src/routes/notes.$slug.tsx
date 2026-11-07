@@ -1,3 +1,4 @@
+import { NoteBanner } from '~/components/NoteBanner'
 import { noteOgImage } from '~/content/ogImages'
 import * as stylex from '@stylexjs/stylex'
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
@@ -42,6 +43,7 @@ export const Route = createFileRoute('/notes/$slug')({
 function NotePage() {
   const note = Route.useLoaderData()
   const Body = getNoteBody(note.slug)
+  const hasBanner = note.slug === 'workout-director-1' || note.slug === 'workout-director-2'
   if (!Body) throw notFound()
   return (
     <Main>
@@ -60,8 +62,13 @@ function NotePage() {
                 {note.title}
               </h1>
             </div>
-            <Figure name="squat" xstyle={legSpace.headFigure} />
+            {!hasBanner && <Figure name="squat" xstyle={legSpace.headFigure} />}
           </div>
+          {hasBanner && (
+            <div {...stylex.props(styles.banner)}>
+              <NoteBanner slug={note.slug} />
+            </div>
+          )}
         </Leg>
         <Leg from="right" to="edge" as="div" xstyle={legSpace.text}>
           <div {...stylex.props(styles.body, legSpace.column)}>
@@ -76,6 +83,7 @@ function NotePage() {
 }
 
 const styles = stylex.create({
+  banner: { marginTop: '2rem', maxWidth: '52rem' },
   back: {
     display: 'inline-block',
     marginBottom: '1.75rem',
