@@ -18,7 +18,7 @@ export const Route = createFileRoute('/work')({
       path: '/work/',
       title: 'Work',
       description:
-        'Work history of Ashish Kharche: senior mobile engineer at Paythru (iOS, Android and AWS), QA on more than 500 Grok builds at SpaceX Super Intelligence (formerly xAI), Maestro and Kingston University.',
+        'Work history of Ashish Kharche: senior mobile engineer at Paythru (iOS, Android and AWS), QA engineer at SpaceX Super Intelligence (formerly xAI) testing Grok iOS and web builds, Grok Bot and Grok Build before release, plus Maestro and Kingston University.',
     }),
   component: Work,
 })

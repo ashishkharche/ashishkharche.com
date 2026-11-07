@@ -20,7 +20,9 @@ export const roles: Role[] = [
     logo: 'spacexsi',
     orgNote: '(formerly xAI)',
     role: 'Quality Assurance Engineer, 2026',
-    paragraphs: ['I’ve tested more than 500 Grok iOS and web builds before release.'],
+    paragraphs: [
+      'As a Quality Assurance Engineer, I’ve tested Grok iOS and web builds, Grok Bot and Grok Build before release.',
+    ],
   },
   {
     when: 'Oct 2022 to Oct 2026',

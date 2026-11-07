@@ -222,7 +222,7 @@ const roles: ReadonlyArray<{
   {
     name: 'SpaceX Super Intelligence',
     years: '2026',
-    text: 'As a Quality Assurance Engineer, I’ve tested more than 500 Grok iOS and web builds before release.',
+    text: 'As a Quality Assurance Engineer, I’ve tested Grok iOS and web builds, Grok Bot and Grok Build before release.',
     // The SpaceXSI mark is wide and thin, so it gets more width to look the same weight.
     logo: 'spacexsi',
     logoSize: 24,

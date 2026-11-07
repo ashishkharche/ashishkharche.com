@@ -46,9 +46,9 @@ function About() {
               page.
             </P>
             <P>
-              From January to October 2026 I also worked in QA at <Logo name="spacexsi" size={20} inline />
-              SpaceX Super Intelligence (formerly xAI), on regression and release testing of more than 500 builds of the
-              Grok iOS and web apps.
+              From January to October 2026 I also worked at <Logo name="spacexsi" size={20} inline />
+              SpaceX Super Intelligence (formerly xAI). As a Quality Assurance Engineer, I’ve tested Grok iOS and web
+              builds, Grok Bot and Grok Build before release.
             </P>
             <P>
               Alongside that, I develop and release two iPhone apps, <Logo name="workoutDirector" size={20} inline />
