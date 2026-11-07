@@ -1,34 +1,35 @@
 import * as stylex from '@stylexjs/stylex'
 import { site } from '~/content/site'
 import { breakpoints, colors, type } from '~/styles/tokens.stylex'
+import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 export function SiteFooter() {
   const year = new Date().getFullYear()
   return (
     <footer {...stylex.props(styles.footer)}>
-      <div {...stylex.props(ui.wrap, styles.row)}>
+      <div {...stylex.props(ui.wrap, sk.ruleTop, styles.row)}>
         <p>
           © {year} {site.name} · {site.city}
         </p>
         <ul role="list" aria-label="Elsewhere" {...stylex.props(styles.list)}>
           <li>
-            <a href={`mailto:${site.email}`} {...stylex.props(ui.link, ui.quietLink)}>
+            <a href={`mailto:${site.email}`} {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}>
               Email
             </a>
           </li>
           <li>
-            <a href={site.linkedin} {...stylex.props(ui.link, ui.quietLink)}>
+            <a href={site.linkedin} {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}>
               LinkedIn
             </a>
           </li>
           <li>
-            <a href={site.github} {...stylex.props(ui.link, ui.quietLink)}>
+            <a href={site.github} {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}>
               GitHub
             </a>
           </li>
           <li>
-            <a href={site.x} rel="me noopener" {...stylex.props(ui.link, ui.quietLink)}>
+            <a href={site.x} rel="me noopener" {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}>
               X
             </a>
           </li>

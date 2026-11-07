@@ -8,6 +8,7 @@ import { Rows } from '~/components/Rows'
 import { certificationsNote, maestroArticles, roles, tools, workIntro } from '~/content/work'
 import { seo } from '~/lib/seo'
 import { breakpoints, colors, type } from '~/styles/tokens.stylex'
+import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/work')({
@@ -31,16 +32,16 @@ function Work() {
           <h2 id="roles-title" {...stylex.props(ui.visuallyHidden)}>
             Roles
           </h2>
-          <ol role="list" {...stylex.props(styles.entries)}>
-            {roles.map((role) => (
-              <li key={role.org} {...stylex.props(styles.entry)}>
+          <ol role="list" {...stylex.props(sk.ruleBottom, styles.entries)}>
+            {roles.map((role, index) => (
+              <li key={role.org} {...stylex.props(index > 0 && sk.ruleTop, styles.entry)}>
                 <p {...stylex.props(styles.when)}>
                   {role.when ?? <span {...stylex.props(ui.visuallyHidden)}>No dates</span>}
                 </p>
                 <div>
                   <h3 {...stylex.props(ui.h3, styles.org)}>
                     {role.logo ? (
-                      <span {...stylex.props(styles.mark)}>
+                      <span {...stylex.props(sk.box, styles.mark)}>
                         <Logo name={role.logo} size={32} />
                       </span>
                     ) : null}
@@ -80,8 +81,8 @@ function Work() {
             Tools
           </h2>
           <dl {...stylex.props(ui.mt1)}>
-            {tools.map((tool) => (
-              <div key={tool.area} {...stylex.props(styles.skill)}>
+            {tools.map((tool, index) => (
+              <div key={tool.area} {...stylex.props(index > 0 && sk.ruleTop, styles.skill)}>
                 <dt {...stylex.props(ui.muted)}>{tool.area}</dt>
                 <dd>{tool.items}</dd>
               </div>
@@ -108,16 +109,18 @@ const styles = stylex.create({
     gridTemplateColumns: { default: '10rem 1fr', [breakpoints.tablet]: '1fr' },
     gap: { default: '1.5rem', [breakpoints.tablet]: '0.2rem' },
     paddingBlock: '1.75rem',
-    borderTopWidth: '1px',
-    borderTopStyle: 'solid',
-    borderTopColor: colors.line,
-    borderBottomWidth: { default: 0, ':last-child': '1px' },
-    borderBottomStyle: 'solid',
-    borderBottomColor: colors.line,
   },
   when: { color: colors.muted, fontSize: type.meta, paddingTop: '0.1rem', textWrap: 'balance' },
   org: { display: 'flex', alignItems: 'center', gap: '0.75rem' },
-  mark: { display: 'flex', justifyContent: 'center', width: '2.6rem', flex: 'none' },
+  // Each company mark in a drawn box of the same size.
+  mark: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '2.75rem',
+    height: '2.5rem',
+    flex: 'none',
+  },
   role: { color: colors.muted, marginTop: '0.4rem', textWrap: 'pretty' },
   para: { marginTop: '0.75rem', textWrap: 'pretty' },
   skill: {
@@ -125,11 +128,5 @@ const styles = stylex.create({
     gridTemplateColumns: { default: '7rem 1fr', [breakpoints.phone]: '1fr' },
     gap: { default: '1rem', [breakpoints.phone]: 0 },
     paddingBlock: '0.55rem',
-    borderTopWidth: '1px',
-    borderTopStyle: 'solid',
-    borderTopColor: colors.line,
-    borderBottomWidth: { default: 0, ':last-child': '1px' },
-    borderBottomStyle: 'solid',
-    borderBottomColor: colors.line,
   },
 })

@@ -15,6 +15,7 @@ import {
   type StageSpec,
 } from '~/content/workoutDirectorScreens'
 import { breakpoints, colors, type, weights } from '~/styles/tokens.stylex'
+import { device as drawn } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 interface PictureProps {
@@ -34,25 +35,30 @@ export function FootageCredit({ ids, xstyle }: { ids: readonly ScreenId[]; xstyl
   return <p {...stylex.props(styles.credit, xstyle)}>{footageCredit(ids)}</p>
 }
 
-/** One App Store screen: AVIF where the browser takes it, WebP otherwise, at the size it is shown. */
+/**
+ * One App Store screen, inside a phone or iPad drawn in the pen's line: AVIF where the browser takes it, WebP
+ * otherwise, at the size it is shown.
+ */
 export function ScreenPicture({ id, device, sizes, alt, eager = false, priority = false, xstyle }: PictureProps) {
   const { width, height } = deviceSize[device]
   return (
-    <picture {...stylex.props(styles.picture)}>
-      <source type="image/avif" srcSet={screenSrcSet(id, device, 'avif')} sizes={sizes} />
-      <img
-        src={screenPath(id, device, screenWidths[device][0], 'webp')}
-        srcSet={screenSrcSet(id, device, 'webp')}
-        sizes={sizes}
-        width={width}
-        height={height}
-        alt={alt ?? screen(id).alt}
-        loading={eager || priority ? 'eager' : 'lazy'}
-        fetchPriority={priority ? 'high' : 'auto'}
-        decoding="async"
-        {...stylex.props(styles.img, device === 'ipad' ? styles.ipad : styles.iphone, xstyle)}
-      />
-    </picture>
+    <span {...stylex.props(device === 'ipad' ? drawn.ipad : drawn.phone)}>
+      <picture {...stylex.props(styles.picture)}>
+        <source type="image/avif" srcSet={screenSrcSet(id, device, 'avif')} sizes={sizes} />
+        <img
+          src={screenPath(id, device, screenWidths[device][0], 'webp')}
+          srcSet={screenSrcSet(id, device, 'webp')}
+          sizes={sizes}
+          width={width}
+          height={height}
+          alt={alt ?? screen(id).alt}
+          loading={eager || priority ? 'eager' : 'lazy'}
+          fetchPriority={priority ? 'high' : 'auto'}
+          decoding="async"
+          {...stylex.props(styles.img, device === 'ipad' ? styles.ipad : styles.iphone, xstyle)}
+        />
+      </picture>
+    </span>
   )
 }
 
@@ -319,28 +325,27 @@ const styles = stylex.create({
     borderBottomLeftRadius: '4.5% 3.4%',
     borderBottomRightRadius: '4.5% 3.4%',
   },
-  edge: {
-    outlineWidth: '1px',
-    outlineStyle: 'solid',
-    outlineColor: colors.phoneEdge,
-    outlineOffset: '-1px',
-  },
-  lifted: {
-    outlineWidth: '1px',
-    outlineStyle: 'solid',
-    outlineColor: colors.phoneEdge,
-    outlineOffset: '-1px',
-    boxShadow: `0 2px 6px ${colors.stageShadow}, 0 28px 56px -18px ${colors.stageShadow}`,
-  },
+  // The drawn device is the edge now, so the screens need no outline or shadow of their own.
+  edge: {},
+  lifted: {},
   stage: {
     position: 'relative',
     overflow: 'hidden',
     isolation: 'isolate',
-    backgroundColor: colors.stage,
-    backgroundImage: `radial-gradient(110% 80% at 50% 0%, ${colors.stageGlow}, transparent 70%)`,
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: colors.line,
+    // No panel: the devices are drawn straight on the paper, standing on a drawn ground line.
+    '::after': {
+      content: '""',
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: '6px',
+      height: '16px',
+      backgroundColor: colors.ink,
+      maskImage: 'url("/assets/img/sketch/ground.svg")',
+      maskRepeat: 'no-repeat',
+      maskSize: '100% 100%',
+      pointerEvents: 'none',
+    },
     aspectRatio: { default: '16 / 10', [breakpoints.phone]: '5 / 6' },
   },
   stageHero: {

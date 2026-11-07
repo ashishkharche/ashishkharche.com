@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
-import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
+import { breakpoints, colors, type, weights } from '~/styles/tokens.stylex'
+import { SketchArrow } from './SketchArrow'
 
 export interface NoteItem {
   title: string
@@ -33,7 +34,7 @@ export function NoteList({ items, compact = false }: { items: NoteItem[]; compac
               <Link to={item.href} {...stylex.props(stylex.defaultMarker(), styles.link)}>
                 {item.title}
                 <span aria-hidden="true" {...stylex.props(styles.arrow)}>
-                  {' →'}
+                  <SketchArrow />
                 </span>
               </Link>
             )}
@@ -73,14 +74,7 @@ const styles = stylex.create({
   },
   link: {
     color: colors.text,
-    textDecorationLine: {
-      default: 'none',
-      [stylex.when.ancestor(':hover')]: 'underline',
-      ':focus-visible': 'underline',
-    },
-    textDecorationColor: colors.accentLine,
-    textDecorationThickness: '1.5px',
-    textUnderlineOffset: '4px',
+    textDecorationLine: 'none',
     outline: 'none',
     // Stretches the link over the whole note.
     '::after': {
@@ -92,13 +86,11 @@ const styles = stylex.create({
   // Geist Serif has no arrows and the arrow should not be underlined, so it is its own inline block.
   arrow: {
     display: 'inline-block',
-    marginLeft: '0.1em',
-    fontFamily: fonts.sans,
+    marginLeft: '0.35em',
     color: { default: colors.muted, [stylex.when.ancestor(':hover')]: colors.text },
     transform: { default: 'none', [stylex.when.ancestor(':hover')]: 'translateX(3px)' },
     transitionProperty: { default: 'transform, color', [breakpoints.reducedMotion]: 'color' },
     transitionDuration: '0.15s',
-    whiteSpace: 'pre',
   },
   muted: { color: colors.muted, fontWeight: weights.regular },
   meta: {

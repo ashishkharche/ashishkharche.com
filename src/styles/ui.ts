@@ -37,21 +37,27 @@ export const ui = stylex.create({
   wide: {
     width: { default: `min(100vw - ${layout.gutter}, ${layout.wide})`, [breakpoints.phone]: 'calc(100vw - 3rem)' },
   },
+  /**
+   * A link in running text: underlined by hand, a pen line under the words in the footer drawing's ink
+   * that follows each line of a wrapped link. Hovering darkens the words.
+   */
   link: {
     color: { default: colors.text, ':hover': colors.accent },
-    textDecorationLine: 'underline',
-    textDecorationColor: { default: colors.accentLine, ':hover': colors.accent },
-    textDecorationThickness: '1.5px',
-    textUnderlineOffset: '3px',
-    transitionProperty: 'color, text-decoration-color',
-    transitionDuration: '0.15s',
+    textDecorationLine: 'none',
+    backgroundImage: colors.inkUnderline,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '100% 0.45em',
+    backgroundPosition: '0 100%',
+    paddingBottom: '0.16em',
+    boxDecorationBreak: 'clone',
     ...focusRing,
   },
   quietLink: {
     color: { default: colors.muted, ':hover': colors.accent },
   },
   plainLink: {
-    textDecorationLine: 'none',
+    backgroundImage: 'none',
+    paddingBottom: 0,
   },
   focusRing,
   muted: { color: colors.muted },
@@ -68,23 +74,22 @@ export const ui = stylex.create({
     borderWidth: 0,
   },
   /**
-   * A page section: a wide gap above it, with a soft line of hills and the AK
-   * mark from the footer art drawn in the middle of the gap. The drawing is a
-   * mask filled with the muted text colour, so it follows the theme.
+   * A page section: a wide gap above it, with a ground line drawn across the
+   * middle of the gap in the pen of the footer drawing. The line is a mask
+   * filled with the ink colour, so it follows the theme.
    */
   section: {
-    marginTop: { default: 'clamp(4.5rem, 8vw, 6.5rem)', [breakpoints.phone]: '3.5rem' },
+    marginTop: { default: 'clamp(3.5rem, 6vw, 5rem)', [breakpoints.phone]: '3rem' },
     '::before': {
       content: '""',
       display: 'block',
-      height: { default: '64px', [breakpoints.phone]: '48px' },
-      marginBottom: { default: 'clamp(3.5rem, 6vw, 5rem)', [breakpoints.phone]: '3rem' },
-      backgroundColor: colors.muted,
-      opacity: colors.artOpacity,
-      maskImage: 'url("/assets/img/section-hills.svg")',
+      height: '16px',
+      marginBottom: { default: 'clamp(3rem, 5vw, 4.25rem)', [breakpoints.phone]: '2.5rem' },
+      backgroundColor: colors.ink,
+      maskImage: 'url("/assets/img/sketch/ground.svg")',
       maskRepeat: 'no-repeat',
-      maskPosition: 'center bottom',
-      maskSize: 'auto 100%',
+      maskPosition: 'center',
+      maskSize: '100% 100%',
       pointerEvents: 'none',
     },
   },

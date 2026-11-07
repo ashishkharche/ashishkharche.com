@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { NotFound } from '~/components/NotFound'
 import { SiteFooter } from '~/components/SiteFooter'
 import { SiteHeader } from '~/components/SiteHeader'
+import { SketchDefs } from '~/components/SketchDefs'
 import { site } from '~/content/site'
 import { feedPath, feedTitle } from '~/lib/feed'
 import { themeScript } from '~/lib/theme'
@@ -66,6 +67,7 @@ function RootDocument({ children }: { children: ReactNode }) {
         <meta name="theme-color" content="#0c0d0e" media="(prefers-color-scheme: dark)" />
       </head>
       <body {...stylex.props(styles.body)}>
+        <SketchDefs />
         <a href="#main" {...stylex.props(styles.skip)}>
           Skip to content
         </a>

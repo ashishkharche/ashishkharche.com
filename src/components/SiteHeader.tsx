@@ -3,6 +3,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 import { nav, site } from '~/content/site'
 import { sectionFor } from '~/lib/urls'
 import { breakpoints, colors, type } from '~/styles/tokens.stylex'
+import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 import { Brand } from './Brand'
 import { ThemeToggle } from './ThemeToggle'
@@ -13,7 +14,7 @@ export function SiteHeader() {
   const isHome = pathname === '/'
 
   return (
-    <header {...stylex.props(styles.header)}>
+    <header {...stylex.props(sk.ruleBottom)}>
       <div {...stylex.props(ui.wrap, styles.row)}>
         <Link to="/" aria-current={isHome ? 'page' : undefined} {...stylex.props(ui.focusRing, styles.home)}>
           <Brand />
@@ -46,11 +47,6 @@ export function SiteHeader() {
 }
 
 const styles = stylex.create({
-  header: {
-    borderBottomWidth: '1px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: colors.line,
-  },
   row: {
     display: 'flex',
     alignItems: 'center',
@@ -77,18 +73,30 @@ const styles = stylex.create({
     gap: '0.25rem',
   },
   navLink: {
+    position: 'relative',
     display: 'block',
     paddingBlock: '0.3rem',
     paddingInline: '0.65rem',
-    textDecorationLine: { default: 'none', ':hover': 'underline' },
-    textDecorationThickness: '1px',
-    textUnderlineOffset: '6px',
+    textDecorationLine: 'none',
     fontSize: type.meta,
     color: { default: colors.muted, ':hover': colors.text },
   },
+  // The page you are on is circled by hand, as you would mark it on a printed page.
   active: {
     color: colors.text,
-    textDecorationLine: 'underline',
+    '::after': {
+      content: '""',
+      position: 'absolute',
+      top: '-0.15rem',
+      bottom: '-0.15rem',
+      left: '-0.1rem',
+      right: '-0.1rem',
+      backgroundColor: colors.inkStrong,
+      maskImage: 'url("/assets/img/sketch/loop.svg")',
+      maskRepeat: 'no-repeat',
+      maskSize: '100% 100%',
+      pointerEvents: 'none',
+    },
   },
   toggle: {
     marginLeft: { default: null, [breakpoints.phone]: 'auto' },

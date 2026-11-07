@@ -201,7 +201,7 @@ const styles = stylex.create({
     borderWidth: '1px',
     borderStyle: 'solid',
     borderColor: colors.line,
-    backgroundColor: colors.soft,
+    backgroundColor: 'transparent',
   },
   monogram: {
     fontSize: type.meta,

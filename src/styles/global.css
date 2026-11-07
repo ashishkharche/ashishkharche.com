@@ -195,3 +195,12 @@ pre.code code {
 .tok-underline {
   text-decoration: underline;
 }
+
+/*
+  Diagrams are drawn with the same pen as the rest of the page: their boxes,
+  arrows and lines go through the sk-pen filter (see SketchDefs). Text is left
+  straight so it stays easy to read.
+*/
+svg.pele :is(rect, path, line, polyline, polygon, ellipse, circle) {
+  filter: url(#sk-pen);
+}

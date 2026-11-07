@@ -5,6 +5,7 @@ import { Diagram } from '~/components/Diagram'
 import { ThemedFigures } from '~/components/Figures'
 import { Shots } from '~/components/Screens'
 import { Main } from '~/components/Main'
+import { SketchArrow } from '~/components/SketchArrow'
 import { Muted, Prose, mdxComponents } from '~/components/Prose'
 import { getNoteBody } from '~/content/noteBodies'
 import { getNote } from '~/content/notes'
@@ -45,7 +46,7 @@ function NotePage() {
     <Main>
       <div {...stylex.props(ui.column)}>
         <Link to="/notes/" {...stylex.props(styles.back, ui.focusRing)}>
-          ← Notes
+          <SketchArrow dir="left" /> Notes
         </Link>
         <Prose as="article" aria-labelledby="post-title">
           <header>

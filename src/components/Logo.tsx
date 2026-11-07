@@ -73,7 +73,8 @@ const styles = stylex.create({
     verticalAlign: '-0.2em',
     marginInlineEnd: '0.3em',
   },
-  img: { display: 'block', objectFit: 'contain' },
+  // In the pen's one colour, like the rest of the page.
+  img: { display: 'block', objectFit: 'contain', filter: 'grayscale(1)' },
   lightOnly: { display: colors.sunDisplay },
   darkOnly: { display: colors.moonDisplay },
   appIcon: {

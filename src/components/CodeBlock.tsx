@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import { useRef, useState, useSyncExternalStore } from 'react'
 import type { ComponentPropsWithoutRef } from 'react'
 import { breakpoints, colors, fonts } from '~/styles/tokens.stylex'
+import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 const languageNames: Record<string, string> = {
@@ -54,7 +55,7 @@ export function CodeBlock({ children, 'data-language': language = 'text' }: PreP
   }
 
   return (
-    <div {...stylex.props(styles.block)}>
+    <div {...stylex.props(sk.box, styles.block)}>
       <div {...stylex.props(styles.bar)}>
         <span {...stylex.props(styles.language)}>{label}</span>
         {canCopy ? (
@@ -83,12 +84,7 @@ const styles = stylex.create({
     marginBottom: '1.5rem',
     // On wider screens the box reaches past the text column, so the code lines up with the text.
     marginInline: { default: null, [breakpoints.desktop]: '-1rem' },
-    backgroundColor: colors.codeBg,
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: colors.codeLine,
-    borderRadius: '10px',
-    overflow: 'hidden',
+    // A drawn box on the paper (sk.box): no fill behind the code.
   },
   bar: {
     display: 'flex',
@@ -96,9 +92,20 @@ const styles = stylex.create({
     justifyContent: 'space-between',
     minHeight: '2.25rem',
     paddingInline: '1rem',
-    borderBottomWidth: '1px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: colors.codeLine,
+    position: 'relative',
+    '::after': {
+      content: '""',
+      position: 'absolute',
+      left: '0.5rem',
+      right: '0.5rem',
+      bottom: '-5px',
+      height: '10px',
+      borderTopWidth: '1.5px',
+      borderTopStyle: 'dashed',
+      borderTopColor: colors.ink,
+      filter: 'url(#sk-pen-2)',
+      pointerEvents: 'none',
+    },
     fontSize: '0.8rem',
     color: colors.muted,
   },
@@ -110,7 +117,7 @@ const styles = stylex.create({
     paddingInline: '0.5rem',
     borderWidth: 0,
     borderRadius: '6px',
-    backgroundColor: { default: 'transparent', ':hover': colors.codeLine },
+    backgroundColor: 'transparent',
     color: { default: colors.muted, ':hover': colors.text },
     font: 'inherit',
     cursor: 'pointer',

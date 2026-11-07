@@ -7,6 +7,7 @@ import { NoteList } from '~/components/NoteList'
 import { ProjectCard } from '~/components/ProjectCard'
 import { PhonePairStage } from '~/components/Screens'
 import { SectionHead } from '~/components/SectionHead'
+import { SketchArrow } from '~/components/SketchArrow'
 import { kaloCard, workoutDirectorCard, workoutDirectorLinks } from '~/content/projects'
 import { noteListSummary, notes } from '~/content/notes'
 import type { ScreenId } from '~/content/workoutDirectorScreens'
@@ -15,6 +16,7 @@ import { formatShortDate } from '~/lib/dates'
 import { seo } from '~/lib/seo'
 import { homeJsonLd, jsonLdScript } from '~/lib/structuredData'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
+import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 // Two different moves: the push-up count in front of a deadlift. Neither is on the Selected work card below, so no
@@ -58,11 +60,11 @@ function Home() {
               I work on iOS and Android apps, AI features and the AWS backend behind them.
             </p>
 
-            <div {...stylex.props(styles.facts)}>
+            <div {...stylex.props(sk.ruleTop, styles.facts)}>
               <ul role="list" aria-label="Roles" {...stylex.props(styles.roles)}>
                 <li {...stylex.props(styles.role)}>
                   {/* The SpaceXSI mark is wide and thin, so it gets more width to look the same weight. */}
-                  <span {...stylex.props(styles.logoBox)}>
+                  <span {...stylex.props(sk.box, styles.logoBox)}>
                     <Logo name="spacexsi" size={24} />
                   </span>
                   <span>
@@ -76,7 +78,7 @@ function Home() {
                   </span>
                 </li>
                 <li {...stylex.props(styles.role)}>
-                  <span {...stylex.props(styles.logoBox)}>
+                  <span {...stylex.props(sk.box, styles.logoBox)}>
                     <Logo name="paythru" size={22} />
                   </span>
                   <span>
@@ -90,7 +92,7 @@ function Home() {
                   </span>
                 </li>
                 <li {...stylex.props(styles.role)}>
-                  <span {...stylex.props(styles.logoBox)}>
+                  <span {...stylex.props(sk.box, styles.logoBox)}>
                     <Logo name="maestro" size={22} />
                   </span>
                   <span>
@@ -133,7 +135,7 @@ function Home() {
               </ul>
             </div>
 
-            <div aria-labelledby="wd-title" role="group" {...stylex.props(styles.app)}>
+            <div aria-labelledby="wd-title" role="group" {...stylex.props(sk.ruleTop, styles.app)}>
               <div {...stylex.props(styles.appHead)}>
                 <Logo name="workoutDirector" size={44} />
                 <div>
@@ -148,19 +150,23 @@ function Home() {
                   <a
                     key={link.href}
                     href={link.href}
-                    {...stylex.props(styles.button, index === 0 && styles.primary, ui.focusRing)}
+                    {...stylex.props(
+                      stylex.defaultMarker(),
+                      index === 0 ? sk.pillHeavy : sk.pill,
+                      styles.button,
+                      ui.focusRing,
+                    )}
                   >
                     {link.label}
-                    <span aria-hidden="true" {...stylex.props(styles.arrow)}>
-                      ↗
-                    </span>
+                    <SketchArrow dir="out" xstyle={styles.arrow} />
                   </a>
                 ))}
-                <Link to="/projects/workout-director/" {...stylex.props(styles.button, ui.focusRing)}>
+                <Link
+                  to="/projects/workout-director/"
+                  {...stylex.props(stylex.defaultMarker(), sk.pill, styles.button, ui.focusRing)}
+                >
                   Case study
-                  <span aria-hidden="true" {...stylex.props(styles.arrow)}>
-                    →
-                  </span>
+                  <SketchArrow xstyle={styles.arrow} />
                 </Link>
               </p>
             </div>
@@ -240,6 +246,10 @@ const styles = stylex.create({
     lineHeight: 1,
     fontWeight: weights.regular,
     letterSpacing: '-0.025em',
+    // The name is drawn as an outline, the way the footer drawing draws the AK mark.
+    color: 'transparent',
+    WebkitTextStrokeWidth: '1.25px',
+    WebkitTextStrokeColor: colors.text,
   },
   lead: {
     marginTop: { default: '1.25rem', [breakpoints.phone]: '1.25rem' },
@@ -254,9 +264,6 @@ const styles = stylex.create({
     rowGap: '1.5rem',
     marginTop: '2rem',
     paddingTop: '1.5rem',
-    borderTopWidth: '1px',
-    borderTopStyle: 'solid',
-    borderTopColor: colors.line,
   },
   roles: {
     listStyle: 'none',
@@ -267,17 +274,18 @@ const styles = stylex.create({
   // mark is centred on its name and the names share one left edge. SpaceX is first only.
   role: {
     display: 'grid',
-    gridTemplateColumns: '2rem minmax(0, 1fr)',
+    gridTemplateColumns: '2.5rem minmax(0, 1fr)',
     columnGap: '0.85rem',
     alignItems: 'start',
   },
+  // A drawn box round each mark, centred on the name's line.
   logoBox: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '2rem',
-    height: '1.5rem',
-    overflow: 'hidden',
+    width: '2.5rem',
+    height: '2.25rem',
+    marginTop: '-0.375rem',
   },
   roleHead: {
     display: 'flex',
@@ -313,9 +321,6 @@ const styles = stylex.create({
     rowGap: '1.1rem',
     marginTop: '1.75rem',
     paddingTop: '1.5rem',
-    borderTopWidth: '1px',
-    borderTopStyle: 'solid',
-    borderTopColor: colors.line,
   },
   appHead: { display: 'flex', alignItems: 'center', gap: '0.9rem' },
   appName: {
@@ -334,22 +339,16 @@ const styles = stylex.create({
     minHeight: { default: '2.6rem', [breakpoints.phone]: '2.5rem' },
     paddingInline: { default: '1.05rem', [breakpoints.phone]: '0.85rem' },
     borderRadius: '999px',
-    borderWidth: '1.5px',
-    borderStyle: 'solid',
-    borderColor: colors.text,
     color: colors.text,
-    backgroundColor: { default: colors.bg, ':hover': colors.panel },
     fontSize: type.meta,
     fontWeight: weights.medium,
     textDecorationLine: 'none',
-    transitionProperty: 'background-color, color',
+  },
+  arrow: {
+    transform: { default: 'none', [stylex.when.ancestor(':hover')]: 'translateX(2px)' },
+    transitionProperty: { default: 'transform', [breakpoints.reducedMotion]: 'none' },
     transitionDuration: '0.15s',
   },
-  primary: {
-    color: colors.bg,
-    backgroundColor: { default: colors.text, ':hover': colors.muted },
-  },
-  arrow: { fontSize: '1em' },
   grid: {
     display: 'grid',
     gridTemplateColumns: '1fr',

@@ -1,7 +1,9 @@
 import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
 import { breakpoints, colors, type } from '~/styles/tokens.stylex'
+import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
+import { SketchArrow } from './SketchArrow'
 
 export interface Row {
   title: string
@@ -13,18 +15,18 @@ export interface Row {
 
 export function Rows({ rows, spaced = false }: { rows: Row[]; spaced?: boolean }) {
   return (
-    <ul role="list" {...stylex.props(styles.list, spaced && ui.mt1)}>
+    <ul role="list" {...stylex.props(sk.ruleTop, styles.list, spaced && ui.mt1)}>
       {rows.map((row) => (
-        <li key={row.title} {...stylex.props(styles.row)}>
+        <li key={row.title} {...stylex.props(sk.ruleBottom, styles.row)}>
           {row.href === undefined ? (
             <span {...stylex.props(ui.muted)}>{row.title}</span>
           ) : row.href.startsWith('/') ? (
-            <Link to={row.href} {...stylex.props(ui.link)}>
-              {row.title}
+            <Link to={row.href} {...stylex.props(ui.link, ui.plainLink)}>
+              {row.title} <SketchArrow />
             </Link>
           ) : (
-            <a href={row.href} {...stylex.props(ui.link)}>
-              {row.title}
+            <a href={row.href} {...stylex.props(ui.link, ui.plainLink)}>
+              {row.title} <SketchArrow dir="out" />
             </a>
           )}
           <span {...stylex.props(styles.date)}>{row.date}</span>
@@ -36,12 +38,7 @@ export function Rows({ rows, spaced = false }: { rows: Row[]; spaced?: boolean }
 }
 
 const styles = stylex.create({
-  list: {
-    listStyle: 'none',
-    borderTopWidth: '1px',
-    borderTopStyle: 'solid',
-    borderTopColor: colors.line,
-  },
+  list: { listStyle: 'none' },
   row: {
     display: 'grid',
     gridTemplateColumns: { default: '1fr auto', [breakpoints.phone]: '1fr' },
@@ -49,9 +46,6 @@ const styles = stylex.create({
     columnGap: '1.5rem',
     alignItems: 'baseline',
     paddingBlock: '0.85rem',
-    borderBottomWidth: '1px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: colors.line,
   },
   date: { color: colors.muted, fontSize: type.meta, whiteSpace: 'nowrap' },
   desc: { gridColumnStart: 1, gridColumnEnd: -1, color: colors.muted, fontSize: type.body, textWrap: 'pretty' },

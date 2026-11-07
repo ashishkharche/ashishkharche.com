@@ -2,9 +2,11 @@ import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
 import { useId } from 'react'
 import { Logo } from './Logo'
+import { SketchArrow } from './SketchArrow'
 import { DeviceStage } from './Screens'
 import { screenshotSrc, screenshotSrcSet, type ProjectCard as Card } from '~/content/projects'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
+import { device, sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 interface Props {
@@ -27,32 +29,30 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false }: Pro
   const linkProps = stylex.props(styles.link)
   const label = (
     <>
-      {card.title}{' '}
-      <span aria-hidden="true" {...stylex.props(styles.arrow)}>
-        {card.external ? '↗' : '→'}
-      </span>
+      {card.title} <SketchArrow dir={card.external ? 'out' : 'right'} xstyle={styles.arrow} />
     </>
   )
   return (
-    <article {...stylex.props(stylex.defaultMarker(), styles.project)}>
+    <article {...stylex.props(stylex.defaultMarker(), sk.ruleTop, styles.project)}>
       {card.stage ? (
         <DeviceStage ipad={card.stage.ipad} phones={card.stage.phones} priority={priority} />
       ) : card.shots?.length ? (
         <div {...stylex.props(styles.media)}>
           {(card.shots ?? []).map((shot, index) => (
-            <img
-              key={shot.name}
-              src={screenshotSrc(shot.name)}
-              srcSet={screenshotSrcSet(shot.name)}
-              sizes="(max-width: 760px) 30vw, 290px"
-              width={480}
-              height={1038}
-              alt={shot.alt}
-              loading={priority ? 'eager' : 'lazy'}
-              fetchPriority={priority && index === 1 ? 'high' : 'auto'}
-              decoding="async"
-              {...stylex.props(styles.phone)}
-            />
+            <span key={shot.name} {...stylex.props(device.phone, styles.phone)}>
+              <img
+                src={screenshotSrc(shot.name)}
+                srcSet={screenshotSrcSet(shot.name)}
+                sizes="(max-width: 760px) 30vw, 290px"
+                width={480}
+                height={1038}
+                alt={shot.alt}
+                loading={priority ? 'eager' : 'lazy'}
+                fetchPriority={priority && index === 1 ? 'high' : 'auto'}
+                decoding="async"
+                {...stylex.props(styles.shot)}
+              />
+            </span>
           ))}
         </div>
       ) : null}
@@ -80,11 +80,7 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false }: Pro
             <p {...stylex.props(styles.outLinks)}>
               {card.links.map((link) => (
                 <a key={link.href} href={link.href} {...stylex.props(ui.link, styles.outLink)}>
-                  {link.label}
-                  <span aria-hidden="true" {...stylex.props(styles.outArrow)}>
-                    {' '}
-                    ↗
-                  </span>
+                  {link.label} <SketchArrow dir="out" />
                 </a>
               ))}
             </p>
@@ -98,7 +94,7 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false }: Pro
                   </span>
                   <ul role="list" aria-labelledby={`${stackId}-${index}`} {...stylex.props(styles.tags)}>
                     {group.items.map((item) => (
-                      <li key={item} {...stylex.props(styles.tag)}>
+                      <li key={item} {...stylex.props(sk.box, styles.tag)}>
                         {item}
                       </li>
                     ))}
@@ -117,9 +113,7 @@ const styles = stylex.create({
   project: {
     position: 'relative',
     paddingTop: { default: '4.5rem', ':first-child': 0, [breakpoints.tablet]: '3rem' },
-    borderTopWidth: { default: '1px', ':first-child': 0 },
-    borderTopStyle: 'solid',
-    borderTopColor: colors.line,
+    '::before': { display: { default: 'block', ':first-child': 'none' } },
   },
   media: {
     display: 'flex',
@@ -130,11 +124,11 @@ const styles = stylex.create({
     display: 'block',
     flex: 'none',
     width: { default: '30%', [breakpoints.tablet]: '31.5%' },
-    borderRadius: { default: '22px', [breakpoints.tablet]: '12px' },
-    outlineWidth: '1px',
-    outlineStyle: 'solid',
-    outlineColor: colors.phoneEdge,
-    outlineOffset: '-1px',
+  },
+  shot: {
+    display: 'block',
+    width: '100%',
+    borderRadius: { default: '18px', [breakpoints.tablet]: '10px' },
   },
   body: {
     display: 'grid',
@@ -166,7 +160,7 @@ const styles = stylex.create({
     },
   },
   // Geist Serif has no diagonal arrow, so the arrows use the body font.
-  arrow: { display: 'inline-block', fontFamily: fonts.sans, fontSize: type.lead },
+  arrow: { width: '0.8em', height: '0.8em', verticalAlign: '-0.02em' },
   meta: { marginTop: '0.4rem', fontSize: type.meta, color: colors.muted },
   // Sit above the card's full-size link so these open their own pages.
   outLinks: {
@@ -180,7 +174,6 @@ const styles = stylex.create({
     fontSize: type.body,
   },
   outLink: { position: 'relative', zIndex: 1 },
-  outArrow: { fontSize: '1em' },
   // The stack as small outlined tags in the meta size, one row per group.
   stack: { display: 'grid', rowGap: '0.6rem', marginTop: '1.4rem' },
   stackRow: {
@@ -200,10 +193,6 @@ const styles = stylex.create({
     lineHeight: 1.4,
     paddingBlock: '0.2rem',
     paddingInline: '0.55rem',
-    borderRadius: '6px',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: colors.diagramEdge,
     color: colors.text,
   },
   text: { fontSize: type.body, lineHeight: 1.55, color: colors.muted, maxWidth: '34em' },
