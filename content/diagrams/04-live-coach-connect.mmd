@@ -19,7 +19,7 @@ sequenceDiagram
     C-->>P: ok, or stop: true past a limit
   end
   Note over P,O: If the call drops: a new secret and quiet retries<br/>after 1, 2, 4, 8 and 16 s, then 30 s (with jitter),<br/>up to a 150 s budget
-  Note over P,O: Then background retries for the rest of the workout:<br/>10, 20, 40, 80 and 160 s, then every 300 s,<br/>and about 1 s after the network comes back
+  Note over P,O: Then background retries for the rest of the workout:<br/>waits that grow from 10 s to a 5 min cap,<br/>and about 1 s after the network comes back
   alt Realtime unavailable
     P->>X: On-device speech recognition,<br/>then a text request
     X-->>P: Text reply, spoken on the phone

@@ -1,7 +1,7 @@
 flowchart TD
   subgraph Backend["Backend (AWS CDK)"]
     B1["Sign in to AWS"] --> B2["Release check before each deploy:<br/>cdk diff --all (prod context)"]
-    B2 --> B3{"Would it delete a stateful resource,<br/>like the database or user pool?"}
+    B2 --> B3{"Would it delete a stateful resource,<br/>like a DynamoDB table or the KMS key?"}
     B3 -- yes --> B4["Release check fails"]
     B3 -- no --> B5["cdk deploy --all"]
     B5 --> B6["Check /v1/health"]
@@ -12,5 +12,5 @@ flowchart TD
     A3 --> A4["Poll App Store Connect<br/>until VALID"]
     A4 --> A5["Internal TestFlight"]
     A5 --> A6["Core-feature gate and<br/>12-check preflight"]
-    A6 --> A7["Submit to App Review;<br/>auto-release, 7-day phased rollout"]
+    A6 --> A7["Submit to App Review;<br/>release after approval (automatic by default, or manual),<br/>7-day phased rollout"]
   end

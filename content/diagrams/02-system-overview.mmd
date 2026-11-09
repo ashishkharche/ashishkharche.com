@@ -16,7 +16,12 @@ flowchart TB
     ADMIN --> DDB
     BILL --> DDB
     SM["Secrets Manager"]
+    API --> SM
     CHAT --> SM
+    AUTH --> SM
+    ADMIN --> SM
+    BILL --> SM
+    AUTH --> DDB
   end
   AUTH --> NEON[("Neon Postgres<br/>sign-in data")]
   AUTH --> RES["Resend<br/>email codes"]
@@ -26,4 +31,4 @@ flowchart TB
   RC["RevenueCat"] -- "webhook" --> GW
   APP --> MCDN["Media CDN<br/>profile photos"]
   APP -. "errors" .-> PH["PostHog (EU)"]
-  API -. "flags" .-> PH
+  API -. "flags, server errors" .-> PH
