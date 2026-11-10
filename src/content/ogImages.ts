@@ -36,7 +36,7 @@ export const noteOgImages = {
   },
   reflex: {
     src: '/assets/og/notes-reflex.png',
-    alt: 'How Reflex tests iOS and Android app logic without a screen: send Increment twice splits into iOS: count 2 and Android: count 2, with the same result.',
+    alt: 'The Reflex wordmark in Space Grotesk, with the prism mark above it.',
   },
 } satisfies Record<string, OgImage>
 

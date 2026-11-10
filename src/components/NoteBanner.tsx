@@ -11,7 +11,7 @@ const banners: Record<string, { name: string; alt: string }> = {
   },
   reflex: {
     name: 'note-reflex-runner',
-    alt: 'A line labelled send Increment twice goes into a prism and splits into iOS: count 2 and Android: count 2, then same result.',
+    alt: 'The Reflex wordmark in Space Grotesk, with the prism mark above it.',
   },
 }
 
