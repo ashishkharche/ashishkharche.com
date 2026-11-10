@@ -33,3 +33,7 @@ Video: cottonbro studio / Pexels (7674505). Source: https://www.pexels.com/video
 ## Rights holds
 
 Marketing’s CREDITS.md, manifest.json and REVIEW.md record the audit. Fonts are DM Sans and DM Mono (SIL OFL). Figure pipeline uses CC0 MakeHuman/MPFB2 body and rig with owner poses and equipment. Individual clothing pack source pages still need rechecking before public release. No synchronized poses, measured counters, live replies or personal results are claimed. No public release approval is established by this private preview.
+
+## Selected work phone fan, 10 November 2026
+
+The home Selected work card shows `pushup-balanced`, `squat-balanced` and `trainer-demo` as a fan of three phones in place of the flat banner. `squat-balanced-*` and `trainer-demo-*` are resized from `/workspace/wd-portfolio-banners-2026-11-07/transparent/{squat-balanced,trainer-demo-nolabel}-transparent.png`, cropped to the phone body the same way as the push-up export (1181×2558 from 1299×2676). They are the same squat and trainer concepts already approved for the Selected work banner on 7 November. The squat footage credit (cottonbro studio / Pexels 2785531) and the push-up credit stay in the site footer. The trainer conversation is synthetic text. No Progress or sample outcome screen is used.

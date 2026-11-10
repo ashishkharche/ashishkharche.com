@@ -12,9 +12,19 @@ for (const width of [390, 768, 820, 1024, 1440]) {
       await expect(image).toHaveAttribute('srcset', /(?:240w.*480w|400w).*800w/)
     }
     await expect(hero.locator('img').nth(1)).toHaveAttribute('src', /deadlift-pexels-/)
+    // Selected work holds three phones in a fan, each at its own shape and clearly larger than the old banner phones.
     const product = page.getByRole('group', { name: 'Workout Director screens', exact: true })
-    await expect(product.locator('img')).toHaveCount(1)
-    expect((await product.locator('img').boundingBox())?.width).toBeLessThanOrEqual(512)
+    await expect(product.locator('img')).toHaveCount(3)
+    for (const image of await product.locator('img').all()) {
+      await expect(image).toHaveAttribute(
+        'src',
+        /\/assets\/phones\/(pushup-balanced|squat-balanced|trainer-demo)-480\.webp/,
+      )
+      const size = await image.evaluate((img: HTMLImageElement) => ({ w: img.offsetWidth, h: img.offsetHeight }))
+      expect(size.h / size.w).toBeCloseTo(2558 / 1181, 1)
+      expect(size.w).toBeGreaterThanOrEqual(130)
+      expect(size.w).toBeLessThanOrEqual(240)
+    }
     await expect(page.locator('[data-note-banner]')).toHaveCount(3)
     for (const banner of await page.locator('[data-note-banner]').all()) {
       await expect(banner.locator('img')).toHaveCount(1)

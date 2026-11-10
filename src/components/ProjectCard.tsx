@@ -4,6 +4,7 @@ import { useId } from 'react'
 import { Logo } from './Logo'
 import { SketchArrow } from './SketchArrow'
 import { PortfolioBanner } from './NoteBanner'
+import { PhoneFan } from './PhoneFan'
 import { WdWordmark } from './WdWordmark'
 import { screenshotSrc, screenshotSrcSet, type ProjectCard as Card } from '~/content/projects'
 import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
@@ -53,7 +54,7 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
           {...stylex.props(styles.sceneMedia, scene === 'devicesLeft' ? styles.sceneMediaLeft : styles.sceneMediaRight)}
         >
           {/* Artwork attribution is consolidated in the site footer. */}
-          <PortfolioBanner priority={priority} />
+          <PhoneFan priority={priority} />
         </div>
       ) : card.stage ? (
         <PortfolioBanner priority={priority} />

@@ -27,9 +27,10 @@ test('the intro panel shows two described screens that the Selected work card do
   }
   const card = page.locator('article').filter({ hasText: 'Workout Director' }).first()
   const cardScreens = await card
-    .locator('img[src="/assets/banners/selected-work-wd-1600x1000.webp"]')
+    .getByRole('group', { name: 'Workout Director screens', exact: true })
+    .locator('img')
     .evaluateAll((imgs) => imgs.map((img) => img.getAttribute('src')))
-  expect(cardScreens).toHaveLength(1)
+  expect(cardScreens).toHaveLength(3)
   for (const src of cardScreens) expect(heroScreens).not.toContain(stem(src))
 })
 
