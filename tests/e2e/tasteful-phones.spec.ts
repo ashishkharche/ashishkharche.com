@@ -15,11 +15,11 @@ for (const width of [390, 768, 820, 1024, 1440]) {
     const product = page.getByRole('group', { name: 'Workout Director screens', exact: true })
     await expect(product.locator('img')).toHaveCount(1)
     expect((await product.locator('img').boundingBox())?.width).toBeLessThanOrEqual(512)
-    await expect(page.locator('[data-note-banner]')).toHaveCount(2)
+    await expect(page.locator('[data-note-banner]')).toHaveCount(3)
     for (const banner of await page.locator('[data-note-banner]').all()) {
       await expect(banner.locator('img')).toHaveCount(1)
       const image = banner.locator('img')
-      await expect(image).toHaveAttribute('src', /\/assets\/banners\/note-0[12].*-1600x900\.webp/)
+      await expect(image).toHaveAttribute('src', /\/assets\/banners\/note-(0[12]|reflex).*-1600x900\.webp/)
       const box = await image.boundingBox()
       if (!box) throw new Error('Banner image has no layout box')
       expect(box.width / box.height).toBeCloseTo(16 / 9, 1)

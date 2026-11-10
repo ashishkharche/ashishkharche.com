@@ -21,7 +21,7 @@ describe('structured data', () => {
       expect(data['@type']).toBe('BlogPosting')
       expect(data.headline).toBe(note.title)
       expect(data.datePublished).toBe(note.date)
-      expect(data.dateModified).toBe('2026-11-01')
+      expect(data.dateModified).toBe(note.date > '2026-11-01' ? note.date : '2026-11-01')
       expect(data.author['@id']).toBe(personId)
       expect(data.url).toBe(`https://ashishkharche.com${note.path}`)
       expect(data.image).toMatch(/^https:\/\/ashishkharche\.com\/assets\/og\/.+\.png$/)

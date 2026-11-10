@@ -36,7 +36,7 @@ describe('notes in content/notes', () => {
   it('all load with valid frontmatter', async () => {
     const { notes } = await import('~/content/notes')
     expect(notes.length).toBeGreaterThan(0)
-    expect(notes[0]?.slug).toBe('workout-director-1')
+    expect(notes[0]?.slug).toBe('reflex')
   })
 })
 

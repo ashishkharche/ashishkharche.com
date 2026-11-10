@@ -17,3 +17,8 @@ Note 2 uses saved push-up rig coordinates and existing finished line art. It doe
 Selected work uses the outlined WD identity with squat and trainer concepts. Trainer conversation is synthetic, not a private message or actual result.
 The figure body and rig use MakeHuman/MPFB2 CC0; pose/code/equipment pipeline is owner artwork. Individual clothing pack source-page clearance remains unresolved, as recorded in the source package. Approval of these placements does not establish those third-party rights.
 No Commons footage is included in these banners. Existing hero push-up footage attribution and share-alike terms remain in assets/phones/SOURCES.md and the footer.
+
+## Reflex note banner
+
+`note-reflex-runner-1600x900.webp` and `note-reflex-runner-1200x630.png` were drawn on 9 November 2026 from the Reflex prism mark (MIT, github.com/ashishkharche/reflex) with JetBrains Mono (OFL-1.1).
+All text in them is copied from the real `/reflex-explore` run on CodeYam Counter on a MacBook Air on 9 November 2026 (`'do Increment' 'do Increment' ls`, the `== swift` and `== kotlin` header lines, `"count":2` and `PARITY swift/kotlin same`).

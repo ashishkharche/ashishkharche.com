@@ -9,6 +9,15 @@ const banners: Record<string, { name: string; alt: string }> = {
     name: 'note-02-figure-pipeline',
     alt: 'Saved push-up rig points next to the finished exercise line art.',
   },
+  reflex: {
+    name: 'note-reflex-runner',
+    alt: 'One do Increment line goes into the Reflex prism and splits into Swift and Kotlin replies that both read count 2, with the line PARITY swift/kotlin same.',
+  },
+}
+
+/** True when the note has a wide banner image. */
+export function hasNoteBanner(slug: string): boolean {
+  return slug in banners
 }
 
 export function NoteBanner({ slug }: { slug: string }) {

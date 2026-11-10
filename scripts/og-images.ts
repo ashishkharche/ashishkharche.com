@@ -121,6 +121,7 @@ await rm(work, { recursive: true, force: true })
 for (const [slug, name] of [
   ['workout-director-1', 'note-01-counting'],
   ['workout-director-2', 'note-02-figure-pipeline'],
+  ['reflex', 'note-reflex-runner'],
 ] as const) {
   await copyFile(join(publicDir, 'assets/banners', `${name}-1200x630.png`), join(publicDir, noteOgImages[slug].src))
 }

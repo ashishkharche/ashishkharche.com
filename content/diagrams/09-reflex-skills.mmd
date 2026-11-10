@@ -1,0 +1,9 @@
+flowchart LR
+  START["/reflex-start<br/>set up or update,<br/>first screen"] --> REPORT{"Five-part report:<br/>Result?"}
+  COVER["/reflex-cover<br/>one screen,<br/>its own branch"] --> REPORT
+  CHECK["/reflex-check<br/>parity check<br/>before a merge"] --> REPORT
+  REPORT -- "PASS" --> MERGE["Merge the<br/>reflex branch"]
+  MERGE -- "next screen" --> COVER
+  REPORT -- "not PASS" --> ANSWER["Answer item 1 under<br/>Needs your decision"]
+  ANSWER --> CHECK
+  EXPLORE["/reflex-explore<br/>read only, headless"] -- "worth keeping" --> COVER

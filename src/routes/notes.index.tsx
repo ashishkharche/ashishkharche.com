@@ -16,21 +16,34 @@ export const Route = createFileRoute('/notes/')({
     seo({
       path: '/notes/',
       title: 'Notes',
-      description: 'Technical notes by Ashish Kharche, starting with a series on how Workout Director is built.',
+      description: 'Technical notes by Ashish Kharche: Reflex, and a series on how Workout Director is built.',
     }),
   component: Notes,
 })
 
-function Notes() {
-  const published: NoteItem[] = notes.map((note) => ({
+/** A line under each series heading on the notes page. */
+const seriesLeads: Record<string, string> = {
+  Reflex: 'Testing iOS and Android app logic without a screen.',
+  'How Workout Director is built': 'A series on the iPhone app and its backend.',
+}
+
+const wdSeries = 'How Workout Director is built'
+
+function toItem(note: (typeof notes)[number]): NoteItem {
+  return {
     title: note.title,
     href: note.path,
     meta: `${formatShortDate(note.date)}, ${note.listLabel}`,
     summary: noteListSummary(note),
-  }))
+  }
+}
+
+function Notes() {
+  const reflex = notes.filter((note) => note.series === 'Reflex').map(toItem)
+  const wd = notes.filter((note) => note.series === wdSeries)
   const coming: NoteItem[] = comingNotes.map((title, index) => ({
     title,
-    meta: `Part ${notes.length + index + 1}`,
+    meta: `Part ${wd.length + index + 1}`,
   }))
   return (
     <Main>
@@ -42,18 +55,29 @@ function Notes() {
           <Figure name="curl" xstyle={legSpace.headFigure} />
         </div>
       </Leg>
-      <section aria-labelledby="series-title">
-        {/* Each note on a stake of its own, down the side the line comes from. */}
+      <section aria-labelledby="reflex-title">
         <Leg from="right" as="div" stroke={2} xstyle={legSpace.text}>
           <div {...stylex.props(legSpace.column)}>
-            <h2 id="series-title" {...stylex.props(ui.h2)}>
-              How Workout Director is built
+            <h2 id="reflex-title" {...stylex.props(ui.h2)}>
+              Reflex
             </h2>
-            <p {...stylex.props(ui.muted, styles.sub)}>A series on the iPhone app and its backend.</p>
-            <NoteList items={published} posts="column" />
+            <p {...stylex.props(ui.muted, styles.sub)}>{seriesLeads.Reflex}</p>
+            <NoteList items={reflex} posts="column" />
           </div>
         </Leg>
-        <Leg from="left" to="edge" as="div" xstyle={legSpace.text}>
+      </section>
+      <section aria-labelledby="series-title">
+        {/* Each note on a stake of its own, down the side the line comes from. */}
+        <Leg from="left" as="div" stroke={2} xstyle={legSpace.text}>
+          <div {...stylex.props(legSpace.column)}>
+            <h2 id="series-title" {...stylex.props(ui.h2)}>
+              {wdSeries}
+            </h2>
+            <p {...stylex.props(ui.muted, styles.sub)}>{seriesLeads[wdSeries]}</p>
+            <NoteList items={wd.map(toItem)} posts="column" />
+          </div>
+        </Leg>
+        <Leg from="right" to="edge" as="div" xstyle={legSpace.text}>
           <div {...stylex.props(legSpace.column)}>
             <p {...stylex.props(ui.muted, styles.comingTitle)}>Coming next</p>
             <NoteList items={coming} compact />

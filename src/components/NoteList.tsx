@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
 import { breakpoints, colors, type, weights } from '~/styles/tokens.stylex'
 import { SketchArrow } from './SketchArrow'
-import { NoteBanner } from './NoteBanner'
+import { NoteBanner, hasNoteBanner } from './NoteBanner'
 
 export interface NoteItem {
   title: string
@@ -46,11 +46,9 @@ export function NoteList({
             posts === 'column' && styles.postColumn,
           )}
         >
-          {item.href === '/notes/workout-director-1/' || item.href === '/notes/workout-director-2/' ? (
+          {bannerSlug(item.href) ? (
             <div data-note-banner {...stylex.props(styles.banner)}>
-              <NoteBanner
-                slug={item.href === '/notes/workout-director-1/' ? 'workout-director-1' : 'workout-director-2'}
-              />
+              <NoteBanner slug={bannerSlug(item.href) ?? ''} />
             </div>
           ) : null}
           <h3 {...stylex.props(styles.title)}>
@@ -71,6 +69,12 @@ export function NoteList({
       ))}
     </ul>
   )
+}
+
+/** The slug of a note link that has a banner, or undefined. */
+function bannerSlug(href: string | undefined): string | undefined {
+  const slug = /^\/notes\/([a-z0-9-]+)\/$/.exec(href ?? '')?.[1]
+  return slug && hasNoteBanner(slug) ? slug : undefined
 }
 
 const styles = stylex.create({

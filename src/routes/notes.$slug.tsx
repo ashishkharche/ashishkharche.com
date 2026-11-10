@@ -1,4 +1,4 @@
-import { NoteBanner } from '~/components/NoteBanner'
+import { NoteBanner, hasNoteBanner } from '~/components/NoteBanner'
 import { noteOgImage } from '~/content/ogImages'
 import * as stylex from '@stylexjs/stylex'
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
@@ -43,7 +43,7 @@ export const Route = createFileRoute('/notes/$slug')({
 function NotePage() {
   const note = Route.useLoaderData()
   const Body = getNoteBody(note.slug)
-  const hasBanner = note.slug === 'workout-director-1' || note.slug === 'workout-director-2'
+  const hasBanner = hasNoteBanner(note.slug)
   if (!Body) throw notFound()
   return (
     <Main>

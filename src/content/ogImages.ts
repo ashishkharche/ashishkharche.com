@@ -34,6 +34,10 @@ export const noteOgImages = {
     src: '/assets/og/notes-workout-director-2.png',
     alt: "How Workout Director's exercise figures are rendered and checked against pose targets. Workout Director, part 2, with a start and end pose.",
   },
+  reflex: {
+    src: '/assets/og/notes-reflex.png',
+    alt: 'How Reflex tests iOS and Android app logic without a screen: one do Increment line splits into Swift and Kotlin replies that both read count 2.',
+  },
 } satisfies Record<string, OgImage>
 
 /** The preview image for a note, or the default card when it has none. */

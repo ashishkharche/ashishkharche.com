@@ -1,0 +1,8 @@
+flowchart LR
+  GUARD["Build the network guard<br/>scripts/network_guard.c"] --> CANARY{"Canary: Python<br/>under the guard<br/>connects to 192.0.2.1?"}
+  CANARY -- "not denied" --> STOP["GUARD FAIL,<br/>exit 2"]
+  CANARY -- "denied" --> SWIFT["Swift CLI<br/>fresh process,<br/>own empty home"]
+  CANARY -- "denied" --> KOTLIN["Kotlin CLI<br/>fresh process,<br/>own empty home"]
+  SWIFT --> PARITY{"PARITY: replies as<br/>raw bytes and typed JSON,<br/>exit code, network"}
+  KOTLIN --> PARITY
+  PARITY --> RESULT["RESULT<br/>PASS or FAIL"]

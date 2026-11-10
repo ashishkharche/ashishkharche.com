@@ -1,0 +1,284 @@
+---
+title: How Reflex tests iOS and Android app logic without a screen
+date: '2026-11-09'
+series: Reflex
+part: 1
+listLabel: Reflex
+description: 'Reflex lets a test or a coding assistant drive an app’s ViewModels in plain text and checks that the iOS and Android apps give the same answers. This note covers how it works, its four assistant skills and real runs on a Mac.'
+---
+
+import skills from '../diagrams/09-reflex-skills.mmd'
+import runner from '../diagrams/10-reflex-runner.mmd'
+
+[Reflex](https://github.com/ashishkharche/reflex) is my public, MIT-licensed reference implementation of the idea in Shopify Engineering’s [Reflex article](https://shopify.engineering/reflex). It is not affiliated with Shopify.
+
+It lets a test or a coding assistant talk to an app in plain text. `ls` asks what is on screen and `do` presses a button. The iOS app and the Android app must give the same answer.
+
+This note explains how it works and walks through the workflows, using real runs on a MacBook Air on 9 November 2026. Every report and log line below is copied from those runs.
+
+## How it works
+
+Reflex never touches the screen. It talks to the app’s ViewModels.
+
+- **An adapter per screen.** A small node on each platform lists the ViewModel’s state and its actions. The ViewModel itself does not change.
+- **A CLI per platform.** A small command-line program loads the app’s real Core and answers `ls` and `do` lines as JSON.
+- **One test file for both apps.** A journey is a JSON list of steps and the replies they should get. The same file runs on iOS and Android.
+- **A runner.** `runner/reflex_runner.py` runs every journey on every platform and compares the replies.
+
+This is what that looks like in a real app. The assistant ran two increments on the Counter screen of CodeYam Counter, a small native iOS and Android app:
+
+```text
+$ python3 ../reflex/runner/explore.py tests/reflex.json 'do Increment' 'do Increment' ls
+== swift fixture=default exit=0 network=clean
+> {"op": "hello"}
+< {"kit":"1.0.1","node":{"actions":["Increment","Reset","Subtract"],"inputs":{},"name":"Counter","state":{"count":0,"name":"COUNTER 1","step":1}},"ok":true,"protocol":1,"sample":"counter"}
+> {"op": "do", "action": "Increment"}
+< {"node":{"actions":["Increment","Reset","Subtract"],"name":"Counter","state":{"count":1,"name":"COUNTER 1","step":1}},"ok":true}
+> {"op": "do", "action": "Increment"}
+< {"node":{"actions":["Increment","Reset","Subtract"],"name":"Counter","state":{"count":2,"name":"COUNTER 1","step":1}},"ok":true}
+> {"op": "ls"}
+< {"node":{"actions":["Increment","Reset","Subtract"],"name":"Counter","state":{"count":2,"name":"COUNTER 1","step":1}},"ok":true}
+== kotlin fixture=default exit=0 network=clean
+…
+PARITY swift/kotlin same
+```
+
+The Kotlin half printed the same lines, so it is cut here. The count goes 0, 1, 2 on both platforms, neither one touched the network and the last line says they agree.
+
+## The four skills
+
+Reflex ships as four skills for coding assistants. Each one does one job and ends with one next step.
+
+- **`/reflex-start`** adds Reflex to the app and gets the first screen under test. Run it again to update.
+- **`/reflex-cover`** covers one more screen, on its own branch.
+- **`/reflex-check`** checks that iOS and Android still match and fixes what doesn’t. Run it before a merge.
+- **`/reflex-explore`** reads and drives the app headless, with no simulator. It changes nothing.
+
+<Diagram
+  diagram={skills}
+  wide
+  title="How the Reflex skills chain. /reflex-start, /reflex-cover and /reflex-check each end with a five-part report. If the Result is PASS, the next step is to merge the reflex branch for that screen and then run /reflex-cover for the next screen. If it is INCOMPLETE, FAIL or BLOCKED, the next step is to answer the first item under Needs your decision and run /reflex-check again. /reflex-explore changes nothing, and a sequence worth keeping becomes a test with /reflex-cover."
+  caption="Each report ends with a Next line that names the skill to run next."
+/>
+
+Install them once:
+
+```sh
+# Grok Build
+grok plugin install ashishkharche/reflex --trust
+
+# Any other assistant
+npx skills add ashishkharche/reflex -g
+```
+
+Then run `/reflex-start` from the app’s repo. Reflex goes into its own clone next to the app, as `../reflex`, never inside it.
+
+## The report
+
+`/reflex-start`, `/reflex-cover` and `/reflex-check` end with the same five-part report. It is one text block of 19 lines at most:
+
+- **Result:** one word and the platforms, such as PASS on swift and kotlin, with the build and unit test outcome.
+- **Needs your decision:** a numbered list, or None. Every reason the Result is not PASS goes here.
+- **What I added:** the files, as bullets.
+- **Where it is:** the branch, the commit and how far it is behind main.
+- **Try it:** a command to run it yourself, then the Next line.
+
+`/reflex-explore` changes nothing, so it replies in a few plain lines and ends with its own Next line. It only uses the five-part report if it changed files.
+
+## What the runner checks
+
+The runner does three things before it trusts a result.
+
+1. **It proves the network guard works.** It builds a small C library that blocks network connects and loads it into each process (`DYLD_INSERT_LIBRARIES` on macOS, `LD_PRELOAD` on Linux). Then it runs a canary: a Python process under the guard must be denied a connect to 192.0.2.1. If the canary gets through, the run stops with exit code 2.
+2. **It gives every process its own home.** Each CLI process starts with a fresh, empty home folder. `HOME`, `TMPDIR`, the XDG folders and the JVM’s `user.home` all point there, so one run can’t read what an earlier one left behind. On macOS a kernel sandbox policy also stops the process from writing the account’s real preferences or files outside that folder.
+3. **It compares every reply.** Each journey runs in a fresh process on each platform. The runner then compares every reply across platforms, as raw bytes and as parsed JSON with strict types, followed by the exit code and the network status.
+
+<Diagram
+  diagram={runner}
+  wide
+  title="How the Reflex runner isolates and compares. It builds the network guard from scripts/network_guard.c and runs a canary: Python under the guard tries to connect to 192.0.2.1. If that is not denied, the run stops with GUARD FAIL and exit code 2. If it is denied, the Swift CLI and the Kotlin CLI each run in a fresh process with its own empty home folder. Every reply from the two is compared as raw bytes and as typed JSON, then the exit code and the network status, and the runner prints RESULT PASS or FAIL."
+  caption="A run is only a PASS when the canary was denied and every reply matched."
+/>
+
+These are the runner’s own lines from the Counter check on the Air:
+
+```text
+GUARD PASS backend=DYLD_INSERT_LIBRARIES canary=python-connect-192.0.2.1 audit='STORAGE launcher | STORAGE seatbelt | READY | STORAGE seatbelt | READY | DENIED connect HTTP-capable Internet socket' canary_out='ERR 1'
+HANDSHAKE platform=swift protocol=1 sample=counter kit=1.0.1
+JOURNEY PASS platform=swift journey=tests/journeys/increment.json#increment steps=3 exit=0 network=clean
+SUITE platform=swift repeat=1/1 journeys=1 steps=3 wall_s=0.03
+HANDSHAKE platform=kotlin protocol=1 sample=counter kit=1.0.1
+JOURNEY PASS platform=kotlin journey=tests/journeys/increment.json#increment steps=3 exit=0 network=clean
+SUITE platform=kotlin repeat=1/1 journeys=1 steps=3 wall_s=0.15
+PARITY PASS platforms=swift,kotlin steps=3 unexpected_diffs=0 byte_diffs=0 known_diffs=0 (raw reply bytes and full parsed JSON, strict types)
+RESULT PASS mode=xfail-tracked unexpected_failures=0 xfail=0 platforms=swift,kotlin repeat=1 sample=counter guard=canary-pass
+```
+
+A run without the guard never prints a plain PASS. It prints `PASS-UNGUARDED` and exits 3.
+
+## The test runs
+
+The runs used Grok Build 1.0.69 on a MacBook Air with Apple silicon and macOS 26.5.1, with the plugin installed from GitHub. Each skill ran as its own headless session in two apps:
+
+- **CodeYam Counter**, a small native iOS and Android app.
+- **[Confetti](https://github.com/joreilly/Confetti)**, a Kotlin Multiplatform conference app with phone, Wear OS and iOS apps.
+
+Before the apps, the runner’s own checks passed on the two sample apps in the repo: 85 steps for the inventory sample and 158 for the outbox sample, with no differences between Swift and Kotlin.
+
+```text
+PARITY PASS platforms=swift,kotlin steps=85 unexpected_diffs=0 byte_diffs=0 known_diffs=0 (raw reply bytes and full parsed JSON, strict types)
+PARITY PASS platforms=swift,kotlin steps=158 unexpected_diffs=0 byte_diffs=0 known_diffs=0 (raw reply bytes and full parsed JSON, strict types)
+```
+
+- **Counter, `/reflex-start`:** about 26 minutes. INCOMPLETE; both apps build and pass unit tests.
+- **Counter, `/reflex-cover`:** 89 seconds. INCOMPLETE; the first branch was not merged yet.
+- **Counter, `/reflex-check`:** 511 seconds. INCOMPLETE; both apps build and pass unit tests.
+- **Counter, `/reflex-explore`:** 32 seconds. The count went 0, 1, 2 with the network clean, and both platforms agreed.
+- **Confetti, `/reflex-start`:** about 42 minutes. INCOMPLETE; the phone, Wear OS and iOS apps build and pass unit tests.
+- **Confetti, `/reflex-check`:** 731 seconds. INCOMPLETE; the phone, Wear OS and iOS apps build and pass unit tests.
+
+Both first setups ran into the test session’s time limit (25 minutes for Counter and 40 for Confetti) and finished after a one-word “Continue.” The times above add both parts.
+
+## Workflow 1: first setup
+
+From the app’s repo, run `/reflex-start`. It:
+
+1. Checks the stack and the tools: `git`, `python3`, a C compiler, JDK 17 or newer for Kotlin and Xcode with Swift 6.0 or newer for Swift.
+2. Clones Reflex next to the app as `../reflex`.
+3. Picks the main screen and its main action, the one the screen exists for.
+4. Checks that the screen’s state lives in a ViewModel or shared Core, not in the views. If a value the user sees lives in a view, that is a gap and it asks before any refactor.
+5. Creates a branch, `reflex/<screen>`, and adds one adapter and one CLI per platform, `tests/reflex.json` and one journey that runs the main action.
+6. Builds and tests each native app, commits on the branch and reports. It doesn’t push unless you ask.
+
+This is the real report from Counter:
+
+```text
+Result
+INCOMPLETE on swift and kotlin. Both apps build and pass unit tests.
+
+Needs your decision
+1. Move the counter screen’s panel flags, settings drafts and graph index out of the views into Core.
+
+What I added
+- tests/reflex.json and tests/journeys/increment.json
+- CounterNode and counter-cli (Swift and Kotlin)
+
+Where it is
+reflex/counter at ef4fde5, not pushed, 0 behind main
+
+Try it
+python3 ../reflex/runner/reflex_runner.py tests/reflex.json --platform both
+Next: answer 1, then /reflex-check
+```
+
+Confetti shares its logic in Kotlin, so one Kotlin host covers it and the Result says “on kotlin (shared code)”. The native phone, Wear OS and iOS apps are still built and tested:
+
+```text
+Result
+INCOMPLETE on kotlin (shared code). Android, Wear and iOS apps build and pass unit tests.
+
+Needs your decision
+1. Sessions views keep the selected day (rememberPagerState), the bookmark sign-in dialog (showDialog) and notification permission in the view.
+
+What I added
+- tests/reflex.json and tests/journeys/sessions.json
+- SessionsNode and the kotlin CLI (settings.gradle.kts guarded Reflex include, .build/ gitignored)
+
+Where it is
+reflex/sessions at 28c2881d, not pushed, 0 behind main
+
+Try it
+python3 ../reflex/runner/reflex_runner.py tests/reflex.json --platform kotlin
+Next: answer 1, then /reflex-check
+```
+
+Reflex stays out of the app’s build. Swift harness code goes in its own package and Kotlin uses a guarded block in `settings.gradle.kts`, the only app file it may edit without asking.
+
+## Workflow 2: add a screen per branch
+
+Run `/reflex-cover <screen>`. It covers one screen on one branch, and the last Reflex branch must be merged first. It adds an adapter with the same node name, state keys and action names on each platform, proves the main action and adds one journey.
+
+On Counter it was asked to cover the settings screen while `reflex/counter` was still unmerged. It stopped after 89 seconds and said so:
+
+```text
+Result
+INCOMPLETE. reflex/counter is still ahead of main so Counter settings was not covered.
+
+Needs your decision
+1. Land reflex/counter on main before covering Counter settings.
+
+What I added
+None
+
+Where it is
+reflex/counter at ef4fde5, not pushed, 0 behind main
+
+Try it
+python3 ../reflex/runner/reflex_runner.py tests/reflex.json --platform both
+Next: answer 1, then /reflex-check
+```
+
+A cover request is not approval to merge, so it does not merge anything itself.
+
+## Workflow 3: the parity check before a merge
+
+Run `/reflex-check` before every merge. It rebuilds each CLI, runs the journeys on both platforms, builds each native app and runs its unit tests, then rechecks the coverage gaps it already knows about. When something fails it explains it in one plain line, such as which platform showed what after which action, and says whether the app, the adapter or the expectation is wrong. It never edits an expectation or turns off the guard to get a green run.
+
+On Confetti it took 731 seconds, building and testing the phone, Wear OS and iOS apps:
+
+```text
+Result
+INCOMPLETE on kotlin (shared code). The phone, Wear and iOS apps build and pass unit tests.
+
+Needs your decision
+1. Sessions keeps the selected day and the signed-out bookmark dialog in the views. Say yes to move them onto the component.
+
+What I added
+- Nothing
+
+Where it is
+reflex/sessions at 28c2881d, not pushed, 0 behind main
+
+Try it
+python3 ../reflex/runner/reflex_runner.py tests/reflex.json --platform both
+Next: answer 1, then /reflex-check
+```
+
+## Workflow 4: explore the app headless
+
+Run `/reflex-explore` with what you want to know. It looks first with `ls`, puts every action in one call and reads the network and parity lines at the end. It is read only.
+
+Asked to “Increment twice, then show the count” on Counter, it made the call shown at the top of this note and replied in 32 seconds. This is its whole reply:
+
+“The **Counter** screen starts at `count` 0 (`name` COUNTER 1, `step` 1). The first Increment sets `count` to 1, and the second sets it to 2. Both platforms report `network=clean`, and iOS and Android agree.
+
+Next: `/reflex-cover counter` to keep this as a test.”
+
+`NETWORK denied` in its output means an action tried the network and needs a fixture. `PARITY ... differs at line N` names the first step where the platforms disagree.
+
+## Workflow 5: update
+
+Update the plugin, for example with `grok plugin update reflex`, then run `/reflex-start` again in the app. It notes the commit of `../reflex`, pulls the latest and applies each `CHANGELOG.md` entry since that commit to the Reflex files the app has. Then it runs the same checks and reports in the same five parts.
+
+## Workflow 6: read the report
+
+Read the Result word first:
+
+- **PASS:** every platform passed, and each native app built and passed its tests in this session.
+- **INCOMPLETE:** something could not be proved yet, such as a native build that didn’t run, a known difference or state that lives in a view.
+- **FAIL:** an app failed to build or a unit test failed.
+- **BLOCKED:** a tool is missing or the run needs you for another reason.
+
+Then read Needs your decision. Every reason the Result is not PASS is there, numbered. Then follow the Next line. After a PASS it says to merge the branch and cover the next screen. After anything else it says to answer item 1 and run `/reflex-check` again. It never says merge before a PASS.
+
+## Why the real runs ended INCOMPLETE
+
+None of the runs reached PASS, and Reflex is built to report it that way. In both apps some state a user sees lives in the views, not in a ViewModel: panel flags and settings drafts in Counter, the selected day and a dialog in Confetti. Reflex can’t read that state through the ViewModel, so it can’t prove that screen yet.
+
+Moving that state is a refactor of the app, so Reflex asks first. Both reports name the state and wait for a yes.
+
+## Sources
+
+- [Reflex on GitHub](https://github.com/ashishkharche/reflex), including `skills/`, `runner/README.md` and `runner/reflex_runner.py`
+- [Reflex, Shopify Engineering](https://shopify.engineering/reflex)
+- [Confetti on GitHub](https://github.com/joreilly/Confetti)
