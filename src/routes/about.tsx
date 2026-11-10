@@ -17,7 +17,7 @@ export const Route = createFileRoute('/about')({
       path: '/about/',
       title: 'About',
       description:
-        'About Ashish Kharche, a software engineer in London: iOS and Android apps, TypeScript and AWS, and QA on the Grok apps.',
+        'About Ashish Kharche, a software engineer in London: iOS and Android apps, TypeScript and AWS and QA on the Grok apps.',
     }),
     scripts: [jsonLdScript(aboutJsonLd(dates.pages['/about/']))],
   }),

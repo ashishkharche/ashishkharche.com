@@ -64,7 +64,7 @@ Phones in a gym are often offline, so uploads take an idempotency key, which mea
 
 ## Releasing safely
 
-A wrong count is the first thing a user notices, so counting changes shipped behind switches. Camera counting had its own feature flag, the internal team had a pose debug overlay, and individual behaviours had kill switches served from the backend's config endpoint, so a behaviour could be turned off without waiting for App Review. New counting models ran in shadow mode first, alongside the live counter, without changing the count anyone saw.
+A wrong count is the first thing a user notices, so counting changes shipped behind switches. Camera counting had its own feature flag, the internal team had a pose debug overlay and individual behaviours had kill switches served from the backend's config endpoint, so a behaviour could be turned off without waiting for App Review. New counting models ran in shadow mode first, alongside the live counter, without changing the count anyone saw.
 
 Releases followed the same steps every time. Before each deploy, a release check runs cdk diff and fails if it would delete a stateful resource like a DynamoDB table or the KMS key. Each deploy is followed by a health check, and an app release goes through TestFlight, a preflight checklist and, by default, a phased rollout. A minimum-version check let the backend ask old builds to update.
 

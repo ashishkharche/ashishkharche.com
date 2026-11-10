@@ -16,7 +16,7 @@ Last updated: 9 November 2026. Quiet reconnects started in version 1.0.66, not 1
 
 ## Background
 
-Workout Director is an iPhone and iPad training app, published on the App Store as "Workout Director - Gym & Home". The phone is propped up, Start is pressed, and the camera counts reps while a voice coach talks through the session.
+Workout Director is an iPhone and iPad training app, published on the App Store as "Workout Director - Gym & Home". The phone is propped up, Start is pressed and the camera counts reps while a voice coach talks through the session.
 
 The app uses the front camera by default. The back camera can be selected to film someone else.
 
@@ -83,7 +83,7 @@ The App Store notes for version 1.0.86 list what was tightened: half reps, walki
 Inside the counter, four rules do most of that work:
 
 - **Each move has a shape.** A squat only counts if the hips go down, the legs move together and the feet stay put. A push-up needs the hands planted below the shoulders. The angle alone cannot tell a stride or a knee lift from a squat.
-- **Some moves need a posture first.** A row, a press, a curl and a pull-up are all an elbow bending, and so is talking with your hands. A row only counts after the person has been bent over and still for a moment, a pull-up once they are hanging, and a bench press once they are lying back.
+- **Some moves need a posture first.** A row, a press, a curl and a pull-up are all an elbow bending, and so is talking with your hands. A row only counts after the person has been bent over and still for a moment, a pull-up once they are hanging and a bench press once they are lying back.
 - **The first rep waits for a second one.** On squats, curls, presses, rows and deadlifts, a first rep is held for up to 8 seconds. It counts when a second rep follows, or when the set ends with it still held. A single bend while talking or tidying up never becomes a set.
 - **The range is personal.** The first counted rep records the person's range, and later reps are judged against a share of it, never easier than a fixed floor.
 
@@ -112,14 +112,14 @@ The voice coach is the only feature that needs the network during a set, so it i
   diagram={systemOverview}
   wide
   title="System overview: the SwiftUI app calls CloudFront and API Gateway, which route to Lambda functions for the API, trainer chat, sign-in, admin and billing webhooks. They use DynamoDB and Secrets Manager; sign-in uses Neon Postgres and Resend; the trainer uses a text model and a realtime voice model; RevenueCat sends webhooks; PostHog handles errors and flags."
-  caption="System overview: the SwiftUI app, the Lambda functions behind API Gateway, and the services they call."
+  caption="System overview: the SwiftUI app, the Lambda functions behind API Gateway and the services they call."
 />
 
 ### The call
 
 The phone opens a WebRTC call to a realtime voice model, using an `RTCPeerConnection` from the WebRTC framework. Audio goes straight from the phone to the voice service.
 
-When the call opens, the backend gives the model the user's profile, plan and recent workouts, what the trainer remembers about them, and any food they logged today. During the workout the model gets short text notes about the state of the set over the WebRTC data channel (`RTCDataChannel`), and, if Apple Health is on, the set's heart rate and calories.
+When the call opens, the backend gives the model the user's profile, plan and recent workouts, what the trainer remembers about them and any food they logged today. During the workout the model gets short text notes about the state of the set over the WebRTC data channel (`RTCDataChannel`), and, if Apple Health is on, the set's heart rate and calories.
 
 The model never gets video frames.
 
@@ -141,7 +141,7 @@ Workout commands such as "done" or "take a break" run on the phone. Anything els
 
 ### When the coach speaks
 
-Counts, timers and cues are handled on the phone, so the model speaks rarely. It speaks at the start, at each new exercise, at the end of each set, at the end of each exercise and of the workout, and always if the user mentions pain.
+Counts, timers and cues are handled on the phone, so the model speaks rarely. It speaks at the start, at each new exercise, at the end of each set, at the end of each exercise and of the workout and always if the user mentions pain.
 
 During rest it speaks once, if there are at least 20 seconds left. By default it gets one line at most in the middle of a set, for form, a stall or leaving the frame.
 
@@ -160,7 +160,7 @@ get_history      get_set_summary  set_coach_style  mute_counts
 end_workout
 ```
 
-The phone runs the tool against its own workout state and shows a small chip with Undo. Larger edits wait for a Confirm, ending the workout waits for a spoken yes, and mentioning pain stops the exercise and offers a swap.
+The phone runs the tool against its own workout state and shows a small chip with Undo. Larger edits wait for a Confirm, ending the workout waits for a spoken yes and mentioning pain stops the exercise and offers a swap.
 
 The workout state lives on the phone, and the model can only request changes to it.
 

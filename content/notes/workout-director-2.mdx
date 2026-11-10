@@ -10,7 +10,7 @@ description: 'Workout Director, part 2: how every exercise figure in the app is 
 import pipeline from '../diagrams/03-figure-pipeline.mmd'
 import poseToBones from '../diagrams/05-pose-to-bones.mmd'
 
-This note describes the pipeline that produces the exercise figures in Workout Director. It covers where the body comes from, how a pose is written and measured, how the line art is made, and the checks that decide whether a figure ships.
+This note describes the pipeline that produces the exercise figures in Workout Director. It covers where the body comes from, how a pose is written and measured, how the line art is made and the checks that decide whether a figure ships.
 
 ## Background
 
@@ -42,7 +42,7 @@ The open exercise drawings available did not fit. The best-known set of line dra
 
 Stock illustration sets do not share one style or one body, and they rarely have a matching start and end pose for the same move.
 
-The requirements were one consistent figure across every move, light and dark versions, and a licence that is clean all the way down. The rule became: build the figure from openly licensed parts, and use photos only to measure poses.
+The requirements were one consistent figure across every move, light and dark versions and a licence that is clean all the way down. The rule became: build the figure from openly licensed parts, and use photos only to measure poses.
 
 ## The source parts
 
@@ -221,7 +221,7 @@ def limb_region(vertex, bone_head, bone_tail, facing, half_angle, start, end, so
     return 1 - smoothstep(angle, half_angle * belly - soft, half_angle * belly + soft)
 ```
 
-The real regions have more rules than this. Torso muscles use boxes filtered by surface normal, large groups are split into their heads with a groove between them, a secondary muscle never paints over a primary one, and a few regions are clipped where a tint was spilling onto the wrong skin.
+The real regions have more rules than this. Torso muscles use boxes filtered by surface normal, large groups are split into their heads with a groove between them, a secondary muscle never paints over a primary one and a few regions are clipped where a tint was spilling onto the wrong skin.
 
 The values in the excerpt are placeholders, not the ones in use.
 
@@ -269,13 +269,13 @@ This problem is not solved yet. The app only uses still start and end figures, s
 
 ## Checks before a figure ships
 
-A figure that looks fine at a glance can still be wrong: a knee bent the wrong way, a shoe slightly under the floor, a thumb through the bar, or a pose that matches the reference but not good form.
+A figure that looks fine at a glance can still be wrong: a knee bent the wrong way, a shoe slightly under the floor, a thumb through the bar or a pose that matches the reference but not good form.
 
 Every figure goes through a set of scripted checks, and it does not go into the app until they all pass.
 
 - **Joint angles against the reference.** The rig's exact 3D joints are projected into a "judge view" that best lines them up with the reference image's keypoints, and the 2D joint angles are compared. The 3D targets from the world landmarks are checked as well.
 - **Form over the reference.** Reference images are sometimes not textbook: a model looks down during a lunge, or the hips are already up at the start of a bridge. Where that happens the joint is judged against a textbook range for the move instead, with a note in the code saying why.
-- **Physics and equipment.** Nothing sinks into the floor or the bench, nothing passes through itself or the equipment, the bar is level, plates are symmetric, and equipment is the right size.
+- **Physics and equipment.** Nothing sinks into the floor or the bench, nothing passes through itself or the equipment, the bar is level, plates are symmetric and equipment is the right size.
 - **Grip.** No fingers through the handle, no gap between palm and handle, thumb wrapped, knuckles along the bar, wrist neutral.
 - **MediaPipe on the render.** The finished figure is run back through the pose model, on several backgrounds and crops, and compared with the reference images using measures that do not depend on the view: ankle angle, which way the foot points, where the hands sit along the body, segment angles to the trunk. If a pose model cannot read the drawing as the same pose, a person might not either.
 - **Animation.** The app ships still start and end figures, not animations. The experimental animated versions get extra checks: no foot sliding, constant bone lengths, no velocity spikes, a seamless loop and no line flicker between frames.
