@@ -36,7 +36,7 @@ export const noteOgImages = {
   },
   reflex: {
     src: '/assets/og/notes-reflex.png',
-    alt: 'How Reflex tests iOS and Android app logic without a screen: one do Increment line splits into Swift and Kotlin replies that both read count 2.',
+    alt: 'How Reflex tests iOS and Android app logic without a screen: send Increment twice splits into iOS: count 2 and Android: count 2, with the same result.',
   },
 } satisfies Record<string, OgImage>
 

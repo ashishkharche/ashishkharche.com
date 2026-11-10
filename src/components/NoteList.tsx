@@ -17,8 +17,8 @@ export interface NoteItem {
  * A list of notes separated by space rather than rules. Each note is a title,
  * a muted meta line and an optional summary. The title is the link, and it is
  * stretched over the whole note so the note can be clicked anywhere. Hovering
- * the note underlines the title and nudges its arrow; keyboard focus draws a
- * ring around the whole note.
+ * the note darkens and nudges the arrow; keyboard focus draws a ring around
+ * the whole note.
  */
 export function NoteList({
   items,
@@ -78,7 +78,7 @@ function bannerSlug(href: string | undefined): string | undefined {
 }
 
 const styles = stylex.create({
-  banner: { minWidth: 0, marginBottom: '0.75rem' },
+  banner: { minWidth: 0, marginBottom: '1rem' },
   list: {
     listStyle: 'none',
     display: 'grid',
@@ -114,7 +114,7 @@ const styles = stylex.create({
   item: {
     position: 'relative',
     display: 'grid',
-    rowGap: '0.3rem',
+    rowGap: 0,
     borderRadius: '6px',
   },
   // The focus ring goes round the whole note, since the whole note is the link's target.
@@ -123,10 +123,12 @@ const styles = stylex.create({
     outlineOffset: '8px',
   },
   title: {
+    // Heavier weight at the lead size, so the title stands out from the 16px date and summary.
     fontSize: type.lead,
-    fontWeight: weights.medium,
-    lineHeight: 1.4,
-    letterSpacing: '-0.005em',
+    fontWeight: weights.brand,
+    lineHeight: 1.35,
+    letterSpacing: '-0.012em',
+    color: colors.text,
     textWrap: 'balance',
   },
   link: {
@@ -151,15 +153,19 @@ const styles = stylex.create({
   },
   muted: { color: colors.muted, fontWeight: weights.regular },
   meta: {
+    marginTop: '0.55rem',
     color: colors.muted,
     fontSize: type.meta,
+    fontWeight: weights.regular,
+    lineHeight: 1.4,
     fontVariantNumeric: 'tabular-nums',
   },
   summary: {
-    marginTop: '0.2rem',
+    marginTop: '0.7rem',
     color: colors.muted,
-    fontSize: type.body,
-    lineHeight: 1.55,
+    fontSize: type.meta,
+    fontWeight: weights.regular,
+    lineHeight: 1.5,
     maxWidth: '40em',
     textWrap: 'pretty',
   },

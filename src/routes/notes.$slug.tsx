@@ -91,15 +91,21 @@ const styles = stylex.create({
     color: { default: colors.muted, ':hover': colors.accent },
     textDecorationLine: 'none',
   },
-  meta: { color: colors.muted, fontSize: type.meta },
+  meta: {
+    color: colors.muted,
+    fontSize: type.meta,
+    fontWeight: weights.regular,
+    lineHeight: 1.4,
+  },
   title: {
-    marginTop: '0.6rem',
+    marginTop: '0.85rem',
     fontFamily: fonts.serif,
     fontSize: type.title,
     lineHeight: 1.15,
     textWrap: 'balance',
     fontWeight: weights.display,
     letterSpacing: '-0.012em',
+    color: colors.text,
   },
   body: { minWidth: 0 },
 })

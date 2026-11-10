@@ -20,5 +20,5 @@ No Commons footage is included in these banners. Existing hero push-up footage a
 
 ## Reflex note banner
 
-`note-reflex-runner-1600x900.webp` and `note-reflex-runner-1200x630.png` were drawn on 9 November 2026 from the Reflex prism mark (MIT, github.com/ashishkharche/reflex) with JetBrains Mono (OFL-1.1).
-All text in them is copied from the real `/reflex-explore` run on CodeYam Counter on a MacBook Air on 9 November 2026 (`'do Increment' 'do Increment' ls`, the `== swift` and `== kotlin` header lines, `"count":2` and `PARITY swift/kotlin same`).
+`note-reflex-runner-1600x900.webp` and `note-reflex-runner-1200x630.png` were redrawn on 10 November 2026 from the Reflex prism mark (MIT, github.com/ashishkharche/reflex) with Space Grotesk (OFL-1.1).
+The labels are a plain reading of the same `/reflex-explore` run on CodeYam Counter on a MacBook Air on 9 November 2026: send Increment twice, iOS: count 2, Android: count 2, same result. The Open Graph card `public/assets/og/notes-reflex.png` is the 1200 by 630 crop of this banner.

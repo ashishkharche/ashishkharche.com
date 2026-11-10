@@ -11,7 +11,7 @@ const banners: Record<string, { name: string; alt: string }> = {
   },
   reflex: {
     name: 'note-reflex-runner',
-    alt: 'One do Increment line goes into the Reflex prism and splits into Swift and Kotlin replies that both read count 2, with the line PARITY swift/kotlin same.',
+    alt: 'A line labelled send Increment twice goes into a prism and splits into iOS: count 2 and Android: count 2, then same result.',
   },
 }
 
