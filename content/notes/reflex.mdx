@@ -16,6 +16,15 @@ It lets a test or a coding assistant talk to an app in plain text. `ls` asks wha
 
 This note explains how it works and walks through the workflows, using real runs on a MacBook Air on 9 November 2026. Every report and log line below is copied from those runs.
 
+## Works with
+
+- **Tested:** Swift with SwiftUI and Kotlin with Jetpack Compose. The sample apps use them.
+- **Should work, untested:** UIKit, Android Views, Java on Android, Kotlin Multiplatform and Compose Multiplatform. Reflex needs a ViewModel, not a UI toolkit.
+- **Needs your own host:** Flutter, React Native and other stacks have no kit yet. A host that speaks [protocol v1](https://github.com/ashishkharche/reflex/blob/main/docs/protocol/v1.md) can work.
+- **Doesn’t work:** state kept only in views, web-only apps and Windows without WSL 2.
+
+[Details for each stack](https://github.com/ashishkharche/reflex/blob/main/docs/faq.md#compatibility)
+
 ## How it works
 
 Reflex never touches the screen. It talks to the app’s ViewModels.
@@ -61,17 +70,17 @@ Reflex ships as four skills for coding assistants. Each one does one job and end
   caption="Each report ends with a Next line that names the skill to run next."
 />
 
-Install them once:
+Install them once, in the app’s repo:
 
 ```sh
-# Grok Build
+# Grok
 grok plugin install ashishkharche/reflex --trust
 
-# Any other assistant
+# Claude Code, Codex, Cursor and more
 npx skills add ashishkharche/reflex -g
 ```
 
-Then run `/reflex-start` from the app’s repo. Reflex goes into its own clone next to the app, as `../reflex`, never inside it.
+Then run `/reflex-start`. Reflex goes into its own clone next to the app, as `../reflex`, never inside it.
 
 ## The report
 
