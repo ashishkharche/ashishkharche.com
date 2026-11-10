@@ -118,6 +118,8 @@ A run without the guard never prints a plain PASS. It prints `PASS-UNGUARDED` an
 
 ## The test runs
 
+Every run that built the apps ended with both apps building and passing all their unit tests. That was each `/reflex-start` and `/reflex-check` run below.
+
 The runs used Grok Build 1.0.69 on a MacBook Air with Apple silicon and macOS 26.5.1, with the plugin installed from GitHub. Each skill ran as its own headless session in two apps:
 
 - **CodeYam Counter**, a small native iOS and Android app.
@@ -125,19 +127,33 @@ The runs used Grok Build 1.0.69 on a MacBook Air with Apple silicon and macOS 26
 
 Before the apps, the runner’s own checks passed on the two sample apps in the repo: 85 steps for the inventory sample and 158 for the outbox sample, with no differences between Swift and Kotlin.
 
-```text
-PARITY PASS platforms=swift,kotlin steps=85 unexpected_diffs=0 byte_diffs=0 known_diffs=0 (raw reply bytes and full parsed JSON, strict types)
-PARITY PASS platforms=swift,kotlin steps=158 unexpected_diffs=0 byte_diffs=0 known_diffs=0 (raw reply bytes and full parsed JSON, strict types)
-```
+### What “INCOMPLETE” means here
 
-- **Counter, `/reflex-start`:** about 26 minutes. INCOMPLETE; both apps build and pass unit tests.
-- **Counter, `/reflex-cover`:** 89 seconds. INCOMPLETE; the first branch was not merged yet.
-- **Counter, `/reflex-check`:** 511 seconds. INCOMPLETE; both apps build and pass unit tests.
-- **Counter, `/reflex-explore`:** 32 seconds. The count went 0, 1, 2 with the network clean, and both platforms agreed.
-- **Confetti, `/reflex-start`:** about 42 minutes. INCOMPLETE; the phone, Wear OS and iOS apps build and pass unit tests.
-- **Confetti, `/reflex-check`:** 731 seconds. INCOMPLETE; the phone, Wear OS and iOS apps build and pass unit tests.
+The start, cover and check reports below all say `Result INCOMPLETE`. That doesn’t mean something broke. Reflex only reports PASS when it has tested everything a user can see on the screen. In both apps some of that lives inside the view code. In Counter, whether the settings, list and graph panels are showing is kept in `@State` values in the SwiftUI views and `mutableStateOf` values in the Compose views. In Confetti the selected day and the sign-in dialog live in the Sessions views. A test can’t reach state kept there.
 
-Both first setups ran into the test session’s time limit (25 minutes for Counter and 40 for Confetti) and finished after a one-word “Continue.” The times above add both parts.
+Fixing that means moving the state out of the views, which is a refactor of the app. The skills tell Reflex not to refactor unless you ask. So it stopped, named the exact state and asked for a yes. That is the “Needs your decision” item in each report.
+
+The cover run stopped for a different reason. Reflex adds one screen per branch and wants the last branch merged first. The run was started on purpose while `reflex/counter` was still unmerged, so it added nothing and said so.
+
+### Each run
+
+**Counter**
+
+- **`/reflex-start`, 26 min:** added the first test. Both apps passed. Asked before moving view state.
+- **`/reflex-cover`, 89 s:** stopped. The first branch wasn’t merged.
+- **`/reflex-check`, 511 s:** tests and both apps passed. Same question.
+- **`/reflex-explore`, 32 s:** the count went 0, 1, 2. The network stayed clean and iOS and Android agreed.
+
+**Confetti**
+
+- **`/reflex-start`, 42 min:** added the first test. Phone, Wear OS and iOS apps passed. Asked before moving view state.
+- **`/reflex-check`, 731 s:** phone, Wear OS and iOS apps passed. Same question.
+
+Each first setup hit the test session’s time cap, 25 minutes for Counter and 40 for Confetti. A one-word “Continue.” let it finish, and the times above include both parts.
+
+### What went wrong
+
+Two real problems showed up. The Counter check found that the app’s Reset can be undone on screen while Reset in the test code Reflex wrote always resets, and listed that as a decision too. In Confetti the iOS build left a Gradle daemon running after the run. Reflex now builds Kotlin Multiplatform iOS apps with the Gradle daemon turned off, so nothing is left behind.
 
 ## Workflow 1: first setup
 
