@@ -8,7 +8,11 @@ for (const width of [390, 768, 820, 1024, 1440]) {
     const hero = page.getByRole('group', { name: 'Workout Director app screens' })
     await expect(hero.locator('img')).toHaveCount(2)
     for (const image of await hero.locator('img').all()) {
-      expect((await image.boundingBox())?.width).toBeLessThanOrEqual(189)
+      // Real phone size on wide screens, never past 280px, and never squashed.
+      const size = await image.evaluate((img: HTMLImageElement) => ({ w: img.offsetWidth, h: img.offsetHeight }))
+      expect(size.w).toBeLessThanOrEqual(280)
+      if (width > 1100) expect(size.w).toBeGreaterThanOrEqual(240)
+      expect(size.h / size.w).toBeGreaterThan(1.9)
       await expect(image).toHaveAttribute('srcset', /(?:240w.*480w|400w).*800w/)
     }
     await expect(hero.locator('img').nth(1)).toHaveAttribute('src', /deadlift-pexels-/)
@@ -41,8 +45,13 @@ for (const width of [390, 768, 820, 1024, 1440]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
     await gotoHydrated(page, '/projects/')
     const projectPhone = page.getByRole('group', { name: 'Workout Director screens', exact: true })
-    await expect(projectPhone.locator('img')).toHaveCount(1)
-    expect((await projectPhone.locator('img').boundingBox())?.width).toBeLessThanOrEqual(512)
+    // The Projects page shows the same fan of real-size phones as the home page instead of a poster.
+    await expect(projectPhone.locator('img')).toHaveCount(3)
+    for (const image of await projectPhone.locator('img').all()) {
+      const size = await image.evaluate((img: HTMLImageElement) => ({ w: img.offsetWidth, h: img.offsetHeight }))
+      expect(size.h / size.w).toBeCloseTo(2558 / 1181, 1)
+      expect(size.w).toBeLessThanOrEqual(240)
+    }
     await gotoHydrated(page, '/notes/')
     for (const image of await page.locator('[data-note-banner] img').all()) {
       const box = await image.boundingBox()

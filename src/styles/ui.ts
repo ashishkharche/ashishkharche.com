@@ -1,8 +1,12 @@
 import * as stylex from '@stylexjs/stylex'
-import { breakpoints, colors, fonts, layout, type, weights } from './tokens.stylex'
+import { breakpoints, colors, fonts, layout, leading, space, type, weights } from './tokens.stylex'
 
 // The left edge of `wrap`: the scene inset on narrow screens, centred in the panorama width on wide ones.
 const alignedLeft = `max(${layout.sceneInset}, (100% - ${layout.wide}) / 2)`
+// The content edge: the wrap's left edge plus the rail and its gap. Titles and text start here on every page.
+const contentLeft = `calc(${alignedLeft} + ${layout.rail} + ${layout.railGap})`
+// The width from the content edge to the wrap's right edge.
+const contentWidth = `calc(min(100vw - 2 * ${layout.sceneInset}, ${layout.wide}) - ${layout.rail} - ${layout.railGap})`
 
 const focusRing = {
   outline: { default: null, ':focus-visible': `2px solid ${colors.accent}` },
@@ -27,7 +31,7 @@ export const ui = stylex.create({
       default: `min(100% - 2 * ${layout.sceneInset}, ${layout.column})`,
       [breakpoints.phone]: 'calc(100% - 3rem)',
     },
-    marginLeft: { default: alignedLeft, [breakpoints.phone]: 'auto' },
+    marginLeft: { default: alignedLeft, [breakpoints.desktop]: contentLeft, [breakpoints.phone]: 'auto' },
     marginRight: 'auto',
   },
   columnWide: {
@@ -35,8 +39,42 @@ export const ui = stylex.create({
       default: `min(100% - 2 * ${layout.sceneInset}, ${layout.columnWide})`,
       [breakpoints.phone]: 'calc(100% - 3rem)',
     },
-    marginLeft: { default: alignedLeft, [breakpoints.phone]: 'auto' },
+    marginLeft: { default: alignedLeft, [breakpoints.desktop]: contentLeft, [breakpoints.phone]: 'auto' },
     marginRight: 'auto',
+  },
+  /**
+   * The grid every page shares: a rail on the left for section numbers, dates and meta, then the content. Below
+   * 1100px the rail sits above the content.
+   */
+  rail: {
+    display: 'grid',
+    gridTemplateColumns: { default: `${layout.rail} minmax(0, 1fr)`, [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    columnGap: layout.railGap,
+    rowGap: space.s24,
+  },
+  /** What sits in the rail: 16px meta in the muted colour. */
+  railText: { fontSize: type.meta, lineHeight: leading.meta, color: colors.muted, minWidth: 0 },
+  /**
+   * A section of a page: a pen line across the top that starts at the line running down the page (see Page.tsx),
+   * 96 above it and 48 below it, so sections sit 144 apart.
+   */
+  penSection: {
+    position: 'relative',
+    marginTop: { default: space.s96, [breakpoints.phone]: space.s48 },
+    paddingTop: { default: space.s48, [breakpoints.phone]: space.s48 },
+    '::before': {
+      content: '""',
+      position: 'absolute',
+      top: '-8px',
+      left: { default: `calc(-1 * ${layout.spineGap})`, [breakpoints.phone]: `calc(-1 * ${layout.spineGapPhone})` },
+      right: 0,
+      height: '16px',
+      backgroundColor: colors.ink,
+      maskImage: 'url("/assets/img/scene/line-h1.svg")',
+      maskRepeat: 'no-repeat',
+      maskSize: '100% 100%',
+      pointerEvents: 'none',
+    },
   },
   narrow: { maxWidth: layout.column },
   /**
@@ -45,7 +83,7 @@ export const ui = stylex.create({
    */
   wide: {
     width: {
-      default: `calc(min(100vw - 2 * ${layout.sceneInset}, ${layout.wide}) * 0.83)`,
+      default: contentWidth,
       [breakpoints.tablet]: `min(100vw - 2 * ${layout.sceneInset}, ${layout.wide})`,
       [breakpoints.phone]: 'calc(100vw - 3rem)',
     },
@@ -106,14 +144,14 @@ export const ui = stylex.create({
     fontFamily: fonts.serif,
     fontSize: type.title,
     fontWeight: weights.display,
-    lineHeight: 1.25,
+    lineHeight: leading.title,
     letterSpacing: '-0.01em',
     textWrap: 'balance',
   },
   h3: {
     fontSize: type.lead,
     fontWeight: weights.medium,
-    lineHeight: 1.45,
+    lineHeight: leading.body,
     textWrap: 'balance',
   },
   note: { marginTop: '1.5rem', color: colors.muted, fontSize: type.meta },

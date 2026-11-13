@@ -30,7 +30,7 @@ export function Diagram({ diagram, title, caption, wide = false }: Props) {
   // data-scroll opts the drawing into the sideways-scrolling size on small screens (global.css).
   const svg = diagram.svg.replace(TITLE_PLACEHOLDER, escapeHtml(title)).replace('<svg ', '<svg data-scroll="" ')
   return (
-    <figure {...stylex.props(styles.figure, wide && ui.wide)}>
+    <figure data-wide={wide ? '' : undefined} {...stylex.props(styles.figure, wide && ui.wide)}>
       <div
         tabIndex={0}
         role="group"

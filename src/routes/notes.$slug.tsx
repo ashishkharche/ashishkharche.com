@@ -8,14 +8,16 @@ import { Shots } from '~/components/Screens'
 import { Main } from '~/components/Main'
 import { SketchArrow } from '~/components/SketchArrow'
 import { Muted, Prose, mdxComponents } from '~/components/Prose'
-import { Figure, Leg, legSpace } from '~/components/Scene'
+import { PageHead } from '~/components/PageHead'
+import headings from 'virtual:note-headings'
 import { getNoteBody } from '~/content/noteBodies'
 import { getNote } from '~/content/notes'
 import { formatLongDate } from '~/lib/dates'
 import { seo } from '~/lib/seo'
 import { jsonLdScript, noteJsonLd } from '~/lib/structuredData'
 import dates from 'virtual:content-dates'
-import { colors, fonts, type, weights } from '~/styles/tokens.stylex'
+import { breakpoints, colors, leading, space, type } from '~/styles/tokens.stylex'
+import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/notes/$slug')({
@@ -44,68 +46,85 @@ function NotePage() {
   const note = Route.useLoaderData()
   const Body = getNoteBody(note.slug)
   const hasBanner = hasNoteBanner(note.slug)
+  const toc = headings[note.slug] ?? []
   if (!Body) throw notFound()
   return (
     <Main>
       <Prose as="article" aria-labelledby="post-title">
-        {/* The title stands on the first stretch of the line; the text runs down beside it, the line on the right. */}
-        <Leg from="edge" as="header" xstyle={legSpace.first}>
-          <div {...stylex.props(legSpace.headScene)}>
-            <div {...stylex.props(legSpace.headText)}>
+        <PageHead
+          size="title"
+          titleId="post-title"
+          title={note.title}
+          figure={hasBanner ? undefined : 'squat'}
+          meta={
+            <>
               <Link to="/notes/" {...stylex.props(styles.back, ui.focusRing)}>
                 <SketchArrow dir="left" /> Notes
               </Link>
-              <p {...stylex.props(styles.meta)}>
+              <p>
                 <time dateTime={note.date}>{formatLongDate(note.date)}</time>, {note.series}, part {note.part}
               </p>
-              <h1 id="post-title" {...stylex.props(styles.title)}>
-                {note.title}
-              </h1>
-            </div>
-            {!hasBanner && <Figure name="squat" xstyle={legSpace.headFigure} />}
-          </div>
-          {hasBanner && (
-            <div {...stylex.props(styles.banner)}>
-              <NoteBanner slug={note.slug} />
-            </div>
+            </>
+          }
+        >
+          {hasBanner ? <NoteBanner slug={note.slug} page /> : null}
+        </PageHead>
+        <div {...stylex.props(ui.wrap, ui.rail, styles.row)}>
+          {/* A drawn contents list in the rail on wide screens; long notes only. */}
+          {toc.length >= 4 ? (
+            <nav aria-label="Contents" {...stylex.props(styles.toc)}>
+              <p {...stylex.props(sk.ruleBottom, styles.tocTitle)}>Contents</p>
+              <ol role="list" {...stylex.props(styles.tocList)}>
+                {toc.map((item) => (
+                  <li key={item.id}>
+                    <a href={`#${item.id}`} {...stylex.props(styles.tocLink, ui.focusRing)}>
+                      {item.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          ) : (
+            <span />
           )}
-        </Leg>
-        <Leg from="right" to="edge" as="div" xstyle={legSpace.text}>
-          <div {...stylex.props(styles.body, legSpace.column)}>
+          <div data-note-body {...stylex.props(styles.body)}>
             {/* Body comes from a module-level map of compiled MDX files; nothing is created here. */}
             {/* eslint-disable-next-line react-hooks/static-components */}
             <Body components={{ ...mdxComponents, Diagram, Shots, ThemedFigures, Muted }} />
           </div>
-        </Leg>
+        </div>
       </Prose>
     </Main>
   )
 }
 
 const styles = stylex.create({
-  banner: { marginTop: '2rem', maxWidth: '52rem' },
+  row: { marginTop: { default: space.s48, [breakpoints.phone]: space.s24 } },
   back: {
-    display: 'inline-block',
-    marginBottom: '1.75rem',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.35em',
+    minHeight: '2.75rem',
     fontSize: type.meta,
     color: { default: colors.muted, ':hover': colors.accent },
     textDecorationLine: 'none',
   },
-  meta: {
-    color: colors.muted,
-    fontSize: type.meta,
-    fontWeight: weights.regular,
-    lineHeight: 1.4,
-  },
-  title: {
-    marginTop: '0.85rem',
-    fontFamily: fonts.serif,
-    fontSize: type.title,
-    lineHeight: 1.15,
-    textWrap: 'balance',
-    fontWeight: weights.display,
-    letterSpacing: '-0.012em',
-    color: colors.text,
-  },
   body: { minWidth: 0 },
+  // The contents list stays in view in the rail as you read. Hidden below 1100px, where the rail sits on top.
+  toc: {
+    display: { default: 'block', [breakpoints.tablet]: 'none' },
+    position: 'sticky',
+    top: space.s24,
+    alignSelf: 'start',
+    paddingTop: space.s16,
+    fontSize: type.meta,
+    lineHeight: leading.meta,
+  },
+  tocTitle: { color: colors.muted, paddingBottom: space.s8, marginBottom: space.s8 },
+  tocList: { listStyle: 'none', display: 'grid', rowGap: space.s8 },
+  tocLink: {
+    color: { default: colors.muted, ':hover': colors.text },
+    textDecorationLine: 'none',
+    textWrap: 'balance',
+  },
 })

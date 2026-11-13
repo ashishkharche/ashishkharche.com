@@ -10,9 +10,9 @@ export const colors = stylex.defineVars({
   bg: { default: '#faf8f3', [DARK]: '#0c0d0e' },
   // The footer drawing is black line art; dark mode turns it light.
   artFilter: { default: 'none', [DARK]: 'invert(1)' },
-  artOpacity: { default: '0.42', [DARK]: '0.3' },
+  artOpacity: { default: '0.58', [DARK]: '0.45' },
   // The footer drawing's pen: its line colour (black at artOpacity on the paper) for drawn rules and frames.
-  ink: { default: 'rgb(9 10 11 / 0.42)', [DARK]: 'rgb(241 246 243 / 0.34)' },
+  ink: { default: 'rgb(9 10 11 / 0.58)', [DARK]: 'rgb(241 246 243 / 0.45)' },
   // The same pen pressed harder, for the outlines of things you can press, so they keep 3:1 contrast.
   inkStrong: { default: 'rgb(9 10 11 / 0.66)', [DARK]: 'rgb(241 246 243 / 0.6)' },
   // A hand-drawn underline for links in running text, drawn in the ink colour of each theme.
@@ -65,8 +65,8 @@ export const colors = stylex.defineVars({
 const light = {
   bg: '#faf8f3',
   artFilter: 'none',
-  artOpacity: '0.42',
-  ink: 'rgb(9 10 11 / 0.42)',
+  artOpacity: '0.58',
+  ink: 'rgb(9 10 11 / 0.58)',
   inkStrong: 'rgb(9 10 11 / 0.66)',
   inkUnderline: 'url("/assets/img/sketch/underline-light.svg")',
   skBox: 'url("/assets/img/sketch/box-light.svg")',
@@ -95,8 +95,8 @@ const light = {
 const dark = {
   bg: '#0c0d0e',
   artFilter: 'invert(1)',
-  artOpacity: '0.3',
-  ink: 'rgb(241 246 243 / 0.34)',
+  artOpacity: '0.45',
+  ink: 'rgb(241 246 243 / 0.45)',
   inkStrong: 'rgb(241 246 243 / 0.6)',
   inkUnderline: 'url("/assets/img/sketch/underline-dark.svg")',
   skBox: 'url("/assets/img/sketch/box-dark.svg")',
@@ -168,6 +168,32 @@ export const layout = stylex.defineConsts({
   sceneX: 'clamp(0.75rem, 2.4vw, 2.25rem)',
   // How far content keeps in from the page edge: clear of that line and its 48px turns. Header, footer and pages share it.
   sceneInset: '3rem',
+  // The rail on the left of every page (section numbers, dates and meta) and the gap after it. Titles and text start
+  // at the content edge, rail plus gap in from the wrap.
+  rail: '10rem',
+  railGap: '3rem',
+  // How far left of the content wrap the pen line runs down the page (see src/components/Page.tsx).
+  spineGap: '2rem',
+  spineGapPhone: '0.9rem',
+})
+
+/** The spacing scale: every gap between blocks is one of these. 144 between sections, 48 between entries. */
+export const space = stylex.defineConsts({
+  s8: '0.5rem',
+  s16: '1rem',
+  s24: '1.5rem',
+  s48: '3rem',
+  s96: '6rem',
+  s144: '9rem',
+})
+
+/** Line heights for the four sizes, unitless so they hold when inherited: 16/24, 18/30, 48/56 and 96/96. */
+export const leading = stylex.defineVars({
+  meta: '1.5',
+  body: '1.6667',
+  title: '1.1667',
+  // The display size drops to 48 below 1100px, and its line height to 56 with it.
+  display: { default: '1', [PHONE]: '1.1667' },
 })
 
 export const breakpoints = stylex.defineConsts({

@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
+import { Link } from '@tanstack/react-router'
 import { site } from '~/content/site'
-import { breakpoints, colors, type } from '~/styles/tokens.stylex'
+import { breakpoints, colors, space, type } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export function SiteFooter() {
@@ -32,50 +33,13 @@ export function SiteFooter() {
               X
             </a>
           </li>
+          <li>
+            {/* The video and image credits are on a page of their own, not under every page. */}
+            <Link to="/credits/" {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}>
+              Credits
+            </Link>
+          </li>
         </ul>
-      </div>
-      <div {...stylex.props(ui.wrap, styles.credits)}>
-        <p>
-          Video:{' '}
-          <a
-            href="https://commons.wikimedia.org/wiki/File:Kettlebell_crush_grip_push-up.webm"
-            {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}
-          >
-            Taco fleur / Wikimedia Commons
-          </a>
-          ,{' '}
-          <a
-            href="https://creativecommons.org/licenses/by-sa/4.0/"
-            {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}
-          >
-            CC BY-SA 4.0
-          </a>
-          . Cropped; pose overlay, interface composition and chart added. Adapted images: CC BY-SA 4.0.
-        </p>
-        <p>
-          Video:{' '}
-          <a
-            href="https://www.pexels.com/video/a-woman-lifting-a-barbell-7674505/"
-            {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}
-          >
-            cottonbro studio / Pexels (7674505)
-          </a>
-          .
-        </p>
-        <p>
-          Video:{' '}
-          <a
-            href="https://www.pexels.com/video/woman-in-pink-and-gray-sports-gear-exercising-outdoors-2785531/"
-            {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}
-          >
-            cottonbro studio / Pexels (2785531)
-          </a>
-          . Cropped still at 2.36 seconds.{' '}
-          <a href="https://www.pexels.com/license/" {...stylex.props(ui.link, ui.quietLink, ui.plainLink)}>
-            Pexels License
-          </a>
-          .
-        </p>
       </div>
       {/*
         Line art across the full width: the AK mark, Workout Director exercise
@@ -108,7 +72,7 @@ export function SiteFooter() {
 
 const styles = stylex.create({
   footer: {
-    marginTop: { default: '8rem', [breakpoints.phone]: '6rem' },
+    marginTop: space.s48,
     color: colors.muted,
     fontSize: type.meta,
     overflow: 'hidden',
@@ -121,10 +85,9 @@ const styles = stylex.create({
     justifyContent: 'space-between',
     rowGap: '0.75rem',
     columnGap: '2rem',
-    paddingTop: '2rem',
-    paddingBottom: '2.5rem',
+    paddingTop: space.s24,
+    paddingBottom: space.s24,
   },
-  credits: { fontSize: type.meta, lineHeight: 1.5, paddingBottom: '2rem' },
   list: {
     listStyle: 'none',
     display: 'flex',

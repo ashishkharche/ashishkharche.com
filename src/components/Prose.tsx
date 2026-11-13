@@ -1,9 +1,11 @@
 import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
 import type { MDXComponents } from 'mdx/types'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
+import { Children, isValidElement, type ComponentPropsWithoutRef, type ReactElement, type ReactNode } from 'react'
 import { CodeBlock } from '~/components/CodeBlock'
-import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
+import { SketchArrow } from '~/components/SketchArrow'
+import { headingId } from '~/lib/headings'
+import { breakpoints, colors, fonts, layout, space, type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 /** Container for long-form text: case studies, notes and the About page. */
@@ -43,10 +45,42 @@ export function Lead({ children }: { children: ReactNode }) {
   return <p {...stylex.props(styles.block, styles.lead)}>{children}</p>
 }
 
+/** The plain text of a heading's children, for its id. */
+function textOf(node: ReactNode): string {
+  if (typeof node === 'string' || typeof node === 'number') return String(node)
+  if (Array.isArray(node)) return node.map(textOf).join('')
+  if (isValidElement(node)) return textOf((node.props as { children?: ReactNode }).children)
+  return ''
+}
+
+/**
+ * A paragraph that is only an outside link is a pointer to read more, not a heading: it is set at the regular weight
+ * with an outward arrow.
+ */
+function Paragraph({ children }: { children?: ReactNode }) {
+  const only = Children.toArray(children)
+  const link =
+    only.length === 1 && isValidElement(only[0]) ? (only[0] as ReactElement<ComponentPropsWithoutRef<'a'>>) : null
+  if (link?.props.href && /^https?:/.test(link.props.href)) {
+    return (
+      <p {...stylex.props(styles.block)}>
+        <a href={link.props.href} {...stylex.props(ui.link, ui.plainLink, styles.readMore)}>
+          {link.props.children} <SketchArrow dir="out" />
+        </a>
+      </p>
+    )
+  }
+  return <p {...stylex.props(styles.block)}>{children}</p>
+}
+
 export const mdxComponents: MDXComponents = {
   a: Anchor,
-  p: ({ children }) => <p {...stylex.props(styles.block)}>{children}</p>,
-  h2: ({ children }) => <h2 {...stylex.props(ui.h2, styles.h2)}>{children}</h2>,
+  p: Paragraph,
+  h2: ({ children }) => (
+    <h2 id={headingId(textOf(children))} {...stylex.props(ui.h2, styles.h2)}>
+      {children}
+    </h2>
+  ),
   h3: ({ children }) => <h3 {...stylex.props(ui.h3, styles.h3)}>{children}</h3>,
   ul: ({ children }) => <ul {...stylex.props(styles.block, styles.list)}>{children}</ul>,
   ol: ({ children }) => <ol {...stylex.props(styles.block, styles.list)}>{children}</ol>,
@@ -63,26 +97,41 @@ const styles = stylex.create({
   // Long words and URLs wrap instead of pushing the page wider on phones.
   prose: { overflowWrap: 'break-word' },
   block: {
-    marginTop: { default: '1.35rem', ':first-child': 0 },
+    marginTop: { default: space.s24, ':first-child': 0 },
+    maxWidth: layout.column,
     textWrap: 'pretty',
   },
-  lead: { fontSize: type.lead, lineHeight: 1.55 },
+  lead: { fontSize: type.lead, lineHeight: 1.6667 },
   strong: { fontWeight: weights.medium },
-  // Each part of a note starts on a drawn ground line, like the sections of the home page.
+  readMore: { color: colors.text },
+  // Each part of a note starts on a pen line: 96 above the heading with the line halfway, 24 below it.
   h2: {
-    marginTop: { default: '3rem', ':first-child': 0, [breakpoints.phone]: '2.25rem' },
+    position: 'relative',
+    maxWidth: layout.column,
+    marginTop: { default: space.s48, ':first-child': 0, [breakpoints.phone]: space.s24 },
+    paddingTop: { default: space.s48, [breakpoints.phone]: space.s24 },
+    scrollMarginTop: space.s24,
     '::before': {
       content: '""',
-      display: 'block',
-      height: '12px',
-      marginBottom: { default: '2.5rem', [breakpoints.phone]: '2rem' },
+      position: 'absolute',
+      top: '-8px',
+      // On wide screens the rail holds the contents list, so the line starts at the text; below 1100px it comes in
+      // from the line down the page.
+      left: {
+        default: 0,
+        [breakpoints.tablet]: `calc(-1 * ${layout.spineGap})`,
+        [breakpoints.phone]: `calc(-1 * ${layout.spineGapPhone})`,
+      },
+      right: 0,
+      height: '16px',
       backgroundColor: colors.ink,
-      maskImage: 'url("/assets/img/sketch/rule-3.svg")',
+      maskImage: 'url("/assets/img/scene/line-h1.svg")',
       maskRepeat: 'no-repeat',
       maskSize: '100% 100%',
+      pointerEvents: 'none',
     },
   },
-  h3: { marginTop: { default: '2.5rem', ':first-child': 0 } },
+  h3: { maxWidth: layout.column, marginTop: { default: space.s48, ':first-child': 0 } },
   list: { paddingLeft: '1.25rem' },
   item: {
     marginTop: { default: '0.45rem', ':first-child': 0 },

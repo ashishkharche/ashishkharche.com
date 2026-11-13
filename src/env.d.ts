@@ -21,3 +21,9 @@ declare module 'virtual:content-dates' {
   }
   export default dates
 }
+
+declare module 'virtual:note-headings' {
+  /** Each note's section headings, by slug, with the ids the note page gives them. */
+  const headings: Record<string, Array<{ id: string; text: string }>>
+  export default headings
+}

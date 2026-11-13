@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test'
 const note = '/notes/workout-director-2/'
 
 test('fenced code is one highlighted block that scrolls sideways', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
   await page.goto(note)
   const blocks = page.locator('pre.code')
   await expect(blocks).toHaveCount(8)

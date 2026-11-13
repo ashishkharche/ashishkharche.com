@@ -9,6 +9,7 @@ import { site } from '~/content/site'
 import { seo } from '~/lib/seo'
 import { aboutJsonLd, jsonLdScript } from '~/lib/structuredData'
 import dates from 'virtual:content-dates'
+import { layout, space } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/about')({
@@ -25,14 +26,14 @@ export const Route = createFileRoute('/about')({
 })
 
 const P = mdxComponents.p as (props: { children: React.ReactNode }) => React.JSX.Element
-const H2 = mdxComponents.h2 as (props: { children: React.ReactNode }) => React.JSX.Element
 
 function About() {
   return (
     <Main>
-      <div {...stylex.props(ui.column)}>
-        <PageHead title="About" />
-        <div {...stylex.props(ui.mt2)}>
+      <PageHead title="About" figure="lunge" />
+      <section aria-label="About me" {...stylex.props(ui.wrap, ui.rail, styles.first)}>
+        <span />
+        <div {...stylex.props(styles.column)}>
           <Prose>
             <Lead>I’m Ashish Kharche, a software engineer living in London.</Lead>
             <P>
@@ -55,7 +56,16 @@ function About() {
               Workout Director and <Logo name="kalo" size={20} inline />
               Kalo. Both are published on the App Store by Shelgaon Ltd.
             </P>
-            <H2>Contact</H2>
+          </Prose>
+        </div>
+      </section>
+      <section aria-labelledby="contact-title" {...stylex.props(ui.wrap, ui.penSection, ui.rail)}>
+        <span />
+        <div {...stylex.props(styles.column)}>
+          <h2 id="contact-title" {...stylex.props(ui.h2, styles.h2)}>
+            Contact
+          </h2>
+          <Prose>
             <P>
               Email:{' '}
               <a href={`mailto:${site.email}`} {...stylex.props(ui.link)}>
@@ -69,7 +79,7 @@ function About() {
               <a href={site.github} {...stylex.props(ui.link)}>
                 GitHub
               </a>{' '}
-              and{' '}
+              and{'\u00a0'}
               <a href={site.x} rel="me noopener" {...stylex.props(ui.link)}>
                 X
               </a>
@@ -78,7 +88,13 @@ function About() {
             <Availability email={false} />
           </Prose>
         </div>
-      </div>
+      </section>
     </Main>
   )
 }
+
+const styles = stylex.create({
+  first: { marginTop: space.s48 },
+  column: { minWidth: 0, maxWidth: layout.column },
+  h2: { marginBottom: space.s24 },
+})

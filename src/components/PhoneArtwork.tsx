@@ -1,4 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
+import { breakpoints } from '~/styles/tokens.stylex'
+import { sk } from '~/styles/sketch'
 
 const descriptions = {
   'slick-v5-minimal-clean': 'Workout Director phone with a push-up figure above the camera view',
@@ -21,19 +23,23 @@ export function PhoneArtwork({
   label,
   priority = false,
   compact = false,
+  size,
   xstyle,
 }: {
   phones: readonly Phone[]
   label?: string
   priority?: boolean
   compact?: boolean
+  /** `hero`: the phones at the top of the home page, about 270px each on wide screens, standing on a pen line. */
+  size?: 'hero'
   xstyle?: stylex.StyleXStyles
 }) {
+  const hero = size === 'hero'
   return (
     <div
       role={label ? 'group' : undefined}
       aria-label={label}
-      {...stylex.props(styles.phones, compact && styles.compact, xstyle)}
+      {...stylex.props(styles.phones, hero && styles.hero, compact && styles.compact, xstyle)}
     >
       {phones.map((phone, index) => (
         <img
@@ -42,7 +48,7 @@ export function PhoneArtwork({
           srcSet={(phone === 'deadlift-pexels' ? [400, 800] : widths)
             .map((width) => `${path(phone, width)} ${width}w`)
             .join(', ')}
-          sizes={compact ? '86px' : '(max-width: 560px) 42vw, 188px'}
+          sizes={compact ? '86px' : hero ? '(max-width: 560px) 42vw, 272px' : '(max-width: 560px) 42vw, 188px'}
           width={phone === 'deadlift-pexels' ? 1320 : 1181}
           height={phone === 'deadlift-pexels' ? 2868 : 2558}
           alt={descriptions[phone]}
@@ -54,9 +60,11 @@ export function PhoneArtwork({
             phone === 'deadlift-pexels' && styles.screen,
             phones.length === 1 && styles.single,
             compact && styles.small,
+            hero && styles.heroPhone,
           )}
         />
       ))}
+      {hero ? <span aria-hidden="true" {...stylex.props(sk.rule, styles.ground)} /> : null}
     </div>
   )
 }
@@ -79,6 +87,15 @@ const styles = stylex.create({
     borderBottomRightRadius: '9% 4.15%',
   },
   single: { width: '100%', maxWidth: '164px' },
+  // Bigger phones standing on a pen line drawn under them.
+  hero: {
+    position: 'relative',
+    maxWidth: { default: '36rem', [breakpoints.phone]: '25rem' },
+    gap: '4%',
+    paddingBottom: '0.75rem',
+  },
+  heroPhone: { maxWidth: '280px' },
+  ground: { position: 'absolute', left: '-4%', right: '-4%', bottom: 0, marginBlock: 0 },
   compact: { height: '100%', justifyContent: 'flex-start', marginInline: 0 },
   small: { width: 'auto', maxWidth: '100%', height: '100%' },
 })

@@ -5,10 +5,9 @@ import { Logo } from '~/components/Logo'
 import { Main } from '~/components/Main'
 import { PageHead } from '~/components/PageHead'
 import { Rows } from '~/components/Rows'
-import { Figure, Leg, legSpace } from '~/components/Scene'
 import { certificationsNote, maestroArticles, roles, tools, workIntro } from '~/content/work'
 import { seo } from '~/lib/seo'
-import { breakpoints, colors, type } from '~/styles/tokens.stylex'
+import { breakpoints, colors, layout, leading, space, type } from '~/styles/tokens.stylex'
 import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
@@ -26,89 +25,70 @@ export const Route = createFileRoute('/work')({
 function Work() {
   return (
     <Main>
-      <Leg from="edge" as="div" xstyle={legSpace.first}>
-        <div {...stylex.props(legSpace.headScene)}>
-          <div {...stylex.props(legSpace.headText)}>
-            <PageHead title="Work" lead={workIntro} />
-          </div>
-          <Figure name="walk" xstyle={legSpace.headFigure} />
-        </div>
-      </Leg>
+      <PageHead title="Work" lead={workIntro} figure="walk" />
 
-      <section aria-labelledby="roles-title">
+      <section aria-labelledby="roles-title" {...stylex.props(ui.wrap, styles.first)}>
         <h2 id="roles-title" {...stylex.props(ui.visuallyHidden)}>
           Roles
         </h2>
-        {/* Each role is a stretch of the line, the words on the side it comes down. */}
+        {/* Each role on the shared grid: its dates in the rail, the role at the content edge, 48 between roles. */}
         <ol role="list" {...stylex.props(styles.entries)}>
           {roles.map((role, index) => (
-            <Leg
-              key={role.org}
-              as="li"
-              from={index % 2 === 0 ? 'right' : 'left'}
-              stroke={index % 2 === 0 ? 2 : 1}
-              xstyle={legSpace.text}
-            >
-              <div {...stylex.props(styles.entry, legSpace.columnWide)}>
-                <p {...stylex.props(styles.when)}>
-                  {role.when ?? <span {...stylex.props(ui.visuallyHidden)}>No dates</span>}
-                </p>
-                <div>
-                  <h3 {...stylex.props(ui.h3, styles.org)}>
-                    {role.logo ? (
-                      <span {...stylex.props(styles.mark)}>
-                        <Logo name={role.logo} size={32} />
-                      </span>
-                    ) : null}
-                    <span>
-                      {role.org}
-                      {role.orgNote ? (
-                        <>
-                          {' '}
-                          <span {...stylex.props(ui.muted)}>{role.orgNote}</span>
-                        </>
-                      ) : null}
+            <li key={role.org} {...stylex.props(ui.rail, styles.entry, index > 0 && [sk.ruleTop, styles.entryNext])}>
+              <p {...stylex.props(ui.railText, styles.when)}>
+                {role.when ?? <span {...stylex.props(ui.visuallyHidden)}>No dates</span>}
+              </p>
+              <div {...stylex.props(styles.entryBody)}>
+                <h3 {...stylex.props(ui.h3, styles.org)}>
+                  {role.logo ? (
+                    <span {...stylex.props(styles.mark)}>
+                      <Logo name={role.logo} size={32} />
                     </span>
-                  </h3>
-                  {(typeof role.role === 'string' ? [role.role] : role.role).map((line) => (
-                    <p key={line} {...stylex.props(styles.role)}>
-                      {line}
-                    </p>
-                  ))}
-                  {role.paragraphs.map((text) => (
-                    <p key={text.slice(0, 32)} {...stylex.props(styles.para)}>
-                      {text}
-                    </p>
-                  ))}
-                </div>
+                  ) : null}
+                  <span>
+                    {role.org}
+                    {role.orgNote ? (
+                      <>
+                        {' '}
+                        <span {...stylex.props(ui.muted)}>{role.orgNote}</span>
+                      </>
+                    ) : null}
+                  </span>
+                </h3>
+                {(typeof role.role === 'string' ? [role.role] : role.role).map((line) => (
+                  <p key={line} {...stylex.props(styles.role)}>
+                    {line}
+                  </p>
+                ))}
+                {role.paragraphs.map((text) => (
+                  <p key={text.slice(0, 32)} {...stylex.props(styles.para)}>
+                    {text}
+                  </p>
+                ))}
               </div>
-            </Leg>
+            </li>
           ))}
         </ol>
-        <Leg as="div" from={roles.length % 2 === 0 ? 'right' : 'left'} xstyle={[legSpace.text, styles.shortLeg]}>
-          <p {...stylex.props(styles.certs, legSpace.columnWide, roles.length % 2 === 0 && legSpace.toRight)}>
-            {certificationsNote}
-          </p>
-        </Leg>
+        <div {...stylex.props(ui.rail, styles.certsRow)}>
+          <span />
+          <p {...stylex.props(styles.certs)}>{certificationsNote}</p>
+        </div>
       </section>
 
-      <Leg
-        from={roles.length % 2 === 0 ? 'left' : 'right'}
-        stroke={2}
-        labelledBy="writing-title"
-        xstyle={legSpace.text}
-      >
-        <div {...stylex.props(legSpace.columnWide, roles.length % 2 !== 0 && legSpace.toRight)}>
+      <section aria-labelledby="writing-title" {...stylex.props(ui.wrap, ui.penSection, ui.rail)}>
+        <p {...stylex.props(ui.railText)}>2023</p>
+        <div {...stylex.props(styles.body)}>
           <h2 id="writing-title" {...stylex.props(ui.h2, styles.h2)}>
             Writing for Maestro
           </h2>
           <p {...stylex.props(ui.muted)}>Six of the 14 posts I wrote for the Maestro blog in 2023.</p>
           <Rows spaced rows={maestroArticles.map((a) => ({ title: a.title, href: a.href, date: a.date }))} />
         </div>
-      </Leg>
+      </section>
 
-      <Leg from={roles.length % 2 === 0 ? 'right' : 'left'} labelledBy="tools-title" xstyle={legSpace.text}>
-        <div {...stylex.props(legSpace.columnWide, roles.length % 2 === 0 && legSpace.toRight)}>
+      <section aria-labelledby="tools-title" {...stylex.props(ui.wrap, ui.penSection, ui.rail)}>
+        <span />
+        <div {...stylex.props(styles.body)}>
           <h2 id="tools-title" {...stylex.props(ui.h2, styles.h2)}>
             Tools
           </h2>
@@ -121,39 +101,34 @@ function Work() {
             ))}
           </dl>
         </div>
-      </Leg>
+      </section>
 
-      <Leg
-        from={roles.length % 2 === 0 ? 'left' : 'right'}
-        to="edge"
-        stroke={2}
-        labelledBy="cv-title"
-        xstyle={legSpace.text}
-      >
-        <div {...stylex.props(legSpace.columnWide, roles.length % 2 !== 0 && legSpace.toRight)}>
+      <section aria-labelledby="cv-title" {...stylex.props(ui.wrap, ui.penSection, ui.rail)}>
+        <span />
+        <div {...stylex.props(styles.body)}>
           <h2 id="cv-title" {...stylex.props(ui.h2, styles.h2)}>
             CV
           </h2>
           <Availability />
         </div>
-      </Leg>
+      </section>
     </Main>
   )
 }
 
 const styles = stylex.create({
-  h2: { marginBottom: '0.75rem' },
+  first: { marginTop: space.s48 },
+  h2: { marginBottom: space.s16 },
+  body: { minWidth: 0, maxWidth: layout.columnWide },
   entries: { listStyle: 'none' },
-  entry: {
-    display: 'grid',
-    gridTemplateColumns: { default: '10rem 1fr', [breakpoints.tablet]: '1fr' },
-    gap: { default: '1.5rem', [breakpoints.tablet]: '0.2rem' },
-  },
-  shortLeg: { paddingTop: { default: '3rem', [breakpoints.phone]: '2.5rem' } },
-  certs: { color: colors.muted, fontSize: type.meta },
-  when: { color: colors.muted, fontSize: type.meta, paddingTop: '0.1rem', textWrap: 'balance' },
+  entry: { rowGap: space.s8 },
+  // Roles sit 48 apart, a pen line halfway between them.
+  entryNext: { marginTop: space.s24, paddingTop: space.s24 },
+  entryBody: { minWidth: 0, maxWidth: layout.columnWide },
+  certsRow: { marginTop: space.s48 },
+  certs: { color: colors.muted, fontSize: type.meta, lineHeight: leading.meta, maxWidth: layout.columnWide },
+  when: { paddingTop: '0.2rem', textWrap: 'balance' },
   org: { display: 'flex', alignItems: 'center', gap: '0.75rem' },
-  // Each company mark in a drawn box of the same size.
   mark: {
     display: 'flex',
     alignItems: 'center',
@@ -162,8 +137,8 @@ const styles = stylex.create({
     height: '2.5rem',
     flex: 'none',
   },
-  role: { color: colors.muted, marginTop: { default: '0.5rem', ':nth-child(n+3)': '0.1rem' }, textWrap: 'pretty' },
-  para: { marginTop: '1rem', lineHeight: 1.75, textWrap: 'pretty' },
+  role: { color: colors.muted, marginTop: { default: space.s8, ':nth-child(n+3)': '0.1rem' }, textWrap: 'pretty' },
+  para: { marginTop: space.s16, lineHeight: leading.body, textWrap: 'pretty' },
   skill: {
     display: 'grid',
     gridTemplateColumns: { default: '7rem 1fr', [breakpoints.phone]: '1fr' },

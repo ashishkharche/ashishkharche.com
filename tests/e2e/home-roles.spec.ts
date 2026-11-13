@@ -33,8 +33,9 @@ for (const viewport of [
     expect(rows).toHaveLength(3)
     const [first, second, third] = rows
     if (!first || !second || !third) throw new Error('expected three roles')
-    expect(first.liClass).toBe(second.liClass)
+    // The roles after the first add only the pen line between them.
     expect(second.liClass).toBe(third.liClass)
+    for (const name of first.liClass.split(' ')) expect(second.liClass.split(' ')).toContain(name)
     expect(first.boxClass).toBe(second.boxClass)
     expect(second.boxClass).toBe(third.boxClass)
     expect(first.box.width).toBe(second.box.width)

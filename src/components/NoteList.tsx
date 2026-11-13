@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
-import { breakpoints, colors, type, weights } from '~/styles/tokens.stylex'
+import { breakpoints, colors, space, type, weights } from '~/styles/tokens.stylex'
+import { sk } from '~/styles/sketch'
 import { SketchArrow } from './SketchArrow'
 import { NoteBanner, hasNoteBanner } from './NoteBanner'
 
@@ -23,32 +24,33 @@ export interface NoteItem {
 export function NoteList({
   items,
   compact = false,
-  posts,
+  columns,
 }: {
   items: NoteItem[]
   compact?: boolean
-  /**
-   * Each note on a drawn post: side by side, each post running down to the ground line under the list (`row`),
-   * or one under another, each post beside its own note (`column`).
-   */
-  posts?: 'row' | 'column'
+  /** Notes side by side on wide screens, two or three to a row; one under another below 1100px. */
+  columns?: 2 | 3
 }) {
   return (
-    <ul role="list" {...stylex.props(styles.list, compact && styles.listCompact, posts === 'row' && styles.listPosts)}>
+    <ul
+      role="list"
+      {...stylex.props(
+        styles.list,
+        compact && styles.listCompact,
+        columns === 2 && styles.grid2,
+        columns === 3 && styles.grid3,
+      )}
+    >
       {items.map((item) => (
         <li
           key={item.title}
-          {...stylex.props(
-            stylex.defaultMarker(),
-            styles.item,
-            item.href !== undefined && styles.linked,
-            posts && styles.post,
-            posts === 'column' && styles.postColumn,
-          )}
+          {...stylex.props(stylex.defaultMarker(), styles.item, item.href !== undefined && styles.linked)}
         >
           {bannerSlug(item.href) ? (
             <div data-note-banner {...stylex.props(styles.banner)}>
               <NoteBanner slug={bannerSlug(item.href) ?? ''} />
+              {/* The picture stands on a pen line, like the figures of the footer drawing. */}
+              <span aria-hidden="true" {...stylex.props(sk.rule, styles.ground)} />
             </div>
           ) : null}
           <h3 {...stylex.props(styles.title)}>
@@ -78,42 +80,28 @@ function bannerSlug(href: string | undefined): string | undefined {
 }
 
 const styles = stylex.create({
-  banner: { minWidth: 0, marginBottom: '1rem' },
+  banner: { position: 'relative', minWidth: 0, paddingBottom: '0.5rem', marginBottom: space.s24 },
+  ground: { position: 'absolute', left: '-2%', right: '-2%', bottom: 0, marginBlock: 0 },
   list: {
     listStyle: 'none',
     display: 'grid',
-    rowGap: { default: '2.5rem', [breakpoints.phone]: '2rem' },
+    rowGap: space.s48,
   },
   listCompact: { rowGap: '1.25rem' },
-  listPosts: {
-    gridTemplateColumns: { default: 'repeat(auto-fit, minmax(15rem, 1fr))', [breakpoints.tablet]: 'minmax(0, 1fr)' },
-    columnGap: 'clamp(1.5rem, 3vw, 3rem)',
-    alignItems: 'end',
+  grid2: {
+    gridTemplateColumns: { default: 'repeat(2, minmax(0, 1fr))', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    columnGap: space.s48,
+    rowGap: space.s48,
   },
-  postColumn: { paddingBottom: '0.25rem', height: 'auto', '::before': { bottom: 0 } },
-  // A stake in the ground: a drawn upright beside the note, from its title down to the ground line.
-  post: {
-    alignContent: 'start',
-    paddingLeft: '1.5rem',
-    paddingBottom: { default: '2.5rem', [breakpoints.tablet]: '0.5rem' },
-    height: '100%',
-    '::before': {
-      content: '""',
-      position: 'absolute',
-      left: '-7px',
-      top: '0.45rem',
-      bottom: { default: '-1px', [breakpoints.tablet]: '0' },
-      width: '16px',
-      backgroundColor: colors.ink,
-      maskImage: 'url("/assets/img/scene/line-v.svg")',
-      maskSize: '100% 100%',
-      maskRepeat: 'no-repeat',
-      pointerEvents: 'none',
-    },
+  grid3: {
+    gridTemplateColumns: { default: 'repeat(3, minmax(0, 1fr))', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    columnGap: space.s48,
+    rowGap: space.s48,
   },
   item: {
     position: 'relative',
     display: 'grid',
+    alignContent: 'start',
     rowGap: 0,
     borderRadius: '6px',
   },
@@ -126,7 +114,7 @@ const styles = stylex.create({
     // Heavier weight at the lead size, so the title stands out from the 16px date and summary.
     fontSize: type.lead,
     fontWeight: weights.brand,
-    lineHeight: 1.35,
+    lineHeight: 1.6667,
     letterSpacing: '-0.012em',
     color: colors.text,
     textWrap: 'balance',
@@ -153,15 +141,15 @@ const styles = stylex.create({
   },
   muted: { color: colors.muted, fontWeight: weights.regular },
   meta: {
-    marginTop: '0.55rem',
+    marginTop: space.s8,
     color: colors.muted,
     fontSize: type.meta,
     fontWeight: weights.regular,
-    lineHeight: 1.4,
+    lineHeight: 1.5,
     fontVariantNumeric: 'tabular-nums',
   },
   summary: {
-    marginTop: '0.7rem',
+    marginTop: space.s8,
     color: colors.muted,
     fontSize: type.meta,
     fontWeight: weights.regular,

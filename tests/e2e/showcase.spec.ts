@@ -42,9 +42,9 @@ test('the desktop composition keeps raw screens clear of the type and inside the
   const name = await box(intro.locator('h1'))
   const store = await box(intro.getByRole('link', { name: 'App Store' }))
   const stage = await box(panel(page))
-  // The editorial title spans both content columns, with images below and copy opposite.
-  expect(stage.y).toBeGreaterThanOrEqual(name.y + name.height + 32)
-  expect(stage.x).toBeGreaterThan(store.x + store.width + 100)
+  // The phones stand beside the intro with their tops level with the name, clear of the words.
+  expect(Math.abs(stage.y - name.y)).toBeLessThanOrEqual(24)
+  expect(stage.x).toBeGreaterThan(Math.max(name.x + name.width, store.x + store.width) + 32)
   expect(stage.x + stage.width).toBeLessThanOrEqual(1440 - 48)
   expect(stage.y + stage.height).toBeLessThanOrEqual(900)
   const front = await box(panel(page).locator('img').nth(1))

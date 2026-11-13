@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as CreditsRouteImport } from './routes/credits'
 import { Route as WorkRouteImport } from './routes/work'
 import { Route as DraftsKeyRouteImport } from './routes/drafts.$key'
 import { Route as LabChartsRouteImport } from './routes/lab.charts'
@@ -27,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreditsRoute = CreditsRouteImport.update({
+  id: '/credits',
+  path: '/credits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WorkRoute = WorkRouteImport.update({
@@ -68,6 +74,7 @@ const ProjectsWorkoutDirectorRoute = ProjectsWorkoutDirectorRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/credits': typeof CreditsRoute
   '/work': typeof WorkRoute
   '/drafts/$key': typeof DraftsKeyRoute
   '/lab/charts': typeof LabChartsRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/credits': typeof CreditsRoute
   '/work': typeof WorkRoute
   '/drafts/$key': typeof DraftsKeyRoute
   '/lab/charts': typeof LabChartsRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/credits': typeof CreditsRoute
   '/work': typeof WorkRoute
   '/drafts/$key': typeof DraftsKeyRoute
   '/lab/charts': typeof LabChartsRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/credits'
     | '/work'
     | '/drafts/$key'
     | '/lab/charts'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/credits'
     | '/work'
     | '/drafts/$key'
     | '/lab/charts'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/credits'
     | '/work'
     | '/drafts/$key'
     | '/lab/charts'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  CreditsRoute: typeof CreditsRoute
   WorkRoute: typeof WorkRoute
   DraftsKeyRoute: typeof DraftsKeyRoute
   LabChartsRoute: typeof LabChartsRoute
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/credits': {
+      id: '/credits'
+      path: '/credits'
+      fullPath: '/credits'
+      preLoaderRoute: typeof CreditsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/work': {
@@ -218,6 +238,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  CreditsRoute: CreditsRoute,
   WorkRoute: WorkRoute,
   DraftsKeyRoute: DraftsKeyRoute,
   LabChartsRoute: LabChartsRoute,

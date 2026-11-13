@@ -254,3 +254,11 @@ strong {
     font-weight: 400;
   }
 }
+
+/*
+  A note's body runs the full width from the content edge, so code can use it. Everything else keeps to the
+  reading column; code blocks and wide diagrams (marked data-wide) do not.
+*/
+[data-note-body] > :not([data-wide]) {
+  max-width: 34rem;
+}

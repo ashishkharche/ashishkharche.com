@@ -33,6 +33,8 @@ interface Props {
 export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene }: Props) {
   const Heading = headingLevel
   const stackId = useId()
+  // A project with nothing to show is a compact row: name and meta on the left, summary on the right.
+  const compact = Boolean(scene) && !card.stage && !card.shots?.length
   const linkProps = stylex.props(styles.link, ui.focusRing)
   const label = (
     <>
@@ -46,7 +48,7 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
         stylex.defaultMarker(),
         scene ? styles.scene : [sk.ruleTop, styles.project],
         scene === 'devicesLeft' && styles.sceneLeft,
-        scene && !card.stage && !card.shots?.length && styles.sceneSolo,
+        compact && styles.sceneSolo,
       )}
     >
       {card.stage && scene ? (
@@ -94,13 +96,13 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
             (scene === 'devicesLeft' && (card.stage || card.shots?.length)
               ? styles.sceneBodyRight
               : styles.sceneBodyLeft),
-          scene && !card.stage && !card.shots?.length && styles.post,
+          compact && styles.compactBody,
         )}
       >
         <div {...stylex.props(styles.head)}>
           <Logo name={card.logo} size={40} />
           <div>
-            <Heading {...stylex.props(styles.title)}>
+            <Heading {...stylex.props(styles.title, compact && styles.compactTitle)}>
               {card.external ? (
                 <a href={card.href} {...linkProps}>
                   {label}
@@ -134,7 +136,7 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
                   </span>
                   <ul role="list" aria-labelledby={`${stackId}-${index}`} {...stylex.props(styles.tags)}>
                     {group.items.map((item) => (
-                      <li key={item} {...stylex.props(scene ? styles.tagPlain : [sk.box, styles.tag])}>
+                      <li key={item} {...stylex.props(styles.tagPlain)}>
                         {item}
                       </li>
                     ))}
@@ -175,25 +177,13 @@ const styles = stylex.create({
   sceneMediaRight: { gridColumnStart: { default: '2', [breakpoints.tablet]: '1' } },
   sceneBodyLeft: { gridColumnStart: '1' },
   sceneBodyRight: { gridColumnStart: { default: '2', [breakpoints.tablet]: '1' } },
-  // A project with no screens stands on the line like a stake, the way the notes do.
-  post: {
-    position: 'relative',
-    paddingLeft: '1.5rem',
-    paddingBottom: '2.5rem',
-    '::before': {
-      content: '""',
-      position: 'absolute',
-      left: '-7px',
-      top: '0.6rem',
-      bottom: 0,
-      width: '16px',
-      backgroundColor: colors.ink,
-      maskImage: 'url("/assets/img/scene/line-v.svg")',
-      maskSize: '100% 100%',
-      maskRepeat: 'no-repeat',
-      pointerEvents: 'none',
-    },
+  // A project with no screens: one compact row, no drawn post beside it.
+  compactBody: {
+    gridTemplateColumns: { default: 'minmax(0, 1fr) minmax(0, 1.4fr)', [breakpoints.tablet]: 'minmax(0, 1fr)' },
+    columnGap: '3rem',
+    alignItems: 'baseline',
   },
+  compactTitle: { fontFamily: fonts.sans, fontSize: type.lead, fontWeight: weights.brand, lineHeight: '2.5rem' },
   // Phone screens standing on the line, bottoms level.
   mediaGround: { alignItems: 'flex-end', gap: '4%', justifyContent: 'flex-start' },
   sceneBody: {
@@ -277,15 +267,8 @@ const styles = stylex.create({
     fontSize: type.meta,
     color: colors.muted,
   },
-  tags: { listStyle: 'none', display: 'flex', flexWrap: 'wrap', gap: '0.4rem' },
-  tag: {
-    fontSize: type.meta,
-    lineHeight: 1.4,
-    paddingBlock: '0.2rem',
-    paddingInline: '0.55rem',
-    color: colors.text,
-  },
-  // In a scene the stack is quiet text with room between the words, not a row of boxes.
-  tagPlain: { fontSize: type.meta, lineHeight: 1.6, color: colors.text, marginRight: '0.6rem' },
-  text: { fontSize: type.body, lineHeight: 1.7, color: colors.muted, maxWidth: '34em', textWrap: 'pretty' },
+  tags: { listStyle: 'none', display: 'flex', flexWrap: 'wrap', rowGap: '0.25rem' },
+  // The stack is quiet text with room between the words, the same on every page.
+  tagPlain: { fontSize: type.meta, lineHeight: 1.5, color: colors.text, marginRight: '0.75rem' },
+  text: { fontSize: type.body, lineHeight: 1.6667, color: colors.muted, maxWidth: '34em', textWrap: 'pretty' },
 })

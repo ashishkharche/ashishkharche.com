@@ -4,10 +4,11 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { Main } from '~/components/Main'
 import { PageHead } from '~/components/PageHead'
 import { ProjectCard } from '~/components/ProjectCard'
+import { RailNumber } from '~/components/RailNumber'
 import { kaloCard, workoutDirectorCard } from '~/content/projects'
 import { stagePreload } from '~/content/workoutDirectorScreens'
 import { seo } from '~/lib/seo'
-import { breakpoints, colors, type } from '~/styles/tokens.stylex'
+import { breakpoints, colors, space, type } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/projects/')({
@@ -28,17 +29,32 @@ export const Route = createFileRoute('/projects/')({
 function Projects() {
   return (
     <Main>
-      <div {...stylex.props(ui.wrap)}>
-        <PageHead title="Projects" lead="Two iPhone apps on the App Store." />
-        <div {...stylex.props(styles.grid, ui.section)}>
-          <ProjectCard card={workoutDirectorCard} headingLevel="h2" priority />
-          <ProjectCard card={kaloCard} headingLevel="h2" />
+      <PageHead title="Projects" lead="Two iPhone apps on the App Store." figure="squat" />
+      <section aria-labelledby="apps-title" {...stylex.props(ui.wrap, ui.rail, styles.first)}>
+        <div {...stylex.props(ui.railText, styles.railStack)}>
+          <RailNumber n="01" />
+          <h2 id="apps-title" {...stylex.props(styles.railTitle)}>
+            Apps
+          </h2>
         </div>
-        <p {...stylex.props(ui.note)}>Workout Director and Kalo are published on the App Store by Shelgaon Ltd.</p>
-        <section aria-labelledby="tools" {...stylex.props(ui.section)}>
-          <h2 id="tools" {...stylex.props(ui.h2)}>
+        <div {...stylex.props(styles.apps)}>
+          <ProjectCard card={workoutDirectorCard} headingLevel="h3" priority scene="devicesRight" />
+          <div {...stylex.props(styles.secondary)}>
+            <ProjectCard card={kaloCard} headingLevel="h3" scene="devicesLeft" />
+          </div>
+          <p {...stylex.props(ui.note, styles.publisher)}>
+            Workout Director and Kalo are published on the App Store by Shelgaon Ltd.
+          </p>
+        </div>
+      </section>
+      <section aria-labelledby="tools" {...stylex.props(ui.wrap, ui.penSection, ui.rail)}>
+        <div {...stylex.props(ui.railText, styles.railStack)}>
+          <RailNumber n="02" />
+          <h2 id="tools" {...stylex.props(styles.railTitle)}>
             Tools
           </h2>
+        </div>
+        <div>
           <article {...stylex.props(styles.tool)}>
             <h3 {...stylex.props(ui.h3)}>
               <Link to="/lab/charts/" {...stylex.props(ui.link)}>
@@ -52,19 +68,25 @@ function Projects() {
             </p>
             <p {...stylex.props(styles.toolMeta)}>TypeScript, React, Canvas and SVG, drawn in the browser</p>
           </article>
-        </section>
-      </div>
+        </div>
+      </section>
     </Main>
   )
 }
 
 const styles = stylex.create({
-  tool: { marginTop: '1.5rem', maxWidth: '40rem' },
-  toolText: { marginTop: '0.5rem', color: colors.muted },
-  toolMeta: { marginTop: '0.6rem', color: colors.muted, fontSize: type.meta },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: { default: '4.5rem', [breakpoints.tablet]: '3rem' },
+  first: { marginTop: space.s48 },
+  railStack: {
+    display: 'flex',
+    flexDirection: { default: 'column', [breakpoints.tablet]: 'row' },
+    alignItems: { default: 'flex-start', [breakpoints.tablet]: 'center' },
+    gap: space.s16,
   },
+  railTitle: { fontSize: type.meta, lineHeight: 1.5, fontWeight: 400, color: colors.text },
+  apps: { minWidth: 0 },
+  secondary: { marginTop: space.s96 },
+  publisher: { marginTop: space.s48 },
+  tool: { maxWidth: '40rem' },
+  toolText: { marginTop: space.s8, color: colors.muted },
+  toolMeta: { marginTop: space.s8, color: colors.muted, fontSize: type.meta },
 })

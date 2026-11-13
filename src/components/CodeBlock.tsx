@@ -55,7 +55,7 @@ export function CodeBlock({ children, 'data-language': language = 'text' }: PreP
   }
 
   return (
-    <div {...stylex.props(sk.box, styles.block)}>
+    <div data-wide {...stylex.props(sk.box, styles.block)}>
       <div {...stylex.props(styles.bar)}>
         <span {...stylex.props(styles.language)}>{label}</span>
         {canCopy ? (

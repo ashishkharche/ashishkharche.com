@@ -9,7 +9,7 @@ import { site } from '~/content/site'
 import { feedPath, feedTitle } from '~/lib/feed'
 import { themeScript } from '~/lib/theme'
 import globalCss from '~/styles/global.css?url'
-import { colors, fonts, type } from '~/styles/tokens.stylex'
+import { breakpoints, colors, fonts, layout, leading, type } from '~/styles/tokens.stylex'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -72,15 +72,58 @@ function RootDocument({ children }: { children: ReactNode }) {
           Skip to content
         </a>
         <SiteHeader />
-        {children}
-        <SiteFooter />
+        {/*
+          One pen line through the page: it runs down the left of every page, just outside the content, and at the
+          bottom turns into the ground line of the footer drawing. Section lines start from it. Decorative.
+        */}
+        <div {...stylex.props(styles.scene)}>
+          {children}
+          <SiteFooter />
+          <span aria-hidden="true" {...stylex.props(styles.pen, styles.spine)} />
+          <span aria-hidden="true" {...stylex.props(styles.pen, styles.turn)} />
+        </div>
         <Scripts />
       </body>
     </html>
   )
 }
 
+// Where the line runs: the wrap's left edge (see ui.wrap) less the spine gap, and 8px less again for the middle of
+// the 16px pen drawing.
+const spineLeft = `calc(max(${layout.sceneInset}, (100% - ${layout.wide}) / 2) - ${layout.spineGap} - 8px)`
+const spineLeftPhone = `calc(1.5rem - ${layout.spineGapPhone} - 8px)`
+// How far above the bottom of the page the footer drawing's ground line sits: 36 of its 560 units on wide screens
+// (the drawing is the page width, up to 1680px), 36 of 440 on phones (see SiteFooter.tsx).
+const ground = 'min(100cqw, 1680px) * 0.015 + env(safe-area-inset-bottom, 0px)'
+const groundPhone = '100cqw * 36 / 1682 + env(safe-area-inset-bottom, 0px)'
+
 const styles = stylex.create({
+  scene: { position: 'relative', containerType: 'inline-size' },
+  pen: {
+    position: 'absolute',
+    backgroundColor: colors.ink,
+    pointerEvents: 'none',
+  },
+  spine: {
+    top: '1.5rem',
+    width: '16px',
+    left: { default: spineLeft, [breakpoints.phone]: spineLeftPhone },
+    // The turn's upright is 56px tall (its 64px box less the 8px below the stroke).
+    bottom: { default: `calc(${ground} + 56px)`, [breakpoints.phone]: `calc(${groundPhone} + 56px)` },
+    maskImage: 'url("/assets/img/scene/line-v.svg")',
+    maskRepeat: 'repeat-y',
+    maskSize: '16px 1200px',
+  },
+  turn: {
+    width: '64px',
+    height: '64px',
+    left: { default: spineLeft, [breakpoints.phone]: spineLeftPhone },
+    bottom: { default: `calc(${ground} - 8px)`, [breakpoints.phone]: `calc(${groundPhone} - 8px)` },
+    maskImage: 'url("/assets/img/scene/corner.svg")',
+    maskRepeat: 'no-repeat',
+    maskSize: '100% 100%',
+    transform: 'scaleY(-1)',
+  },
   body: {
     backgroundColor: colors.bg,
     color: colors.text,
@@ -88,7 +131,7 @@ const styles = stylex.create({
     fontFamily: fonts.sans,
     fontWeight: 400,
     fontSize: type.body,
-    lineHeight: 1.75,
+    lineHeight: leading.body,
   },
   skip: {
     position: 'absolute',

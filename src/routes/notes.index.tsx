@@ -2,13 +2,13 @@ import * as stylex from '@stylexjs/stylex'
 import { createFileRoute } from '@tanstack/react-router'
 import { Main } from '~/components/Main'
 import { PageHead } from '~/components/PageHead'
-import { Figure, Leg, legSpace } from '~/components/Scene'
+import { RailNumber } from '~/components/RailNumber'
 import { NoteList, type NoteItem } from '~/components/NoteList'
 import { comingNotes, noteListSummary, notes } from '~/content/notes'
 import { formatShortDate } from '~/lib/dates'
 import { feedPath } from '~/lib/feed'
 import { seo } from '~/lib/seo'
-import { type, weights } from '~/styles/tokens.stylex'
+import { space, type, weights } from '~/styles/tokens.stylex'
 import { ui } from '~/styles/ui'
 
 export const Route = createFileRoute('/notes/')({
@@ -47,38 +47,30 @@ function Notes() {
   }))
   return (
     <Main>
-      <Leg from="edge" as="div" xstyle={legSpace.first}>
-        <div {...stylex.props(legSpace.headScene)}>
-          <div {...stylex.props(legSpace.headText)}>
-            <PageHead title="Notes" lead="Technical notes on things I've built." />
-          </div>
-          <Figure name="curl" xstyle={legSpace.headFigure} />
+      <PageHead title="Notes" lead="Technical notes on things I've built." figure="curl" />
+      <section aria-labelledby="reflex-title" {...stylex.props(ui.wrap, ui.rail, styles.first)}>
+        <div {...stylex.props(ui.railText)}>
+          <RailNumber n="01" />
         </div>
-      </Leg>
-      <section aria-labelledby="reflex-title">
-        <Leg from="right" as="div" stroke={2} xstyle={legSpace.text}>
-          <div {...stylex.props(legSpace.column)}>
-            <h2 id="reflex-title" {...stylex.props(ui.h2)}>
-              Reflex
-            </h2>
-            <p {...stylex.props(ui.muted, styles.sub)}>{seriesLeads.Reflex}</p>
-            <NoteList items={reflex} posts="column" />
-          </div>
-        </Leg>
+        <div {...stylex.props(styles.body)}>
+          <h2 id="reflex-title" {...stylex.props(ui.h2)}>
+            Reflex
+          </h2>
+          <p {...stylex.props(ui.muted, styles.sub)}>{seriesLeads.Reflex}</p>
+          <NoteList items={reflex} columns={2} />
+        </div>
       </section>
-      <section aria-labelledby="series-title">
-        {/* Each note on a stake of its own, down the side the line comes from. */}
-        <Leg from="left" as="div" stroke={2} xstyle={legSpace.text}>
-          <div {...stylex.props(legSpace.column)}>
-            <h2 id="series-title" {...stylex.props(ui.h2)}>
-              {wdSeries}
-            </h2>
-            <p {...stylex.props(ui.muted, styles.sub)}>{seriesLeads[wdSeries]}</p>
-            <NoteList items={wd.map(toItem)} posts="column" />
-          </div>
-        </Leg>
-        <Leg from="right" to="edge" as="div" xstyle={legSpace.text}>
-          <div {...stylex.props(legSpace.column)}>
+      <section aria-labelledby="series-title" {...stylex.props(ui.wrap, ui.penSection, ui.rail)}>
+        <div {...stylex.props(ui.railText)}>
+          <RailNumber n="02" />
+        </div>
+        <div {...stylex.props(styles.body)}>
+          <h2 id="series-title" {...stylex.props(ui.h2)}>
+            {wdSeries}
+          </h2>
+          <p {...stylex.props(ui.muted, styles.sub)}>{seriesLeads[wdSeries]}</p>
+          <NoteList items={wd.map(toItem)} columns={2} />
+          <div {...stylex.props(styles.coming)}>
             <p {...stylex.props(ui.muted, styles.comingTitle)}>Coming next</p>
             <NoteList items={coming} compact />
             <p {...stylex.props(ui.muted, styles.feed)}>
@@ -89,14 +81,17 @@ function Notes() {
               .
             </p>
           </div>
-        </Leg>
+        </div>
       </section>
     </Main>
   )
 }
 
 const styles = stylex.create({
-  sub: { marginTop: '0.3rem', marginBottom: '2.25rem' },
-  comingTitle: { marginTop: 0, marginBottom: '1.25rem', fontSize: type.meta, fontWeight: weights.medium },
-  feed: { marginTop: '3rem', fontSize: type.body },
+  first: { marginTop: space.s48 },
+  body: { minWidth: 0 },
+  sub: { marginTop: space.s8, marginBottom: space.s48 },
+  coming: { marginTop: space.s96, maxWidth: '34rem' },
+  comingTitle: { marginTop: 0, marginBottom: space.s16, fontSize: type.meta, fontWeight: weights.medium },
+  feed: { marginTop: space.s48, fontSize: type.body },
 })

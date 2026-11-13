@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { mdxFrontmatter, pele } from './plugins/content.ts'
 import { datesPlugin } from './plugins/dates.ts'
 import { rehypeHighlight } from './plugins/highlight.ts'
+import { headingsPlugin } from './plugins/headings.ts'
 
 const root = fileURLToPath(new URL('.', import.meta.url))
 
@@ -23,6 +24,7 @@ export default defineConfig(({ command }) => ({
     pele(),
     mdxFrontmatter(),
     datesPlugin(),
+    headingsPlugin(),
     {
       enforce: 'pre',
       ...mdx({
