@@ -2,12 +2,13 @@ import * as stylex from '@stylexjs/stylex'
 import { Link } from '@tanstack/react-router'
 import { useId } from 'react'
 import { Logo } from './Logo'
+import { StackChip, chipList } from './StackChip'
 import { SketchArrow } from './SketchArrow'
 import { PortfolioBanner } from './NoteBanner'
 import { PhoneFan } from './PhoneFan'
 import { WdWordmark } from './WdWordmark'
 import { screenshotSrc, screenshotSrcSet, type ProjectCard as Card } from '~/content/projects'
-import { breakpoints, colors, fonts, type, weights } from '~/styles/tokens.stylex'
+import { breakpoints, colors, fonts, space, type, weights } from '~/styles/tokens.stylex'
 import { sk } from '~/styles/sketch'
 import { ui } from '~/styles/ui'
 
@@ -131,13 +132,13 @@ export function ProjectCard({ card, headingLevel = 'h3', priority = false, scene
             <div role="group" aria-label="Built with" {...stylex.props(styles.stack)}>
               {card.stack.map((group, index) => (
                 <div key={group.label} {...stylex.props(styles.stackRow)}>
-                  <span id={`${stackId}-${index}`} {...stylex.props(styles.stackLabel)}>
+                  <span id={`${stackId}-${index}`} {...stylex.props(chipList.label)}>
                     {group.label}
                   </span>
-                  <ul role="list" aria-labelledby={`${stackId}-${index}`} {...stylex.props(styles.tags)}>
+                  <ul role="list" aria-labelledby={`${stackId}-${index}`} {...stylex.props(chipList.list)}>
                     {group.items.map((item) => (
-                      <li key={item} {...stylex.props(styles.tagPlain)}>
-                        {item}
+                      <li key={item}>
+                        <StackChip name={item} />
                       </li>
                     ))}
                   </ul>
@@ -254,21 +255,14 @@ const styles = stylex.create({
     fontSize: type.body,
   },
   outLink: { position: 'relative', zIndex: 1, whiteSpace: 'nowrap' },
-  // The stack as small outlined tags in the meta size, one row per group.
-  stack: { display: 'grid', rowGap: '0.6rem', marginTop: '1.4rem' },
+  // The stack, one row per group: the label, then the chips (see StackChip), the label level with the first chip.
+  stack: { display: 'grid', rowGap: space.s16, marginTop: space.s24 },
   stackRow: {
     display: 'grid',
-    gridTemplateColumns: { default: '5.5rem minmax(0, 1fr)', [breakpoints.phone]: '1fr' },
-    alignItems: 'baseline',
-    columnGap: '0.75rem',
-    rowGap: '0.35rem',
+    gridTemplateColumns: { default: '5.5rem minmax(0, 1fr)', [breakpoints.phone]: 'minmax(0, 1fr)' },
+    alignItems: 'start',
+    columnGap: space.s16,
+    rowGap: space.s8,
   },
-  stackLabel: {
-    fontSize: type.meta,
-    color: colors.muted,
-  },
-  tags: { listStyle: 'none', display: 'flex', flexWrap: 'wrap', rowGap: '0.25rem' },
-  // The stack is quiet text with room between the words, the same on every page.
-  tagPlain: { fontSize: type.meta, lineHeight: 1.5, color: colors.text, marginRight: '0.75rem' },
   text: { fontSize: type.body, lineHeight: 1.6667, color: colors.muted, maxWidth: '34em', textWrap: 'pretty' },
 })

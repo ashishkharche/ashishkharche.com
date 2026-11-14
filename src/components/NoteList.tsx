@@ -9,14 +9,16 @@ export interface NoteItem {
   title: string
   /** Internal path. Items without one (planned notes) are shown muted, without a link. */
   href?: string
-  /** A short line under the title, such as the date and the part of the series. */
-  meta: string
-  summary?: string
+  /**
+   * A short line under the title of a planned note (one with no link yet), such as its part of the series. Notes
+   * that are out show only their picture and title; their summaries stay in each note's page description.
+   */
+  meta?: string
 }
 
 /**
- * A list of notes separated by space rather than rules. Each note is a title,
- * a muted meta line and an optional summary. The title is the link, and it is
+ * A list of notes separated by space rather than rules. Each note is its banner
+ * picture and its title, nothing more. The title is the link, and it is
  * stretched over the whole note so the note can be clicked anywhere. Hovering
  * the note darkens and nudges the arrow; keyboard focus draws a ring around
  * the whole note.
@@ -65,8 +67,7 @@ export function NoteList({
               </Link>
             )}
           </h3>
-          <p {...stylex.props(styles.meta)}>{item.meta}</p>
-          {item.summary ? <p {...stylex.props(styles.summary)}>{item.summary}</p> : null}
+          {item.href === undefined && item.meta ? <p {...stylex.props(styles.meta)}>{item.meta}</p> : null}
         </li>
       ))}
     </ul>
@@ -147,14 +148,5 @@ const styles = stylex.create({
     fontWeight: weights.regular,
     lineHeight: 1.5,
     fontVariantNumeric: 'tabular-nums',
-  },
-  summary: {
-    marginTop: space.s8,
-    color: colors.muted,
-    fontSize: type.meta,
-    fontWeight: weights.regular,
-    lineHeight: 1.5,
-    maxWidth: '40em',
-    textWrap: 'pretty',
   },
 })

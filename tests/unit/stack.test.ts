@@ -32,7 +32,7 @@ describe('the case study stack', () => {
   })
 
   it('gives every item a real mark except the Vision framework, which has no published icon', () => {
-    const tiles = Object.entries(stackIcons).filter(([, icon]) => icon.kind === 'monogram')
+    const tiles = Object.entries(stackIcons).filter(([, icon]) => icon.kind === 'text')
     expect(tiles.map(([name]) => name)).toEqual(['Vision framework'])
   })
 
@@ -46,12 +46,6 @@ describe('the case study stack', () => {
     for (const file of files) expect(file).toMatch(/-(dark|light)-ink\.(svg|png)$/)
     for (const file of files.filter((name) => name.includes('-dark-ink.')))
       expect(files).toContain(file.replace('-dark-ink.', '-light-ink.'))
-  })
-
-  it('keeps letter tiles to three characters or fewer', () => {
-    for (const icon of Object.values(stackIcons)) {
-      if (icon.kind === 'monogram') expect(icon.letters.length).toBeLessThanOrEqual(3)
-    }
   })
 
   it('records a source and licence for every icon file and every stack item', () => {

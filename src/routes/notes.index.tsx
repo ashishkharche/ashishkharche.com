@@ -4,8 +4,7 @@ import { Main } from '~/components/Main'
 import { PageHead } from '~/components/PageHead'
 import { RailNumber } from '~/components/RailNumber'
 import { NoteList, type NoteItem } from '~/components/NoteList'
-import { comingNotes, noteListSummary, notes } from '~/content/notes'
-import { formatShortDate } from '~/lib/dates'
+import { comingNotes, notes } from '~/content/notes'
 import { feedPath } from '~/lib/feed'
 import { seo } from '~/lib/seo'
 import { space, type, weights } from '~/styles/tokens.stylex'
@@ -33,8 +32,6 @@ function toItem(note: (typeof notes)[number]): NoteItem {
   return {
     title: note.title,
     href: note.path,
-    meta: `${formatShortDate(note.date)}, ${note.listLabel}`,
-    summary: noteListSummary(note),
   }
 }
 

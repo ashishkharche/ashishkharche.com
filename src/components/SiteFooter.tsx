@@ -8,7 +8,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear()
   return (
     <footer {...stylex.props(styles.footer)}>
-      <div {...stylex.props(ui.wrap, styles.row)}>
+      <div data-footer-row="" {...stylex.props(ui.wrap, styles.row)}>
         <p>
           © {year} {site.name}, {site.city}
         </p>
@@ -52,6 +52,8 @@ export function SiteFooter() {
         src="/assets/img/footer-identity.svg"
         width={2400}
         height={560}
+        data-footer-art=""
+        data-viewbox="0 0 2400 560"
         alt=""
         loading="lazy"
         decoding="async"
@@ -61,6 +63,8 @@ export function SiteFooter() {
         src="/assets/img/footer-identity-phone.svg"
         width={1682}
         height={440}
+        data-footer-art=""
+        data-viewbox="70 120 1682 440"
         alt=""
         loading="lazy"
         decoding="async"
@@ -100,6 +104,8 @@ const styles = stylex.create({
     maxWidth: '1680px',
     height: 'auto',
     marginInline: 'auto',
+    // Room above the drawing for the page's pen line to bend into the A (see PenMerge).
+    marginTop: { default: space.s24, [breakpoints.tablet]: space.s48 },
     filter: colors.artFilter,
     opacity: colors.artOpacity,
     userSelect: 'none',

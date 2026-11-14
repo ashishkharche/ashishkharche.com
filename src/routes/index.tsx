@@ -8,9 +8,8 @@ import { PhoneArtwork } from '~/components/PhoneArtwork'
 import { RailNumber } from '~/components/RailNumber'
 import { WdWordmark } from '~/components/WdWordmark'
 import { kaloCard, workoutDirectorCard, workoutDirectorLinks } from '~/content/projects'
-import { noteListSummary, notes } from '~/content/notes'
+import { notes } from '~/content/notes'
 import { links, site } from '~/content/site'
-import { formatShortDate } from '~/lib/dates'
 import { seo } from '~/lib/seo'
 import { homeJsonLd, jsonLdScript } from '~/lib/structuredData'
 import { breakpoints, colors, fonts, layout, leading, space, type, weights } from '~/styles/tokens.stylex'
@@ -47,8 +46,6 @@ function Home() {
   const latestNotes = notes.slice(0, 3).map((note) => ({
     title: note.title,
     href: note.path,
-    meta: `${formatShortDate(note.date)}, ${note.listLabel}`,
-    summary: noteListSummary(note),
   }))
   return (
     <Main>

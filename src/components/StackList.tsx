@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import { useId } from 'react'
 import type { StackEntry } from '~/content/projects'
-import { stackIcons } from '~/content/stackIcons'
+import { StackChip, chipList } from './StackChip'
 import { ui } from '~/styles/ui'
 import { breakpoints, colors, type, weights } from '~/styles/tokens.stylex'
 
@@ -24,60 +24,30 @@ interface Props {
 /** The layout the case study uses. */
 export const stackLayout: StackLayout = 'grid'
 
-/** Icon size in pixels, inside a 40px tile. Better Auth asks for its mark at 24px or more. */
-const ICON = 24
-
-function StackTile({ name }: { name: StackEntry['name'] }) {
-  const icon = stackIcons[name]
-  if (icon.kind === 'monogram') {
-    return (
-      <span aria-hidden="true" data-stack-tile="monogram" {...stylex.props(styles.tile, styles.monogram)}>
-        {icon.letters}
-      </span>
-    )
-  }
-  return (
-    <span data-stack-tile="mark" {...stylex.props(styles.tile)}>
-      {(['light', 'dark'] as const).map((theme) => (
-        <img
-          key={theme}
-          src={icon[theme]}
-          width={ICON}
-          height={ICON}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          {...stylex.props(styles.icon, theme === 'light' ? styles.lightOnly : styles.darkOnly)}
-        />
-      ))}
-    </span>
-  )
-}
-
 function Groups({ groups, id, offset, layout }: { groups: Group[]; id: string; offset: number; layout: StackLayout }) {
   return groups.map((group, i) => {
     const index = offset + i
     return (
       <div key={group.label} {...stylex.props(layout === 'grid' && styles.row)}>
-        <h3 id={`${id}-${index}`} {...stylex.props(styles.groupLabel, layout === 'list' && styles.groupLabelRule)}>
+        <h3
+          id={`${id}-${index}`}
+          {...stylex.props(
+            styles.groupLabel,
+            layout === 'grid' && styles.groupLabelGrid,
+            layout === 'list' && styles.groupLabelRule,
+          )}
+        >
           {group.label}
         </h3>
         <ul
           role="list"
           aria-labelledby={`${id}-${index}`}
-          {...stylex.props(layout === 'grid' ? styles.chips : styles.items)}
+          {...stylex.props(layout === 'grid' ? chipList.list : styles.items)}
         >
           {group.items.map((item) => (
-            <li key={item.name} {...stylex.props(layout === 'grid' ? styles.chip : styles.item)}>
-              <StackTile name={item.name} />
-              {layout === 'grid' ? (
-                <span {...stylex.props(styles.chipName)}>{item.name}</span>
-              ) : (
-                <span {...stylex.props(styles.text)}>
-                  <span {...stylex.props(styles.name)}>{item.name}</span>
-                  <span {...stylex.props(styles.note)}>{item.note}</span>
-                </span>
-              )}
+            <li key={item.name} {...stylex.props(layout === 'list' && styles.item)}>
+              <StackChip name={item.name} />
+              {layout === 'list' ? <span {...stylex.props(styles.note)}>{item.note}</span> : null}
             </li>
           ))}
         </ul>
@@ -148,19 +118,10 @@ const styles = stylex.create({
   row: {
     display: 'grid',
     gridTemplateColumns: { default: '9.5rem minmax(0, 1fr)', [breakpoints.phone]: 'minmax(0, 1fr)' },
-    alignItems: { default: 'center', [breakpoints.phone]: 'start' },
+    alignItems: 'start',
     columnGap: '1rem',
     rowGap: '0.5rem',
   },
-  chips: {
-    listStyle: 'none',
-    display: 'flex',
-    flexWrap: 'wrap',
-    columnGap: '1.25rem',
-    rowGap: '0.5rem',
-  },
-  chip: { display: 'inline-flex', alignItems: 'center', columnGap: '0.6rem', minWidth: 0 },
-  chipName: { fontSize: type.meta, lineHeight: 1.35, color: colors.text },
   // List layout: two columns of groups, each item with its note.
   groups: {
     display: 'grid',
@@ -175,6 +136,8 @@ const styles = stylex.create({
     lineHeight: 1.4,
     color: colors.text,
   },
+  // Level with the first chip: the same 24px line.
+  groupLabelGrid: { lineHeight: '1.5rem', fontWeight: weights.regular, color: colors.muted },
   groupLabelRule: {
     paddingBottom: '0.6rem',
     borderBottomWidth: '1px',
@@ -182,39 +145,9 @@ const styles = stylex.create({
     borderBottomColor: colors.line,
   },
   items: { listStyle: 'none', display: 'grid', rowGap: '0.75rem', marginTop: '0.85rem' },
-  item: {
-    display: 'grid',
-    gridTemplateColumns: '2.5rem minmax(0, 1fr)',
-    alignItems: 'center',
-    columnGap: '0.85rem',
-  },
+  item: { display: 'grid', rowGap: '0.25rem' },
   more: { gridColumnStart: 1, gridColumnEnd: -1 },
   moreBody: { marginTop: '1.25rem' },
-  tile: {
-    display: 'inline-flex',
-    flexShrink: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '2.5rem',
-    height: '2.5rem',
-    borderRadius: '10px',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: colors.line,
-    backgroundColor: 'transparent',
-  },
-  monogram: {
-    fontSize: type.meta,
-    fontWeight: weights.medium,
-    letterSpacing: '0.01em',
-    lineHeight: 1,
-    color: colors.muted,
-  },
-  icon: { width: `${ICON}px`, height: `${ICON}px`, objectFit: 'contain' },
-  lightOnly: { display: colors.sunDisplay },
-  darkOnly: { display: colors.moonDisplay },
-  text: { display: 'grid', minWidth: 0 },
-  name: { fontSize: type.body, lineHeight: 1.35, color: colors.text },
   note: { fontSize: type.meta, lineHeight: 1.4, color: colors.muted },
   notes: { marginTop: '1rem' },
   summary: {
