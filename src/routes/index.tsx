@@ -92,7 +92,7 @@ function Home() {
             xstyle={styles.phones}
           />
         </section>
-        <section aria-label="Roles" {...stylex.props(ui.penSection, ui.rail)}>
+        <section aria-label="Roles" {...stylex.props(ui.sectionAfterGround, ui.rail)}>
           <div {...stylex.props(ui.railText, styles.sectionIndex)}>
             <RailNumber n="02" />
             <Link to="/work/" {...stylex.props(styles.textLink, ui.focusRing)}>

@@ -58,6 +58,13 @@ export const ui = stylex.create({
    * A section of a page: a pen line across the top that starts at the line running down the page (see Page.tsx),
    * 96 above it and 48 below it, so sections sit 144 apart.
    */
+  /**
+   * The spacing of a pen section without its line, for a section that follows a ground line (the hero phones stand on
+   * one), so the two lines never stack.
+   */
+  sectionAfterGround: {
+    marginTop: { default: space.s96, [breakpoints.phone]: space.s48 },
+  },
   penSection: {
     position: 'relative',
     marginTop: { default: space.s96, [breakpoints.phone]: space.s48 },

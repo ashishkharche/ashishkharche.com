@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test'
+import { gotoHydrated } from './hydration'
 
 // On the home page a section title that leads to a full list is the link itself. There is no separate
 // "All notes" or "All projects" link, and the title keeps the look of the plain titles: no underline.
 for (const width of [390, 768, 1440]) {
   test(`section titles are the links to their lists at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 })
-    await page.goto('/')
+    await gotoHydrated(page, '/')
     const main = page.locator('main')
     await expect(main.getByRole('link', { name: /^All (notes|projects)$/ })).toHaveCount(0)
     for (const [name, href] of [

@@ -16,8 +16,9 @@ export interface Row {
 export function Rows({ rows, spaced = false }: { rows: Row[]; spaced?: boolean }) {
   return (
     <ul role="list" {...stylex.props(sk.ruleTop, styles.list, spaced && ui.mt1)}>
-      {rows.map((row) => (
-        <li key={row.title} {...stylex.props(sk.ruleBottom, styles.row)}>
+      {/* A drawn line between rows only: the section line after the list closes it, so the last row has none. */}
+      {rows.map((row, index) => (
+        <li key={row.title} {...stylex.props(index < rows.length - 1 && sk.ruleBottom, styles.row)}>
           {row.href === undefined ? (
             <span {...stylex.props(ui.muted)}>{row.title}</span>
           ) : row.href.startsWith('/') ? (

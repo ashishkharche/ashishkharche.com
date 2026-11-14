@@ -100,12 +100,10 @@ export function StackList({ groups, layout = stackLayout }: Props) {
 }
 
 const styles = stylex.create({
+  // No rule underneath: the drawn section line that follows closes the stack, and a second line would double it.
   section: {
     paddingTop: '1.25rem',
     paddingBottom: '1.5rem',
-    borderBottomWidth: '1px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: colors.line,
   },
   title: {
     fontSize: type.meta,
