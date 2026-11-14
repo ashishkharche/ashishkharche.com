@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 import { gotoHydrated } from './hydration'
 
-// The pen line down the left of the page becomes the outer left stroke of the A in the footer drawing. It must meet
-// the A at its top and never run through the letters (the line used to drop straight through the A and the K).
+// The pen line down the left of the page runs into the A of the footer drawing. It must end exactly on the A's top-left
+// corner, arrive level along the A's top edge with no overshoot or S-swoop, and never run through the letters.
 
 // The outline of the AK mark in the drawing's units (from the path in footer-identity.svg).
 const AK: [number, number][] = [
@@ -72,7 +72,7 @@ async function read(page: Page) {
 
 for (const scheme of ['light', 'dark'] as const) {
   for (const width of [390, 768, 1440, 1920]) {
-    test(`at ${width}px (${scheme}) the pen line becomes the A's left stroke without crossing the AK`, async ({
+    test(`at ${width}px (${scheme}) the pen line ends on the A's top-left corner without crossing the AK`, async ({
       page,
     }) => {
       await page.emulateMedia({ colorScheme: scheme })
@@ -91,7 +91,20 @@ for (const scheme of ['light', 'dark'] as const) {
       const last = m.centre.at(-1) ?? [0, 0]
       expect(Math.abs(first[1] - m.spine.bottom), 'bend starts where the line stops').toBeLessThanOrEqual(1.5)
       expect(Math.abs(first[0] - m.spine.x), 'bend starts on the line').toBeLessThanOrEqual(2)
-      expect(Math.hypot(last[0] - apex[0], last[1] - apex[1]), 'bend ends on the A').toBeLessThanOrEqual(1)
+      expect(Math.abs(last[0] - apex[0]), 'bend ends on the A’s top-left corner (x)').toBeLessThanOrEqual(1)
+      expect(Math.abs(last[1] - apex[1]), 'bend ends on the A’s top-left corner (y)').toBeLessThanOrEqual(1)
+      // No overshoot: the bend only moves down and towards the corner, never past it or back again (no S-swoop).
+      for (let i = 1; i < m.centre.length; i++) {
+        const [x0, y0] = m.centre[i - 1] ?? [0, 0]
+        const [x1, y1] = m.centre[i] ?? [0, 0]
+        expect(x1, 'never past the corner').toBeLessThanOrEqual(apex[0] + 0.5)
+        expect(y1, 'never below the corner').toBeLessThanOrEqual(apex[1] + 0.5)
+        expect(Math.sign(apex[0] - first[0]) * (x1 - x0), 'always towards the corner').toBeGreaterThanOrEqual(-0.2)
+        expect(y1 - y0, 'always downwards').toBeGreaterThanOrEqual(-0.2)
+      }
+      // It arrives level, running on into the A's top edge instead of crossing it.
+      const before = m.centre.at(-3) ?? [0, 0]
+      expect(Math.abs(last[1] - before[1]), 'arrives along the top edge').toBeLessThanOrEqual(1)
 
       // Nothing of the line, straight or bent, lies inside the letters.
       const samples: [number, number][] = [...m.centre]

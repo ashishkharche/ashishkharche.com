@@ -3,18 +3,17 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { colors } from '~/styles/tokens.stylex'
 
 /**
- * Where the pen line down the page meets the footer drawing, it becomes the outer left stroke of the A in the AK
- * mark: above the drawing it leaves the left edge, swings across to the top of the A and arrives along the A's left
- * leg, so the line and the letter read as one stroke down to the ground line. The drawing itself is not touched.
+ * Where the pen line down the page meets the footer drawing, it runs into the A of the AK mark: above the drawing it
+ * leaves the left edge, bends once and arrives level at the A's top-left corner, so it carries on as the A's top edge
+ * and the letter keeps its own outline. The drawing itself is not touched.
  *
  * The bend depends on where the line and the drawing sit at the current width, so it is measured after layout and
  * again whenever the page changes size. Without JavaScript the line simply ends above the footer (see __root.tsx).
  */
 
-// The A in the footer drawing (both footer-identity.svg and footer-identity-phone.svg, in drawing units): the top of
-// its left leg, the foot of that leg on the ground line and the stroke width.
+// The A in the footer drawing (both footer-identity.svg and footer-identity-phone.svg, in drawing units): its top-left
+// corner, where the top edge meets the left leg, and the stroke width.
 const APEX = { x: 305.6, y: 164 }
-const FOOT = { x: 110, y: 524 }
 const ART_STROKE = 2.4
 // The pen line down the page: a 1.5px stroke drawn 16px wide (see public/assets/img/scene/line-v.svg).
 const SPINE_STROKE = 1.5
@@ -70,10 +69,6 @@ function measure(scene: HTMLElement): Merge {
   const [vx = 0, vy = 0, vw = 1] = (art.dataset.viewbox ?? '').split(' ').map(Number)
   const scale = ar.width / vw
   const apex = { x: ar.left - box.left + (APEX.x - vx) * scale, y: ar.top - box.top + (APEX.y - vy) * scale }
-  const legX = FOOT.x - APEX.x
-  const legY = FOOT.y - APEX.y
-  const legLength = Math.hypot(legX, legY)
-  const dir = { x: legX / legLength, y: legY / legLength }
   const spineTop = sp.top - box.top
   const centreX = sp.left - box.left + 8
   const across = apex.x - centreX
@@ -86,9 +81,11 @@ function measure(scene: HTMLElement): Merge {
   // Too little room for a clean bend: the line ends above the footer instead.
   if (drop < 40 || drop < Math.abs(across) * 0.5) return { end: true }
   const p0 = { x: centreX + wobbleAt(start - spineTop), y: start }
-  const p1 = { x: p0.x, y: start + drop * 0.5 }
-  const k = (drop * 0.5) / dir.y
-  const p2 = { x: apex.x - k * dir.x, y: apex.y - k * dir.y }
+  // One gentle bend: straight down off the line, then level into the A's top-left corner, so the line runs on into
+  // the top edge of the A. Both handles stay inside the box between the two ends, so the bend never passes the
+  // corner, never swings back and leaves the A's own outline as drawn.
+  const p1 = { x: p0.x, y: start + drop * 0.55 }
+  const p2 = { x: apex.x - (apex.x - p0.x) * 0.55, y: apex.y }
   const p3 = apex
   const from = SPINE_STROKE
   const to = ART_STROKE * scale

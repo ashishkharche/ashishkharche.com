@@ -120,11 +120,10 @@ function Home() {
           <div {...stylex.props(ui.railText, styles.sectionIndex)}>
             <RailNumber n="03" />
             <h2 id="sel-title" {...stylex.props(styles.sectionTitle)}>
-              Selected work
+              <Link to="/projects/" {...stylex.props(styles.titleLink, ui.focusRing)}>
+                Selected work
+              </Link>
             </h2>
-            <Link to="/projects/" {...stylex.props(styles.textLink, ui.focusRing)}>
-              All projects
-            </Link>
             <Link to="/design/" {...stylex.props(styles.textLink, ui.focusRing)}>
               Design
             </Link>
@@ -140,11 +139,10 @@ function Home() {
           <div {...stylex.props(ui.railText, styles.sectionIndex)}>
             <RailNumber n="04" />
             <h2 id="notes-title" {...stylex.props(styles.sectionTitle)}>
-              Notes
+              <Link to="/notes/" {...stylex.props(styles.titleLink, ui.focusRing)}>
+                Notes
+              </Link>
             </h2>
-            <Link to="/notes/" {...stylex.props(styles.textLink, ui.focusRing)}>
-              All notes
-            </Link>
           </div>
           <div {...stylex.props(styles.notes)}>
             <NoteList items={latestNotes} columns={3} />
@@ -290,6 +288,19 @@ const styles = stylex.create({
     alignItems: { default: 'flex-start', [breakpoints.tablet]: 'center' },
     columnGap: space.s24,
     rowGap: space.s8,
+  },
+  // A section title that is itself the way to the full list: same look as the plain titles, no underline, a
+  // little lighter on hover.
+  titleLink: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    minHeight: '2.75rem',
+    color: 'inherit',
+    textDecorationLine: 'none',
+    whiteSpace: 'nowrap',
+    opacity: { default: 1, ':hover': 0.7 },
+    transitionProperty: 'opacity',
+    transitionDuration: '150ms',
   },
   sectionTitle: { fontSize: type.meta, lineHeight: leading.meta, fontWeight: weights.regular, color: colors.text },
   roles: { listStyle: 'none', minWidth: 0 },

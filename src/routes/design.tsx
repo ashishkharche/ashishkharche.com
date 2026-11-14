@@ -187,7 +187,7 @@ function Design() {
           <span {...stylex.props(styles.railGap)} />
           <div {...stylex.props(styles.content)}>
             <p {...stylex.props(styles.text)}>
-              Workout Director is a Shelgaon Ltd app. I designed its icon, lockups, colour and type.
+              Workout Director is a Shelgaon Ltd app. Its icon, lockups, colours and type.
             </p>
             <div {...stylex.props(styles.brandRow)}>
               <figure {...stylex.props(styles.iconStand)}>

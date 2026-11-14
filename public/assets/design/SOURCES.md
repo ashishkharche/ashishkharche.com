@@ -8,5 +8,5 @@ Web copies for /design/, each at its original's ratio.
 - figures/*-{light,dark}.webp: 720 by 480 from the Workout Director exercise figure pack (light) and the matching dark imagesets.
 - kalo/kalo-icon-480.webp, kalo/kalo-wordmark-{ink,white}.svg: the Kalo icon and wordmark.
 - kalo/*-600.webp: Kalo screens, 600 by 1304. Food photos via Pexels.
-- excece/excece-icon.svg: the excece icon as given.
+- excece/excece-icon.svg: the excece icon as given. The type sample uses JetBrains Mono Medium, basic Latin subset (/assets/fonts/JetBrainsMono-Medium-Basic.woff2, SIL OFL).
 - The Live Coach phones reuse /assets/phones/slick-v5-{minimal,advanced}-clean-*.webp (see /assets/phones/SOURCES.md). Camera still: Taco fleur, Wikimedia Commons, CC BY-SA 4.0.

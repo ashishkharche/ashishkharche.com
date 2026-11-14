@@ -134,6 +134,7 @@ export const fonts = stylex.defineConsts({
   // The apps' own faces, for the samples on the Design page.
   dmSans: '"DM Sans", ui-sans-serif, system-ui, sans-serif',
   dmMono: '"DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
+  jetbrainsMono: '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
   brand: '"Inter Display", "Inter Display Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
 })
 
