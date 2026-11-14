@@ -7,7 +7,7 @@ for (const path of routes) {
   test(`${path} is complete without JavaScript`, async ({ page }) => {
     await page.goto(path)
     await expect(page.locator('h1')).toHaveText(headings[path])
-    await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link')).toHaveCount(4)
+    await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link')).toHaveCount(5)
     await expect(page.locator('footer')).toContainText('Email')
   })
 }

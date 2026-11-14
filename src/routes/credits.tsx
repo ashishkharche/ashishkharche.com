@@ -11,7 +11,7 @@ export const Route = createFileRoute('/credits')({
     seo({
       path: '/credits/',
       title: 'Credits',
-      description: 'Credits for the videos and adapted images used on ashishkharche.com.',
+      description: 'Credits for the videos, photos and adapted images used on ashishkharche.com.',
     }),
   component: Credits,
 })
@@ -22,7 +22,7 @@ const link = stylex.props(ui.link)
 function Credits() {
   return (
     <Main>
-      <PageHead title="Credits" lead="The videos and adapted images used on this site." figure="lunge" />
+      <PageHead title="Credits" lead="The videos, photos and adapted images used on this site." figure="lunge" />
       <section aria-label="Credits" {...stylex.props(ui.wrap, styles.section)}>
         <div {...stylex.props(ui.rail)}>
           <p {...stylex.props(ui.railText)}>Video</p>
@@ -35,7 +35,18 @@ function Credits() {
               <a href="https://creativecommons.org/licenses/by-sa/4.0/" {...link}>
                 CC BY-SA 4.0
               </a>
-              . Cropped; pose overlay, interface composition and chart added. Adapted images: CC BY-SA 4.0.
+              . Cropped; pose overlay, interface composition and chart added. The camera still in the Live Coach design
+              on the Design page. Adapted images: CC BY-SA 4.0.
+            </li>
+            <li>
+              <a href="https://www.pexels.com/video/31035743/" {...link}>
+                Aliaksei Masiukevich / Pexels (31035743)
+              </a>
+              . The footage in the first Workout Director App Store screenshot.{' '}
+              <a href="https://www.pexels.com/license/" {...link}>
+                Pexels License
+              </a>
+              .
             </li>
             <li>
               <a href="https://www.pexels.com/video/a-woman-lifting-a-barbell-7674505/" {...link}>
@@ -58,6 +69,18 @@ function Credits() {
             </li>
           </ul>
         </div>
+        <div {...stylex.props(ui.rail, styles.group)}>
+          <p {...stylex.props(ui.railText)}>Photos</p>
+          <ul role="list" {...stylex.props(styles.list)}>
+            <li>
+              Food photos in the Kalo screens via{' '}
+              <a href="https://www.pexels.com/" {...link}>
+                Pexels
+              </a>
+              .
+            </li>
+          </ul>
+        </div>
       </section>
     </Main>
   )
@@ -65,6 +88,7 @@ function Credits() {
 
 const styles = stylex.create({
   section: { marginTop: space.s48 },
+  group: { marginTop: space.s48 },
   list: {
     listStyle: 'none',
     display: 'grid',

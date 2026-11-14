@@ -131,6 +131,9 @@ export const fonts = stylex.defineConsts({
   // Display headings, set light (weights.display) to match the thin lines of the drawings.
   serif: '"Newsreader", "Newsreader Fallback", ui-serif, Georgia, serif',
   // The name on the home page, in the lettering of the AK wordmark: solid, weight 550.
+  // The apps' own faces, for the samples on the Design page.
+  dmSans: '"DM Sans", ui-sans-serif, system-ui, sans-serif',
+  dmMono: '"DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
   brand: '"Inter Display", "Inter Display Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
 })
 

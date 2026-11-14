@@ -14,6 +14,26 @@
   The fallback faces are local fonts scaled to each web font's metrics, so the swap from
   fallback to web font barely moves the text.
 */
+/*
+  DM Sans and DM Mono, the faces of Workout Director and Kalo, only for the type samples and app names on the Design
+  page (SIL OFL, public/assets/fonts/OFL-DMSans.txt and OFL-DMMono.txt). One Medium cut of each, Latin only, declared
+  across the weights the site uses so the browser never synthesises bold. The page that uses them is the only one
+  that downloads them.
+*/
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/assets/fonts/DMSans-Medium-Latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/assets/fonts/DMMono-Medium-Latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: 'Newsreader';
   src: url('/assets/fonts/Newsreader-Latin.woff2') format('woff2');

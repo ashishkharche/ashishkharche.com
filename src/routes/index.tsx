@@ -125,6 +125,9 @@ function Home() {
             <Link to="/projects/" {...stylex.props(styles.textLink, ui.focusRing)}>
               All projects
             </Link>
+            <Link to="/design/" {...stylex.props(styles.textLink, ui.focusRing)}>
+              Design
+            </Link>
           </div>
           <div {...stylex.props(styles.work)}>
             <ProjectCard card={workoutDirectorCard} scene="devicesRight" />

@@ -29,6 +29,7 @@ export const nav = [
   { to: '/work/', label: 'Work' },
   { to: '/projects/', label: 'Projects' },
   { to: '/notes/', label: 'Notes' },
+  { to: '/design/', label: 'Design' },
   { to: '/about/', label: 'About' },
 ] as const
 
@@ -44,6 +45,7 @@ export const sitemapPaths = [
   '/notes/workout-director-1/',
   '/notes/workout-director-2/',
   '/notes/reflex/',
+  '/design/',
   '/about/',
   '/credits/',
   '/lab/charts/',

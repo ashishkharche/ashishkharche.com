@@ -21,6 +21,7 @@ export function pageSources(path: string): string[] {
       'src/content/workoutDirectorScreens.ts',
     ],
     '/notes/': ['src/routes/notes.index.tsx', 'src/content/notes.ts', 'content/notes'],
+    '/design/': ['src/routes/design.tsx', 'src/components/design', 'public/assets/design'],
     '/about/': ['src/routes/about.tsx'],
     '/credits/': ['src/routes/credits.tsx'],
     '/lab/charts/': ['src/routes/lab.charts.tsx', 'src/components/ChartBuilder.tsx', 'public/lab/charts/data'],

@@ -15,6 +15,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
         '/projects/workout-director/',
         '/notes/',
         '/notes/workout-director-2/',
+        '/design/',
       ]) {
         await page.goto(path)
         await page.evaluate(() => document.fonts.ready)
